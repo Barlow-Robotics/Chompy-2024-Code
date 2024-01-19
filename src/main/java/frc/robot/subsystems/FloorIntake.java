@@ -8,85 +8,127 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 
 public class FloorIntake extends SubsystemBase {
 
-  private static final int upperMotorID = 0;
-  private static final int lowerMotorID = 0;
+    /*********************************************************************/
+    /***************************** CONSTANTS *****************************/
 
-  private static final int upperEncoderID = 0;
-  private static final int lowerEncoderID = 0;
-  
-  CANSparkMax upperMotor;
-  CANcoder upperEncoder;
+    // upper = 1_ | lower = 2_
 
-  CANSparkMax lowerMotor;
-  CANcoder lowerEncoder;
+    private static final int upperMotorID = 11;
+    private static final int lowerMotorID = 21;
 
-  public FloorIntake(double upperMagnetOffset, double lowerMagnetOffset) {
+    private static final int upperEncoderID = 11;
+    private static final int lowerEncoderID = 21;
+    
+    private static final int upperPIDControllerID = 11;
+    private static final int lowerPIDControllerID = 21;
+
+    /* UPPER PID CONTROLLER */
+    private static final double UpperKP = 0.5; // CHANGE
+    private static final double UpperKI = 0; // CHANGE
+    private static final double UpperKD = 0; // CHANGE
+    private static final double UpperIZone = 0; // CHANGE
+    private static final double UpperFF = 1; // CHANGE
+
+    /* LOWER PID CONTROLLER */
+    private static final double LowerKP = 0.5; // CHANGE
+    private static final double LowerKI = 0; // CHANGE
+    private static final double LowerKD = 0; // CHANGE
+    private static final double LowerIZone = 0; // CHANGE
+    private static final double LowerFF = 1; // CHANGE
+
+    private static final double motorSpeed = 0; // CHANGE
+
+    private static final int breakBeamID = 0; // CHANGE
+
+    /*******************************************************************************/
+    /*******************************************************************************/
+
+    CANSparkMax upperMotor;
+    RelativeEncoder upperEncoder;
+    SparkPIDController upperPidController;
+
+    CANSparkMax lowerMotor;
+    RelativeEncoder lowerEncoder;
+    SparkPIDController lowerPidController;
+
+    DigitalInput breakBeam;
+
+    public FloorIntake(double upperMagnetOffset, double lowerMagnetOffset) {
+
+        /* MOTOR CONFIG STUFF */
         upperMotor = new CANSparkMax(upperMotorID, MotorType.kBrushless);
-        upperMotor.restoreFactoryDefaults();
-        upperMotor.setIdleMode(IdleMode.kBrake);
-        upperMotor.setInverted(true);
-
-        upperEncoder = new CANcoder(upperEncoderID, "rio");
-        CANcoderConfiguration canCoderConfiguration = new CANcoderConfiguration();
-
-        MagnetSensorConfigs upperMagnetConfig = new MagnetSensorConfigs();
-        upperMagnetConfig.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
-        if (!Robot.isSimulation()) upperMagnetConfig.MagnetOffset = upperMagnetOffset;
-        else upperMagnetConfig.MagnetOffset = 0.0;
-        
-        upperMagnetConfig.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-
-        canCoderConfiguration.MagnetSensor = upperMagnetConfig;
-
-        // need to be added
-        // canCoderConfiguration.initializationStrategy =
-        // SensorInitializationStrategy.BootToAbsolutePosition; // BW sets sensor to be absolute zero
-        // canCoderConfiguration.sensorCoefficient = Math.PI / 2048.0;
-
-        upperEncoder.getConfigurator().apply(canCoderConfiguration);
-
+        upperEncoder = upperMotor.getEncoder();
+        motorAndEncoderConfig(upperMotor, upperEncoder, upperMagnetOffset, false); // CHANGE - These true/false values may need to be flipped
+        upperPidController = upperMotor.getPIDController();
+        setPIDControllerValues(upperPidController, UpperKP, UpperKI, UpperKD, UpperIZone, UpperFF);
 
         lowerMotor = new CANSparkMax(lowerMotorID, MotorType.kBrushless);
-        lowerMotor.restoreFactoryDefaults();
-        lowerMotor.setIdleMode(IdleMode.kBrake);
-        lowerMotor.setInverted(true);
+        lowerEncoder = lowerMotor.getEncoder();
+        motorAndEncoderConfig(lowerMotor, lowerEncoder, lowerMagnetOffset, true); // CHANGE - These true/false values may need to be flipped
+        lowerPidController = lowerMotor.getPIDController();
+        setPIDControllerValues(lowerPidController, LowerKP, LowerKI, LowerKD, LowerIZone, LowerFF);
 
-        lowerEncoder = new CANcoder(lowerEncoderID, "rio");
 
-        MagnetSensorConfigs lowerMagnetConfig = new MagnetSensorConfigs();
-        lowerMagnetConfig.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
-        if (!Robot.isSimulation()) lowerMagnetConfig.MagnetOffset = lowerMagnetOffset;
-        else lowerMagnetConfig.MagnetOffset = 0.0;
-        
-        lowerMagnetConfig.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        breakBeam = new DigitalInput(breakBeamID);
+    }
 
-        canCoderConfiguration.MagnetSensor = lowerMagnetConfig;
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run
+    }
 
-        // need to be added
-        // canCoderConfiguration.initializationStrategy =
-        // SensorInitializationStrategy.BootToAbsolutePosition; // BW sets sensor to be absolute zero
-        // canCoderConfiguration.sensorCoefficient = Math.PI / 2048.0;
+    public void startIntaking() {   
+        upperMotor.set(motorSpeed);
+        lowerMotor.set(motorSpeed);
+    }
 
-        lowerEncoder.getConfigurator().apply(canCoderConfiguration);
+    public void stopIntaking() {
+        upperMotor.set(0);
+        lowerMotor.set(0);
+    }
 
-  }
- 
+    public double getRPM() {
+        return upperEncoder.getVelocity();
+    }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+    public boolean isIntaking() {
+        return (0.95*motorSpeed) <= getRPM();
+    }
 
-  
+    public boolean noteLoaded() {
+        return breakBeam.get(); // May need to CHANGE
+    } 
+
+    private void motorAndEncoderConfig(CANSparkMax motor, RelativeEncoder encoder, double magnetOffset, boolean inverted) {
+       
+        motor.restoreFactoryDefaults();
+        motor.setIdleMode(IdleMode.kBrake);
+        motor.setInverted(inverted);
+
+        encoder = motor.getEncoder();
+        // encoder.setVelocityConversionFactor(); // Probably don't need this :)
+    }
+
+    private void setPIDControllerValues(SparkPIDController controller, double kP, double kI, double kD, double kIz, double kFF) {
+        controller.setP(kP);
+        controller.setI(kI);
+        controller.setD(kD);
+        controller.setIZone(kIz);
+        controller.setFF(kFF);
+        controller.setOutputRange(-1, 1);
+    }
 
 }

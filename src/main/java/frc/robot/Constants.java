@@ -33,7 +33,12 @@ public class Constants {
         public static final int FrontRightTurnMotorID = 32;
         public static final int BackLeftTurnMotorID = 33;
         public static final int BackRightTurnMotorID = 34;
+       
+        /***************************** SHOOTER *****************************/
 
+        // ShooterMotorID = 4{locationOnBot}
+        public static final int LeftShooterMotorID = 41;
+        public static final int RightShooterMotorID = 42;
     }
 
     public class DriveConstants {

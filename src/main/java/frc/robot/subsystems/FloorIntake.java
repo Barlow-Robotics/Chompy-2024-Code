@@ -31,7 +31,7 @@ public class FloorIntake extends SubsystemBase {
 
     private static final int upperEncoderID = 11;
     private static final int lowerEncoderID = 21;
-    
+
     private static final int upperPIDControllerID = 11;
     private static final int lowerPIDControllerID = 21;
 
@@ -66,21 +66,21 @@ public class FloorIntake extends SubsystemBase {
 
     DigitalInput breakBeam;
 
-    public FloorIntake(double upperMagnetOffset, double lowerMagnetOffset) {
+    public FloorIntake() {
 
         /* MOTOR CONFIG STUFF */
         upperMotor = new CANSparkMax(upperMotorID, MotorType.kBrushless);
         upperEncoder = upperMotor.getEncoder();
-        motorAndEncoderConfig(upperMotor, upperEncoder, upperMagnetOffset, false); // CHANGE - These true/false values may need to be flipped
+        motorAndEncoderConfig(upperMotor, upperEncoder, false); // CHANGE - These true/false values may need to be flipped
         upperPidController = upperMotor.getPIDController();
         setPIDControllerValues(upperPidController, UpperKP, UpperKI, UpperKD, UpperIZone, UpperFF);
 
         lowerMotor = new CANSparkMax(lowerMotorID, MotorType.kBrushless);
         lowerEncoder = lowerMotor.getEncoder();
-        motorAndEncoderConfig(lowerMotor, lowerEncoder, lowerMagnetOffset, true); // CHANGE - These true/false values may need to be flipped
+        motorAndEncoderConfig(lowerMotor, lowerEncoder, true); // CHANGE - These true/false values may need to be
+                                                               // flipped
         lowerPidController = lowerMotor.getPIDController();
         setPIDControllerValues(lowerPidController, LowerKP, LowerKI, LowerKD, LowerIZone, LowerFF);
-
 
         breakBeam = new DigitalInput(breakBeamID);
     }
@@ -90,7 +90,7 @@ public class FloorIntake extends SubsystemBase {
         // This method will be called once per scheduler run
     }
 
-    public void startIntaking() {   
+    public void startIntaking() {
         upperMotor.set(motorSpeed);
         lowerMotor.set(motorSpeed);
     }
@@ -105,15 +105,15 @@ public class FloorIntake extends SubsystemBase {
     }
 
     public boolean isIntaking() {
-        return (0.95*motorSpeed) <= getRPM();
+        return (0.95 * motorSpeed) <= getRPM();
     }
 
     public boolean noteLoaded() {
         return breakBeam.get(); // May need to CHANGE
-    } 
+    }
 
-    private void motorAndEncoderConfig(CANSparkMax motor, RelativeEncoder encoder, double magnetOffset, boolean inverted) {
-       
+    private void motorAndEncoderConfig(CANSparkMax motor, RelativeEncoder encoder, boolean inverted) {
+
         motor.restoreFactoryDefaults();
         motor.setIdleMode(IdleMode.kBrake);
         motor.setInverted(inverted);
@@ -122,7 +122,8 @@ public class FloorIntake extends SubsystemBase {
         // encoder.setVelocityConversionFactor(); // Probably don't need this :)
     }
 
-    private void setPIDControllerValues(SparkPIDController controller, double kP, double kI, double kD, double kIz, double kFF) {
+    private void setPIDControllerValues(SparkPIDController controller, double kP, double kI, double kD, double kIz,
+            double kFF) {
         controller.setP(kP);
         controller.setI(kI);
         controller.setD(kD);

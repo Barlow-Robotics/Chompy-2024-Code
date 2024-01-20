@@ -12,12 +12,20 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.DriveRobot;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.FloorIntake;
+import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
 
@@ -49,9 +57,12 @@ public class RobotContainer {
 
     /* SUBSYSTEMS */
     public final Drive driveSub = new Drive();
+    public final Shooter shooterSub = new Shooter();
+    public final FloorIntake floorIntakeSub = new FloorIntake();
     
     /* CONTROLLERS */
     PS4Controller driverController; 
+    Joystick operatorController;
 
     /* BUTTONS */
 

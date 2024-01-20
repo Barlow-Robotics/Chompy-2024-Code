@@ -4,18 +4,14 @@
 
 package frc.robot;
 
-import java.util.List;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -24,7 +20,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -86,31 +81,40 @@ public class RobotContainer {
                 new DriveRobot(
                         driveSub, driverController, LDALeftStickY, LDALeftStickX, LDARightStickX, true));
 
-        // Register named commands
+        AutoBuilder.configureHolonomic(
+                driveSub::getPose, // Robot pose supplier
+                driveSub::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+                driveSub::getSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                driveSub::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+                new HolonomicPathFollowerConfig(
+                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+                        4.5, // Max module speed, in m/s
+                        0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+                        new ReplanningConfig() // Default path replanning config. See the API for the options here
+                ),
+                () -> {
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                },
+                driveSub
+        );
 
-        // AutoBuilder.configureHolonomic(
-        //         driveSub.getPose(), // Robot pose supplier
-        //         driveSub.resetOdometry(), // Method to reset odometry (will be called if your auto has a starting pose)
-        //         driveSub.getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        //         driveSub.drive(), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-        //         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your
-        //                                          // Constants class
-        //                 new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-        //                 new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-        //                 4.5, // Max module speed, in m/s
-        //                 0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-        //                 new ReplanningConfig() // Default path replanning config. See the API for the options here
-        //         ),
-        //         this // Reference to this subsystem to set requirements
-        // );
+                NamedCommands.registerCommand("LeaveArea", Commands.print("***********************************Left Area"));
+        NamedCommands.registerCommand("ScoreInAmp", Commands.print("*******************************Shot in amp"));
 
-        // NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
-        // NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
+
+        NamedCommands.registerCommand("LeaveArea", Commands.print("**********************************Left Area"));
+        NamedCommands.registerCommand("ScoreInAmp", Commands.runOnce(driveSub::scoreAmp, driveSub));
+
         // NamedCommands.registerCommand("marker3", Commands.print("Passed marker 3"));
         // NamedCommands.registerCommand("marker4", Commands.print("Passed marker 4"));
 
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
-        // SmartDashboard.putData("Auto Mode", autoChooser);
+       // SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
     private void configureBindings() {
@@ -165,8 +169,20 @@ public class RobotContainer {
         // }));
     }
 
+    
+    
     public Command getAutonomousCommand() {
         // return autoChooser.getSelected();
-        return null;
+        // return null;
+        // return AutoBuilder.pathfindToPose(
+        //     new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)), 
+        //     new PathConstraints(
+        //       1.0, 1.0, 
+        //       Units.degreesToRadians(360), Units.degreesToRadians(540)
+        //     ), 
+        //     0, 
+        //     2.0
+        //   );
+        return new PathPlannerAuto("Score Amp");
     }
 }

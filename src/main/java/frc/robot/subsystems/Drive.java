@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CanIDs;
 import org.littletonrobotics.junction.Logger;
 import java.lang.Math;
+
 import com.kauailabs.navx.frc.AHRS;
 
 
@@ -81,6 +82,7 @@ public class Drive extends SubsystemBase {
     );
 
     private AHRS navX;
+    private SimSwerveModule[] modules;
 
     private final SwerveDriveOdometry odometry;
 
@@ -88,6 +90,12 @@ public class Drive extends SubsystemBase {
 
 
     public Drive() {
+        modules = new SimSwerveModule[]{
+            new SimSwerveModule(),
+            new SimSwerveModule(),
+            new SimSwerveModule(),
+            new SimSwerveModule()
+        };      
 
         navX = new AHRS(Port.kMXP);
         navX.reset();
@@ -121,6 +129,11 @@ public class Drive extends SubsystemBase {
 
     public Pose2d getPose() {
         return odometry.getPoseMeters();
+    }
+    
+    public void scoreAmp() {
+        System.out.println("*******************************Shot in amp");
+        return;
     }
 
     public void resetOdometry(Pose2d pose) {
@@ -156,11 +169,8 @@ public class Drive extends SubsystemBase {
 
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
-    
         SwerveModuleState[] targetStates = kinematics.toSwerveModuleStates(targetSpeeds);
-
         SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, MaxSpeed);
-    
         frontLeft.setDesiredState(targetStates[0]);
         frontRight.setDesiredState(targetStates[1]);
         backLeft.setDesiredState(targetStates[2]);
@@ -168,15 +178,13 @@ public class Drive extends SubsystemBase {
     }
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(
-                desiredStates, MaxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, MaxSpeed);
         frontLeft.setDesiredState(desiredStates[0]);
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);
         backRight.setDesiredState(desiredStates[3]);
     }
 
-    /** Resets the drive encoders to currently read a position of 0. */
     public void resetEncoders() {
         frontLeft.resetEncoders();
         backLeft.resetEncoders();
@@ -201,6 +209,18 @@ public class Drive extends SubsystemBase {
 
     public double getTurnRate() {
         return navX.getRate() * (GyroReversed ? -1.0 : 1.0); // degrees per second
+    }
+
+    public SwerveModuleState[] getModuleStates() {
+        SwerveModuleState[] states = new SwerveModuleState[modules.length];
+        for (int i = 0; i < modules.length; i++) {
+          states[i] = modules[i].getState();
+        }
+        return states;
+      }
+
+    public ChassisSpeeds getSpeeds() {
+        return kinematics.toChassisSpeeds(getModuleStates());
     }
 
     public void simulationInit() {
@@ -238,5 +258,25 @@ public class Drive extends SubsystemBase {
         SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
         angle.set(navX.getAngle() - Units.radiansToDegrees(twist.dtheta));
     }
+    class SimSwerveModule {
+        private SwerveModulePosition currentPosition = new SwerveModulePosition();
+        private SwerveModuleState currentState = new SwerveModuleState();
+    
+        public SwerveModulePosition getPosition() {
+          return currentPosition;
+        }
+    
+        public SwerveModuleState getState() {
+          return currentState;
+        }
+    
+        public void setTargetState(SwerveModuleState targetState) {
+          // Optimize the state
+          currentState = SwerveModuleState.optimize(targetState, currentState.angle);
+    
+          currentPosition = new SwerveModulePosition(currentPosition.distanceMeters + (currentState.speedMetersPerSecond * 0.02), currentState.angle);
+        }
+      }
+    
     
 }

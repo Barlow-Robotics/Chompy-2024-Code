@@ -55,5 +55,8 @@
         }
       }
     }
+  },
+  "NetworkTables Info": {
+    "visible": true
   }
 }

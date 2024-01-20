@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveRobot;
 import frc.robot.subsystems.Drive;
@@ -72,7 +73,7 @@ public class RobotContainer {
     Joystick operatorController;
 
     /* BUTTONS */
-
+    public Trigger shootButton;
     // private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
@@ -115,7 +116,10 @@ public class RobotContainer {
     private void configureBindings() {
 
         driverController = new PS4Controller(1);
-
+        operatorController = new Joystick(2);
+        shootButton = new JoystickButton(operatorController, Constants.CanIDs.LeftShooterMotorID);
+        shootButton.onTrue()
+                   .onFalse();
         // Add a button to run the example auto to SmartDashboard, this will also be in
         // the auto chooser built above
         // SmartDashboard.putData("Example Auto", new PathPlannerAuto("test"));

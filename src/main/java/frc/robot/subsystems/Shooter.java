@@ -16,7 +16,8 @@ public class Shooter extends SubsystemBase {
     /*********************************************************************/ 
     /***************************** CONSTANTS *****************************/
 
-    private static final double ShooterVelocity = 0; // CHANGE
+    public static final double SpeakerVelocity = 0; // CHANGE
+    public static final double AmpVelocity = 0; // CHANGE
     private static final double SourceIntakeVelocity = 0; // CHANGE
     private static final double ShooterFloorIntakeVelocity = 0; // CHANGE
 
@@ -45,9 +46,24 @@ public class Shooter extends SubsystemBase {
 
     }
 
-    public void start(double velocity) {
+    public void shootAtSpeed(double velocity) {
         leftShooterMotor.set(velocity);
         leftShooterMotor.set(velocity);
+    }
+
+    public void shootAtSpeaker() {
+        leftShooterMotor.set(SpeakerVelocity);
+        leftShooterMotor.set(SpeakerVelocity);
+    }
+
+    public void shootAtAmp() {
+        leftShooterMotor.set(AmpVelocity);
+        leftShooterMotor.set(AmpVelocity);
+    }
+
+    public void intakeFromSource() {
+        leftShooterMotor.set(SourceIntakeVelocity);
+        leftShooterMotor.set(SourceIntakeVelocity);
     }
 
     public void stopShooter() {
@@ -59,8 +75,12 @@ public class Shooter extends SubsystemBase {
         return leftShooterMotor.getVelocity().getValue();
     }
 
-    public boolean isShooting() {
-        return getShooterVelocity() >= .95 * ShooterVelocity;
+    public boolean isSpeakerShooting() {
+        return getShooterVelocity() >= .95 * SpeakerVelocity;
+    }
+
+    public boolean isAmpShooting() {
+        return getShooterVelocity() >= .95 * AmpVelocity;
     }
 
     public boolean isSourceIntaking() {

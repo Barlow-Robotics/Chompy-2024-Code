@@ -22,7 +22,7 @@ public class StartShooter extends Command {
 
   @Override
   public void execute() {
-    shooterSub.startShooter();
+    shooterSub.start(Shooter.ShooterVelocity);
   }
 
   @Override

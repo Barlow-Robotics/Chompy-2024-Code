@@ -9,24 +9,28 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.Constants;
 import frc.robot.Constants.CanIDs;
 import frc.robot.sim.PhysicsSim;
 
 public class Shooter extends SubsystemBase {
+    /*********************************************************************/ 
     /***************************** CONSTANTS *****************************/
 
     private static final double ShooterVelocity = 0; // CHANGE
-    private static final double ShooterAsIntakeVelocity = 0; // CHANGE
+    private static final double SourceIntakeVelocity = 0; // CHANGE
+    private static final double ShooterFloorIntakeVelocity = 0; // CHANGE
 
     boolean simulationInitialized = false;
     private static final int simulationVelocity = 6800; // CHANGE
     private static final double simulationTime = 0.5; // CHANGE
+
+    /*********************************************************************/
     /*********************************************************************/
 
     TalonFX leftShooterMotor;
     TalonFX rightShooterMotor;
     TalonFX angleMotor;
+    
     DigitalInput breakBeam;
 
     public Shooter() {
@@ -35,15 +39,15 @@ public class Shooter extends SubsystemBase {
         angleMotor = new TalonFX(CanIDs.AngleMotorID);
     }
 
-    public void startShooter() {
-        leftShooterMotor.set(ShooterVelocity);
-        rightShooterMotor.set(ShooterVelocity);
+    
+    @Override
+    public void periodic() {
+
     }
 
-    public void startShooterAsIntake() {
-      // any different behavior required if intaking from source vs floor??? 
-        leftShooterMotor.set(ShooterAsIntakeVelocity);
-        rightShooterMotor.set(ShooterAsIntakeVelocity);
+    public void start(double velocity) {
+        leftShooterMotor.set(velocity);
+        leftShooterMotor.set(velocity);
     }
 
     public void stopShooter() {
@@ -59,21 +63,24 @@ public class Shooter extends SubsystemBase {
         return getShooterVelocity() >= .95 * ShooterVelocity;
     }
 
+    public boolean isSourceIntaking() {
+        return getShooterVelocity() >= .95 * SourceIntakeVelocity;
+    }
+
+    public boolean isShooterFloorIntaking() {
+        return getShooterVelocity() >= .95 * ShooterFloorIntakeVelocity;
+    }
+
     public boolean isNoteLoaded() {
         return (breakBeam.get());
     }
 
-    public double getAngle() {
-        return angleMotor.getPosition().getValue();
-    }
-
-    public void setAngle(int angle) {
+    public void setAngle(double angle) {
         angleMotor.setPosition(angle);
     }
 
-    @Override
-    public void periodic() {
-
+    public double getAngle() {
+        return angleMotor.getPosition().getValue();
     }
 
     // Simulation Code
@@ -81,7 +88,7 @@ public class Shooter extends SubsystemBase {
         PhysicsSim.getInstance().addTalonFX(leftShooterMotor, simulationTime, simulationVelocity);
         PhysicsSim.getInstance().addTalonFX(rightShooterMotor, simulationTime, simulationVelocity);
         PhysicsSim.getInstance().addTalonFX(angleMotor, simulationTime, simulationVelocity);
-      }
+    }
 
     @Override
     public void simulationPeriodic() {

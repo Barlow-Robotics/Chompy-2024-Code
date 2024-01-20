@@ -14,6 +14,7 @@ public class Constants {
     public static final double SecondsPerMinute = 60;
 
     public class CanIDs {
+        
         /***************************** DRIVE *****************************/
 
         // Encoder = 1{locationOnBot}
@@ -39,6 +40,7 @@ public class Constants {
         // ShooterMotorID = 4{locationOnBot}
         public static final int LeftShooterMotorID = 41;
         public static final int RightShooterMotorID = 42;
+        public static final int AngleMotorID = 43;
     }
 
     public class DriveConstants {

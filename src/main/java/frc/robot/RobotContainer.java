@@ -30,6 +30,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveRobot;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.FloorIntake;
+import frc.robot.subsystems.Shooter;
 
 public class RobotContainer {
 
@@ -61,6 +63,8 @@ public class RobotContainer {
 
     /* SUBSYSTEMS */
     public final Drive driveSub = new Drive();
+    public final Shooter shooterSub = new Shooter();
+    public final FloorIntake floorIntakeSub = new FloorIntake();
     
     /* CONTROLLERS */
     PS4Controller driverController; 

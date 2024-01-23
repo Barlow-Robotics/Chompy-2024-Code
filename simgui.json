@@ -15,6 +15,14 @@
         "header": {
           "open": true
         }
+      },
+      "SPARK MAX [32]": {
+        "header": {
+          "open": true
+        }
+      },
+      "window": {
+        "visible": false
       }
     }
   },
@@ -29,11 +37,6 @@
       "/SmartDashboard/Pathfind to Scoring Pos": "Command"
     },
     "windows": {
-      "/SmartDashboard/Auto Mode": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Field": {
         "Robot": {
           "length": 0.8999999761581421,
@@ -49,14 +52,34 @@
         },
         "right": 1088,
         "top": 36,
-        "width": 16.541748046875,
-        "window": {
-          "visible": true
-        }
+        "width": 16.541748046875
       }
     }
   },
-  "NetworkTables Info": {
-    "visible": true
+  "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
+    "retained": {
+      "SmartDashboard": {
+        "Auto Mode": {
+          "open": true
+        }
+      }
+    },
+    "transitory": {
+      "AdvantageKit": {
+        "RealOutputs": {
+          "open": true
+        },
+        "open": true
+      },
+      "Shuffleboard": {
+        ".metadata": {
+          "open": true
+        },
+        "open": true
+      }
+    }
   }
 }

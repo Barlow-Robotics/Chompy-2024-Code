@@ -22,50 +22,21 @@ import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveRobot;
-import frc.robot.commands.StartFloorIntake;
 import frc.robot.commands.StartShooter;
-import frc.robot.commands.StopFloorIntake;
+import frc.robot.commands.ToggleIntake;
 import frc.robot.subsystems.Drive;
-// import frc.robot.subsystems.FloorIntake;
+import frc.robot.subsystems.FloorIntake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterState;
 
 public class RobotContainer {
-
-    /********************************************************************/
-    /***** CONSTANTS *****/
-
-    public static final int LDALeftStickX = 0; // LDA = Logitech Dual Action
-    public static final int LDALeftStickY = 1;
-    public static final int LDARightStickX = 2;
-    public static final int LDARightStickY = 3;
-    public static final int LDALeftTrigger = 7; // Speaker
-    public static final int LDARightTrigger = 8; // Amp
-    public static final int LDAButtonA = 2; 
-    public static final int LDAButtonB = 3; // Trapdoor
-    public static final int LDAButtonX = 1;
-    public static final int LDAButtonY = 4;
-    public static final int LDALeftBumper = 5; // Floor Intake
-    public static final int LDARightBumper = 6; // Source Intake
-    public static final int LDABackButton = 9;
-    public static final int LDAStartButton = 10;
-    public static final int LDALeftStick = 11;
-    public static final int LDARightStick = 12;
-    public static final double LDAForwardAxisAttenuation = -0.5;
-    public static final double LDALateralAxisAttenuation = 0.5;
-    public static final double LDAYawAxisAttenuation = 0.5;
-
-    /********************************************************************/
-    /********************************************************************/
-
     /* SUBSYSTEMS */
     public final Drive driveSub = new Drive();
     public final Shooter shooterSub = new Shooter();
-    // public final FloorIntake floorIntakeSub = new FloorIntake();
+    public final FloorIntake floorIntakeSub = new FloorIntake();
 
     /* COMMANDS */
     private final StartShooter startShooterSpeakerCmd = new StartShooter(shooterSub, shooterSub.shooterState.Speaker);
@@ -73,9 +44,7 @@ public class RobotContainer {
     private final StartShooter startShooterSourceIntakeCmd = new StartShooter(shooterSub, shooterSub.shooterState.Source);
     private final StartShooter startShooterFloorIntakeCmd = new StartShooter(shooterSub, shooterSub.shooterState.Chassis);
     private final StartShooter startShooterTrapCmd = new StartShooter(shooterSub, shooterSub.shooterState.Trapdoor);
-    
-    // private final StartFloorIntake startFloorIntakeCmd = new StartFloorIntake(floorIntakeSub);
-    // private final StopFloorIntake stopFloorIntakeCmd = new StopFloorIntake(floorIntakeSub);
+    private final ToggleIntake toggleIntakeCmd = new ToggleIntake(floorIntakeSub);
     
     /* CONTROLLERS */
     PS4Controller driverController; 
@@ -83,11 +52,13 @@ public class RobotContainer {
     
     /* BUTTONS */
    
-    public Trigger shootButtonSpeaker;
-    public Trigger shootButtonAmp;
-    public Trigger shootButtonSourceIntake;
-    public Trigger shootButtonFloorIntake;
-    public Trigger shootButtonTrap;
+    public Trigger shootSpeakerButton;
+    public Trigger shootAmpButton;
+    public Trigger shooterSourceIntakeButton;
+    public Trigger shooterFloorIntakeButton;
+    public Trigger shootTrapButton;
+
+    public Trigger toggleFloorIntakeButton;
 
     // private final SendableChooser<Command> autoChooser;
 
@@ -123,7 +94,7 @@ public class RobotContainer {
                 // The left stick controls translation of the robot.
                 // Turning is controlled by the X axis of the right stick.
                 new DriveRobot(
-                        driveSub, driverController, LDALeftStickY, LDALeftStickX, LDARightStickX, true));
+                        driveSub, driverController, Constants.LogitechConstants.LDALeftStickY, Constants.LogitechConstants.LDALeftStickX, Constants.LogitechConstants.LDARightStickX, true));
 
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
        // SmartDashboard.putData("Auto Mode", autoChooser);
@@ -135,19 +106,23 @@ public class RobotContainer {
         driverController = new PS4Controller(1);
         operatorController = new Joystick(2);
         
-        shootButtonSpeaker = new JoystickButton(operatorController, LDALeftTrigger);
-        shootButtonSpeaker.onTrue(startShooterSpeakerCmd);
-        shootButtonAmp = new JoystickButton(operatorController, LDARightTrigger);
-        shootButtonAmp.onTrue(startShooterAmpCmd);
-        shootButtonSourceIntake = new JoystickButton(operatorController, LDARightBumper);
-        shootButtonSourceIntake.onTrue(startShooterSourceIntakeCmd);
-        shootButtonFloorIntake = new JoystickButton(operatorController, LDALeftBumper);
-        shootButtonFloorIntake.onTrue(startShooterFloorIntakeCmd);
-        shootButtonTrap = new JoystickButton(operatorController, LDAButtonB);
-        shootButtonTrap.onTrue(startShooterTrapCmd);        
+        shootSpeakerButton = new JoystickButton(operatorController, Constants.LogitechConstants.LDALeftTrigger);
+        shootSpeakerButton.onTrue(startShooterSpeakerCmd);
 
+        shootAmpButton = new JoystickButton(operatorController, Constants.LogitechConstants.LDARightTrigger);
+        shootAmpButton.onTrue(startShooterAmpCmd);
 
+        shooterSourceIntakeButton = new JoystickButton(operatorController, Constants.LogitechConstants.LDARightBumper);
+        shooterSourceIntakeButton.onTrue(startShooterSourceIntakeCmd);
 
+        shooterFloorIntakeButton = new JoystickButton(operatorController, Constants.LogitechConstants.LDALeftBumper);
+        shooterFloorIntakeButton.onTrue(startShooterFloorIntakeCmd);
+        
+        shootTrapButton = new JoystickButton(operatorController, Constants.LogitechConstants.LDAButtonB);
+        shootTrapButton.onTrue(startShooterTrapCmd);
+
+        toggleFloorIntakeButton = new JoystickButton(operatorController, Constants.XboxControllerConstants.ButtonX); //floor 
+        toggleFloorIntakeButton.onTrue(toggleIntakeCmd);     
     }
 
     

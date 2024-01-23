@@ -14,7 +14,7 @@ import frc.robot.Constants.CanIDs;
 import frc.robot.sim.PhysicsSim;
 
 public class Shooter extends SubsystemBase {
-    /*********************************************************************/ 
+    /*********************************************************************/
     /***************************** CONSTANTS *****************************/
 
     public static final double SpeakerVelocity = 0; // CHANGE
@@ -37,7 +37,7 @@ public class Shooter extends SubsystemBase {
     TalonFX leftShooterMotor;
     TalonFX rightShooterMotor;
     TalonFX angleMotor;
-    
+
     DigitalInput breakBeam;
 
     public Shooter() {
@@ -45,27 +45,27 @@ public class Shooter extends SubsystemBase {
         rightShooterMotor = new TalonFX(CanIDs.RightShooterMotorID);
         angleMotor = new TalonFX(CanIDs.AngleMotorID);
     }
-    
+
     public enum ShooterState {
-        Stopped, Speaker, Amp, Source, Chassis, Trapdoor 
+        Stopped, Speaker, Amp, Source, Chassis, Trapdoor
     }
 
     public ShooterState shooterState = ShooterState.Stopped;
-    
+
     @Override
     public void periodic() {
 
     }
 
     public void setSpeed(double velocity) {
-        leftShooterMotor.set(velocity);
+        leftShooterMotor.set(velocity); // .set() uses % output, not veolocity (need to find a new function)
         rightShooterMotor.set(velocity);
     }
-   
+
     public double getShooterVelocity() {
         return leftShooterMotor.getVelocity().getValue();
     }
-    
+
     public boolean isSpeakerShooting() {
         return getShooterVelocity() >= .95 * SpeakerVelocity;
     }
@@ -75,11 +75,13 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isSourceIntaking() {
-        return (getShooterVelocity() >= .95 * SourceIntakeVelocity) && (getShooterVelocity() <= 1.05 * SourceIntakeVelocity);
+        return (getShooterVelocity() >= .95 * SourceIntakeVelocity)
+                && (getShooterVelocity() <= 1.05 * SourceIntakeVelocity);
     }
 
     public boolean isShooterFloorIntaking() {
-        return (getShooterVelocity() >= .95 * ShooterFloorIntakeVelocity) && (getShooterVelocity() <= 1.05 * ShooterFloorIntakeVelocity);
+        return (getShooterVelocity() >= .95 * ShooterFloorIntakeVelocity)
+                && (getShooterVelocity() <= 1.05 * ShooterFloorIntakeVelocity);
     }
 
     public boolean isNoteLoaded() {
@@ -94,13 +96,23 @@ public class Shooter extends SubsystemBase {
         return angleMotor.getPosition().getValue();
     }
 
-public String getShooterState(){
-    return shooterState.toString();
-}
-    public void initSendable(SendableBuilder builder){
+    public String getShooterState() {
+        return shooterState.toString();
+    }
+
+    public void initSendable(SendableBuilder builder) {
         builder.addStringProperty("State", this::getShooterState, null);
+        builder.addDoubleProperty("Shooter Velocity", this::getShooterVelocity, null);
+        builder.addBooleanProperty("Speaker Shooting", this::isSpeakerShooting, null);
+        builder.addBooleanProperty("Amp Shooting", this::isAmpShooting, null);
+        builder.addBooleanProperty("Source Intaking", this::isSourceIntaking, null);
+        builder.addBooleanProperty("Floor Intaking", this::isShooterFloorIntaking, null);
+        builder.addBooleanProperty("Note Loaded", this::isNoteLoaded, null);
+        builder.addDoubleProperty("Get Angle", this::getAngle, null);
+
         // builder.addStringProperty()
     }
+
     // Simulation Code
     public void simulationInit() {
         PhysicsSim.getInstance().addTalonFX(leftShooterMotor, simulationTime, simulationVelocity);
@@ -115,5 +127,5 @@ public String getShooterState(){
             simulationInitialized = true;
         }
     }
-}
 
+}

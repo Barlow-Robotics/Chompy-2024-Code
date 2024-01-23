@@ -10,22 +10,13 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.Constants.CanIDs;
+import frc.robot.Constants.ElectronicIDs;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.sim.PhysicsSim;
 
 public class Shooter extends SubsystemBase {
     /*********************************************************************/
     /***************************** CONSTANTS *****************************/
-
-    public static final double SpeakerVelocity = 0; // CHANGE
-    public static final double AmpVelocity = 0; // CHANGE
-    public static final double SourceIntakeVelocity = 0; // CHANGE
-    public static final double ShooterFloorIntakeVelocity = 0; // CHANGE
-
-    public static final double SpeakerAngle = 0; // CHANGE
-    public static final double AmpAngle = 0; // CHANGE
-    public static final double SourceIntakeAngle = 0; // CHANGE
-    public static final double ShooterFloorIntakeAngle = 0; // CHANGE
 
     boolean simulationInitialized = false;
     private static final int simulationVelocity = 6800; // CHANGE
@@ -41,9 +32,9 @@ public class Shooter extends SubsystemBase {
     DigitalInput breakBeam;
 
     public Shooter() {
-        leftShooterMotor = new TalonFX(CanIDs.LeftShooterMotorID);
-        rightShooterMotor = new TalonFX(CanIDs.RightShooterMotorID);
-        angleMotor = new TalonFX(CanIDs.AngleMotorID);
+        leftShooterMotor = new TalonFX(ElectronicIDs.LeftShooterMotorID);
+        rightShooterMotor = new TalonFX(ElectronicIDs.RightShooterMotorID);
+        angleMotor = new TalonFX(ElectronicIDs.AngleMotorID);
     }
 
     public enum ShooterState {
@@ -67,21 +58,22 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isSpeakerShooting() {
-        return getShooterVelocity() >= .95 * SpeakerVelocity;
+        return getShooterVelocity() >= .95 * ShooterConstants.SpeakerVelocity;
     }
 
     public boolean isAmpShooting() {
-        return (getShooterVelocity() >= .95 * AmpVelocity) && (getShooterVelocity() <= 1.05 * AmpVelocity);
+        return (getShooterVelocity() >= .95 * ShooterConstants.AmpVelocity) && 
+                (getShooterVelocity() <= 1.05 * ShooterConstants.AmpVelocity);
     }
 
     public boolean isSourceIntaking() {
-        return (getShooterVelocity() >= .95 * SourceIntakeVelocity)
-                && (getShooterVelocity() <= 1.05 * SourceIntakeVelocity);
+        return (getShooterVelocity() >= .95 * ShooterConstants.SourceIntakeVelocity)
+                && (getShooterVelocity() <= 1.05 * ShooterConstants.SourceIntakeVelocity);
     }
 
     public boolean isShooterFloorIntaking() {
-        return (getShooterVelocity() >= .95 * ShooterFloorIntakeVelocity)
-                && (getShooterVelocity() <= 1.05 * ShooterFloorIntakeVelocity);
+        return (getShooterVelocity() >= .95 * ShooterConstants.ShooterFloorIntakeVelocity)
+                && (getShooterVelocity() <= 1.05 * ShooterConstants.ShooterFloorIntakeVelocity);
     }
 
     public boolean isNoteLoaded() {

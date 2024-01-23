@@ -12,8 +12,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public class Constants {
     public static final double SecondsPerMinute = 60;
+    public static final double Neo550MaxRPM = 5700;
 
-    public static final class CanIDs {
+    public static final class ElectronicIDs {
         
         /***************************** DRIVE *****************************/
 
@@ -43,16 +44,12 @@ public class Constants {
         public static final int AngleMotorID = 43;
 
         /***************************** FLOOR INTAKE *****************************/
+
         // FloorMotorID = 5{locationOnBot}
         public static final int upperFloorMotorID = 51;
         public static final int lowerFloorMotorID = 52;
+
         public static final int floorBreakBeamID = 0; // CHANGE
-
-        public static final int upperFloorEncoderID = 11;
-        public static final int lowerFloorEncoderID = 21;
-
-        public static final int upperFloorPIDControllerID = 11;
-        public static final int lowerFloorPIDControllerID = 21;
     }
 
     /***************************************************************************/
@@ -97,7 +94,15 @@ public class Constants {
     /***************************************************************************/
 
     public static final class ShooterConstants {
-
+        public static final double SpeakerVelocity = 0; // CHANGE
+        public static final double AmpVelocity = 0; // CHANGE
+        public static final double SourceIntakeVelocity = 0; // CHANGE
+        public static final double ShooterFloorIntakeVelocity = 0; // CHANGE
+    
+        public static final double SpeakerAngle = 0; // CHANGE
+        public static final double AmpAngle = 0; // CHANGE
+        public static final double SourceIntakeAngle = 0; // CHANGE
+        public static final double ShooterFloorIntakeAngle = 0; // CHANGE
     }
 
     /***************************************************************************/
@@ -129,42 +134,42 @@ public class Constants {
     /***************************************************************************/
 
     public static final class ElevatorConstants {
-
     }
-    public final class LogitechConstants {
-        public static final int LDALeftStickX = 0; // LDA = Logitech Dual Action
-        public static final int LDALeftStickY = 1;
-        public static final int LDARightStickX = 2;
-        public static final int LDARightStickY = 3;
-        public static final int LDALeftTrigger = 7; // Speaker
-        public static final int LDARightTrigger = 8; // Amp
-        public static final int LDAButtonA = 2; 
-        public static final int LDAButtonB = 3; // Trapdoor
-        public static final int LDAButtonX = 1;
-        public static final int LDAButtonY = 4;
-        public static final int LDALeftBumper = 5; // Floor Intake
-        public static final int LDARightBumper = 6; // Source Intake
-        public static final int LDABackButton = 9;
-        public static final int LDAStartButton = 10;
-        public static final int LDALeftStick = 11;
-        public static final int LDARightStick = 12;
-        public static final double LDAForwardAxisAttenuation = -0.5;
-        public static final double LDALateralAxisAttenuation = 0.5;
-        public static final double LDAYawAxisAttenuation = 0.5;
+    /***************************************************************************/
+    /***************************************************************************/
+    /***************************************************************************/
+
+    public final class LogitechDAConstants {
+        public static final int LeftStickX = 0; // LDA = Logitech Dual Action
+        public static final int LeftStickY = 1;
+        public static final int RightStickX = 2;
+        public static final int RightStickY = 3;
+        public static final int LeftTrigger = 7; // Speaker
+        public static final int RightTrigger = 8; // Amp
+        public static final int ButtonA = 2; 
+        public static final int ButtonB = 3; // Trapdoor
+        public static final int ButtonX = 1;
+        public static final int ButtonY = 4;
+        public static final int LeftBumper = 5; // Floor Intake
+        public static final int RightBumper = 6; // Source Intake
+        public static final int BackButton = 9;
+        public static final int StartButton = 10;
+        public static final int LeftStick = 11;
+        public static final int RightStick = 12;
+        public static final double ForwardAxisAttenuation = -0.5;
+        public static final double LateralAxisAttenuation = 0.5;
+        public static final double YawAxisAttenuation = 0.5;
     }
     public final class RadioMasterConstants {
         public static final int LeftGimbalX = 0;
         public static final int LeftGimbalY = 1;
         public static final int RightGimbalX = 3;
         public static final int RightGimbalY = 2;
-
         public static final int SliderF = 5;
         public static final int SliderE = 4;
         public static final int SliderC = 6;
-
         public static final int ButtonD = 2;
         public static final int ButtonA = 1;
-
         public static final double FowardAxisAttenuation = 1.0;
         public static final double LateralAxisAttenuation = 1.0;
         public static final double YawAxisAttenuation = 0.6;

@@ -15,7 +15,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FloorIntakeConstants;
-import frc.robot.Constants.CanIDs;
+import frc.robot.Constants.ElectronicIDs;
 import com.revrobotics.REVPhysicsSim;
 
 public class FloorIntake extends SubsystemBase {
@@ -38,7 +38,7 @@ public class FloorIntake extends SubsystemBase {
     public FloorIntake() {
 
         /* UPPER MOTOR CONFIG */
-        upperMotor = new CANSparkMax(CanIDs.upperFloorMotorID, MotorType.kBrushless);
+        upperMotor = new CANSparkMax(ElectronicIDs.upperFloorMotorID, MotorType.kBrushless);
         upperEncoder = upperMotor.getEncoder();
         motorAndEncoderConfig(upperMotor, upperEncoder, false); // CHANGE - These true/false values may need to be flipped
         upperPidController = upperMotor.getPIDController();
@@ -51,10 +51,9 @@ public class FloorIntake extends SubsystemBase {
                 FloorIntakeConstants.UpperFF);
 
         /* LOWER MOTOR CONFIG */
-        lowerMotor = new CANSparkMax(CanIDs.lowerFloorMotorID, MotorType.kBrushless);
+        lowerMotor = new CANSparkMax(ElectronicIDs.lowerFloorMotorID, MotorType.kBrushless);
         lowerEncoder = lowerMotor.getEncoder();
-        motorAndEncoderConfig(lowerMotor, lowerEncoder, true); // CHANGE - These true/false values may need to be
-                                                               // flipped
+        motorAndEncoderConfig(lowerMotor, lowerEncoder, true); // CHANGE - These true/false values may need to be flipped
         lowerPidController = lowerMotor.getPIDController();
         setPIDControllerValues(
                 lowerPidController,
@@ -64,7 +63,7 @@ public class FloorIntake extends SubsystemBase {
                 FloorIntakeConstants.LowerIZone,
                 FloorIntakeConstants.LowerFF);
 
-        breakBeam = new DigitalInput(CanIDs.floorBreakBeamID);
+        breakBeam = new DigitalInput(ElectronicIDs.floorBreakBeamID);
     }
 
     @Override

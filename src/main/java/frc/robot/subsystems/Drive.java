@@ -16,7 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.CanIDs;
+import frc.robot.Constants.ElectronicIDs;
 import org.littletonrobotics.junction.Logger;
 import java.lang.Math;
 
@@ -47,36 +47,36 @@ public class Drive extends SubsystemBase {
 
     private final SwerveModule frontLeft = new SwerveModule(
             "frontLeft",
-            CanIDs.FrontLeftDriveMotorID,
-            CanIDs.FrontLeftTurnMotorID,
-            CanIDs.FrontLeftTurnEncoderID,
+            ElectronicIDs.FrontLeftDriveMotorID,
+            ElectronicIDs.FrontLeftTurnMotorID,
+            ElectronicIDs.FrontLeftTurnEncoderID,
             Math.toDegrees(1.5171039327979088) / 360.0, 
             false
     );
 
     private final SwerveModule frontRight = new SwerveModule(
             "frontRight",
-            CanIDs.FrontRightDriveMotorID,
-            CanIDs.FrontRightTurnMotorID,
-            CanIDs.FrontRightTurnEncoderID,
+            ElectronicIDs.FrontRightDriveMotorID,
+            ElectronicIDs.FrontRightTurnMotorID,
+            ElectronicIDs.FrontRightTurnEncoderID,
             Math.toDegrees(1.7456666082143784) / 360.0, 
-            true)
-    ;
+            true
+    );
 
     private final SwerveModule backLeft = new SwerveModule(
             "backLeft",
-            CanIDs.BackLeftDriveMotorID,
-            CanIDs.BackLeftTurnMotorID,
-            CanIDs.BackLeftTurnEncoderID,
+            ElectronicIDs.BackLeftDriveMotorID,
+            ElectronicIDs.BackLeftTurnMotorID,
+            ElectronicIDs.BackLeftTurnEncoderID,
             Math.toDegrees(-2.7626938149333) / 360.0, 
             false
     );
 
     private final SwerveModule backRight = new SwerveModule(
             "backRight",
-            CanIDs.BackRightDriveMotorID,
-            CanIDs.BackRightTurnMotorID,
-            CanIDs.BackRightTurnEncoderID,
+            ElectronicIDs.BackRightDriveMotorID,
+            ElectronicIDs.BackRightTurnMotorID,
+            ElectronicIDs.BackRightTurnEncoderID,
             Math.toDegrees(-2.305568464100361) / 360.0,
             true
     );
@@ -109,6 +109,8 @@ public class Drive extends SubsystemBase {
                     backLeft.getPosition(),
                     backRight.getPosition()
             });
+
+    
     }
 
     @Override

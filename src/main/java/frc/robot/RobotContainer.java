@@ -12,43 +12,40 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PS4Controller;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveRobot;
-import frc.robot.commands.StartShooter;
+import frc.robot.Constants.RadioMasterConstants;
+import frc.robot.Constants.XboxControllerConstants;
+import frc.robot.commands.ChangeShooterState;
 import frc.robot.commands.ToggleIntake;
-import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.FloorIntake;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Shooter.ShooterState;
+import frc.robot.subsystems.*;
 
 public class RobotContainer {
     /* SUBSYSTEMS */
     public final Drive driveSub = new Drive();
     public final Shooter shooterSub = new Shooter();
+    public final ShooterAngle shooterAngleSub = new ShooterAngle();
+    public final Elevator elevatorSub = new Elevator();
     public final FloorIntake floorIntakeSub = new FloorIntake();
 
     /* COMMANDS */
-    private final StartShooter startShooterSpeakerCmd = new StartShooter(shooterSub, shooterSub.shooterState.Speaker);
-    private final StartShooter startShooterAmpCmd = new StartShooter(shooterSub, shooterSub.shooterState.Amp);
-    private final StartShooter startShooterSourceIntakeCmd = new StartShooter(shooterSub, shooterSub.shooterState.Source);
-    private final StartShooter startShooterFloorIntakeCmd = new StartShooter(shooterSub, shooterSub.shooterState.Chassis);
-    private final StartShooter startShooterTrapCmd = new StartShooter(shooterSub, shooterSub.shooterState.Trapdoor);
+    private final ChangeShooterState startShooterSpeakerCmd = new ChangeShooterState(shooterSub, shooterSub.shooterState.Speaker);
+    private final ChangeShooterState startShooterAmpCmd = new ChangeShooterState(shooterSub, shooterSub.shooterState.Amp);
+    private final ChangeShooterState startShooterSourceIntakeCmd = new ChangeShooterState(shooterSub, shooterSub.shooterState.Source);
+    private final ChangeShooterState startShooterFloorIntakeCmd = new ChangeShooterState(shooterSub, shooterSub.shooterState.Chassis);
+    private final ChangeShooterState startShooterTrapCmd = new ChangeShooterState(shooterSub, shooterSub.shooterState.Trapdoor);
     private final ToggleIntake toggleIntakeCmd = new ToggleIntake(floorIntakeSub);
     
     /* CONTROLLERS */
-    PS4Controller driverController; 
+    Joystick driverController; 
+    private final int DriverControllerPort = 1;
+    
     Joystick operatorController;
+    private final int OperatorControllerPort = 2;
     
     /* BUTTONS */
    
@@ -94,41 +91,41 @@ public class RobotContainer {
                 // The left stick controls translation of the robot.
                 // Turning is controlled by the X axis of the right stick.
                 new DriveRobot(
-                        driveSub, driverController, Constants.LogitechConstants.LDALeftStickY, Constants.LogitechConstants.LDALeftStickX, Constants.LogitechConstants.LDARightStickX, true));
+                        driveSub, 
+                        driverController, 
+                        RadioMasterConstants.LeftGimbalY, RadioMasterConstants.LeftGimbalX, RadioMasterConstants.RightGimbalX, 
+                        true));
 
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
-       // SmartDashboard.putData("Auto Mode", autoChooser);
+        // SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
 
     private void configureBindings() {
 
-        driverController = new PS4Controller(1);
-        operatorController = new Joystick(2);
+        driverController = new Joystick(DriverControllerPort);
+        operatorController = new Joystick(OperatorControllerPort);
         
-        shootSpeakerButton = new JoystickButton(operatorController, Constants.LogitechConstants.LDALeftTrigger);
+        shootSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle 
         shootSpeakerButton.onTrue(startShooterSpeakerCmd);
 
-        shootAmpButton = new JoystickButton(operatorController, Constants.LogitechConstants.LDARightTrigger);
+        shootAmpButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper); // top
         shootAmpButton.onTrue(startShooterAmpCmd);
 
-        shooterSourceIntakeButton = new JoystickButton(operatorController, Constants.LogitechConstants.LDARightBumper);
+        shooterSourceIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // right stick press
         shooterSourceIntakeButton.onTrue(startShooterSourceIntakeCmd);
 
-        shooterFloorIntakeButton = new JoystickButton(operatorController, Constants.LogitechConstants.LDALeftBumper);
+        shooterFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY); // claw
         shooterFloorIntakeButton.onTrue(startShooterFloorIntakeCmd);
         
-        shootTrapButton = new JoystickButton(operatorController, Constants.LogitechConstants.LDAButtonB);
+        shootTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home
         shootTrapButton.onTrue(startShooterTrapCmd);
 
-        toggleFloorIntakeButton = new JoystickButton(operatorController, Constants.XboxControllerConstants.ButtonX); //floor 
+        toggleFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); //floor 
         toggleFloorIntakeButton.onTrue(toggleIntakeCmd);     
     }
 
-    
-    
     public Command getAutonomousCommand() {
-
         return new PathPlannerAuto("Score Amp");
     }
 }

@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveRobot;
 import frc.robot.Constants.RadioMasterConstants;
 import frc.robot.Constants.XboxControllerConstants;
-import frc.robot.commands.ChangeShooterState;
+import frc.robot.commands.SetShooterVelocity;
 import frc.robot.commands.ToggleIntake;
 import frc.robot.subsystems.*;
 
@@ -33,11 +33,11 @@ public class RobotContainer {
     public final FloorIntake floorIntakeSub = new FloorIntake();
 
     /* COMMANDS */
-    private final ChangeShooterState startShooterSpeakerCmd = new ChangeShooterState(shooterSub, shooterSub.shooterState.Speaker);
-    private final ChangeShooterState startShooterAmpCmd = new ChangeShooterState(shooterSub, shooterSub.shooterState.Amp);
-    private final ChangeShooterState startShooterSourceIntakeCmd = new ChangeShooterState(shooterSub, shooterSub.shooterState.Source);
-    private final ChangeShooterState startShooterFloorIntakeCmd = new ChangeShooterState(shooterSub, shooterSub.shooterState.Chassis);
-    private final ChangeShooterState startShooterTrapCmd = new ChangeShooterState(shooterSub, shooterSub.shooterState.Trapdoor);
+    private final SetShooterVelocity startShooterSpeakerCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Speaker);
+    private final SetShooterVelocity startShooterAmpCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Amp);
+    private final SetShooterVelocity startShooterSourceIntakeCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Source);
+    private final SetShooterVelocity startShooterFloorIntakeCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Chassis);
+    private final SetShooterVelocity startShooterTrapCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Trapdoor);
     private final ToggleIntake toggleIntakeCmd = new ToggleIntake(floorIntakeSub);
     
     /* CONTROLLERS */
@@ -93,7 +93,7 @@ public class RobotContainer {
                 new DriveRobot(
                         driveSub, 
                         driverController, 
-                        RadioMasterConstants.LeftGimbalY, RadioMasterConstants.LeftGimbalX, RadioMasterConstants.RightGimbalX, 
+                        RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
                         true));
 
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`

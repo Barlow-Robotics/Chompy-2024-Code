@@ -16,9 +16,11 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElectronicIDs;
 import org.littletonrobotics.junction.Logger;
 import java.lang.Math;
+import frc.robot.Constants;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -28,7 +30,6 @@ public class Drive extends SubsystemBase {
     /*********************************************************************/
     /***************************** CONSTANTS *****************************/
 
-    public static final double MaxSpeed = 4.0; // meters per second
     public static final double MaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
     public static final boolean GyroReversed = false;
@@ -156,7 +157,7 @@ public class Drive extends SubsystemBase {
                         ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
                                 navX.getRotation2d())
                         : new ChassisSpeeds(xSpeed, ySpeed, rot));
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleDesiredStates, MaxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleDesiredStates, DriveConstants.MaxDriveableVelocity);
         frontLeft.setDesiredState(swerveModuleDesiredStates[0]);
         frontRight.setDesiredState(swerveModuleDesiredStates[1]);
         backLeft.setDesiredState(swerveModuleDesiredStates[2]);
@@ -172,7 +173,7 @@ public class Drive extends SubsystemBase {
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
         SwerveModuleState[] targetStates = kinematics.toSwerveModuleStates(targetSpeeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, MaxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, Constants.DriveConstants.MaxDriveableVelocity);
         frontLeft.setDesiredState(targetStates[0]);
         frontRight.setDesiredState(targetStates[1]);
         backLeft.setDesiredState(targetStates[2]);
@@ -180,7 +181,7 @@ public class Drive extends SubsystemBase {
     }
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, MaxSpeed);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.DriveConstants.MaxDriveableVelocity);
         frontLeft.setDesiredState(desiredStates[0]);
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);

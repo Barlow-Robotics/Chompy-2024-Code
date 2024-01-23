@@ -6,15 +6,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Shooter.ShooterState;
+import frc.robot.subsystems.Shooter.ShooterVelState;
 import frc.robot.Constants.ShooterConstants;
 
-public class ChangeShooterState extends Command {
+public class SetShooterVelocity extends Command {
 
     Shooter shooterSub;
-    ShooterState state;
+    ShooterVelState state;
 
-    public ChangeShooterState(Shooter shooterSub, ShooterState state) {
+    public SetShooterVelocity(Shooter shooterSub, ShooterVelState state) {
         this.shooterSub = shooterSub;
         this.state = state;
         addRequirements(shooterSub);
@@ -31,22 +31,18 @@ public class ChangeShooterState extends Command {
                 shooterSub.setSpeed(0);
             case Speaker:
                 shooterSub.setSpeed(ShooterConstants.SpeakerVelocity);
-                shooterSub.setAngle(ShooterConstants.SpeakerAngle);
                 break;
             case Amp:
                 shooterSub.setSpeed(ShooterConstants.AmpVelocity);
-                shooterSub.setAngle(ShooterConstants.AmpAngle);
                 break;
             case Source:
                 shooterSub.setSpeed(ShooterConstants.SourceIntakeVelocity);
-                shooterSub.setAngle(ShooterConstants.SourceIntakeAngle);
                 break;
             case Chassis:
                 shooterSub.setSpeed(ShooterConstants.ShooterFloorIntakeVelocity);
-                shooterSub.setAngle(ShooterConstants.ShooterFloorIntakeAngle);
                 break;
             case Trapdoor:
-                // method goes here
+                shooterSub.setSpeed(ShooterConstants.TrapdoorVelocity);
                 break;
         }
     }

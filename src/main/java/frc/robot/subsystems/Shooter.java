@@ -27,21 +27,19 @@ public class Shooter extends SubsystemBase {
 
     TalonFX leftShooterMotor;
     TalonFX rightShooterMotor;
-    TalonFX angleMotor;
 
     DigitalInput breakBeam;
 
     public Shooter() {
         leftShooterMotor = new TalonFX(ElectronicIDs.LeftShooterMotorID);
         rightShooterMotor = new TalonFX(ElectronicIDs.RightShooterMotorID);
-        angleMotor = new TalonFX(ElectronicIDs.AngleMotorID);
     }
 
-    public enum ShooterState {
+    public enum ShooterVelState {
         Stopped, Speaker, Amp, Source, Chassis, Trapdoor
     }
 
-    public ShooterState shooterState = ShooterState.Stopped;
+    public ShooterVelState shooterVelState = ShooterVelState.Stopped;
 
     @Override
     public void periodic() {
@@ -80,27 +78,18 @@ public class Shooter extends SubsystemBase {
         return (breakBeam.get());
     }
 
-    public void setAngle(double angle) {
-        angleMotor.setPosition(angle);
-    }
-
-    public double getAngle() {
-        return angleMotor.getPosition().getValue();
-    }
-
-    public String getShooterState() {
-        return shooterState.toString();
+    public String getShooterVelState() {
+        return shooterVelState.toString();
     }
 
     public void initSendable(SendableBuilder builder) {
-        builder.addStringProperty("State", this::getShooterState, null);
+        builder.addStringProperty("State", this::getShooterVelState, null);
         builder.addDoubleProperty("Shooter Velocity", this::getShooterVelocity, null);
         builder.addBooleanProperty("Speaker Shooting", this::isSpeakerShooting, null);
         builder.addBooleanProperty("Amp Shooting", this::isAmpShooting, null);
         builder.addBooleanProperty("Source Intaking", this::isSourceIntaking, null);
         builder.addBooleanProperty("Floor Intaking", this::isShooterFloorIntaking, null);
         builder.addBooleanProperty("Note Loaded", this::isNoteLoaded, null);
-        builder.addDoubleProperty("Get Angle", this::getAngle, null);
 
         // builder.addStringProperty()
     }
@@ -109,7 +98,6 @@ public class Shooter extends SubsystemBase {
     public void simulationInit() {
         PhysicsSim.getInstance().addTalonFX(leftShooterMotor, simulationTime, simulationVelocity);
         PhysicsSim.getInstance().addTalonFX(rightShooterMotor, simulationTime, simulationVelocity);
-        PhysicsSim.getInstance().addTalonFX(angleMotor, simulationTime, simulationVelocity);
     }
 
     @Override

@@ -11,9 +11,12 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class Constants {
+    
     public static final double SecondsPerMinute = 60;
-    public static final double Neo550MaxRPM = 5700;
 
+    public static final double Neo550MaxRPM = 5700; // CHANGE
+    public static final double NeoMaxRPM = 5676; // CHANGE 
+    public static final double Falcon500MaxRPM = 6380; // CHANGE
     public static final class ElectronicIDs {
         
         /***************************** DRIVE *****************************/
@@ -57,6 +60,8 @@ public class Constants {
     /***************************************************************************/
 
     public static final class DriveConstants {
+        public static final double MaxDriveableVelocity = 3.6;
+
         public static final double PhysicalMaxSpeedMetersPerSecond = 4.0; // CHANGE
         public static final double PhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI; // CHANGE
     }
@@ -103,6 +108,7 @@ public class Constants {
         public static final double AmpAngle = 0; // CHANGE
         public static final double SourceIntakeAngle = 0; // CHANGE
         public static final double ShooterFloorIntakeAngle = 0; // CHANGE
+        public static final double TrapdoorVelocity = 0;
     }
 
     /***************************************************************************/

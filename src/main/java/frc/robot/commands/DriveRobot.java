@@ -3,6 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
+import frc.robot.Constants;
+
 
 import org.littletonrobotics.junction.Logger;
 
@@ -19,13 +21,9 @@ public class DriveRobot extends Command {
     int ControllerXSpeedID;
     int ControllerYSpeedID;
     int ControllerRotID;
-
     boolean FieldRelative;
 
     double DeadBand = 0.08;
-    double MaxVelocity = 3.6; //meters per second //value is chosen, not calculated
-    double MaxRotVelocity = 2.0; //radians per second
-    int MaxRPM = 5676;
     
     public DriveRobot(
         Drive driveSub, 
@@ -39,6 +37,7 @@ public class DriveRobot extends Command {
         this.driverController = driverController;
         this.ControllerXSpeedID = ControllerXSpeedID;
         this.ControllerYSpeedID = ControllerYSpeedID;
+        this.ControllerRotID = ControllerRotID;
         this.FieldRelative = FieldRelative;
 
         addRequirements(driveSub);
@@ -50,13 +49,13 @@ public class DriveRobot extends Command {
 
     @Override
     public void execute() {
-        double rawX = driverController.getRawAxis(ControllerXSpeedID);
-        double rawY = driverController.getRawAxis(ControllerYSpeedID);
-        double rawRot = driverController.getRawAxis(ControllerRotID); 
+        double rawX = driverController.getRawAxis(this.ControllerXSpeedID);
+        double rawY = driverController.getRawAxis(this.ControllerYSpeedID);
+        double rawRot = driverController.getRawAxis(this.ControllerRotID); 
 
-        double XSpeed = MathUtil.applyDeadband(rawX, DeadBand) * MaxVelocity;
-        double YSpeed = MathUtil.applyDeadband(rawY, DeadBand) * MaxVelocity;
-        double Rot = MathUtil.applyDeadband(rawRot, 2*DeadBand) * MaxRotVelocity;
+        double XSpeed = MathUtil.applyDeadband(rawX, DeadBand) * Constants.DriveConstants.MaxDriveableVelocity;
+        double YSpeed = MathUtil.applyDeadband(rawY, DeadBand) * Constants.DriveConstants.MaxDriveableVelocity;
+        double Rot = MathUtil.applyDeadband(rawRot, 2*DeadBand) * Constants.DriveConstants.MaxDriveableVelocity;
 
         driveSub.drive(XSpeed, YSpeed, Rot, FieldRelative);
 

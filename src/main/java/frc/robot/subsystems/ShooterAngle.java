@@ -4,14 +4,37 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ElectronicIDs;
 
 public class ShooterAngle extends SubsystemBase {
-  /** Creates a new ShooterAngle. */
-  public ShooterAngle() {}
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+    public enum ShooterAngleState {
+        Speaker, Amp, Source, Chassis, Trapdoor
+    }
+
+    public ShooterAngleState shooterAngleState = ShooterAngleState.Chassis;
+
+    TalonFX angleMotor;
+
+    public ShooterAngle() {
+        angleMotor = new TalonFX(ElectronicIDs.AngleMotorID);
+    }
+
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run
+    }
+
+    /** @param angle Desired angle in fraction of a rotation */ //May want to CHANGE this to degrees
+    public void setAngle(double angle) {
+        angleMotor.setPosition(angle);
+    }
+
+    public double getAngle() {
+        return angleMotor.getPosition().getValue();
+    }
+
 }

@@ -1,7 +1,8 @@
 package frc.robot.sim;
 
-import java.util.*;
-import com.ctre.phoenix6.*;
+import java.util.ArrayList;
+
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
@@ -22,30 +23,12 @@ public class PhysicsSim {
      * 
      * @param falcon
      *        The TalonFX device
-     * @param accelToFullTime
-     *        The time the motor takes to accelerate from 0 to full, in seconds
-     * @param fullVel
-     *        The maximum motor velocity, in ticks per 100ms
+     * @param rotorInertia
+     *        Rotational Inertia of the mechanism at the rotor
      */
-    public void addTalonFX(TalonFX falcon, final double accelToFullTime, final double fullVel) {
-        addTalonFX(falcon, accelToFullTime, fullVel, false);
-    }
-
-    /**
-     * Adds a TalonFX controller to the simulator.
-     * 
-     * @param falcon
-     *        The TalonFX device
-     * @param accelToFullTime
-     *        The time the motor takes to accelerate from 0 to full, in seconds
-     * @param fullVel
-     *        The maximum motor velocity, in ticks per 100ms
-     * @param sensorPhase
-     *        The phase of the TalonFX sensors
-     */
-    public void addTalonFX(TalonFX falcon, final double accelToFullTime, final double fullVel, final boolean sensorPhase) {
+    public void addTalonFX(TalonFX falcon, final double rotorInertia) {
         if (falcon != null) {
-            TalonFXSimProfile simFalcon = new TalonFXSimProfile(falcon, accelToFullTime, fullVel, sensorPhase);
+            TalonFXSimProfile simFalcon = new TalonFXSimProfile(falcon, rotorInertia);
             _simProfiles.add(simFalcon);
         }
     }
@@ -64,40 +47,32 @@ public class PhysicsSim {
 
     private final ArrayList<SimProfile> _simProfiles = new ArrayList<SimProfile>();
 
-    /* scales a random domain of [0, 2pi] to [min, max] while prioritizing the peaks */
-    static double random(double min, double max) {
-        return (max - min) / 2 * Math.sin(Math.IEEEremainder(Math.random(), 2 * 3.14159)) + (max + min) / 2;
-    }
-    static double random(double max) {
-        return random(0, max);
-    }
-
-    
     /**
      * Holds information about a simulated device.
      */
     static class SimProfile {
-        private long _lastTime;
+        private double _lastTime;
         private boolean _running = false;
 
         /**
          * Runs the simulation profile.
          * Implemented by device-specific profiles.
          */
-        public void run() {}
+        public void run() {
+        }
 
         /**
-         * Returns the time since last call, in milliseconds.
+         * Returns the time since last call, in seconds.
          */
         protected double getPeriod() {
             // set the start time if not yet running
             if (!_running) {
-                _lastTime = System.nanoTime();
+                _lastTime = Utils.getCurrentTimeSeconds();
                 _running = true;
             }
-            
-            long now = System.nanoTime();
-            final double period = (now - _lastTime) / 1000000.;
+
+            double now = Utils.getCurrentTimeSeconds();
+            final double period = now - _lastTime;
             _lastTime = now;
 
             return period;

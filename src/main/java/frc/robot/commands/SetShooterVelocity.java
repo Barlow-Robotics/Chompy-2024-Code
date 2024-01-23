@@ -28,21 +28,21 @@ public class SetShooterVelocity extends Command {
     public void execute() {
         switch (state) {
             case Stopped:
-                shooterSub.setSpeed(0);
+                shooterSub.setVelocity(0);
             case Speaker:
-                shooterSub.setSpeed(ShooterConstants.SpeakerVelocity);
+                shooterSub.setVelocity(ShooterConstants.SpeakerVelocity);
                 break;
             case Amp:
-                shooterSub.setSpeed(ShooterConstants.AmpVelocity);
+                shooterSub.setVelocity(ShooterConstants.AmpVelocity);
                 break;
-            case Source:
-                shooterSub.setSpeed(ShooterConstants.SourceIntakeVelocity);
+            case IntakeFromSource:
+                shooterSub.setVelocity(ShooterConstants.SourceIntakeVelocity);
                 break;
-            case Chassis:
-                shooterSub.setSpeed(ShooterConstants.ShooterFloorIntakeVelocity);
+            case IntakeFromFloor:
+                shooterSub.setVelocity(ShooterConstants.ShooterFloorIntakeVelocity);
                 break;
-            case Trapdoor:
-                shooterSub.setSpeed(ShooterConstants.TrapdoorVelocity);
+            case Trap:
+                shooterSub.setVelocity(ShooterConstants.TrapVelocity);
                 break;
         }
     }

@@ -5,54 +5,67 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ShooterAngle;
-import frc.robot.subsystems.ShooterAngle.ShooterAngleState;
+import frc.robot.subsystems.ShooterAngle.ShooterPositionState;
 
 public class SetShooterPosition extends Command {
     
     Elevator elevatorSub;
     ShooterAngle shooterAngleSub;
-    ShooterAngleState state;
+    ShooterPositionState desiredState;
+    double desiredAngle;
+    double desiredHeight;
 
-  public SetShooterPosition(ShooterAngle shooterAngleSub, ShooterAngleState state) {
+
+  public SetShooterPosition(ShooterAngle shooterAngleSub, Elevator elevatorSub, ShooterPositionState shooterPositionState) {
         this.shooterAngleSub = shooterAngleSub;
-        this.state = state;
-        addRequirements(shooterAngleSub);
+        this.elevatorSub = elevatorSub;
+        this.desiredState = shooterPositionState;
+
+        addRequirements(shooterAngleSub, elevatorSub);
     }
 
     @Override
     public void initialize() {
-    }
-
-    @Override
-    public void execute() {
-        switch (state) {
+        switch (desiredState) {
             case Speaker:
-                shooterAngleSub.setAngle(0);
+                desiredAngle = ShooterConstants.SpeakerAngle;
+                desiredHeight = ElevatorConstants.SpeakerHeight;
                 break;
             case Amp:
-                shooterAngleSub.setAngle(ShooterConstants.AmpAngle);
+                desiredAngle = ShooterConstants.AmpAngle;
+                desiredHeight = ElevatorConstants.AmpHeight;
                 break;
-            case Source:
-                shooterAngleSub.setAngle(ShooterConstants.SourceIntakeAngle);
+            case IntakeFromSource:
+                desiredAngle = ShooterConstants.IntakeFromSourceAngle;
+                desiredHeight = ElevatorConstants.IntakeFromSourceHeight;
                 break;
-            case Chassis:
-                shooterAngleSub.setAngle(ShooterConstants.ChassisIntakeAngle);
+            case IntakeFromFloor:
+                desiredAngle = ShooterConstants.IntakeFromFloorAngle;
+                desiredHeight = ElevatorConstants.IntakeFromFloorHeight;
                 break;
-            case Trapdoor:
-                shooterAngleSub.setAngle(ShooterConstants.TrapDoorAngle);
+            case Trap:
+                shooterAngleSub.setAngle(ShooterConstants.TrapAngle);
                 break;
         }
     }
 
     @Override
+    public void execute() {
+        shooterAngleSub.setAngle(desiredAngle);
+        elevatorSub.setHeight(desiredHeight);
+    }
+
+    @Override
     public void end(boolean interrupted) {
+        shooterAngleSub.shooterAngleState = desiredState;
     }
 
     @Override
     public boolean isFinished() {
-        return true;
+        return (shooterAngleSub.getAngle() == desiredAngle) && (elevatorSub.getHeight() == desiredHeight);
     }
 }

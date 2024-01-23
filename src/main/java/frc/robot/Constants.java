@@ -11,14 +11,15 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class Constants {
-    
+
     public static final double SecondsPerMinute = 60;
 
     public static final double Neo550MaxRPM = 5700; // CHANGE
-    public static final double NeoMaxRPM = 5676; // CHANGE 
-    public static final double Falcon500MaxRPM = 6380; // CHANGE
+    public static final double NeoMaxRPM = 5676; // CHANGE
+    public static final double Falcon500MaxRPM = 6300;
+
     public static final class ElectronicIDs {
-        
+
         /***************************** DRIVE *****************************/
 
         // Encoder = 1{locationOnBot}
@@ -38,7 +39,7 @@ public class Constants {
         public static final int FrontRightTurnMotorID = 32;
         public static final int BackLeftTurnMotorID = 33;
         public static final int BackRightTurnMotorID = 34;
-       
+
         /***************************** SHOOTER *****************************/
 
         // ShooterMotorID = 4{locationOnBot}
@@ -71,7 +72,8 @@ public class Constants {
         public static final double MaxAngularSpeedRadiansPerSecond = DriveConstants.PhysicalMaxAngularSpeedRadiansPerSecond
                 / 10; // Default is 540 degress
         public static final double MaxAccelerationMetersPerSecondSquared = 3; // CHANGE
-        public static final double MaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4; // default is 720 degrees
+        public static final double MaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4; // default is 720
+                                                                                                // degrees
     }
 
     /***************************************************************************/
@@ -99,16 +101,19 @@ public class Constants {
     /***************************************************************************/
 
     public static final class ShooterConstants {
-        public static final double SpeakerVelocity = 0; // CHANGE
-        public static final double AmpVelocity = 0; // CHANGE
-        public static final double SourceIntakeVelocity = 0; // CHANGE
-        public static final double ShooterFloorIntakeVelocity = 0; // CHANGE
-    
+        public static final double GearRatio = 1; // CHANGE
+
+        public static final double SpeakerVelocity = 0.5*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
+        public static final double AmpVelocity = 0.5*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
+        public static final double SourceIntakeVelocity = -0.5*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
+        public static final double ShooterFloorIntakeVelocity = -0.5*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
+        public static final double TrapVelocity = 0.5*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
+
         public static final double SpeakerAngle = 0; // CHANGE
         public static final double AmpAngle = 0; // CHANGE
-        public static final double SourceIntakeAngle = 0; // CHANGE
-        public static final double ShooterFloorIntakeAngle = 0; // CHANGE
-        public static final double TrapdoorVelocity = 0;
+        public static final double IntakeFromSourceAngle = 0; // CHANGE
+        public static final double IntakeFromFloorAngle = 0; // CHANGE
+        public static final double TrapAngle = 0; // CHANGE
     }
 
     /***************************************************************************/
@@ -140,7 +145,15 @@ public class Constants {
     /***************************************************************************/
 
     public static final class ElevatorConstants {
+
+        public static final double SpeakerHeight = 0; // CHANGE
+        public static final double AmpHeight = 0; // CHANGE
+        public static final double IntakeFromSourceHeight = 0; // CHANGE
+        public static final double IntakeFromFloorHeight = 0; // CHANGE
+        public static final double TrapHeight = 0; // CHANGE
+
     }
+
     /***************************************************************************/
     /***************************************************************************/
     /***************************************************************************/
@@ -152,7 +165,7 @@ public class Constants {
         public static final int RightStickY = 3;
         public static final int LeftTrigger = 7; // Speaker
         public static final int RightTrigger = 8; // Amp
-        public static final int ButtonA = 2; 
+        public static final int ButtonA = 2;
         public static final int ButtonB = 3; // Trapdoor
         public static final int ButtonX = 1;
         public static final int ButtonY = 4;
@@ -166,6 +179,7 @@ public class Constants {
         public static final double LateralAxisAttenuation = 0.5;
         public static final double YawAxisAttenuation = 0.5;
     }
+
     public final class RadioMasterConstants {
         public static final int LeftGimbalX = 0;
         public static final int LeftGimbalY = 1;

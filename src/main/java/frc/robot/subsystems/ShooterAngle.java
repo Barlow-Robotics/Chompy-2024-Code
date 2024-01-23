@@ -11,11 +11,11 @@ import frc.robot.Constants.ElectronicIDs;
 
 public class ShooterAngle extends SubsystemBase {
 
-    public enum ShooterAngleState {
-        Speaker, Amp, Source, Chassis, Trapdoor
+    public enum ShooterPositionState {
+        Speaker, Amp, IntakeFromSource, IntakeFromFloor, Trap
     }
 
-    public ShooterAngleState shooterAngleState = ShooterAngleState.Chassis;
+    public ShooterPositionState shooterAngleState = ShooterPositionState.IntakeFromFloor;
 
     TalonFX angleMotor;
 

@@ -1,90 +1,55 @@
 package frc.robot.sim;
 
-import frc.robot.sim.PhysicsSim.*;
-import static frc.robot.sim.PhysicsSim.*; // random()
-
-import java.util.*;
-import com.ctre.phoenix6.*;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
-import edu.wpi.first.wpilibj.RobotController;
-
-
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.sim.PhysicsSim.SimProfile;
 
 /**
  * Holds information about a simulated TalonFX.
  */
 class TalonFXSimProfile extends SimProfile {
-    private final TalonFX _falcon;
-    private final double _accelToFullTime;
-    private final double _fullVel;
-    private final boolean _sensorPhase;
-
-    /** The current position */
-    // private double _pos = 0;
-    /** The current velocity */
-    private double _vel = 0;
+    private static final double kMotorResistance = 0.002; // Assume 2mOhm resistance for voltage drop calculation
+    private final TalonFXSimState _falconSim;
+    private final DCMotorSim _motorSim;
 
     /**
      * Creates a new simulation profile for a TalonFX device.
      * 
      * @param falcon
-     *        The TalonFX device
-     * @param accelToFullTime
-     *        The time the motor takes to accelerate from 0 to full, in seconds
-     * @param fullVel
-     *        The maximum motor velocity, in ticks per 100ms
-     * @param sensorPhase
-     *        The phase of the TalonFX sensors
+     *                        The TalonFX device
+     * @param rotorInertia
+     *                        Rotational Inertia of the mechanism at the rotor
      */
-    public TalonFXSimProfile(final TalonFX falcon, final double accelToFullTime, final double fullVel, final boolean sensorPhase) {
-        this._falcon = falcon;
-        this._accelToFullTime = accelToFullTime;
-        this._fullVel = fullVel;
-        this._sensorPhase = sensorPhase;
+    public TalonFXSimProfile(final TalonFX falcon, final double rotorInertia) {
+        this._motorSim = new DCMotorSim(DCMotor.getFalcon500Foc(1), 1.0, rotorInertia);
+        this._falconSim = falcon.getSimState();
     }
 
     /**
      * Runs the simulation profile.
      * 
-     * This uses very rudimentary physics simulation and exists to allow users to test
-     * features of our products in simulation using our examples out of the box.
-     * Users may modify this to utilize more accurate physics simulation.
+     * This uses very rudimentary physics simulation and exists to allow users to
+     * test features of our products in simulation using our examples out of the
+     * box. Users may modify this to utilize more accurate physics simulation.
      */
     public void run() {
-
-        final double period = getPeriod();
-        final double accelAmount = _fullVel / _accelToFullTime * period / 1000;
-
         /// DEVICE SPEED SIMULATION
 
-        double outPerc = _falcon.getSimState().getMotorVoltage() / 12;
-        if (_sensorPhase) {
-            outPerc *= -1;
-        }
-        // Calculate theoretical velocity with some randomness
-        double theoreticalVel = outPerc * _fullVel * random(0.95, 1);
-        // Simulate motor load
-        if (theoreticalVel > _vel + accelAmount) {
-            _vel += accelAmount;
-        }
-        else if (theoreticalVel < _vel - accelAmount) {
-            _vel -= accelAmount;
-        }
-        else {
-            _vel += 0.9 * (theoreticalVel - _vel);
-        }
-        // _pos += _vel * period / 100;
+        _motorSim.setInputVoltage(_falconSim.getMotorVoltage());
+
+        _motorSim.update(getPeriod());
 
         /// SET SIM PHYSICS INPUTS
-        // _falcon.getSimState().addIntegratedSensorPosition((int)(_vel * period / 100));
-        // _falcon.getSimState().setIntegratedSensorVelocity((int)_vel);
+        final double position_rot = _motorSim.getAngularPositionRotations();
+        final double velocity_rps = Units.radiansToRotations(_motorSim.getAngularVelocityRadPerSec());
 
-        // double supplyCurrent = Math.abs(outPerc) * 20 * random(0.95, 1.05);
-        // double statorCurrent = outPerc == 0 ? 0 : supplyCurrent / (Math.abs(outPerc) + 0.3);
-        _falcon.getSimState().setSupplyVoltage(RobotController.getBatteryVoltage());
-        // _falcon.getSimState().setStatorCurrent(statorCurrent);
+        _falconSim.setRawRotorPosition(position_rot);
+        _falconSim.setRotorVelocity(velocity_rps);
 
-        // _falcon.getSimState().setBusVoltage(12 - outPerc * outPerc * 3/4 * random(0.95, 1.05));
+        _falconSim.setSupplyVoltage(12 - _falconSim.getSupplyCurrent() * kMotorResistance);
     }
 }

@@ -5,16 +5,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.FloorIntake;
+// import frc.robot.subsystems.FloorIntake;
 
 
 public class StartFloorIntake extends Command {
-  FloorIntake floorIntakeSub;
+  // FloorIntake floorIntakeSub;
   /** Creates a new StartIntake. */
-  public StartFloorIntake(FloorIntake f) {
+  public StartFloorIntake() {
     // Use addRequirements() here to declare subsystem dependencies.
-    floorIntakeSub = f;
-    addRequirements(floorIntakeSub);
+    // floorIntakeSub = f;
+    // addRequirements(floorIntakeSub);
   }
 
   // Called when the command is initially scheduled.
@@ -24,7 +24,7 @@ public class StartFloorIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    floorIntakeSub.startIntaking();
+    // floorIntakeSub.startIntaking();
   }
 
   // Called once the command ends or is interrupted.

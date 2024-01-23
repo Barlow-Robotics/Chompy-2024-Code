@@ -30,7 +30,7 @@ import frc.robot.commands.StartFloorIntake;
 import frc.robot.commands.StartShooter;
 import frc.robot.commands.StopFloorIntake;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.FloorIntake;
+// import frc.robot.subsystems.FloorIntake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterState;
 
@@ -65,7 +65,7 @@ public class RobotContainer {
     /* SUBSYSTEMS */
     public final Drive driveSub = new Drive();
     public final Shooter shooterSub = new Shooter();
-    public final FloorIntake floorIntakeSub = new FloorIntake();
+    // public final FloorIntake floorIntakeSub = new FloorIntake();
 
     /* COMMANDS */
     private final StartShooter startShooterSpeakerCmd = new StartShooter(shooterSub, shooterSub.shooterState.Speaker);
@@ -74,8 +74,8 @@ public class RobotContainer {
     private final StartShooter startShooterFloorIntakeCmd = new StartShooter(shooterSub, shooterSub.shooterState.Chassis);
     private final StartShooter startShooterTrapCmd = new StartShooter(shooterSub, shooterSub.shooterState.Trapdoor);
     
-    private final StartFloorIntake startFloorIntakeCmd = new StartFloorIntake(floorIntakeSub);
-    private final StopFloorIntake stopFloorIntakeCmd = new StopFloorIntake(floorIntakeSub);
+    // private final StartFloorIntake startFloorIntakeCmd = new StartFloorIntake(floorIntakeSub);
+    // private final StopFloorIntake stopFloorIntakeCmd = new StopFloorIntake(floorIntakeSub);
     
     /* CONTROLLERS */
     PS4Controller driverController; 
@@ -92,15 +92,6 @@ public class RobotContainer {
     // private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-
-        configureBindings();
-
-        driveSub.setDefaultCommand(
-                // The left stick controls translation of the robot.
-                // Turning is controlled by the X axis of the right stick.
-                new DriveRobot(
-                        driveSub, driverController, LDALeftStickY, LDALeftStickX, LDARightStickX, true));
-
         AutoBuilder.configureHolonomic(
                 driveSub::getPose, // Robot pose supplier
                 driveSub::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -123,19 +114,21 @@ public class RobotContainer {
                 driveSub
         );
 
-                NamedCommands.registerCommand("LeaveArea", Commands.print("***********************************Left Area"));
-        NamedCommands.registerCommand("ScoreInAmp", Commands.print("*******************************Shot in amp"));
+        NamedCommands.registerCommand("Leave Area", Commands.print("***********************************Left Area"));
+        NamedCommands.registerCommand("Shoot Amp", Commands.print("*******************************Shot in amp"));
 
+        configureBindings();
 
-        NamedCommands.registerCommand("LeaveArea", Commands.print("**********************************Left Area"));
-        NamedCommands.registerCommand("ScoreInAmp", Commands.runOnce(driveSub::scoreAmp, driveSub));
-
-        // NamedCommands.registerCommand("marker3", Commands.print("Passed marker 3"));
-        // NamedCommands.registerCommand("marker4", Commands.print("Passed marker 4"));
+        driveSub.setDefaultCommand(
+                // The left stick controls translation of the robot.
+                // Turning is controlled by the X axis of the right stick.
+                new DriveRobot(
+                        driveSub, driverController, LDALeftStickY, LDALeftStickX, LDARightStickX, true));
 
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
        // SmartDashboard.putData("Auto Mode", autoChooser);
     }
+
 
     private void configureBindings() {
 
@@ -152,65 +145,15 @@ public class RobotContainer {
         shootButtonFloorIntake.onTrue(startShooterFloorIntakeCmd);
         shootButtonTrap = new JoystickButton(operatorController, LDAButtonB);
         shootButtonTrap.onTrue(startShooterTrapCmd);        
-        // Add a button to run the example auto to SmartDashboard, this will also be in
-        // the auto chooser built above
-        // SmartDashboard.putData("Example Auto", new PathPlannerAuto("test"));
 
-        // Add a button to run pathfinding commands to SmartDashboard
-        // SmartDashboard.putData("Pathfind to Pickup Pos", 
-        //     AutoBuilder.pathfindToPose(
-        //         new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)),
-        //         new PathConstraints(
-        //                 4.0, 4.0,
-        //                 Units.degreesToRadians(360), Units.degreesToRadians(540)),
-        //         0,
-        //         2.0));
-        
-        // SmartDashboard.putData("Pathfind to Scoring Pos", 
-        //     AutoBuilder.pathfindToPose(
-        //         new Pose2d(2.15, 3.0, Rotation2d.fromDegrees(180)),
-        //         new PathConstraints(
-        //                 4.0, 4.0,
-        //                 Units.degreesToRadians(360), Units.degreesToRadians(540)),
-        //         0,
-        //         0));
 
-        // Add a button to SmartDashboard that will create and follow an on-the-fly path
-        // This example will simply move the robot 2m forward of its current position
-        // SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
-        //     Pose2d currentPose = driveSub.getPose();
 
-        //     // The rotation component in these poses represents the direction of travel
-        //     Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-        //     Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)),
-        //             new Rotation2d());
-
-        //     List<Translation2d> bezierPoints = PathPlannerPath.bezierFromPoses(startPos, endPos);
-        //     PathPlannerPath path = new PathPlannerPath(
-        //             bezierPoints,
-        //             new PathConstraints(
-        //                     4.0, 4.0,
-        //                     Units.degreesToRadians(360), Units.degreesToRadians(540)),
-        //             new GoalEndState(0.0, currentPose.getRotation()));
-
-        //     AutoBuilder.followPathWithEvents(path).schedule();
-        // }));
     }
 
     
     
     public Command getAutonomousCommand() {
-        // return autoChooser.getSelected();
-        // return null;
-        // return AutoBuilder.pathfindToPose(
-        //     new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)), 
-        //     new PathConstraints(
-        //       1.0, 1.0, 
-        //       Units.degreesToRadians(360), Units.degreesToRadians(540)
-        //     ), 
-        //     0, 
-        //     2.0
-        //   );
+
         return new PathPlannerAuto("Score Amp");
     }
 }

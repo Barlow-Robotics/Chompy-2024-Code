@@ -99,7 +99,7 @@ public String getShooterState(){
 }
     public void initSendable(SendableBuilder builder){
         builder.addStringProperty("State", this::getShooterState, null);
-        builder.addStringProperty()
+        // builder.addStringProperty()
     }
     // Simulation Code
     public void simulationInit() {

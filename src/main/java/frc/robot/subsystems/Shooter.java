@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -18,8 +19,13 @@ public class Shooter extends SubsystemBase {
 
     public static final double SpeakerVelocity = 0; // CHANGE
     public static final double AmpVelocity = 0; // CHANGE
-    private static final double SourceIntakeVelocity = 0; // CHANGE
-    private static final double ShooterFloorIntakeVelocity = 0; // CHANGE
+    public static final double SourceIntakeVelocity = 0; // CHANGE
+    public static final double ShooterFloorIntakeVelocity = 0; // CHANGE
+
+    public static final double SpeakerAngle = 0; // CHANGE
+    public static final double AmpAngle = 0; // CHANGE
+    public static final double SourceIntakeAngle = 0; // CHANGE
+    public static final double ShooterFloorIntakeAngle = 0; // CHANGE
 
     boolean simulationInitialized = false;
     private static final int simulationVelocity = 6800; // CHANGE
@@ -39,56 +45,41 @@ public class Shooter extends SubsystemBase {
         rightShooterMotor = new TalonFX(CanIDs.RightShooterMotorID);
         angleMotor = new TalonFX(CanIDs.AngleMotorID);
     }
+    
+    public enum ShooterState {
+        Stopped, Speaker, Amp, Source, Chassis, Trapdoor 
+    }
 
+    public ShooterState shooterState = ShooterState.Stopped;
     
     @Override
     public void periodic() {
 
     }
 
-    public void shootAtSpeed(double velocity) {
+    public void setSpeed(double velocity) {
         leftShooterMotor.set(velocity);
-        leftShooterMotor.set(velocity);
+        rightShooterMotor.set(velocity);
     }
-
-    public void shootAtSpeaker() {
-        leftShooterMotor.set(SpeakerVelocity);
-        leftShooterMotor.set(SpeakerVelocity);
-    }
-
-    public void shootAtAmp() {
-        leftShooterMotor.set(AmpVelocity);
-        leftShooterMotor.set(AmpVelocity);
-    }
-
-    public void intakeFromSource() {
-        leftShooterMotor.set(SourceIntakeVelocity);
-        leftShooterMotor.set(SourceIntakeVelocity);
-    }
-
-    public void stopShooter() {
-        leftShooterMotor.set(0);
-        rightShooterMotor.set(0);
-    }
-
+   
     public double getShooterVelocity() {
         return leftShooterMotor.getVelocity().getValue();
     }
-
+    
     public boolean isSpeakerShooting() {
         return getShooterVelocity() >= .95 * SpeakerVelocity;
     }
 
     public boolean isAmpShooting() {
-        return getShooterVelocity() >= .95 * AmpVelocity;
+        return (getShooterVelocity() >= .95 * AmpVelocity) && (getShooterVelocity() <= 1.05 * AmpVelocity);
     }
 
     public boolean isSourceIntaking() {
-        return getShooterVelocity() >= .95 * SourceIntakeVelocity;
+        return (getShooterVelocity() >= .95 * SourceIntakeVelocity) && (getShooterVelocity() <= 1.05 * SourceIntakeVelocity);
     }
 
     public boolean isShooterFloorIntaking() {
-        return getShooterVelocity() >= .95 * ShooterFloorIntakeVelocity;
+        return (getShooterVelocity() >= .95 * ShooterFloorIntakeVelocity) && (getShooterVelocity() <= 1.05 * ShooterFloorIntakeVelocity);
     }
 
     public boolean isNoteLoaded() {
@@ -103,6 +94,13 @@ public class Shooter extends SubsystemBase {
         return angleMotor.getPosition().getValue();
     }
 
+public String getShooterState(){
+    return shooterState.toString();
+}
+    public void initSendable(SendableBuilder builder){
+        builder.addStringProperty("State", this::getShooterState, null);
+        builder.addStringProperty()
+    }
     // Simulation Code
     public void simulationInit() {
         PhysicsSim.getInstance().addTalonFX(leftShooterMotor, simulationTime, simulationVelocity);
@@ -118,3 +116,4 @@ public class Shooter extends SubsystemBase {
         }
     }
 }
+

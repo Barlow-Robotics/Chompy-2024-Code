@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+ // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -26,9 +26,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveRobot;
+import frc.robot.commands.StartFloorIntake;
+import frc.robot.commands.StartShooter;
+import frc.robot.commands.StopFloorIntake;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.FloorIntake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Shooter.ShooterState;
 
 public class RobotContainer {
 
@@ -39,14 +43,14 @@ public class RobotContainer {
     public static final int LDALeftStickY = 1;
     public static final int LDARightStickX = 2;
     public static final int LDARightStickY = 3;
-    public static final int LDALeftTrigger = 7;
-    public static final int LDARightTrigger = 8;
-    public static final int LDAButtonA = 2;
-    public static final int LDAButtonB = 3;
+    public static final int LDALeftTrigger = 7; // Speaker
+    public static final int LDARightTrigger = 8; // Amp
+    public static final int LDAButtonA = 2; 
+    public static final int LDAButtonB = 3; // Trapdoor
     public static final int LDAButtonX = 1;
     public static final int LDAButtonY = 4;
-    public static final int LDALeftBumper = 5;
-    public static final int LDARightBumper = 6;
+    public static final int LDALeftBumper = 5; // Floor Intake
+    public static final int LDARightBumper = 6; // Source Intake
     public static final int LDABackButton = 9;
     public static final int LDAStartButton = 10;
     public static final int LDALeftStick = 11;
@@ -62,13 +66,29 @@ public class RobotContainer {
     public final Drive driveSub = new Drive();
     public final Shooter shooterSub = new Shooter();
     public final FloorIntake floorIntakeSub = new FloorIntake();
+
+    /* COMMANDS */
+    private final StartShooter startShooterSpeakerCmd = new StartShooter(shooterSub, shooterSub.shooterState.Speaker);
+    private final StartShooter startShooterAmpCmd = new StartShooter(shooterSub, shooterSub.shooterState.Amp);
+    private final StartShooter startShooterSourceIntakeCmd = new StartShooter(shooterSub, shooterSub.shooterState.Source);
+    private final StartShooter startShooterFloorIntakeCmd = new StartShooter(shooterSub, shooterSub.shooterState.Chassis);
+    private final StartShooter startShooterTrapCmd = new StartShooter(shooterSub, shooterSub.shooterState.Trapdoor);
+    
+    private final StartFloorIntake startFloorIntakeCmd = new StartFloorIntake(floorIntakeSub);
+    private final StopFloorIntake stopFloorIntakeCmd = new StopFloorIntake(floorIntakeSub);
     
     /* CONTROLLERS */
     PS4Controller driverController; 
     Joystick operatorController;
-
+    
     /* BUTTONS */
-    public Trigger shootButton;
+   
+    public Trigger shootButtonSpeaker;
+    public Trigger shootButtonAmp;
+    public Trigger shootButtonSourceIntake;
+    public Trigger shootButtonFloorIntake;
+    public Trigger shootButtonTrap;
+
     // private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
@@ -121,9 +141,17 @@ public class RobotContainer {
 
         driverController = new PS4Controller(1);
         operatorController = new Joystick(2);
-        shootButton = new JoystickButton(operatorController, Constants.CanIDs.LeftShooterMotorID);
-        shootButton.onTrue()
-                   .onFalse();
+        
+        shootButtonSpeaker = new JoystickButton(operatorController, LDALeftTrigger);
+        shootButtonSpeaker.onTrue(startShooterSpeakerCmd);
+        shootButtonAmp = new JoystickButton(operatorController, LDARightTrigger);
+        shootButtonAmp.onTrue(startShooterAmpCmd);
+        shootButtonSourceIntake = new JoystickButton(operatorController, LDARightBumper);
+        shootButtonSourceIntake.onTrue(startShooterSourceIntakeCmd);
+        shootButtonFloorIntake = new JoystickButton(operatorController, LDALeftBumper);
+        shootButtonFloorIntake.onTrue(startShooterFloorIntakeCmd);
+        shootButtonTrap = new JoystickButton(operatorController, LDAButtonB);
+        shootButtonTrap.onTrue(startShooterTrapCmd);        
         // Add a button to run the example auto to SmartDashboard, this will also be in
         // the auto chooser built above
         // SmartDashboard.putData("Example Auto", new PathPlannerAuto("test"));

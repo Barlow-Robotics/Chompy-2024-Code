@@ -83,7 +83,6 @@ public class Drive extends SubsystemBase {
     );
 
     private AHRS navX;
-    private SimSwerveModule[] modules;
 
     private final SwerveDriveOdometry odometry;
 
@@ -91,13 +90,6 @@ public class Drive extends SubsystemBase {
 
 
     public Drive() {
-        modules = new SimSwerveModule[]{
-            new SimSwerveModule(),
-            new SimSwerveModule(),
-            new SimSwerveModule(),
-            new SimSwerveModule()
-        };      
-
         navX = new AHRS(Port.kMXP);
         navX.reset();
 
@@ -152,6 +144,8 @@ public class Drive extends SubsystemBase {
     }
 
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+
+        fieldRelative = false ;  // wpk fix this later
         var swerveModuleDesiredStates = kinematics.toSwerveModuleStates(
                 fieldRelative
                         ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
@@ -215,11 +209,19 @@ public class Drive extends SubsystemBase {
     }
 
     public SwerveModuleState[] getModuleStates() {
-        SwerveModuleState[] states = new SwerveModuleState[modules.length];
-        for (int i = 0; i < modules.length; i++) {
-          states[i] = modules[i].getState();
-        }
-        return states;
+
+        return new SwerveModuleState[] {
+            frontLeft.getState(),
+            frontRight.getState(),
+            backLeft.getState(),
+            backRight.getState()
+        };
+
+        // SwerveModuleState[] states = new SwerveModuleState[modules.length];
+        // for (int i = 0; i < modules.length; i++) {
+        //   states[i] = modules[i].getState();
+        // }
+        // return states;
       }
 
     public ChassisSpeeds getSpeeds() {
@@ -260,26 +262,6 @@ public class Drive extends SubsystemBase {
         int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
         SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
         angle.set(navX.getAngle() - Units.radiansToDegrees(twist.dtheta));
-    }
-    class SimSwerveModule {
-        private SwerveModulePosition currentPosition = new SwerveModulePosition();
-        private SwerveModuleState currentState = new SwerveModuleState();
-    
-        public SwerveModulePosition getPosition() {
-          return currentPosition;
-        }
-    
-        public SwerveModuleState getState() {
-          return currentState;
-        }
-    
-        public void setTargetState(SwerveModuleState targetState) {
-          // Optimize the state
-          currentState = SwerveModuleState.optimize(targetState, currentState.angle);
-    
-          currentPosition = new SwerveModulePosition(currentPosition.distanceMeters + (currentState.speedMetersPerSecond * 0.02), currentState.angle);
-        }
-      }
-    
+    }    
     
 }

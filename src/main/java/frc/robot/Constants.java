@@ -14,7 +14,7 @@ public class Constants {
 
     public static final double SecondsPerMinute = 60;
 
-    public static final double Neo550MaxRPM = 5700; // CHANGE
+    public static final double Neo550MaxRPM = 11000; // CHANGE
     public static final double NeoMaxRPM = 5676; // CHANGE
     public static final double Falcon500MaxRPM = 6300;
 

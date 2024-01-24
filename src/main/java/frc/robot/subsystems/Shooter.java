@@ -4,13 +4,16 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.simulation.DIOSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ElectronicIDs;
@@ -18,22 +21,15 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.sim.PhysicsSim;
 
 public class Shooter extends SubsystemBase {
-    /*********************************************************************/
-    /***************************** CONSTANTS *****************************/
-
-    boolean simulationInitialized = false;
-    private static final int simulationVelocity = 6800; // CHANGE
-    private static final double simulationTime = 0.5; // CHANGE
-
-    /*********************************************************************/
-    /*********************************************************************/
-
     TalonFX leftShooterMotor;
     TalonFX rightShooterMotor;
 
     DigitalInput breakBeam;
+    DIOSim breakBeamSim;
 
-    private final VelocityVoltage voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
+    private final VelocityVoltage voltageVelocity = new VelocityVoltage(
+        0, 0, true, 0, 0, 
+        false, false, false);
     private final NeutralOut brake = new NeutralOut();
 
     public enum ShooterVelState {
@@ -41,6 +37,8 @@ public class Shooter extends SubsystemBase {
     }
 
     public ShooterVelState shooterVelState = ShooterVelState.Stopped;
+
+    boolean simulationInitialized = false;
 
     public Shooter() {
         leftShooterMotor = new TalonFX(ElectronicIDs.LeftShooterMotorID); // slot 0
@@ -60,6 +58,8 @@ public class Shooter extends SubsystemBase {
 
         configs.Voltage.PeakForwardVoltage = 8; // Peak output of 8 volts
         configs.Voltage.PeakReverseVoltage = -8;
+
+        breakBeam = new DigitalInput(ElectronicIDs.breakBeamID);
     }
 
     @Override
@@ -69,11 +69,17 @@ public class Shooter extends SubsystemBase {
     public void setVelocity(double rotsPerSecond) {
         leftShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
         rightShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
+
+        NetworkTableInstance.getDefault().getEntry("shooter/Desired Rotations Per Second").setDouble(rotsPerSecond);
     }
 
     public double getShooterVelocity() {
         return leftShooterMotor.getVelocity().getValue();
     }
+
+    // private StatusSignal<Double> getFlyWheelClosedLoopError() {
+    //     return leftShooterMotor.getClosedLoopError();
+    // }
 
     public boolean isSpeakerShooting() {
         return getShooterVelocity() >= .95 * ShooterConstants.SpeakerVelocity;
@@ -95,7 +101,8 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isNoteLoaded() {
-        return breakBeam.get();
+        // return breakBeam.get();
+        return false; 
     }
 
     public String getShooterVelState() {
@@ -105,13 +112,14 @@ public class Shooter extends SubsystemBase {
     /* LOGGING */
 
     public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("Shooter Subsystem");
         builder.addStringProperty("State", this::getShooterVelState, null);
-        builder.addDoubleProperty("Shooter Velocity", this::getShooterVelocity, null);
+        builder.addDoubleProperty("Actual Shooter Velocity", this::getShooterVelocity, null);
         builder.addBooleanProperty("Speaker Shooting", this::isSpeakerShooting, null);
         builder.addBooleanProperty("Amp Shooting", this::isAmpShooting, null);
         builder.addBooleanProperty("Source Intaking", this::isSourceIntaking, null);
         builder.addBooleanProperty("Floor Intaking", this::isShooterFloorIntaking, null);
-        builder.addBooleanProperty("Note Loaded", this::isNoteLoaded, null);
+        // builder.addBooleanProperty("Note Loaded", this::isNoteLoaded, null);
     }
 
     /* SIMULATION */
@@ -119,6 +127,7 @@ public class Shooter extends SubsystemBase {
     public void simulationInit() {
         PhysicsSim.getInstance().addTalonFX(leftShooterMotor, 0.001);
         PhysicsSim.getInstance().addTalonFX(rightShooterMotor, 0.001);
+        breakBeamSim = new DIOSim(breakBeam);
     }
 
     @Override

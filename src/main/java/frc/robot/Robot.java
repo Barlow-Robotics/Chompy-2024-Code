@@ -45,12 +45,12 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotPeriodic() {
-        // SmartDashboard.putData(CommandScheduler.getInstance());
-        // SmartDashboard.putData(robotContainer.driveSub);
-        // SmartDashboard.putData(robotContainer.shooterSub);
-        // SmartDashboard.putData(robotContainer.shooterAngleSub);
-        // SmartDashboard.putData(robotContainer.elevatorSub);
-        // SmartDashboard.putData(robotContainer.floorIntakeSub);
+        SmartDashboard.putData(CommandScheduler.getInstance());
+        SmartDashboard.putData(robotContainer.driveSub);
+        SmartDashboard.putData(robotContainer.shooterSub);
+        SmartDashboard.putData(robotContainer.shooterAngleSub);
+        SmartDashboard.putData(robotContainer.elevatorSub);
+        SmartDashboard.putData(robotContainer.floorIntakeSub);
 
         CommandScheduler.getInstance().run();
     }

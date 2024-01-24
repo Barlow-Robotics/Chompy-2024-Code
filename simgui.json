@@ -30,11 +30,15 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Auto Mode": "String Chooser",
+      "/SmartDashboard/Drive": "Subsystem",
+      "/SmartDashboard/Elevator": "Subsystem",
       "/SmartDashboard/Example Auto": "Command",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/On-the-fly path": "Command",
       "/SmartDashboard/Pathfind to Pickup Pos": "Command",
-      "/SmartDashboard/Pathfind to Scoring Pos": "Command"
+      "/SmartDashboard/Pathfind to Scoring Pos": "Command",
+      "/SmartDashboard/Scheduler": "Scheduler",
+      "/SmartDashboard/ShooterAngle": "Subsystem"
     },
     "windows": {
       "/SmartDashboard/Field": {
@@ -63,6 +67,9 @@
     "Persistent Values": {
       "open": false
     },
+    "Retained Values": {
+      "open": false
+    },
     "retained": {
       "SmartDashboard": {
         "Auto Mode": {
@@ -74,11 +81,15 @@
       "AdvantageKit": {
         "RealOutputs": {
           "open": true
-        },
-        "open": true
+        }
       },
       "Shuffleboard": {
         ".metadata": {
+          "open": true
+        }
+      },
+      "SmartDashboard": {
+        "Shooter": {
           "open": true
         },
         "open": true
@@ -86,6 +97,9 @@
     }
   },
   "NetworkTables Info": {
+    "Connections": {
+      "open": true
+    },
     "visible": true
   }
 }

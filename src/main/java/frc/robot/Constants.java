@@ -49,13 +49,13 @@ public class Constants {
         public static final int RightShooterMotorID = 42;
         public static final int AngleMotorID = 43;
 
+        public static final int breakBeamID = 4; // CHANGE
+
         /***************************** FLOOR INTAKE *****************************/
 
         // FloorMotorID = 5{locationOnBot}
         public static final int upperFloorMotorID = 51;
         public static final int lowerFloorMotorID = 52;
-
-        public static final int floorBreakBeamID = 0; // CHANGE
     }
 
     /***************************************************************************/
@@ -105,11 +105,11 @@ public class Constants {
     public static final class ShooterConstants {
         public static final double GearRatio = 1; // CHANGE
 
-        public static final double SpeakerVelocity = 0.5*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
-        public static final double AmpVelocity = 0.5*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
-        public static final double SourceIntakeVelocity = -0.5*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
-        public static final double ShooterFloorIntakeVelocity = -0.5*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
-        public static final double TrapVelocity = 0.5*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
+        public static final double SpeakerVelocity = 0.2*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
+        public static final double AmpVelocity = 0.2*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
+        public static final double SourceIntakeVelocity = -0.2*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
+        public static final double ShooterFloorIntakeVelocity = -0.2*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
+        public static final double TrapVelocity = 0.2*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
 
         public static final double SpeakerAngle = 0; // CHANGE
         public static final double AmpAngle = 0; // CHANGE
@@ -139,7 +139,7 @@ public class Constants {
         public static final double LowerIZone = 0; // CHANGE
         public static final double LowerFF = 1; // CHANGE
 
-        public static final double MotorSpeed = 0; // CHANGE
+        public static final double MotorVelocity = 0.2; // CHANGE
     }
 
     /***************************************************************************/

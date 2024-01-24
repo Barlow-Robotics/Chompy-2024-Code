@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -32,8 +33,6 @@ public class FloorIntake extends SubsystemBase {
     CANSparkMax lowerMotor;
     RelativeEncoder lowerEncoder;
     SparkPIDController lowerPidController;
-
-    DigitalInput breakBeam;
 
     public FloorIntake() {
 
@@ -62,18 +61,17 @@ public class FloorIntake extends SubsystemBase {
                 FloorIntakeConstants.LowerKD,
                 FloorIntakeConstants.LowerIZone,
                 FloorIntakeConstants.LowerFF);
-
-        breakBeam = new DigitalInput(ElectronicIDs.floorBreakBeamID);
     }
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
     }
 
     public void startIntaking() {
-        upperMotor.set(FloorIntakeConstants.MotorSpeed);
-        lowerMotor.set(FloorIntakeConstants.MotorSpeed);
+        upperMotor.set(FloorIntakeConstants.MotorVelocity);
+        lowerMotor.set(FloorIntakeConstants.MotorVelocity);
+
+        NetworkTableInstance.getDefault().getEntry("floorIntake/Desired Percent Output").setDouble(FloorIntakeConstants.MotorVelocity);
     }
 
     public void stopIntaking() {
@@ -90,19 +88,17 @@ public class FloorIntake extends SubsystemBase {
     }
 
     public boolean isIntaking() {
-        if (((0.95 * FloorIntakeConstants.MotorSpeed) <= getRPMUpper()) && ((0.95 * FloorIntakeConstants.MotorSpeed) <= getRPMLower())) {
-            return true; 
-        } else if ((0.95 * FloorIntakeConstants.MotorSpeed) <= getRPMUpper()) {
-            System.out.println("Upper motor isn't up to speed");
-            return false;
-        } else {
-            System.out.println("Lower motor isn't up to speed");
-            return false;
-        }
-    }
-
-    public boolean noteLoaded() {
-        return breakBeam.get(); // May need to CHANGE
+        // if (((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMUpper()) && ((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMLower())) {
+        //     return true; 
+        // } else if ((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMUpper()) {
+        //     System.out.println("Upper motor isn't up to speed");
+        //     return false;
+        // } else {
+        //     System.out.println("Lower motor isn't up to speed");
+        //     return false;
+        // }
+        return ((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMUpper()) && 
+                ((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMLower());
     }
 
     /* CONFIG */
@@ -127,19 +123,16 @@ public class FloorIntake extends SubsystemBase {
     }
 
     public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("Floor Intake Subsystem");
         builder.addDoubleProperty("RPM Upper", this::getRPMUpper, null);
         builder.addDoubleProperty("RPM Lower", this::getRPMLower, null);
         builder.addBooleanProperty("Floor Intaking", this::isIntaking, null);
-        builder.addBooleanProperty("Note Loaded", this::noteLoaded, null);
-
-        // builder.addStringProperty()
     }
 
     // Simulation Code
     public void simulationInit() {
         REVPhysicsSim.getInstance().addSparkMax(upperMotor, DCMotor.getNeo550(1));
         REVPhysicsSim.getInstance().addSparkMax(lowerMotor, DCMotor.getNeo550(1));
-        //LT -  add one for DigitalInput breakBeam ?
     }
 
     @Override

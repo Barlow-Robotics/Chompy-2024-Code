@@ -4,15 +4,18 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.ChassisReference;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.DIOSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -24,11 +27,16 @@ public class Shooter extends SubsystemBase {
     TalonFX leftShooterMotor;
     TalonFX rightShooterMotor;
 
-    DigitalInput breakBeam;
-    DIOSim breakBeamSim;
+    private final TalonFXSimState leftShooterMotorSim;
+    private final DCMotorSim leftMotorModel = 
+        new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, 0.0005);
+    
+    private final TalonFXSimState rightShooterMotorSim;
+    private final DCMotorSim rightMotorModel = 
+        new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, 0.0005);
 
     private final VelocityVoltage voltageVelocity = new VelocityVoltage(
-        0, 0, true, 0, 0, 
+        0, 0, true, 0, 0,
         false, false, false);
     private final NeutralOut brake = new NeutralOut();
 
@@ -38,24 +46,23 @@ public class Shooter extends SubsystemBase {
 
     public ShooterVelState shooterVelState = ShooterVelState.Stopped;
 
+    DigitalInput breakBeam;
+    DIOSim breakBeamSim;
+
     boolean simulationInitialized = false;
 
     public Shooter() {
         leftShooterMotor = new TalonFX(ElectronicIDs.LeftShooterMotorID); // slot 0
-        rightShooterMotor = new TalonFX(ElectronicIDs.RightShooterMotorID); // slot 1
+        rightShooterMotor = new TalonFX(ElectronicIDs.RightShooterMotorID); // slot 0
+
+        leftShooterMotorSim = leftShooterMotor.getSimState();
+        rightShooterMotorSim = rightShooterMotor.getSimState();
 
         TalonFXConfiguration configs = new TalonFXConfiguration();
-
         configs.Slot0.kP = 0.11; // An error of 1 rotation per second results in 2V output
         configs.Slot0.kI = 0.5; // An error of 1 rotation per second increases output by 0.5V every second
         configs.Slot0.kD = 0.0001; // A change of 1 rotation per second squared results in 0.01 volts output
         configs.Slot0.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
-
-        configs.Slot1.kP = 0.11; // An error of 1 rotation per second results in 2V output
-        configs.Slot1.kI = 0.5; // An error of 1 rotation per second increases output by 0.5V every second
-        configs.Slot1.kD = 0.0001; // A change of 1 rotation per second squared results in 0.01 volts output
-        configs.Slot1.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
-
         configs.Voltage.PeakForwardVoltage = 8; // Peak output of 8 volts
         configs.Voltage.PeakReverseVoltage = -8;
 
@@ -110,7 +117,7 @@ public class Shooter extends SubsystemBase {
 
     public boolean isNoteLoaded() {
         // return breakBeam.get();
-        return false; 
+        return false;
     }
 
     public String getShooterVelState() {
@@ -138,6 +145,10 @@ public class Shooter extends SubsystemBase {
     public void simulationInit() {
         PhysicsSim.getInstance().addTalonFX(leftShooterMotor, 0.001);
         PhysicsSim.getInstance().addTalonFX(rightShooterMotor, 0.001);
+
+        leftShooterMotorSim.Orientation = ChassisReference.CounterClockwise_Positive; // CHANGE
+        rightShooterMotorSim.Orientation = ChassisReference.Clockwise_Positive; // CHANGE
+
         breakBeamSim = new DIOSim(breakBeam);
     }
 
@@ -147,6 +158,20 @@ public class Shooter extends SubsystemBase {
             simulationInit();
             simulationInitialized = true;
         }
+
+        leftShooterMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+        double leftVoltage = leftShooterMotorSim.getMotorVoltage();
+        leftMotorModel.setInputVoltage(leftVoltage);
+        leftMotorModel.update(0.02);
+        leftShooterMotorSim.setRotorVelocity(leftMotorModel.getAngularVelocityRPM() / 60.0);
+        leftShooterMotorSim.setRawRotorPosition(leftMotorModel.getAngularPositionRotations());
+
+        rightShooterMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+        double rightVoltage = rightShooterMotorSim.getMotorVoltage();
+        rightMotorModel.setInputVoltage(rightVoltage);
+        rightMotorModel.update(0.02);
+        rightShooterMotorSim.setRotorVelocity(rightMotorModel.getAngularVelocityRPM() / 60.0);
+        rightShooterMotorSim.setRawRotorPosition(rightMotorModel.getAngularPositionRotations());
     }
 
 }

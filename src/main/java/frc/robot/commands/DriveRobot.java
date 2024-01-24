@@ -49,9 +49,18 @@ public class DriveRobot extends Command {
 
     @Override
     public void execute() {
-        double rawX = driverController.getRawAxis(this.ControllerXSpeedID);
-        double rawY = driverController.getRawAxis(this.ControllerYSpeedID);
-        double rawRot = driverController.getRawAxis(this.ControllerRotID); 
+
+        // double rawX = driverController.getRawAxis(this.ControllerXSpeedID);
+        // double rawY = driverController.getRawAxis(this.ControllerYSpeedID);
+
+        // Since the coordinate systems differ from the controller (x is left right and y is fwd back) 
+        // and the chassis (positive X is forward, Positive Y is left), we use the controller X input as the drive Y input
+        // and the controller Y input as the drive X input.
+
+// wpk had to change signs for logitech controller. Not sure if radio master needs this
+        double rawX = -driverController.getRawAxis(this.ControllerYSpeedID);  
+        double rawY = -driverController.getRawAxis(this.ControllerXSpeedID);
+        double rawRot = -driverController.getRawAxis(this.ControllerRotID); 
 
         double XSpeed = MathUtil.applyDeadband(rawX, DeadBand) * Constants.DriveConstants.MaxDriveableVelocity;
         double YSpeed = MathUtil.applyDeadband(rawY, DeadBand) * Constants.DriveConstants.MaxDriveableVelocity;

@@ -93,7 +93,10 @@ public class RobotContainer {
                 new DriveRobot(
                         driveSub, 
                         driverController, 
-                        RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
+                        // wpk - on the logitech controller, the rotation input is #2. 
+                        // wpk - put this back for radio master, or we could figure out a way to automaticaly detect the control type and adjust)
+                        // RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
+                        RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, 2, 
                         true));
 
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`

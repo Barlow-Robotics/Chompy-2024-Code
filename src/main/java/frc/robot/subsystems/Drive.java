@@ -145,7 +145,6 @@ public class Drive extends SubsystemBase {
 
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
 
-        fieldRelative = false ;  // wpk fix this later
         var swerveModuleDesiredStates = kinematics.toSwerveModuleStates(
                 fieldRelative
                         ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,

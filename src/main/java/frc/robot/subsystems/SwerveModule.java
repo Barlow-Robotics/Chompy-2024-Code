@@ -126,12 +126,18 @@ public class SwerveModule {
 
         canCoderConfiguration.MagnetSensor = magnetConfig;
 
+        // wpk - these lines can be removed. They are left overs from Phoenix 5
         // need to be added
         // canCoderConfiguration.initializationStrategy =
         // SensorInitializationStrategy.BootToAbsolutePosition; // BW sets sensor to be absolute zero
         // canCoderConfiguration.sensorCoefficient = Math.PI / 2048.0;
 
         turnEncoder.getConfigurator().apply(canCoderConfiguration);
+        if ( Robot.isSimulation()) {
+            // wpk added this line because we need to set angle to zero
+            // need to figure out if this is needed for real robot too (maybe not)
+            turnEncoder.setPosition(0.0, 0.1) ;  
+        }
 
         turnPIDController = new ProfiledPIDController(
                 1,
@@ -161,8 +167,6 @@ public class SwerveModule {
         SwerveModuleState state = SwerveModuleState.optimize(desiredState,
                 new Rotation2d(turnEncoder.getAbsolutePosition().getValueAsDouble()));
 
-        // SwerveModuleState state = desiredState; // wpk temp
-
         Logger.recordOutput(swerveName + " Drive velocity", driveMotor.getEncoder().getVelocity());
 
         drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
@@ -175,23 +179,23 @@ public class SwerveModule {
         turnMotor.setVoltage(turnOutput + turnFF);
 
         if (RobotBase.isSimulation()) {
-            double angle = state.angle.getRadians();
+            // double angle = state.angle.getRadians();
             CANcoderSimState encoderSim = turnEncoder.getSimState();
 
-            int rawPosition = 0;
-            if (angle < 0) {
-                rawPosition = 4096 + (int) ((angle / Math.PI) * 2048.0);
-            } else {
-                rawPosition = (int) ((angle / Math.PI) * 2048.0);
-            }
+            // int rawPosition = 0;
+            // if (angle < 0) {
+            //     rawPosition = 4096 + (int) ((angle / Math.PI) * 2048.0);
+            // } else {
+            //     rawPosition = (int) ((angle / Math.PI) * 2048.0);
+            // }
             encoderSim.setRawPosition(state.angle.getDegrees() / 180.0);
             Logger.recordOutput("CANCoder " + swerveName,
                     turnEncoder.getAbsolutePosition().getValueAsDouble());
-            Logger.recordOutput("CANCoder Raw " + swerveName, rawPosition);
-            Logger.recordOutput("Module Desired State Angle" + swerveName,
-                    desiredState.angle.getRadians());
-            Logger.recordOutput("Module State Angle" + swerveName,
-                    desiredState.angle.getRadians());
+            // Logger.recordOutput("CANCoder Raw " + swerveName, rawPosition);
+            // Logger.recordOutput("Module Desired State Angle" + swerveName,
+            //         desiredState.angle.getRadians());
+            // Logger.recordOutput("Module State Angle" + swerveName,
+            //         desiredState.angle.getRadians());
         }
     }
 

@@ -73,31 +73,39 @@ public class Shooter extends SubsystemBase {
         NetworkTableInstance.getDefault().getEntry("shooter/Desired Rotations Per Second").setDouble(rotsPerSecond);
     }
 
-    public double getShooterVelocity() {
+    public double getLeftShooterVelocity() {
         return leftShooterMotor.getVelocity().getValue();
     }
 
-    // private StatusSignal<Double> getFlyWheelClosedLoopError() {
-    //     return leftShooterMotor.getClosedLoopError();
-    // }
+    public double getRightShooterVelocity() {
+        return rightShooterMotor.getVelocity().getValue();
+    }
+
+    private double getLeftShooterClosedLoopError() {
+        return leftShooterMotor.getClosedLoopError().getValue();
+    }
+
+    private double getRightShooterClosedLoopError() {
+        return rightShooterMotor.getClosedLoopError().getValue();
+    }
 
     public boolean isSpeakerShooting() {
-        return getShooterVelocity() >= .95 * ShooterConstants.SpeakerVelocity;
+        return getLeftShooterVelocity() >= .95 * ShooterConstants.SpeakerVelocity;
     }
 
     public boolean isAmpShooting() {
-        return (getShooterVelocity() >= .95 * ShooterConstants.AmpVelocity) &&
-                (getShooterVelocity() <= 1.05 * ShooterConstants.AmpVelocity);
+        return (getLeftShooterVelocity() >= .95 * ShooterConstants.AmpVelocity) &&
+                (getLeftShooterVelocity() <= 1.05 * ShooterConstants.AmpVelocity);
     }
 
     public boolean isSourceIntaking() {
-        return (getShooterVelocity() >= .95 * ShooterConstants.SourceIntakeVelocity)
-                && (getShooterVelocity() <= 1.05 * ShooterConstants.SourceIntakeVelocity);
+        return (getLeftShooterVelocity() >= .95 * ShooterConstants.SourceIntakeVelocity)
+                && (getLeftShooterVelocity() <= 1.05 * ShooterConstants.SourceIntakeVelocity);
     }
 
     public boolean isShooterFloorIntaking() {
-        return (getShooterVelocity() >= .95 * ShooterConstants.ShooterFloorIntakeVelocity)
-                && (getShooterVelocity() <= 1.05 * ShooterConstants.ShooterFloorIntakeVelocity);
+        return (getLeftShooterVelocity() >= .95 * ShooterConstants.ShooterFloorIntakeVelocity)
+                && (getLeftShooterVelocity() <= 1.05 * ShooterConstants.ShooterFloorIntakeVelocity);
     }
 
     public boolean isNoteLoaded() {
@@ -114,7 +122,10 @@ public class Shooter extends SubsystemBase {
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Shooter Subsystem");
         builder.addStringProperty("State", this::getShooterVelState, null);
-        builder.addDoubleProperty("Actual Shooter Velocity", this::getShooterVelocity, null);
+        builder.addDoubleProperty("Actual Left Shooter Velocity", this::getLeftShooterVelocity, null);
+        builder.addDoubleProperty("Actual Right Shooter Velocity", this::getRightShooterVelocity, null);
+        builder.addDoubleProperty("Left Shooter Closed Loop Error", this::getLeftShooterClosedLoopError, null);
+        builder.addDoubleProperty("Right Shooter Closed Loop Error", this::getRightShooterClosedLoopError, null);
         builder.addBooleanProperty("Speaker Shooting", this::isSpeakerShooting, null);
         builder.addBooleanProperty("Amp Shooting", this::isAmpShooting, null);
         builder.addBooleanProperty("Source Intaking", this::isSourceIntaking, null);

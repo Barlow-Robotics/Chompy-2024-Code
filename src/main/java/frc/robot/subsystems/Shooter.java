@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -24,20 +25,20 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.sim.PhysicsSim;
 
 public class Shooter extends SubsystemBase {
-    TalonFX leftShooterMotor;
-    TalonFX rightShooterMotor;
+    private final TalonFX leftShooterMotor;
+    private final TalonFX rightShooterMotor;
 
     private final TalonFXSimState leftShooterMotorSim;
-    private final DCMotorSim leftMotorModel = 
-        new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, 0.0005);
-    
+    private final DCMotorSim leftMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1,
+            0.0005);
+
     private final TalonFXSimState rightShooterMotorSim;
-    private final DCMotorSim rightMotorModel = 
-        new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, 0.0005);
+    private final DCMotorSim rightMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1),
+            1, 0.0005);
 
     private final VelocityVoltage voltageVelocity = new VelocityVoltage(
-        0, 0, true, 0, 0,
-        false, false, false);
+            0, 0, true, 0, 0,
+            false, false, false);
     private final NeutralOut brake = new NeutralOut();
 
     public enum ShooterVelState {
@@ -59,14 +60,33 @@ public class Shooter extends SubsystemBase {
         rightShooterMotorSim = rightShooterMotor.getSimState();
 
         TalonFXConfiguration configs = new TalonFXConfiguration();
-        configs.Slot0.kP = 0.11; // An error of 1 rotation per second results in 2V output
-        configs.Slot0.kI = 0.5; // An error of 1 rotation per second increases output by 0.5V every second
-        configs.Slot0.kD = 0.0001; // A change of 1 rotation per second squared results in 0.01 volts output
-        configs.Slot0.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
+        configs.Slot0.kP = 0.5; // An error of 1 rotation per second results in 2V output
+        // configs.Slot0.kI = 0.5; // An error of 1 rotation per second increases output
+        // by 0.5V every second
+        // configs.Slot0.kD = 0.0001; // A change of 1 rotation per second squared
+        // results in 0.01 volts output
+        configs.Slot0.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12
+                                 // volts / Rotation per second
         configs.Voltage.PeakForwardVoltage = 8; // Peak output of 8 volts
         configs.Voltage.PeakReverseVoltage = -8;
 
+        StatusCode statusLeft = StatusCode.StatusCodeNotInitialized;
+        StatusCode statusRight = StatusCode.StatusCodeNotInitialized;
+        for (int i = 0; i < 5; ++i) {
+            statusLeft = leftShooterMotor.getConfigurator().apply(configs);
+            statusRight = rightShooterMotor.getConfigurator().apply(configs);
+            if (statusLeft.isOK() && statusRight.isOK())
+                break;
+        }
+        if (!statusLeft.isOK()) {
+            System.out.println("Could not apply configs to left, error code: " + statusLeft.toString());
+        } else if (!statusRight.isOK()) {
+            System.out.println("Could not apply configs to right, error code: " + statusLeft.toString());
+        }
+
         breakBeam = new DigitalInput(ElectronicIDs.breakBeamID);
+
+        networkTableInit();
     }
 
     @Override
@@ -138,6 +158,10 @@ public class Shooter extends SubsystemBase {
         builder.addBooleanProperty("Source Intaking", this::isSourceIntaking, null);
         builder.addBooleanProperty("Floor Intaking", this::isShooterFloorIntaking, null);
         // builder.addBooleanProperty("Note Loaded", this::isNoteLoaded, null);
+    }
+
+    public void networkTableInit() {
+        NetworkTableInstance.getDefault().getEntry("shooter/Desired Rotations Per Second").setDouble(0);
     }
 
     /* SIMULATION */

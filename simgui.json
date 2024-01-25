@@ -1,28 +1,10 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "CANCoder (v6)[11]": {
+      "Talon FX (v6)[41]/Rotor Sensor": {
         "header": {
           "open": true
         }
-      },
-      "CANCoder (v6)[12]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [31]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [32]": {
-        "header": {
-          "open": true
-        }
-      },
-      "window": {
-        "visible": false
       }
     }
   },
@@ -93,13 +75,15 @@
           "open": true
         },
         "open": true
+      },
+      "shooter": {
+        "open": true
       }
     }
   },
   "NetworkTables Info": {
     "Connections": {
       "open": true
-    },
-    "visible": true
+    }
   }
 }

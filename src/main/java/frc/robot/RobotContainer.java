@@ -38,6 +38,7 @@ public class RobotContainer {
     private final SetShooterVelocity startShooterSourceIntakeCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.IntakeFromSource);
     private final SetShooterVelocity startShooterFloorIntakeCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.IntakeFromFloor);
     private final SetShooterVelocity startShooterTrapCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Trap);
+    private final SetShooterVelocity stopShooterCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Stopped);
     private final ToggleIntake toggleIntakeCmd = new ToggleIntake(floorIntakeSub);
     
     /* CONTROLLERS */
@@ -110,19 +111,19 @@ public class RobotContainer {
         operatorController = new Joystick(OperatorControllerPort);
         
         shootSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle 
-        shootSpeakerButton.onTrue(startShooterSpeakerCmd);
+        shootSpeakerButton.onTrue(startShooterSpeakerCmd).onFalse(stopShooterCmd);
 
         shootAmpButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper); // top
-        shootAmpButton.onTrue(startShooterAmpCmd);
+        shootAmpButton.onTrue(startShooterAmpCmd).onFalse(stopShooterCmd);
 
         shooterSourceIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // right stick press
-        shooterSourceIntakeButton.onTrue(startShooterSourceIntakeCmd);
+        shooterSourceIntakeButton.onTrue(startShooterSourceIntakeCmd).onFalse(stopShooterCmd);
 
         shooterFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY); // claw
-        shooterFloorIntakeButton.onTrue(startShooterFloorIntakeCmd);
+        shooterFloorIntakeButton.onTrue(startShooterFloorIntakeCmd).onFalse(stopShooterCmd);
         
         shootTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home
-        shootTrapButton.onTrue(startShooterTrapCmd);
+        shootTrapButton.onTrue(startShooterTrapCmd).onFalse(stopShooterCmd);
 
         toggleFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); //floor 
         toggleFloorIntakeButton.onTrue(toggleIntakeCmd);     

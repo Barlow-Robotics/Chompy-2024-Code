@@ -18,9 +18,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveRobot;
+import frc.robot.Constants.LogitechDAConstants;
 import frc.robot.Constants.RadioMasterConstants;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.SetShooterVelocity;
+import frc.robot.commands.SetShooterPosition;
+
 import frc.robot.commands.ToggleIntake;
 import frc.robot.subsystems.*;
 
@@ -40,7 +43,12 @@ public class RobotContainer {
     private final SetShooterVelocity startShooterTrapCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Trap);
     private final SetShooterVelocity stopShooterCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Stopped);
     private final ToggleIntake toggleIntakeCmd = new ToggleIntake(floorIntakeSub);
-    
+
+    private final SetShooterPosition setShooterSpeakerAngleCmd = new SetShooterPosition(shooterAngleSub, elevatorSub, shooterAngleSub.shooterAngleState.Speaker);
+    private final SetShooterPosition setShooterAmpAngleCmd = new SetShooterPosition(shooterAngleSub, elevatorSub, shooterAngleSub.shooterAngleState.Amp);
+    private final SetShooterPosition setShooterSourceAngleCmd = new SetShooterPosition(shooterAngleSub, elevatorSub, shooterAngleSub.shooterAngleState.IntakeFromSource);
+    private final SetShooterPosition setShooterFloorAngleCmd = new SetShooterPosition(shooterAngleSub, elevatorSub, shooterAngleSub.shooterAngleState.IntakeFromFloor);
+    private final SetShooterPosition setShooterTrapAngleCmd = new SetShooterPosition(shooterAngleSub, elevatorSub, shooterAngleSub.shooterAngleState.Trap);
     /* CONTROLLERS */
     Joystick driverController; 
     private final int DriverControllerPort = 1;
@@ -88,17 +96,23 @@ public class RobotContainer {
 
         configureBindings();
 
-        driveSub.setDefaultCommand(
+        if(DriverStation.getJoystickName(DriverControllerPort).equals("Logitech Extreme 3D")) {
+                driveSub.setDefaultCommand(
                 // The left stick controls translation of the robot.
                 // Turning is controlled by the X axis of the right stick.
                 new DriveRobot(
                         driveSub, 
                         driverController, 
-                        // wpk - on the logitech controller, the rotation input is #2. 
-                        // wpk - put this back for radio master, or we could figure out a way to automaticaly detect the control type and adjust)
-                        // RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
+                       LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY, LogitechDAConstants.RightStickX, 
+                        true));
+        } else {
+                driveSub.setDefaultCommand(
+                new DriveRobot(
+                        driveSub, 
+                        driverController, 
                         RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, 2, 
                         true));
+        }
 
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
         // SmartDashboard.putData("Auto Mode", autoChooser);
@@ -111,19 +125,24 @@ public class RobotContainer {
         operatorController = new Joystick(OperatorControllerPort);
         
         shootSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle 
-        shootSpeakerButton.onTrue(startShooterSpeakerCmd).onFalse(stopShooterCmd);
+        shootSpeakerButton.onTrue(setShooterSpeakerAngleCmd);
+        shootSpeakerButton.onTrue(startShooterSpeakerCmd);
 
         shootAmpButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper); // top
-        shootAmpButton.onTrue(startShooterAmpCmd).onFalse(stopShooterCmd);
+        shootAmpButton.onTrue(setShooterAmpAngleCmd);
+        shootAmpButton.onTrue(startShooterAmpCmd);
 
         shooterSourceIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // right stick press
-        shooterSourceIntakeButton.onTrue(startShooterSourceIntakeCmd).onFalse(stopShooterCmd);
+        shooterSourceIntakeButton.onTrue(setShooterSourceAngleCmd);
+        shooterSourceIntakeButton.onTrue(startShooterSourceIntakeCmd);
 
         shooterFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY); // claw
-        shooterFloorIntakeButton.onTrue(startShooterFloorIntakeCmd).onFalse(stopShooterCmd);
+        shooterFloorIntakeButton.onTrue(setShooterFloorAngleCmd);
+        shooterFloorIntakeButton.onTrue(startShooterFloorIntakeCmd);
         
         shootTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home
-        shootTrapButton.onTrue(startShooterTrapCmd).onFalse(stopShooterCmd);
+        shootTrapButton.onTrue(setShooterTrapAngleCmd);
+        shootTrapButton.onTrue(startShooterTrapCmd);
 
         toggleFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); //floor 
         toggleFloorIntakeButton.onTrue(toggleIntakeCmd);     

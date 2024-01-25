@@ -58,6 +58,7 @@ public class DriveRobot extends Command {
         // and the controller Y input as the drive X input.
 
 // wpk had to change signs for logitech controller. Not sure if radio master needs this
+
         double rawX = -driverController.getRawAxis(this.ControllerYSpeedID);  
         double rawY = -driverController.getRawAxis(this.ControllerXSpeedID);
         double rawRot = -driverController.getRawAxis(this.ControllerRotID); 

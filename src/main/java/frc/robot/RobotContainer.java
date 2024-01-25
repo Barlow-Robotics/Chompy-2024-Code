@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveRobot;
+import frc.robot.Constants.LogitechDAConstants;
 import frc.robot.Constants.RadioMasterConstants;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.SetShooterVelocity;
@@ -87,17 +88,23 @@ public class RobotContainer {
 
         configureBindings();
 
-        driveSub.setDefaultCommand(
+        if(DriverStation.getJoystickName(DriverControllerPort).equals("Logitech Extreme 3D")) {
+                driveSub.setDefaultCommand(
                 // The left stick controls translation of the robot.
                 // Turning is controlled by the X axis of the right stick.
                 new DriveRobot(
                         driveSub, 
                         driverController, 
-                        // wpk - on the logitech controller, the rotation input is #2. 
-                        // wpk - put this back for radio master, or we could figure out a way to automaticaly detect the control type and adjust)
-                        // RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
+                       LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY, LogitechDAConstants.RightStickX, 
+                        true));
+        } else {
+                driveSub.setDefaultCommand(
+                new DriveRobot(
+                        driveSub, 
+                        driverController, 
                         RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, 2, 
                         true));
+        }
 
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
         // SmartDashboard.putData("Auto Mode", autoChooser);

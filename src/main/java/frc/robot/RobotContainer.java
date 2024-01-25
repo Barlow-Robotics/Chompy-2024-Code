@@ -40,6 +40,7 @@ public class RobotContainer {
     private final SetShooterVelocity startShooterSourceIntakeCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.IntakeFromSource);
     private final SetShooterVelocity startShooterFloorIntakeCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.IntakeFromFloor);
     private final SetShooterVelocity startShooterTrapCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Trap);
+    private final SetShooterVelocity stopShooterCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Stopped);
     private final ToggleIntake toggleIntakeCmd = new ToggleIntake(floorIntakeSub);
 
     private final SetShooterPosition setShooterSpeakerAngleCmd = new SetShooterPosition(shooterAngleSub, elevatorSub, shooterAngleSub.shooterAngleState.Speaker);

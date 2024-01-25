@@ -5,10 +5,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
@@ -25,15 +27,15 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.sim.PhysicsSim;
 
 public class Shooter extends SubsystemBase {
-    private final TalonFX leftShooterMotor;
-    private final TalonFX rightShooterMotor;
+    private final TalonFX lowerShooterMotor;
+    private final TalonFX upperShooterMotor;
 
-    private final TalonFXSimState leftShooterMotorSim;
-    private final DCMotorSim leftMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1,
+    private final TalonFXSimState lowerShooterMotorSim;
+    private final DCMotorSim lowerMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1,
             0.0005);
 
-    private final TalonFXSimState rightShooterMotorSim;
-    private final DCMotorSim rightMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1),
+    private final TalonFXSimState upperShooterMotorSim;
+    private final DCMotorSim upperMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1),
             1, 0.0005);
 
     private final VelocityVoltage voltageVelocity = new VelocityVoltage(
@@ -53,11 +55,11 @@ public class Shooter extends SubsystemBase {
     boolean simulationInitialized = false;
 
     public Shooter() {
-        leftShooterMotor = new TalonFX(ElectronicIDs.LeftShooterMotorID); // slot 0
-        rightShooterMotor = new TalonFX(ElectronicIDs.RightShooterMotorID); // slot 0
+        lowerShooterMotor = new TalonFX(ElectronicIDs.LowerShooterMotorID); // slot 0
+        upperShooterMotor = new TalonFX(ElectronicIDs.UpperShooterMotorID); // slot 0
 
-        leftShooterMotorSim = leftShooterMotor.getSimState();
-        rightShooterMotorSim = rightShooterMotor.getSimState();
+        lowerShooterMotorSim = lowerShooterMotor.getSimState();
+        upperShooterMotorSim = upperShooterMotor.getSimState();
 
         TalonFXConfiguration configs = new TalonFXConfiguration();
         configs.Slot0.kP = 0.5; // An error of 1 rotation per second results in 2V output
@@ -70,11 +72,15 @@ public class Shooter extends SubsystemBase {
         configs.Voltage.PeakForwardVoltage = 8; // Peak output of 8 volts
         configs.Voltage.PeakReverseVoltage = -8;
 
+        MotorOutputConfigs upperMotorOutputConfigs = new MotorOutputConfigs();
+        upperMotorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+
         StatusCode statusLeft = StatusCode.StatusCodeNotInitialized;
         StatusCode statusRight = StatusCode.StatusCodeNotInitialized;
         for (int i = 0; i < 5; ++i) {
-            statusLeft = leftShooterMotor.getConfigurator().apply(configs);
-            statusRight = rightShooterMotor.getConfigurator().apply(configs);
+            statusLeft = lowerShooterMotor.getConfigurator().apply(configs);
+            statusRight = upperShooterMotor.getConfigurator().apply(configs);
+            statusRight = upperShooterMotor.getConfigurator().apply(upperMotorOutputConfigs);
             if (statusLeft.isOK() && statusRight.isOK())
                 break;
         }
@@ -94,45 +100,45 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setVelocity(double rotsPerSecond) {
-        leftShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
-        rightShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
+        lowerShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
+        upperShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
 
         NetworkTableInstance.getDefault().getEntry("shooter/Desired Rotations Per Second").setDouble(rotsPerSecond);
     }
 
-    public double getLeftShooterVelocity() {
-        return leftShooterMotor.getVelocity().getValue();
+    public double getLowerShooterVelocity() {
+        return lowerShooterMotor.getVelocity().getValue();
     }
 
-    public double getRightShooterVelocity() {
-        return rightShooterMotor.getVelocity().getValue();
+    public double getUpperShooterVelocity() {
+        return upperShooterMotor.getVelocity().getValue();
     }
 
-    private double getLeftShooterClosedLoopError() {
-        return leftShooterMotor.getClosedLoopError().getValue();
+    private double getLowerShooterClosedLoopError() {
+        return lowerShooterMotor.getClosedLoopError().getValue();
     }
 
-    private double getRightShooterClosedLoopError() {
-        return rightShooterMotor.getClosedLoopError().getValue();
+    private double getUpperShooterClosedLoopError() {
+        return upperShooterMotor.getClosedLoopError().getValue();
     }
 
     public boolean isSpeakerShooting() {
-        return getLeftShooterVelocity() >= .95 * ShooterConstants.SpeakerVelocity;
+        return getLowerShooterVelocity() >= .95 * ShooterConstants.SpeakerVelocity;
     }
 
     public boolean isAmpShooting() {
-        return (getLeftShooterVelocity() >= .95 * ShooterConstants.AmpVelocity) &&
-                (getLeftShooterVelocity() <= 1.05 * ShooterConstants.AmpVelocity);
+        return (getLowerShooterVelocity() >= .95 * ShooterConstants.AmpVelocity) &&
+                (getLowerShooterVelocity() <= 1.05 * ShooterConstants.AmpVelocity);
     }
 
     public boolean isSourceIntaking() {
-        return (getLeftShooterVelocity() >= .95 * ShooterConstants.SourceIntakeVelocity)
-                && (getLeftShooterVelocity() <= 1.05 * ShooterConstants.SourceIntakeVelocity);
+        return (getLowerShooterVelocity() >= .95 * ShooterConstants.SourceIntakeVelocity)
+                && (getLowerShooterVelocity() <= 1.05 * ShooterConstants.SourceIntakeVelocity);
     }
 
     public boolean isShooterFloorIntaking() {
-        return (getLeftShooterVelocity() >= .95 * ShooterConstants.ShooterFloorIntakeVelocity)
-                && (getLeftShooterVelocity() <= 1.05 * ShooterConstants.ShooterFloorIntakeVelocity);
+        return (getLowerShooterVelocity() >= .95 * ShooterConstants.ShooterFloorIntakeVelocity)
+                && (getLowerShooterVelocity() <= 1.05 * ShooterConstants.ShooterFloorIntakeVelocity);
     }
 
     public boolean isNoteLoaded() {
@@ -149,10 +155,10 @@ public class Shooter extends SubsystemBase {
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Shooter Subsystem");
         builder.addStringProperty("State", this::getShooterVelState, null);
-        builder.addDoubleProperty("Actual Left Shooter Velocity", this::getLeftShooterVelocity, null);
-        builder.addDoubleProperty("Actual Right Shooter Velocity", this::getRightShooterVelocity, null);
-        builder.addDoubleProperty("Left Shooter Closed Loop Error", this::getLeftShooterClosedLoopError, null);
-        builder.addDoubleProperty("Right Shooter Closed Loop Error", this::getRightShooterClosedLoopError, null);
+        builder.addDoubleProperty("Actual Lower Shooter Velocity", this::getLowerShooterVelocity, null);
+        builder.addDoubleProperty("Actual Upper Shooter Velocity", this::getUpperShooterVelocity, null);
+        builder.addDoubleProperty("Lower Shooter Closed Loop Error", this::getLowerShooterClosedLoopError, null);
+        builder.addDoubleProperty("Upper Shooter Closed Loop Error", this::getUpperShooterClosedLoopError, null);
         builder.addBooleanProperty("Speaker Shooting", this::isSpeakerShooting, null);
         builder.addBooleanProperty("Amp Shooting", this::isAmpShooting, null);
         builder.addBooleanProperty("Source Intaking", this::isSourceIntaking, null);
@@ -167,11 +173,11 @@ public class Shooter extends SubsystemBase {
     /* SIMULATION */
 
     public void simulationInit() {
-        PhysicsSim.getInstance().addTalonFX(leftShooterMotor, 0.001);
-        PhysicsSim.getInstance().addTalonFX(rightShooterMotor, 0.001);
+        PhysicsSim.getInstance().addTalonFX(lowerShooterMotor, 0.001);
+        PhysicsSim.getInstance().addTalonFX(upperShooterMotor, 0.001);
 
-        leftShooterMotorSim.Orientation = ChassisReference.CounterClockwise_Positive; // CHANGE
-        rightShooterMotorSim.Orientation = ChassisReference.Clockwise_Positive; // CHANGE
+        lowerShooterMotorSim.Orientation = ChassisReference.CounterClockwise_Positive; // CHANGE
+        upperShooterMotorSim.Orientation = ChassisReference.Clockwise_Positive; // CHANGE
 
         breakBeamSim = new DIOSim(breakBeam);
     }
@@ -183,19 +189,19 @@ public class Shooter extends SubsystemBase {
             simulationInitialized = true;
         }
 
-        leftShooterMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
-        double leftVoltage = leftShooterMotorSim.getMotorVoltage();
-        leftMotorModel.setInputVoltage(leftVoltage);
-        leftMotorModel.update(0.02);
-        leftShooterMotorSim.setRotorVelocity(leftMotorModel.getAngularVelocityRPM() / 60.0);
-        leftShooterMotorSim.setRawRotorPosition(leftMotorModel.getAngularPositionRotations());
+        lowerShooterMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+        double lowerVoltage = lowerShooterMotorSim.getMotorVoltage();
+        lowerMotorModel.setInputVoltage(lowerVoltage);
+        lowerMotorModel.update(0.02);
+        lowerShooterMotorSim.setRotorVelocity(lowerMotorModel.getAngularVelocityRPM() / 60.0);
+        lowerShooterMotorSim.setRawRotorPosition(lowerMotorModel.getAngularPositionRotations());
 
-        rightShooterMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
-        double rightVoltage = rightShooterMotorSim.getMotorVoltage();
-        rightMotorModel.setInputVoltage(rightVoltage);
-        rightMotorModel.update(0.02);
-        rightShooterMotorSim.setRotorVelocity(rightMotorModel.getAngularVelocityRPM() / 60.0);
-        rightShooterMotorSim.setRawRotorPosition(rightMotorModel.getAngularPositionRotations());
+        upperShooterMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
+        double upperVoltage = upperShooterMotorSim.getMotorVoltage();
+        upperMotorModel.setInputVoltage(upperVoltage);
+        upperMotorModel.update(0.02);
+        upperShooterMotorSim.setRotorVelocity(upperMotorModel.getAngularVelocityRPM() / 60.0);
+        upperShooterMotorSim.setRawRotorPosition(upperMotorModel.getAngularPositionRotations());
     }
 
 }

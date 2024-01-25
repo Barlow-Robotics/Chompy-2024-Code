@@ -45,8 +45,8 @@ public class Constants {
         /***************************** SHOOTER *****************************/
 
         // ShooterMotorID = 4{locationOnBot}
-        public static final int LeftShooterMotorID = 41;
-        public static final int RightShooterMotorID = 42;
+        public static final int LowerShooterMotorID = 41;
+        public static final int UpperShooterMotorID = 42;
         public static final int AngleMotorID = 43;
 
         public static final int breakBeamID = 4; // CHANGE
@@ -109,7 +109,7 @@ public class Constants {
         public static final double AmpVelocity = 0.2*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
         public static final double SourceIntakeVelocity = -0.2*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
         public static final double ShooterFloorIntakeVelocity = -0.2*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
-        public static final double TrapVelocity = 0.2*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
+        public static final double TrapVelocity = 60; // CHANGE
 
         public static final double SpeakerAngle = 0; // CHANGE
         public static final double AmpAngle = 0; // CHANGE

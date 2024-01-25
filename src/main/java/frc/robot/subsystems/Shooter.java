@@ -114,6 +114,10 @@ public class Shooter extends SubsystemBase {
         return (getLeftShooterVelocity() >= .95 * ShooterConstants.ShooterFloorIntakeVelocity)
                 && (getLeftShooterVelocity() <= 1.05 * ShooterConstants.ShooterFloorIntakeVelocity);
     }
+    public boolean isTrapShooting() {
+        return (getLeftShooterVelocity() >= .95 * ShooterConstants.TrapVelocity)
+                && (getLeftShooterVelocity() <= 1.05 * ShooterConstants.TrapVelocity);
+    }
 
     public boolean isNoteLoaded() {
         // return breakBeam.get();
@@ -137,6 +141,7 @@ public class Shooter extends SubsystemBase {
         builder.addBooleanProperty("Amp Shooting", this::isAmpShooting, null);
         builder.addBooleanProperty("Source Intaking", this::isSourceIntaking, null);
         builder.addBooleanProperty("Floor Intaking", this::isShooterFloorIntaking, null);
+        builder.addBooleanProperty("Trap Shooting", this::isTrapShooting, null);
         // builder.addBooleanProperty("Note Loaded", this::isNoteLoaded, null);
     }
 

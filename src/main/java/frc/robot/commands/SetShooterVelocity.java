@@ -5,9 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterVelState;
-import frc.robot.Constants.ShooterConstants;
 
 public class SetShooterVelocity extends Command {
 
@@ -29,20 +29,27 @@ public class SetShooterVelocity extends Command {
         switch (state) {
             case Stopped:
                 shooterSub.setVelocity(0);
+                shooterSub.shooterVelState = ShooterVelState.Stopped;
+                break;
             case Speaker:
                 shooterSub.setVelocity(ShooterConstants.SpeakerVelocity);
+                shooterSub.shooterVelState = ShooterVelState.Speaker;
                 break;
             case Amp:
                 shooterSub.setVelocity(ShooterConstants.AmpVelocity);
+                shooterSub.shooterVelState = ShooterVelState.Amp;
                 break;
             case IntakeFromSource:
                 shooterSub.setVelocity(ShooterConstants.SourceIntakeVelocity);
+                shooterSub.shooterVelState = ShooterVelState.IntakeFromSource;
                 break;
             case IntakeFromFloor:
                 shooterSub.setVelocity(ShooterConstants.ShooterFloorIntakeVelocity);
+                shooterSub.shooterVelState = ShooterVelState.IntakeFromFloor;
                 break;
             case Trap:
                 shooterSub.setVelocity(ShooterConstants.TrapVelocity);
+                shooterSub.shooterVelState = ShooterVelState.Trap;
                 break;
         }
     }

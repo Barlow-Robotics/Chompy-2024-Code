@@ -22,6 +22,8 @@ import frc.robot.Constants.LogitechDAConstants;
 import frc.robot.Constants.RadioMasterConstants;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.SetShooterVelocity;
+import frc.robot.commands.SetShooterPosition;
+
 import frc.robot.commands.ToggleIntake;
 import frc.robot.subsystems.*;
 
@@ -39,8 +41,14 @@ public class RobotContainer {
     private final SetShooterVelocity startShooterSourceIntakeCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.IntakeFromSource);
     private final SetShooterVelocity startShooterFloorIntakeCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.IntakeFromFloor);
     private final SetShooterVelocity startShooterTrapCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Trap);
+    private final SetShooterVelocity stopShooterCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Stopped);
     private final ToggleIntake toggleIntakeCmd = new ToggleIntake(floorIntakeSub);
-    
+
+    private final SetShooterPosition setShooterSpeakerAngleCmd = new SetShooterPosition(shooterAngleSub, elevatorSub, shooterAngleSub.shooterAngleState.Speaker);
+    private final SetShooterPosition setShooterAmpAngleCmd = new SetShooterPosition(shooterAngleSub, elevatorSub, shooterAngleSub.shooterAngleState.Amp);
+    private final SetShooterPosition setShooterSourceAngleCmd = new SetShooterPosition(shooterAngleSub, elevatorSub, shooterAngleSub.shooterAngleState.IntakeFromSource);
+    private final SetShooterPosition setShooterFloorAngleCmd = new SetShooterPosition(shooterAngleSub, elevatorSub, shooterAngleSub.shooterAngleState.IntakeFromFloor);
+    private final SetShooterPosition setShooterTrapAngleCmd = new SetShooterPosition(shooterAngleSub, elevatorSub, shooterAngleSub.shooterAngleState.Trap);
     /* CONTROLLERS */
     Joystick driverController; 
     private final int DriverControllerPort = 1;
@@ -117,18 +125,23 @@ public class RobotContainer {
         operatorController = new Joystick(OperatorControllerPort);
         
         shootSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle 
+        shootSpeakerButton.onTrue(setShooterSpeakerAngleCmd);
         shootSpeakerButton.onTrue(startShooterSpeakerCmd);
 
         shootAmpButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper); // top
+        shootAmpButton.onTrue(setShooterAmpAngleCmd);
         shootAmpButton.onTrue(startShooterAmpCmd);
 
         shooterSourceIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // right stick press
+        shooterSourceIntakeButton.onTrue(setShooterSourceAngleCmd);
         shooterSourceIntakeButton.onTrue(startShooterSourceIntakeCmd);
 
         shooterFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY); // claw
+        shooterFloorIntakeButton.onTrue(setShooterFloorAngleCmd);
         shooterFloorIntakeButton.onTrue(startShooterFloorIntakeCmd);
         
         shootTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home
+        shootTrapButton.onTrue(setShooterTrapAngleCmd);
         shootTrapButton.onTrue(startShooterTrapCmd);
 
         toggleFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); //floor 

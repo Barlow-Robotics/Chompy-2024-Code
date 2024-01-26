@@ -22,6 +22,12 @@
           "data": {
             "pathName": "Score In Amp"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Go to Center"
+          }
         }
       ]
     }

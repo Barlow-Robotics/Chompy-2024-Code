@@ -34,7 +34,7 @@ public class Robot extends LoggedRobot {
         if (isReal()) {
             Logger.addDataReceiver(new WPILOGWriter("/media/sda2/")); // Log to a USB stick
             Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-            new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
+            /*PowerDistribution pdp =*/ new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
         } else {
             Logger.addDataReceiver(new WPILOGWriter(""));
             Logger.addDataReceiver(new NT4Publisher());
@@ -50,8 +50,7 @@ public class Robot extends LoggedRobot {
         SmartDashboard.putData(CommandScheduler.getInstance());
         SmartDashboard.putData(robotContainer.driveSub);
         SmartDashboard.putData(robotContainer.shooterSub);
-        SmartDashboard.putData(robotContainer.shooterAngleSub);
-        SmartDashboard.putData(robotContainer.elevatorSub);
+        SmartDashboard.putData(robotContainer.shooterPositionSub);
         SmartDashboard.putData(robotContainer.floorIntakeSub);
 
         CommandScheduler.getInstance().run();

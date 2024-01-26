@@ -63,12 +63,9 @@ public class Shooter extends SubsystemBase {
 
         TalonFXConfiguration configs = new TalonFXConfiguration();
         configs.Slot0.kP = 0.5; // An error of 1 rotation per second results in 2V output
-        // configs.Slot0.kI = 0.5; // An error of 1 rotation per second increases output
-        // by 0.5V every second
-        // configs.Slot0.kD = 0.0001; // A change of 1 rotation per second squared
-        // results in 0.01 volts output
-        configs.Slot0.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12
-                                 // volts / Rotation per second
+        // configs.Slot0.kI = 0.5; // An error of 1 rotation per second increases output by 0.5V every second
+        // configs.Slot0.kD = 0.0001; // A change of 1 rotation per second squared results in 0.01 volts output
+        configs.Slot0.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
         configs.Voltage.PeakForwardVoltage = 8; // Peak output of 8 volts
         configs.Voltage.PeakReverseVoltage = -8;
 
@@ -90,7 +87,7 @@ public class Shooter extends SubsystemBase {
             System.out.println("Could not apply configs to right, error code: " + statusLeft.toString());
         }
 
-        breakBeam = new DigitalInput(ElectronicIDs.breakBeamID);
+        breakBeam = new DigitalInput(ElectronicIDs.BreakBeamID);
 
         networkTableInit();
     }
@@ -140,6 +137,7 @@ public class Shooter extends SubsystemBase {
         return (getLowerShooterVelocity() >= .95 * ShooterConstants.ShooterFloorIntakeVelocity)
                 && (getLowerShooterVelocity() <= 1.05 * ShooterConstants.ShooterFloorIntakeVelocity);
     }
+
     public boolean isTrapShooting() {
         return (getLowerShooterVelocity() >= .95 * ShooterConstants.TrapVelocity)
                 && (getLowerShooterVelocity() <= 1.05 * ShooterConstants.TrapVelocity);

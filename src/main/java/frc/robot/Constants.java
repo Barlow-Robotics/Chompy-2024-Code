@@ -9,6 +9,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Joystick;
 
 public class Constants {
 
@@ -18,6 +19,9 @@ public class Constants {
     public static final double NeoMaxRPM = 5676; // CHANGE
     public static final double Falcon500MaxRPM = 6300;
 
+    public static final int DriverControllerPort = 1;
+    public static final int OperatorControllerPort = 2;
+    
     // beep boop beep
 
     public static final class ElectronicIDs {
@@ -49,13 +53,18 @@ public class Constants {
         public static final int UpperShooterMotorID = 42;
         public static final int AngleMotorID = 43;
 
-        public static final int breakBeamID = 4; // CHANGE
+        public static final int BreakBeamID = 4; // CHANGE
 
         /***************************** FLOOR INTAKE *****************************/
 
         // FloorMotorID = 5{locationOnBot}
-        public static final int upperFloorMotorID = 51;
-        public static final int lowerFloorMotorID = 52;
+        public static final int UpperFloorMotorID = 51;
+        public static final int LowerFloorMotorID = 52;
+ 
+        /***************************** ELEVATOR *****************************/
+        public static final int LeftElevatorMotorID = 61;
+        public static final int RightElevatorMotorID = 62; 
+        public static final int HallEffectID = 63; 
     }
 
     /***************************************************************************/
@@ -74,8 +83,7 @@ public class Constants {
         public static final double MaxAngularSpeedRadiansPerSecond = DriveConstants.PhysicalMaxAngularSpeedRadiansPerSecond
                 / 10; // Default is 540 degress
         public static final double MaxAccelerationMetersPerSecondSquared = 3; // CHANGE
-        public static final double MaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4; // default is 720
-                                                                                                // degrees
+        public static final double MaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4; // default is 720 degrees
     }
 
     /***************************************************************************/
@@ -127,16 +135,16 @@ public class Constants {
 
         /* UPPER PID CONTROLLER */
         public static final double UpperKP = 0.5; // CHANGE
-        public static final double UpperKI = 0; // CHANGE
-        public static final double UpperKD = 0; // CHANGE
-        public static final double UpperIZone = 0; // CHANGE
+        public static final double UpperKI = 0.1; // CHANGE
+        public static final double UpperKD = 0.1; // CHANGE
+        public static final double UpperIZone = 0.1; // CHANGE
         public static final double UpperFF = 1; // CHANGE
 
         /* LOWER PID CONTROLLER */
         public static final double LowerKP = 0.5; // CHANGE
-        public static final double LowerKI = 0; // CHANGE
-        public static final double LowerKD = 0; // CHANGE
-        public static final double LowerIZone = 0; // CHANGE
+        public static final double LowerKI = 0.1; // CHANGE
+        public static final double LowerKD = 0.1; // CHANGE
+        public static final double LowerIZone = 0.1; // CHANGE
         public static final double LowerFF = 1; // CHANGE
 
         public static final double MotorVelocity = 0.2; // CHANGE
@@ -153,6 +161,8 @@ public class Constants {
         public static final double IntakeFromSourceHeight = 0; // CHANGE
         public static final double IntakeFromFloorHeight = 0; // CHANGE
         public static final double TrapHeight = 0; // CHANGE
+
+        public static final double RotationsPerElevatorInch = 0; // CHANGE
 
     }
 

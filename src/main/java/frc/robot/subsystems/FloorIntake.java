@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -37,7 +38,7 @@ public class FloorIntake extends SubsystemBase {
     public FloorIntake() {
 
         /* UPPER MOTOR CONFIG */
-        upperMotor = new CANSparkMax(ElectronicIDs.upperFloorMotorID, MotorType.kBrushless);
+        upperMotor = new CANSparkMax(ElectronicIDs.UpperFloorMotorID, MotorType.kBrushless);
         upperEncoder = upperMotor.getEncoder();
         motorAndEncoderConfig(upperMotor, upperEncoder, false); // CHANGE - These true/false values may need to be flipped
         upperPidController = upperMotor.getPIDController();
@@ -50,7 +51,7 @@ public class FloorIntake extends SubsystemBase {
                 FloorIntakeConstants.UpperFF);
 
         /* LOWER MOTOR CONFIG */
-        lowerMotor = new CANSparkMax(ElectronicIDs.lowerFloorMotorID, MotorType.kBrushless);
+        lowerMotor = new CANSparkMax(ElectronicIDs.LowerFloorMotorID, MotorType.kBrushless);
         lowerEncoder = lowerMotor.getEncoder();
         motorAndEncoderConfig(lowerMotor, lowerEncoder, true); // CHANGE - These true/false values may need to be flipped
         lowerPidController = lowerMotor.getPIDController();
@@ -68,15 +69,14 @@ public class FloorIntake extends SubsystemBase {
     }
 
     public void startIntaking() {
-        upperMotor.set(FloorIntakeConstants.MotorVelocity);
-        lowerMotor.set(FloorIntakeConstants.MotorVelocity);
-
+        upperPidController.setReference(FloorIntakeConstants.MotorVelocity, ControlType.kVelocity);
+        lowerPidController.setReference(FloorIntakeConstants.MotorVelocity, ControlType.kVelocity);
         NetworkTableInstance.getDefault().getEntry("floorIntake/Desired Percent Output").setDouble(FloorIntakeConstants.MotorVelocity);
     }
 
     public void stopIntaking() {
-        upperMotor.set(0);
-        lowerMotor.set(0);
+        upperPidController.setReference(0, ControlType.kVelocity);
+        lowerPidController.setReference(0, ControlType.kVelocity);
     }
 
     public double getRPMUpper() {

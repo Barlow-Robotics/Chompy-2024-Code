@@ -7,25 +7,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.ShooterAngle;
-import frc.robot.subsystems.ShooterAngle.ShooterPositionState;
+import frc.robot.subsystems.ShooterPosition;
+import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
 
 public class SetShooterPosition extends Command {
     
-    Elevator elevatorSub;
-    ShooterAngle shooterAngleSub;
+    ShooterPosition shooterPositionSub;
     ShooterPositionState desiredState;
     double desiredAngle;
     double desiredHeight;
 
 
-  public SetShooterPosition(ShooterAngle shooterAngleSub, Elevator elevatorSub, ShooterPositionState shooterPositionState) {
-        this.shooterAngleSub = shooterAngleSub;
-        this.elevatorSub = elevatorSub;
+  public SetShooterPosition(ShooterPosition shooterAngleSub, ShooterPositionState shooterPositionState) {
+        this.shooterPositionSub = shooterAngleSub;
         this.desiredState = shooterPositionState;
 
-        addRequirements(shooterAngleSub, elevatorSub);
+        addRequirements(shooterAngleSub);
     }
 
     @Override
@@ -48,24 +45,24 @@ public class SetShooterPosition extends Command {
                 desiredHeight = ElevatorConstants.IntakeFromFloorHeight;
                 break;
             case Trap:
-                shooterAngleSub.setAngle(ShooterConstants.TrapAngle);
+                shooterPositionSub.setAngle(ShooterConstants.TrapAngle);
                 break;
         }
     }
 
     @Override
     public void execute() {
-        shooterAngleSub.setAngle(desiredAngle);
-        elevatorSub.setHeight(desiredHeight);
+        shooterPositionSub.setAngle(desiredAngle);
+        shooterPositionSub.setHeight(desiredHeight);
     }
 
     @Override
     public void end(boolean interrupted) {
-        shooterAngleSub.shooterAngleState = desiredState;
+        shooterPositionSub.shooterAngleState = desiredState;
     }
 
     @Override
     public boolean isFinished() {
-        return (shooterAngleSub.getAngle() == desiredAngle) && (elevatorSub.getHeight() == desiredHeight);
+        return (shooterPositionSub.getAngle() == desiredAngle) && (shooterPositionSub.getHeight() == desiredHeight);
     }
 }

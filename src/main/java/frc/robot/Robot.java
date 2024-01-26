@@ -13,6 +13,7 @@ import com.revrobotics.REVPhysicsSim;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.Shooter.ShooterVelState;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,6 +42,7 @@ public class Robot extends LoggedRobot {
 
         Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
 
+        robotContainer.shooterSub.shooterVelState = ShooterVelState.Stopped;
     }
 
     @Override

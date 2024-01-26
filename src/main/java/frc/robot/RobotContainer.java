@@ -125,24 +125,24 @@ public class RobotContainer {
         operatorController = new Joystick(OperatorControllerPort);
         
         shootSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle 
-        shootSpeakerButton.onTrue(setShooterSpeakerAngleCmd);
-        shootSpeakerButton.onTrue(startShooterSpeakerCmd);
+        // shootSpeakerButton.onTrue(setShooterSpeakerAngleCmd);
+        shootSpeakerButton.onTrue(startShooterSpeakerCmd).onFalse(stopShooterCmd);
 
         shootAmpButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper); // top
-        shootAmpButton.onTrue(setShooterAmpAngleCmd);
-        shootAmpButton.onTrue(startShooterAmpCmd);
+        // shootAmpButton.onTrue(setShooterAmpAngleCmd);
+        shootAmpButton.onTrue(startShooterAmpCmd).onFalse(stopShooterCmd);
 
         shooterSourceIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // right stick press
-        shooterSourceIntakeButton.onTrue(setShooterSourceAngleCmd);
-        shooterSourceIntakeButton.onTrue(startShooterSourceIntakeCmd);
+        // shooterSourceIntakeButton.onTrue(setShooterSourceAngleCmd);
+        shooterSourceIntakeButton.onTrue(startShooterSourceIntakeCmd).onFalse(stopShooterCmd);
 
         shooterFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY); // claw
-        shooterFloorIntakeButton.onTrue(setShooterFloorAngleCmd);
-        shooterFloorIntakeButton.onTrue(startShooterFloorIntakeCmd);
+        // shooterFloorIntakeButton.onTrue(setShooterFloorAngleCmd);
+        shooterFloorIntakeButton.onTrue(startShooterFloorIntakeCmd).onFalse(stopShooterCmd);
         
         shootTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home
-        shootTrapButton.onTrue(setShooterTrapAngleCmd);
-        shootTrapButton.onTrue(startShooterTrapCmd);
+        // shootTrapButton.onTrue(setShooterTrapAngleCmd);
+        shootTrapButton.onTrue(startShooterTrapCmd).onFalse(stopShooterCmd);
 
         toggleFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); //floor 
         toggleFloorIntakeButton.onTrue(toggleIntakeCmd);     

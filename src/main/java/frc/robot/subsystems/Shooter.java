@@ -100,7 +100,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setVelocity(double rotsPerSecond) {
-        lowerShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
+        // lowerShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
         upperShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
 
         NetworkTableInstance.getDefault().getEntry("shooter/Desired Rotations Per Second").setDouble(rotsPerSecond);

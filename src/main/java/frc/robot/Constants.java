@@ -53,13 +53,18 @@ public class Constants {
         public static final int UpperShooterMotorID = 42;
         public static final int AngleMotorID = 43;
 
-        public static final int breakBeamID = 4; // CHANGE
+        public static final int BreakBeamID = 4; // CHANGE
 
         /***************************** FLOOR INTAKE *****************************/
 
         // FloorMotorID = 5{locationOnBot}
-        public static final int upperFloorMotorID = 51;
-        public static final int lowerFloorMotorID = 52;
+        public static final int UpperFloorMotorID = 51;
+        public static final int LowerFloorMotorID = 52;
+ 
+        /***************************** ELEVATOR *****************************/
+        public static final int LeftElevatorMotorID = 61;
+        public static final int RightElevatorMotorID = 62; 
+        public static final int HallEffectID = 63; 
     }
 
     /***************************************************************************/
@@ -78,8 +83,7 @@ public class Constants {
         public static final double MaxAngularSpeedRadiansPerSecond = DriveConstants.PhysicalMaxAngularSpeedRadiansPerSecond
                 / 10; // Default is 540 degress
         public static final double MaxAccelerationMetersPerSecondSquared = 3; // CHANGE
-        public static final double MaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4; // default is 720
-                                                                                                // degrees
+        public static final double MaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4; // default is 720 degrees
     }
 
     /***************************************************************************/
@@ -157,6 +161,8 @@ public class Constants {
         public static final double IntakeFromSourceHeight = 0; // CHANGE
         public static final double IntakeFromFloorHeight = 0; // CHANGE
         public static final double TrapHeight = 0; // CHANGE
+
+        public static final double RotationsPerElevatorInch = 0; // CHANGE
 
     }
 

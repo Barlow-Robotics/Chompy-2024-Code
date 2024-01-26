@@ -38,7 +38,7 @@ public class FloorIntake extends SubsystemBase {
     public FloorIntake() {
 
         /* UPPER MOTOR CONFIG */
-        upperMotor = new CANSparkMax(ElectronicIDs.upperFloorMotorID, MotorType.kBrushless);
+        upperMotor = new CANSparkMax(ElectronicIDs.UpperFloorMotorID, MotorType.kBrushless);
         upperEncoder = upperMotor.getEncoder();
         motorAndEncoderConfig(upperMotor, upperEncoder, false); // CHANGE - These true/false values may need to be flipped
         upperPidController = upperMotor.getPIDController();
@@ -51,7 +51,7 @@ public class FloorIntake extends SubsystemBase {
                 FloorIntakeConstants.UpperFF);
 
         /* LOWER MOTOR CONFIG */
-        lowerMotor = new CANSparkMax(ElectronicIDs.lowerFloorMotorID, MotorType.kBrushless);
+        lowerMotor = new CANSparkMax(ElectronicIDs.LowerFloorMotorID, MotorType.kBrushless);
         lowerEncoder = lowerMotor.getEncoder();
         motorAndEncoderConfig(lowerMotor, lowerEncoder, true); // CHANGE - These true/false values may need to be flipped
         lowerPidController = lowerMotor.getPIDController();

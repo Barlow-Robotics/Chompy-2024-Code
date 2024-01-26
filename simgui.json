@@ -1,7 +1,12 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "Talon FX (v6)[41]/Rotor Sensor": {
+      "SPARK MAX [51]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [52]": {
         "header": {
           "open": true
         }
@@ -65,9 +70,12 @@
         }
       },
       "SmartDashboard": {
-        "Shooter": {
+        "FloorIntake": {
           "open": true
         },
+        "open": true
+      },
+      "floorIntake": {
         "open": true
       },
       "shooter": {

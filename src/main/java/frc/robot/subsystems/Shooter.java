@@ -141,8 +141,8 @@ public class Shooter extends SubsystemBase {
                 && (getLowerShooterVelocity() <= 1.05 * ShooterConstants.ShooterFloorIntakeVelocity);
     }
     public boolean isTrapShooting() {
-        return (getLeftShooterVelocity() >= .95 * ShooterConstants.TrapVelocity)
-                && (getLeftShooterVelocity() <= 1.05 * ShooterConstants.TrapVelocity);
+        return (getLowerShooterVelocity() >= .95 * ShooterConstants.TrapVelocity)
+                && (getLowerShooterVelocity() <= 1.05 * ShooterConstants.TrapVelocity);
     }
 
     public boolean isNoteLoaded() {

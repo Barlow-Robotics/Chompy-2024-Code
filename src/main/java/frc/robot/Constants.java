@@ -107,9 +107,9 @@ public class Constants {
 
         public static final double SpeakerVelocity = 0.2*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
         public static final double AmpVelocity = 0.2*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
-        public static final double SourceIntakeVelocity = -0.2*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
-        public static final double ShooterFloorIntakeVelocity = -0.2*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
-        public static final double TrapVelocity = 60; // CHANGE
+        public static final double SourceIntakeVelocity = 10; // CHANGE
+        public static final double ShooterFloorIntakeVelocity = 0.2*Falcon500MaxRPM/SecondsPerMinute; // CHANGE
+        public static final double TrapVelocity = 10; // CHANGE
 
         public static final double SpeakerAngle = 0; // CHANGE
         public static final double AmpAngle = 0; // CHANGE

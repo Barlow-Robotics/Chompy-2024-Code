@@ -127,16 +127,16 @@ public class Constants {
 
         /* UPPER PID CONTROLLER */
         public static final double UpperKP = 0.5; // CHANGE
-        public static final double UpperKI = 0; // CHANGE
-        public static final double UpperKD = 0; // CHANGE
-        public static final double UpperIZone = 0; // CHANGE
+        public static final double UpperKI = 0.1; // CHANGE
+        public static final double UpperKD = 0.1; // CHANGE
+        public static final double UpperIZone = 0.1; // CHANGE
         public static final double UpperFF = 1; // CHANGE
 
         /* LOWER PID CONTROLLER */
         public static final double LowerKP = 0.5; // CHANGE
-        public static final double LowerKI = 0; // CHANGE
-        public static final double LowerKD = 0; // CHANGE
-        public static final double LowerIZone = 0; // CHANGE
+        public static final double LowerKI = 0.1; // CHANGE
+        public static final double LowerKD = 0.1; // CHANGE
+        public static final double LowerIZone = 0.1; // CHANGE
         public static final double LowerFF = 1; // CHANGE
 
         public static final double MotorVelocity = 0.2; // CHANGE

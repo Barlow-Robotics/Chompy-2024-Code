@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -68,15 +69,14 @@ public class FloorIntake extends SubsystemBase {
     }
 
     public void startIntaking() {
-        upperMotor.set(FloorIntakeConstants.MotorVelocity);
-        lowerMotor.set(FloorIntakeConstants.MotorVelocity);
-
+        upperPidController.setReference(FloorIntakeConstants.MotorVelocity, ControlType.kVelocity);
+        lowerPidController.setReference(FloorIntakeConstants.MotorVelocity, ControlType.kVelocity);
         NetworkTableInstance.getDefault().getEntry("floorIntake/Desired Percent Output").setDouble(FloorIntakeConstants.MotorVelocity);
     }
 
     public void stopIntaking() {
-        upperMotor.set(0);
-        lowerMotor.set(0);
+        upperPidController.setReference(0, ControlType.kVelocity);
+        lowerPidController.setReference(0, ControlType.kVelocity);
     }
 
     public double getRPMUpper() {

@@ -51,10 +51,8 @@ public class RobotContainer {
     private final SetShooterPosition setShooterTrapAngleCmd = new SetShooterPosition(shooterAngleSub, elevatorSub, shooterAngleSub.shooterAngleState.Trap);
     /* CONTROLLERS */
     Joystick driverController; 
-    private final int DriverControllerPort = 1;
     
     Joystick operatorController;
-    private final int OperatorControllerPort = 2;
     
     /* BUTTONS */
    
@@ -96,7 +94,7 @@ public class RobotContainer {
 
         configureBindings();
 
-        if(DriverStation.getJoystickName(DriverControllerPort).equals("Logitech Extreme 3D")) {
+        if(DriverStation.getJoystickName(Constants.DriverControllerPort).equals("Logitech Extreme 3D")) {
                 driveSub.setDefaultCommand(
                 // The left stick controls translation of the robot.
                 // Turning is controlled by the X axis of the right stick.
@@ -110,7 +108,7 @@ public class RobotContainer {
                 new DriveRobot(
                         driveSub, 
                         driverController, 
-                        RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, 2, 
+                        RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
                         true));
         }
 
@@ -121,8 +119,8 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        driverController = new Joystick(DriverControllerPort);
-        operatorController = new Joystick(OperatorControllerPort);
+        driverController = new Joystick(Constants.DriverControllerPort);
+        operatorController = new Joystick(Constants.OperatorControllerPort);
         
         shootSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle 
         shootSpeakerButton.onTrue(setShooterSpeakerAngleCmd);

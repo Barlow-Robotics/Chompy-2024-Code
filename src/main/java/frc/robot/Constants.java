@@ -9,6 +9,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Joystick;
 
 public class Constants {
 
@@ -18,6 +19,9 @@ public class Constants {
     public static final double NeoMaxRPM = 5676; // CHANGE
     public static final double Falcon500MaxRPM = 6300;
 
+    public static final int DriverControllerPort = 1;
+    public static final int OperatorControllerPort = 2;
+    
     // beep boop beep
 
     public static final class ElectronicIDs {

@@ -146,10 +146,10 @@ public class RobotContainer {
         shootTrapButton.onTrue(setShooterTrapAngleCmd);
         shootTrapButton.onTrue(startShooterTrapCmd);
 
-        toggleFloorIntakeButton = new JoystickButton(operatorController, LogitechDAConstants.LeftBumper); //floor 
-        toggleFloorIntakeButton.onTrue(toggleIntakeCmd);     
+        // toggleFloorIntakeButton = new JoystickButton(operatorController, LogitechDAConstants.LeftBumper); //floor
         toggleFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); //floor 
         toggleFloorIntakeButton.onTrue(toggleIntakeCmd);
+        
         climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB);
         climbButton.onTrue(climbCmd);
 

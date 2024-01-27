@@ -67,10 +67,14 @@
       "Shuffleboard": {
         ".metadata": {
           "open": true
-        }
+        },
+        "open": true
       },
       "SmartDashboard": {
         "FloorIntake": {
+          "open": true
+        },
+        "Shooter": {
           "open": true
         },
         "open": true

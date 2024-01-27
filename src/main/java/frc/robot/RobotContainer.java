@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveRobot;
+import frc.robot.Constants.ElectronicIDs;
 import frc.robot.Constants.LogitechDAConstants;
 import frc.robot.Constants.RadioMasterConstants;
 import frc.robot.Constants.XboxControllerConstants;
@@ -30,7 +31,9 @@ import frc.robot.subsystems.*;
 import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
 
 public class RobotContainer {
+
     /* SUBSYSTEMS */
+
     public final Drive driveSub = new Drive();
     public final Shooter shooterSub = new Shooter();
     public final ShooterPosition shooterPositionSub = new ShooterPosition();
@@ -99,7 +102,7 @@ public class RobotContainer {
 
         configureBindings();
 
-        if(DriverStation.getJoystickName(Constants.DriverControllerPort).equals("Logitech Extreme 3D")) {
+        if(DriverStation.getJoystickName(ElectronicIDs.DriverControllerPort).equals("Logitech Extreme 3D")) {
                 driveSub.setDefaultCommand(
                 // The left stick controls translation of the robot.
                 // Turning is controlled by the X axis of the right stick.
@@ -120,7 +123,6 @@ public class RobotContainer {
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
         // SmartDashboard.putData("Auto Mode", autoChooser);
     }
-
 
     private void configureBindings() {
 

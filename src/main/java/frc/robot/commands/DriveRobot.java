@@ -3,8 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-import frc.robot.Constants;
-
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ElectronicIDs;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -62,7 +62,7 @@ public class DriveRobot extends Command {
         double rawX;
         double rawY;
         double rawRot;
-        if(DriverStation.getJoystickName(Constants.DriverControllerPort).equals("Logitech Extreme 3D")) {
+        if(DriverStation.getJoystickName(ElectronicIDs.DriverControllerPort).equals("Logitech Extreme 3D")) {
             rawX = -driverController.getRawAxis(this.ControllerYSpeedID);  
             rawY = -driverController.getRawAxis(this.ControllerXSpeedID);
             rawRot = -driverController.getRawAxis(this.ControllerRotID); 
@@ -74,9 +74,9 @@ public class DriveRobot extends Command {
 
         }
 
-        double XSpeed = MathUtil.applyDeadband(rawX, DeadBand) * Constants.DriveConstants.MaxDriveableVelocity;
-        double YSpeed = MathUtil.applyDeadband(rawY, DeadBand) * Constants.DriveConstants.MaxDriveableVelocity;
-        double Rot = MathUtil.applyDeadband(rawRot, 2*DeadBand) * Constants.DriveConstants.MaxDriveableVelocity;
+        double XSpeed = MathUtil.applyDeadband(rawX, DeadBand) * DriveConstants.MaxDriveableVelocity;
+        double YSpeed = MathUtil.applyDeadband(rawY, DeadBand) * DriveConstants.MaxDriveableVelocity;
+        double Rot = MathUtil.applyDeadband(rawRot, 2*DeadBand) * DriveConstants.MaxDriveableVelocity;
 
         driveSub.drive(XSpeed, YSpeed, Rot, FieldRelative);
 

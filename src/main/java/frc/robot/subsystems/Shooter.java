@@ -16,6 +16,7 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.DIOSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElectronicIDs;
@@ -59,6 +61,8 @@ public class Shooter extends SubsystemBase {
 
     private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
     private GenericEntry shuffleBoardSpeed = tab.add("ShuffleBoard Speed", 1).getEntry();
+    private GenericEntry shuffleBoardSpeedBool = tab.add("Use ShuffleBoard Speed", false).getEntry();
+    private double desiredRPSSmartDashboard;
 
     public Shooter() {
         lowerShooterMotor = new TalonFX(ElectronicIDs.LowerShooterMotorID); // slot 0
@@ -100,12 +104,15 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Desired RPS", desiredRPSSmartDashboard);
     }
 
     public void setVelocity(double rotsPerSecond) {
-        // if (shuffleBoardSpeed.getDouble(-1.0) <= Constants.Falcon500MaxRPM/60) { // max rps: 105
-        //     rotsPerSecond = shuffleBoardSpeed.getDouble(-1.0);
-        // }
+        if (shuffleBoardSpeedBool.getBoolean(false)) {
+            if (shuffleBoardSpeed.getDouble(-1.0) <= Constants.Falcon500MaxRPM/60) { // max rps: 105
+                        rotsPerSecond = shuffleBoardSpeed.getDouble(-1.0);
+            }
+        }
 
         lowerShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
         upperShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));

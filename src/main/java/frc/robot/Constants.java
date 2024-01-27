@@ -18,13 +18,14 @@ public class Constants {
     public static final double Neo550MaxRPM = 11000; // CHANGE
     public static final double NeoMaxRPM = 5676; // CHANGE
     public static final double Falcon500MaxRPM = 6300;
-
-    public static final int DriverControllerPort = 1;
-    public static final int OperatorControllerPort = 2;
+    public static final double KrakenX60MaxRPM = 6000;
     
     // beep boop beep
 
     public static final class ElectronicIDs {
+
+        public static final int DriverControllerPort = 1;
+        public static final int OperatorControllerPort = 2;
 
         /***************************** DRIVE *****************************/
 
@@ -62,6 +63,7 @@ public class Constants {
         public static final int LowerFloorMotorID = 52;
  
         /***************************** ELEVATOR *****************************/
+
         public static final int LeftElevatorMotorID = 61;
         public static final int RightElevatorMotorID = 62; 
 

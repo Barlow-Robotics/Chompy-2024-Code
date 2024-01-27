@@ -126,8 +126,8 @@ public class RobotContainer {
 
     private void configureBindings() {
 
-        driverController = new Joystick(Constants.DriverControllerPort);
-        operatorController = new Joystick(Constants.OperatorControllerPort);
+        driverController = new Joystick(ElectronicIDs.DriverControllerPort);
+        operatorController = new Joystick(ElectronicIDs.OperatorControllerPort);
 
         /******************** SHOOTING BUTTON ********************/
 

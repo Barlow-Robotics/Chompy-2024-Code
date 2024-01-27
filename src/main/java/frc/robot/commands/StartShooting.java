@@ -8,29 +8,26 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterVelState;
+import frc.robot.subsystems.ShooterPosition;
+import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
 
-public class SetShooterVelocity extends Command {
+public class StartShooting extends Command {
+  
+  Shooter shooterSub;
+  ShooterPosition shooterPositionSub;
 
-    Shooter shooterSub;
-    ShooterVelState state;
+  public StartShooting(Shooter s, ShooterPosition sp) {
+    shooterSub = s;
+    shooterPositionSub = sp;
+    addRequirements(shooterSub, shooterPositionSub);
+  }
 
-    public SetShooterVelocity(Shooter shooterSub, ShooterVelState state) {
-        this.shooterSub = shooterSub;
-        this.state = state;
-        addRequirements(shooterSub);
-    }
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    ShooterPositionState shooterPosition = shooterPositionSub.getShooterPosState();
 
-    @Override
-    public void initialize() {
-    }
-
-    @Override
-    public void execute() {
-        switch (state) {
-            case Stopped:
-                shooterSub.stopShooting();
-                shooterSub.shooterVelState = ShooterVelState.Stopped;
-                break;
+    switch (shooterPosition) {
             case Speaker:
                 shooterSub.setVelocity(ShooterConstants.SpeakerVelocity);
                 shooterSub.shooterVelState = ShooterVelState.Speaker;
@@ -52,14 +49,17 @@ public class SetShooterVelocity extends Command {
                 shooterSub.shooterVelState = ShooterVelState.Trap;
                 break;
         }
-    }
+  }
 
-    @Override
-    public void end(boolean interrupted) {
-    }
+  @Override
+  public void execute() {
+  }
 
-    @Override
-    public boolean isFinished() {
-        return true;
-    }
+  @Override
+  public void end(boolean interrupted) {}
+
+  @Override
+  public boolean isFinished() {
+    return true;
+  }
 }

@@ -27,8 +27,6 @@ public class Robot extends LoggedRobot {
     public void robotInit() {
         robotContainer = new RobotContainer();
 
-        // driveSub.resetEncoders();
-
         Logger.recordMetadata("ProjectName", "WPI-Swerve-Prototype"); // Set a metadata value
 
         if (isReal()) {
@@ -42,7 +40,8 @@ public class Robot extends LoggedRobot {
 
         Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
 
-        robotContainer.shooterSub.shooterVelState = ShooterVelState.Stopped;
+        robotContainer.shooterSub.stopShooting();
+        robotContainer.floorIntakeSub.stopIntaking();
     }
 
     @Override
@@ -50,7 +49,7 @@ public class Robot extends LoggedRobot {
         SmartDashboard.putData(CommandScheduler.getInstance());
         SmartDashboard.putData(robotContainer.driveSub);
         SmartDashboard.putData(robotContainer.shooterSub);
-        SmartDashboard.putData(robotContainer.shooterPositionSub);
+        // SmartDashboard.putData(robotContainer.shooterPositionSub);
         SmartDashboard.putData(robotContainer.floorIntakeSub);
 
         CommandScheduler.getInstance().run();

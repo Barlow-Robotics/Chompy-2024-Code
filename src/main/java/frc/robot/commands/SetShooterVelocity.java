@@ -28,7 +28,7 @@ public class SetShooterVelocity extends Command {
     public void execute() {
         switch (state) {
             case Stopped:
-                shooterSub.setVelocity(0);
+                shooterSub.stopShooting();
                 shooterSub.shooterVelState = ShooterVelState.Stopped;
                 break;
             case Speaker:

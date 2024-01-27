@@ -22,8 +22,7 @@ import frc.robot.Constants.LogitechDAConstants;
 import frc.robot.Constants.RadioMasterConstants;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.SetShooterVelocity;
-import frc.robot.commands.SetShooterPosition;
-import frc.robot.commands.Climb;
+// import frc.robot.commands.Climb;
 
 import frc.robot.commands.ToggleIntake;
 import frc.robot.subsystems.*;
@@ -32,7 +31,7 @@ public class RobotContainer {
     /* SUBSYSTEMS */
     public final Drive driveSub = new Drive();
     public final Shooter shooterSub = new Shooter();
-    public final ShooterPosition shooterPositionSub = new ShooterPosition();
+    // public final ShooterPosition shooterPositionSub = new ShooterPosition();
     public final FloorIntake floorIntakeSub = new FloorIntake();
 
     /* COMMANDS */
@@ -44,13 +43,13 @@ public class RobotContainer {
     private final SetShooterVelocity stopShooterCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Stopped);
     private final ToggleIntake toggleIntakeCmd = new ToggleIntake(floorIntakeSub);
 
-    private final SetShooterPosition setShooterSpeakerAngleCmd = new SetShooterPosition(shooterPositionSub, shooterPositionSub.shooterAngleState.Speaker);
-    private final SetShooterPosition setShooterAmpAngleCmd = new SetShooterPosition(shooterPositionSub, shooterPositionSub.shooterAngleState.Amp);
-    private final SetShooterPosition setShooterSourceAngleCmd = new SetShooterPosition(shooterPositionSub, shooterPositionSub.shooterAngleState.IntakeFromSource);
-    private final SetShooterPosition setShooterFloorAngleCmd = new SetShooterPosition(shooterPositionSub, shooterPositionSub.shooterAngleState.IntakeFromFloor);
-    private final SetShooterPosition setShooterTrapAngleCmd = new SetShooterPosition(shooterPositionSub, shooterPositionSub.shooterAngleState.Trap);
+    // private final SetShooterPosition setShooterSpeakerAngleCmd = new SetShooterPosition(shooterPositionSub, shooterPositionSub.shooterAngleState.Speaker);
+    // private final SetShooterPosition setShooterAmpAngleCmd = new SetShooterPosition(shooterPositionSub, shooterPositionSub.shooterAngleState.Amp);
+    // private final SetShooterPosition setShooterSourceAngleCmd = new SetShooterPosition(shooterPositionSub, shooterPositionSub.shooterAngleState.IntakeFromSource);
+    // private final SetShooterPosition setShooterFloorAngleCmd = new SetShooterPosition(shooterPositionSub, shooterPositionSub.shooterAngleState.IntakeFromFloor);
+    // private final SetShooterPosition setShooterTrapAngleCmd = new SetShooterPosition(shooterPositionSub, shooterPositionSub.shooterAngleState.Trap);
     
-    private final Climb climbCmd = new Climb(shooterPositionSub);
+    // private final Climb climbCmd = new Climb(shooterPositionSub);
     /* CONTROLLERS */
     Joystick driverController; 
     
@@ -151,7 +150,7 @@ public class RobotContainer {
         toggleFloorIntakeButton.onTrue(toggleIntakeCmd);
         
         climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB);
-        climbButton.onTrue(climbCmd);
+        // climbButton.onTrue(climbCmd);
 
     }
 

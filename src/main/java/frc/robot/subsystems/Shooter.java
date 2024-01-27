@@ -14,14 +14,17 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.DIOSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.Constants;
 import frc.robot.Constants.ElectronicIDs;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.sim.PhysicsSim;
@@ -53,6 +56,9 @@ public class Shooter extends SubsystemBase {
     DIOSim breakBeamSim;
 
     boolean simulationInitialized = false;
+
+    private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
+    private GenericEntry shuffleBoardSpeed = tab.add("ShuffleBoard Speed", 1).getEntry();
 
     public Shooter() {
         lowerShooterMotor = new TalonFX(ElectronicIDs.LowerShooterMotorID); // slot 0
@@ -97,10 +103,20 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setVelocity(double rotsPerSecond) {
-        // lowerShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
+        // if (shuffleBoardSpeed.getDouble(-1.0) <= Constants.Falcon500MaxRPM/60) { // max rps: 105
+        //     rotsPerSecond = shuffleBoardSpeed.getDouble(-1.0);
+        // }
+
+        lowerShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
         upperShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
 
         NetworkTableInstance.getDefault().getEntry("shooter/Desired Rotations Per Second").setDouble(rotsPerSecond);
+    }
+
+    public void stopShooting() {
+        lowerShooterMotor.setControl(brake);
+        upperShooterMotor.setControl(brake);
+        shooterVelState = ShooterVelState.Stopped;
     }
 
     public double getLowerShooterVelocity() {

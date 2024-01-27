@@ -64,6 +64,7 @@ public class Constants {
         /***************************** ELEVATOR *****************************/
         public static final int LeftElevatorMotorID = 61;
         public static final int RightElevatorMotorID = 62; 
+
         public static final int HallEffectID = 63; 
     }
 
@@ -113,10 +114,10 @@ public class Constants {
     public static final class ShooterConstants {
         public static final double GearRatio = 1; // CHANGE
 
-        public static final double SpeakerVelocity = 40; // CHANGE
-        public static final double AmpVelocity = 20; // CHANGE
-        public static final double SourceIntakeVelocity = -SpeakerVelocity; // CHANGE
-        public static final double ShooterFloorIntakeVelocity = -AmpVelocity; // CHANGE
+        public static final double SpeakerVelocity = 50; // CHANGE
+        public static final double AmpVelocity = 10; // CHANGE
+        public static final double SourceIntakeVelocity = -20; // CHANGE
+        public static final double ShooterFloorIntakeVelocity = -20; // CHANGE
         public static final double TrapVelocity = SpeakerVelocity; // CHANGE
 
         public static final double SpeakerAngle = 0; // CHANGE

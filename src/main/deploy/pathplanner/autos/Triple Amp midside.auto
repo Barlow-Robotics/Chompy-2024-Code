@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.514538001298225,
+      "y": 7.098630396334866
+    },
+    "rotation": 90.60929231736114
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Go to amp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Pick up piece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score piece to amp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Amp to sidemid-midpoint (ASMM)"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

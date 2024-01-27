@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveRobot;
+import frc.robot.Constants.ElectronicIDs;
 import frc.robot.Constants.LogitechDAConstants;
 import frc.robot.Constants.RadioMasterConstants;
 import frc.robot.Constants.XboxControllerConstants;
@@ -28,13 +29,16 @@ import frc.robot.commands.ToggleIntake;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
+
     /* SUBSYSTEMS */
+
     public final Drive driveSub = new Drive();
     public final Shooter shooterSub = new Shooter();
     // public final ShooterPosition shooterPositionSub = new ShooterPosition();
     public final FloorIntake floorIntakeSub = new FloorIntake();
 
     /* COMMANDS */
+
     private final SetShooterVelocity startShooterSpeakerCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Speaker);
     private final SetShooterVelocity startShooterAmpCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Amp);
     private final SetShooterVelocity startShooterSourceIntakeCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.IntakeFromSource);
@@ -50,9 +54,10 @@ public class RobotContainer {
     // private final SetShooterPosition setShooterTrapAngleCmd = new SetShooterPosition(shooterPositionSub, shooterPositionSub.shooterAngleState.Trap);
     
     // private final Climb climbCmd = new Climb(shooterPositionSub);
-    /* CONTROLLERS */
-    Joystick driverController; 
     
+    /* CONTROLLERS */
+
+    Joystick driverController; 
     Joystick operatorController;
     
     /* BUTTONS */
@@ -97,7 +102,7 @@ public class RobotContainer {
 
         configureBindings();
 
-        if(DriverStation.getJoystickName(Constants.DriverControllerPort).equals("Logitech Extreme 3D")) {
+        if(DriverStation.getJoystickName(ElectronicIDs.DriverControllerPort).equals("Logitech Extreme 3D")) {
                 driveSub.setDefaultCommand(
                 // The left stick controls translation of the robot.
                 // Turning is controlled by the X axis of the right stick.
@@ -119,11 +124,10 @@ public class RobotContainer {
         // SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
-
     private void configureBindings() {
 
-        driverController = new Joystick(Constants.DriverControllerPort);
-        operatorController = new Joystick(Constants.OperatorControllerPort);
+        driverController = new Joystick(ElectronicIDs.DriverControllerPort);
+        operatorController = new Joystick(ElectronicIDs.OperatorControllerPort);
         
         shootSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle 
         // shootSpeakerButton.onTrue(setShooterSpeakerAngleCmd);

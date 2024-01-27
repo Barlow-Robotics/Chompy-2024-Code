@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.514538001298225,
+      "y": 7.098630396334866
+    },
+    "rotation": 90.43225195707642
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score piece to amp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Amp to Piece to Speaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Amp to speaker (picked up top piece)"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

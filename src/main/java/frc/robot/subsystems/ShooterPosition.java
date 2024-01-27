@@ -4,8 +4,15 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -45,17 +52,45 @@ public class ShooterPosition extends SubsystemBase {
 
     public ShooterPosition() {
         angleMotor = new TalonFX(ElectronicIDs.AngleMotorID);
+        leftElevatorMotor = new TalonFX(ElectronicIDs.LeftElevatorMotorID);
+        rightElevatorMotor = new TalonFX(ElectronicIDs.RightElevatorMotorID);
 
         angleMotorSim = angleMotor.getSimState();
         leftMotorSim = leftElevatorMotor.getSimState();
         rightMotorSim = rightElevatorMotor.getSimState();
 
-        leftElevatorMotor = new TalonFX(ElectronicIDs.LeftElevatorMotorID);
-        rightElevatorMotor = new TalonFX(ElectronicIDs.RightElevatorMotorID);
-
         rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), true));
 
         bottomHallEffect = new DigitalInput(ElectronicIDs.HallEffectID);
+        TalonFXConfiguration configs = new TalonFXConfiguration();
+        configs.Slot0.kP = 0.5; // An error of 1 rotation per second results in 2V output (CHANGE)
+        // configs.Slot0.kI = 0.5; // An error of 1 rotation per second increases output by 0.5V every second (CHANGE)
+        // configs.Slot0.kD = 0.0001; // A change of 1 rotation per second squared results in 0.01 volts output (CHANGE)
+        configs.Slot0.kV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second (CHANGE)
+        configs.Voltage.PeakForwardVoltage = 8; // Peak output of 8 volts (CHANGE)
+        configs.Voltage.PeakReverseVoltage = -8; // CHANGE
+
+        MotorOutputConfigs upperMotorOutputConfigs = new MotorOutputConfigs();
+        upperMotorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+
+        StatusCode statusLeft = StatusCode.StatusCodeNotInitialized;
+        StatusCode statusRight = StatusCode.StatusCodeNotInitialized;
+        StatusCode statusAngle = StatusCode.StatusCodeNotInitialized;
+        for (int i = 0; i < 5; ++i) {
+            statusLeft = leftElevatorMotor.getConfigurator().apply(configs);
+            statusRight = rightElevatorMotor.getConfigurator().apply(configs);
+            statusRight = rightElevatorMotor.getConfigurator().apply(upperMotorOutputConfigs);
+            statusAngle = angleMotor.getConfigurator().apply(configs);
+            if (statusLeft.isOK() && statusRight.isOK() && statusAngle.isOK())
+                break;
+        }
+        if (!statusLeft.isOK()) {
+            System.out.println("Could not apply configs to left, error code: " + statusLeft.toString());
+        } else if (!statusRight.isOK()) {
+            System.out.println("Could not apply configs to right, error code: " + statusRight.toString());
+        } else if (!statusAngle.isOK()) {
+            System.out.println("Could not apply configs to angle, error code: " + statusAngle.toString());
+        }
     }
 
     @Override

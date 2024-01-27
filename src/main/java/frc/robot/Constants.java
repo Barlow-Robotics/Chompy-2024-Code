@@ -64,7 +64,7 @@ public class Constants {
         /***************************** ELEVATOR *****************************/
         public static final int LeftElevatorMotorID = 61;
         public static final int RightElevatorMotorID = 62; 
-        public static final int HallEffectID = 63; 
+        public static final int HallEffectID = 29; 
     }
 
     /***************************************************************************/
@@ -119,11 +119,11 @@ public class Constants {
         public static final double ShooterFloorIntakeVelocity = -AmpVelocity; // CHANGE
         public static final double TrapVelocity = SpeakerVelocity; // CHANGE
 
-        public static final double SpeakerAngle = 0; // CHANGE
-        public static final double AmpAngle = 0; // CHANGE
-        public static final double IntakeFromSourceAngle = 0; // CHANGE
-        public static final double IntakeFromFloorAngle = 0; // CHANGE
-        public static final double TrapAngle = 0; // CHANGE
+        public static final double SpeakerAngle = 30; // CHANGE
+        public static final double AmpAngle = 60; // CHANGE
+        public static final double IntakeFromSourceAngle = 90; // CHANGE
+        public static final double IntakeFromFloorAngle = 120; // CHANGE
+        public static final double TrapAngle = 150; // CHANGE
     }
 
     /***************************************************************************/
@@ -177,16 +177,16 @@ public class Constants {
         public static final int RightStickY = 3;
         public static final int LeftTrigger = 7; // Speaker
         public static final int RightTrigger = 8; // Amp
-        public static final int ButtonA = 2;
+        public static final int ButtonA = 2; // Move Source
         public static final int ButtonB = 3; // Trapdoor
-        public static final int ButtonX = 1;
-        public static final int ButtonY = 4;
+        public static final int ButtonX = 1; // Move Floor
+        public static final int ButtonY = 4; // Move Trap
         public static final int LeftBumper = 5; // Floor Intake
         public static final int RightBumper = 6; // Source Intake
-        public static final int BackButton = 9;
+        public static final int BackButton = 9; // Climb
         public static final int StartButton = 10;
-        public static final int LeftStick = 11;
-        public static final int RightStick = 12;
+        public static final int LeftStick = 11; // Move Speaker
+        public static final int RightStick = 12; // Move Amp
         public static final double ForwardAxisAttenuation = -0.5;
         public static final double LateralAxisAttenuation = 0.5;
         public static final double YawAxisAttenuation = 0.5;
@@ -214,18 +214,18 @@ public class Constants {
         public static final int RightTrigger = 4;
         public static final int RightStickX = 4;
         public static final int RightStickY = 5;
-
-        public static final int ButtonA = 1;
-        public static final int ButtonB = 2;
-        public static final int ButtonX = 3;
-        public static final int ButtonY = 4;
-        public static final int LeftBumper = 5;
-        public static final int RightBumper = 6;
+        // Angle Trap?
+        public static final int ButtonA = 1; // Shoot Trap
+        public static final int ButtonB = 2; // Climb
+        public static final int ButtonX = 3; // Floor Intake
+        public static final int ButtonY = 4; // Angle Speaker
+        public static final int LeftBumper = 5; // Shoot Amp
+        public static final int RightBumper = 6; // Shoot Speaker
         // public static final int BackButton = 7;
-        public static final int StartButton = 8;
-        public static final int LeftStick = 9;
-        public static final int RightStick = 10;
-        public static final int WindowButton = 7;
+        public static final int StartButton = 8; // Angle Amp
+        public static final int LeftStick = 9; // Angle Source
+        public static final int RightStick = 10; // Source Intake
+        public static final int WindowButton = 7; // Angle Floor
 
         public static final double ForwardAxisAttenuation = -0.5;
         public static final double LateralAxisAttenuation = 0.5;

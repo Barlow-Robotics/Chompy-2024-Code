@@ -84,7 +84,7 @@ public class Shooter extends SubsystemBase {
         if (!statusLeft.isOK()) {
             System.out.println("Could not apply configs to left, error code: " + statusLeft.toString());
         } else if (!statusRight.isOK()) {
-            System.out.println("Could not apply configs to right, error code: " + statusLeft.toString());
+            System.out.println("Could not apply configs to right, error code: " + statusRight.toString());
         }
 
         breakBeam = new DigitalInput(ElectronicIDs.BreakBeamID);

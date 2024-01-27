@@ -28,6 +28,10 @@ public class StartShooting extends Command {
     ShooterPositionState shooterPosition = shooterPositionSub.getShooterPosState();
 
     switch (shooterPosition) {
+            case MovingToPosition:
+              shooterSub.setVelocity(0);
+              shooterSub.setShooterVelState(ShooterVelState.Stopped);
+              break;
             case Speaker:
                 shooterSub.setVelocity(ShooterConstants.SpeakerVelocity);
                 shooterSub.shooterVelState = ShooterVelState.Speaker;

@@ -171,7 +171,15 @@ public class Shooter extends SubsystemBase {
         return false;
     }
 
-    public String getShooterVelState() {
+    public void setShooterVelState(ShooterVelState newState) {
+        shooterVelState = newState;
+    }
+
+    public ShooterVelState getShooterVelState() {
+        return shooterVelState;
+    }
+
+    public String getShooterVelStateAsString() {
         return shooterVelState.toString();
     }
 
@@ -179,7 +187,7 @@ public class Shooter extends SubsystemBase {
 
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Shooter Subsystem");
-        builder.addStringProperty("State", this::getShooterVelState, null);
+        builder.addStringProperty("State", this::getShooterVelStateAsString, null);
         builder.addDoubleProperty("Actual Lower Shooter Velocity", this::getLowerShooterVelocity, null);
         builder.addDoubleProperty("Actual Upper Shooter Velocity", this::getUpperShooterVelocity, null);
         builder.addDoubleProperty("Lower Shooter Closed Loop Error", this::getLowerShooterClosedLoopError, null);

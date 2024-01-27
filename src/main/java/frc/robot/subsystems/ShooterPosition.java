@@ -38,7 +38,7 @@ public class ShooterPosition extends SubsystemBase {
             1, 0.0005);
 
     public enum ShooterPositionState {
-        Speaker, Amp, IntakeFromSource, IntakeFromFloor, Trap
+        Speaker, Amp, IntakeFromSource, IntakeFromFloor, Trap, MovingToPosition
     }
 
     public ShooterPositionState shooterPosState = ShooterPositionState.IntakeFromFloor;
@@ -72,6 +72,10 @@ public class ShooterPosition extends SubsystemBase {
 
     public double getAngle() {
         return angleMotor.getPosition().getValue();
+    }
+
+    public void setShooterPosState(ShooterPositionState newState) {
+        shooterPosState = newState;
     }
 
     public ShooterPositionState getShooterPosState() {

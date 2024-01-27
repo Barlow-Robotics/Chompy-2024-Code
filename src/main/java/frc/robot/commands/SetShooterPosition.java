@@ -29,23 +29,33 @@ public class SetShooterPosition extends Command {
     public void initialize() {
         switch (desiredState) {
             case Speaker:
+                shooterPositionSub.setShooterPosState(ShooterPositionState.MovingToPosition);
                 desiredAngle = ShooterConstants.SpeakerAngle;
                 desiredHeight = ElevatorConstants.SpeakerHeight;
+                shooterPositionSub.setShooterPosState(ShooterPositionState.Speaker);
                 break;
             case Amp:
+                shooterPositionSub.setShooterPosState(ShooterPositionState.MovingToPosition);
                 desiredAngle = ShooterConstants.AmpAngle;
                 desiredHeight = ElevatorConstants.AmpHeight;
+                shooterPositionSub.setShooterPosState(ShooterPositionState.Amp);
                 break;
             case IntakeFromSource:
+                shooterPositionSub.setShooterPosState(ShooterPositionState.MovingToPosition);
                 desiredAngle = ShooterConstants.IntakeFromSourceAngle;
                 desiredHeight = ElevatorConstants.IntakeFromSourceHeight;
+                shooterPositionSub.setShooterPosState(ShooterPositionState.IntakeFromSource);
                 break;
             case IntakeFromFloor:
+                shooterPositionSub.setShooterPosState(ShooterPositionState.MovingToPosition);
                 desiredAngle = ShooterConstants.IntakeFromFloorAngle;
                 desiredHeight = ElevatorConstants.IntakeFromFloorHeight;
+                shooterPositionSub.setShooterPosState(ShooterPositionState.IntakeFromFloor);
                 break;
             case Trap:
+                shooterPositionSub.setShooterPosState(ShooterPositionState.MovingToPosition);
                 shooterPositionSub.setAngle(ShooterConstants.TrapAngle);
+                shooterPositionSub.setShooterPosState(ShooterPositionState.Trap);
                 break;
         }
     }

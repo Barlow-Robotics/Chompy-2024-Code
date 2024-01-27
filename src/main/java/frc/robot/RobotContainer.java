@@ -100,7 +100,7 @@ public class RobotContainer {
         );
 
         NamedCommands.registerCommand("Leave Area", Commands.print("***********************************Left Area"));
-        NamedCommands.registerCommand("Shoot Amp", Commands.print("*******************************Shot in amp"));
+        NamedCommands.registerCommand("Shoot into Amp", Commands.print("*******************************Shot in amp"));
 
         configureBindings();
 
@@ -176,6 +176,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new PathPlannerAuto("Score Amp");
+        return new PathPlannerAuto("Triple Amp Midside");
     }
 }

@@ -14,19 +14,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Leave Area"
+            "pathName": "[test]Leave Area"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Score In Amp"
+            "pathName": "[test]Score In Amp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Go to Center"
+            "pathName": "[test]Go to Center"
           }
         }
       ]

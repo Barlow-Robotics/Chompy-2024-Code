@@ -14,19 +14,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Go to amp"
+            "pathName": "Go to amp from left position"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Pick up piece"
+            "pathName": "amp to first note"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Score piece to amp"
+            "pathName": "Score amp from first note"
           }
         },
         {

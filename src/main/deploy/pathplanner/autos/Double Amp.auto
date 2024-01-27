@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.514538001298225,
+      "y": 7.098630396334866
+    },
+    "rotation": 90.02657842746835
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Go to amp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Pick up peice"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

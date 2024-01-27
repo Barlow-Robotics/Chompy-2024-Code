@@ -20,7 +20,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "New Path"
+            "pathName": "Turn in place"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Get First Speaker piece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Go to speaker from left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Speaker to side-midpoint (SSM)"
           }
         }
       ]

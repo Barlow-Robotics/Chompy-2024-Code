@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.84,
-        "y": 7.57
+        "x": 2.12,
+        "y": 6.1
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.10840229889415,
-        "y": 7.094254565374802
+        "x": 2.8280939848916735,
+        "y": 6.349080776865257
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.2198544994104914,
-        "y": 6.976035336399031
+        "x": 8.5931294038514,
+        "y": 7.4330238290106205
       },
       "prevControl": {
-        "x": 2.459566057191816,
-        "y": 6.964500585717589
+        "x": 7.724870412703789,
+        "y": 7.026537761408856
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,9 +30,19 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.6,
-      "rotationDegrees": 0.0,
-      "rotateFast": true
+      "waypointRelativePos": 0.0,
+      "rotationDegrees": 16.97527844447147,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.3,
+      "rotationDegrees": 4.793804329332359,
+      "rotateFast": false
     }
   ],
   "constraintZones": [],
@@ -49,7 +59,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Paths",
+  "folder": "Speaker",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

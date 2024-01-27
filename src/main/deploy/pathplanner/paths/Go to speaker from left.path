@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.514538001298225,
-        "y": 7.098630396334866
+        "x": 0.49942318674856173,
+        "y": 7.052222765964194
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0126967082292375,
-        "y": 7.29661525367827
+        "x": 1.050856320280743,
+        "y": 6.8361525590920795
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.841858620284405,
-        "y": 7.573832166321049
+        "x": 2.121946006115528,
+        "y": 6.100004050997624
       },
       "prevControl": {
-        "x": 1.3971724435986186,
-        "y": 7.395019599740693
+        "x": 1.7041909418510344,
+        "y": 6.3633386710894495
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,35 +30,15 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0,
-      "rotationDegrees": 90.0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 90.0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 0,
+      "waypointRelativePos": 0.0,
+      "rotationDegrees": 180.0,
       "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Score In Amp",
+      "name": "Shoot into Speaker",
       "waypointRelativePos": 1.0,
       "command": {
         "type": "parallel",
@@ -67,7 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Shoot into Amp"
+                "name": "Shoot into Speaker"
               }
             },
             {
@@ -89,11 +69,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.84615306947026,
+    "rotation": -155.86062033933155,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Paths",
+  "folder": "Speaker",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

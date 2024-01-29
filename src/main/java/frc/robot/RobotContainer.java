@@ -17,16 +17,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.DriveRobot;
 import frc.robot.Constants.ElectronicIDs;
 import frc.robot.Constants.LogitechDAConstants;
 import frc.robot.Constants.RadioMasterConstants;
 import frc.robot.Constants.XboxControllerConstants;
-import frc.robot.commands.StartShooting;
-import frc.robot.commands.StopShooting;
-import frc.robot.commands.SetShooterPosition;
+import frc.robot.commands.*;
 
-import frc.robot.commands.ToggleIntake;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
 
@@ -48,9 +44,9 @@ public class RobotContainer {
 
     private final StartShooting startShootingCmd = new StartShooting(shooterSub, shooterPositionSub);
     private final StopShooting stopShootingCmd = new StopShooting(shooterSub);
-    // private final SetShooterVelocity stopShooterCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Stopped);
     
-    private final ToggleIntake toggleIntakeCmd = new ToggleIntake(floorIntakeSub);
+    private final StartIntake startIntakeCmd = new StartIntake(floorIntakeSub);
+    private final StopIntake stopIntakeCmd = new StopIntake(floorIntakeSub);
 
     // private final Climb climbCmd = new Climb(shooterPositionSub);
 

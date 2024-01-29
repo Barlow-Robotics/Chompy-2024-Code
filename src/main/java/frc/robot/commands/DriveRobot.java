@@ -50,28 +50,22 @@ public class DriveRobot extends Command {
 
     @Override
     public void execute() {
-
-        // double rawX = driverController.getRawAxis(this.ControllerXSpeedID);
-        // double rawY = driverController.getRawAxis(this.ControllerYSpeedID);
-
         // Since the coordinate systems differ from the controller (x is left right and y is fwd back) 
         // and the chassis (positive X is forward, Positive Y is left), we use the controller X input as the drive Y input
         // and the controller Y input as the drive X input.
 
-// wpk had to change signs for logitech controller. Not sure if radio master needs this
         double rawX;
         double rawY;
         double rawRot;
+        
         if(DriverStation.getJoystickName(ElectronicIDs.DriverControllerPort).equals("Logitech Extreme 3D")) {
             rawX = -driverController.getRawAxis(this.ControllerYSpeedID);  
             rawY = -driverController.getRawAxis(this.ControllerXSpeedID);
             rawRot = -driverController.getRawAxis(this.ControllerRotID); 
-        }
-        else {
+        } else {
             rawX = driverController.getRawAxis(this.ControllerYSpeedID);  
             rawY = -driverController.getRawAxis(this.ControllerXSpeedID);
             rawRot = -driverController.getRawAxis(this.ControllerRotID); 
-
         }
 
         double XSpeed = MathUtil.applyDeadband(rawX, DeadBand) * DriveConstants.MaxDriveableVelocity;

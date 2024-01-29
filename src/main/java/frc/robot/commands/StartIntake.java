@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FloorIntake;
 
@@ -22,6 +24,7 @@ public class StartIntake extends Command {
   @Override
   public void execute() {
     intakeSub.startIntaking();
+    Logger.recordOutput("FloorIntake/isIntaking", intakeSub.isIntaking());
   }
 
   @Override

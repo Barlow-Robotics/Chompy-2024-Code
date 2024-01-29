@@ -68,12 +68,6 @@ public class RobotContainer {
 
     private Trigger climbButton;
 
-    private Trigger moveToSpeakerButton;
-    private Trigger moveToAmpButton;
-    private Trigger moveToSourceButton;
-    private Trigger moveToFloorButton;
-    private Trigger moveToTrapButton;
-
     // private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
@@ -160,25 +154,12 @@ public class RobotContainer {
         // ***************** MISC *****************
         // toggleFloorIntakeButton = new JoystickButton(operatorController, LogitechDAConstants.LeftBumper); //floor
         toggleFloorIntakeButton = new JoystickButton(operatorController, LogitechDAConstants.LeftBumper); //floor 
-        toggleFloorIntakeButton.onTrue(toggleIntakeCmd);
+        toggleFloorIntakeButton.onTrue(startIntakeCmd).onFalse(stopIntakeCmd);
 
         /******************** CLIMB BUTTON ********************/
         
         climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB);
         // climbButton.onTrue(climbCmd);
-
-        // ***************** ANGLEING *****************
-        moveToSpeakerButton = new JoystickButton(operatorController, LogitechDAConstants.LeftStick);
-        moveToSpeakerButton.onTrue(setShooterSpeakerAngleCmd);
-        moveToAmpButton = new JoystickButton(operatorController, LogitechDAConstants.RightStick);
-        moveToAmpButton.onTrue(setShooterAmpAngleCmd);
-        moveToSourceButton = new JoystickButton(operatorController, LogitechDAConstants.ButtonA);
-        moveToSourceButton.onTrue(setShooterSourceAngleCmd);
-        moveToFloorButton = new JoystickButton(operatorController, LogitechDAConstants.ButtonX);
-        moveToFloorButton.onTrue(setShooterFloorAngleCmd);
-        moveToTrapButton = new JoystickButton(operatorController, LogitechDAConstants.ButtonY);
-        moveToTrapButton.onTrue(setShooterTrapAngleCmd);
-
 
     }
 

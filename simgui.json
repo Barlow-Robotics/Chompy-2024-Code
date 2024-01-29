@@ -67,10 +67,14 @@
       "Shuffleboard": {
         ".metadata": {
           "open": true
-        }
+        },
+        "open": true
       },
       "SmartDashboard": {
         "ShooterPosition": {
+          "open": true
+        },
+        "Shooter": {
           "open": true
         },
         "open": true

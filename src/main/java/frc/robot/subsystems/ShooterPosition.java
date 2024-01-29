@@ -45,10 +45,10 @@ public class ShooterPosition extends SubsystemBase {
             1, 0.0005);
 
     public enum ShooterPositionState {
-        Speaker, Amp, IntakeFromSource, IntakeFromFloor, Trap
+        Speaker, Amp, IntakeFromSource, IntakeFromFloor, Trap, MovingToPosition
     }
 
-    public ShooterPositionState shooterAngleState = ShooterPositionState.IntakeFromFloor;
+    public ShooterPositionState shooterPosState = ShooterPositionState.IntakeFromFloor;
 
     public ShooterPosition() {
         angleMotor = new TalonFX(ElectronicIDs.AngleMotorID);
@@ -109,8 +109,16 @@ public class ShooterPosition extends SubsystemBase {
         return angleMotor.getPosition().getValue();
     }
 
-    public String getShooterAngleState() {
-        return shooterAngleState.toString();
+    public void setShooterPosState(ShooterPositionState newState) {
+        shooterPosState = newState;
+    }
+
+    public ShooterPositionState getShooterPosState() {
+        return shooterPosState;
+    }
+
+    public String getShooterPosStateAsString() {
+        return shooterPosState.toString();
     }
 
     public boolean isSpeakerAngled() {
@@ -152,7 +160,7 @@ public class ShooterPosition extends SubsystemBase {
 
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Shooter Angle Subsystem");
-        builder.addStringProperty("State", this::getShooterAngleState, null);
+        builder.addStringProperty("State", this::getShooterPosStateAsString, null);
         builder.addDoubleProperty("Angle", this::getAngle, null);
         builder.addBooleanProperty("Speaker Angle", this::isSpeakerAngled, null);
         builder.addBooleanProperty("Amp Angle", this::isAmpAngled, null);

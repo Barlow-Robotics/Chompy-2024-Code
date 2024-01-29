@@ -14,14 +14,19 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.DIOSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.Constants;
 import frc.robot.Constants.ElectronicIDs;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.sim.PhysicsSim;
@@ -53,6 +58,11 @@ public class Shooter extends SubsystemBase {
     DIOSim breakBeamSim;
 
     boolean simulationInitialized = false;
+
+    private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
+    private GenericEntry shuffleBoardSpeed = tab.add("ShuffleBoard Speed", 1).getEntry();
+    private GenericEntry shuffleBoardSpeedBool = tab.add("Use ShuffleBoard Speed", false).getEntry();
+    private double desiredRPSSmartDashboard;
 
     public Shooter() {
         lowerShooterMotor = new TalonFX(ElectronicIDs.LowerShooterMotorID); // slot 0
@@ -94,13 +104,26 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Desired RPS", desiredRPSSmartDashboard);
     }
 
     public void setVelocity(double rotsPerSecond) {
-        // lowerShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
+        if (shuffleBoardSpeedBool.getBoolean(false)) {
+            if (shuffleBoardSpeed.getDouble(-1.0) <= Constants.Falcon500MaxRPM/60) { // max rps: 105
+                        rotsPerSecond = shuffleBoardSpeed.getDouble(-1.0);
+            }
+        }
+
+        lowerShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
         upperShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
 
         NetworkTableInstance.getDefault().getEntry("shooter/Desired Rotations Per Second").setDouble(rotsPerSecond);
+    }
+
+    public void stopShooting() {
+        lowerShooterMotor.setControl(brake);
+        upperShooterMotor.setControl(brake);
+        shooterVelState = ShooterVelState.Stopped;
     }
 
     public double getLowerShooterVelocity() {
@@ -148,7 +171,15 @@ public class Shooter extends SubsystemBase {
         return false;
     }
 
-    public String getShooterVelState() {
+    public void setShooterVelState(ShooterVelState newState) {
+        shooterVelState = newState;
+    }
+
+    public ShooterVelState getShooterVelState() {
+        return shooterVelState;
+    }
+
+    public String getShooterVelStateAsString() {
         return shooterVelState.toString();
     }
 
@@ -156,7 +187,7 @@ public class Shooter extends SubsystemBase {
 
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Shooter Subsystem");
-        builder.addStringProperty("State", this::getShooterVelState, null);
+        builder.addStringProperty("State", this::getShooterVelStateAsString, null);
         builder.addDoubleProperty("Actual Lower Shooter Velocity", this::getLowerShooterVelocity, null);
         builder.addDoubleProperty("Actual Upper Shooter Velocity", this::getUpperShooterVelocity, null);
         builder.addDoubleProperty("Lower Shooter Closed Loop Error", this::getLowerShooterClosedLoopError, null);

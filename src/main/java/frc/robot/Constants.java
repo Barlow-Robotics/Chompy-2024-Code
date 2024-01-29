@@ -18,13 +18,14 @@ public class Constants {
     public static final double Neo550MaxRPM = 11000; // CHANGE
     public static final double NeoMaxRPM = 5676; // CHANGE
     public static final double Falcon500MaxRPM = 6300;
-
-    public static final int DriverControllerPort = 1;
-    public static final int OperatorControllerPort = 2;
+    public static final double KrakenX60MaxRPM = 6000;
     
     // beep boop beep
 
     public static final class ElectronicIDs {
+
+        public static final int DriverControllerPort = 1;
+        public static final int OperatorControllerPort = 2;
 
         /***************************** DRIVE *****************************/
 
@@ -62,9 +63,11 @@ public class Constants {
         public static final int LowerFloorMotorID = 52;
  
         /***************************** ELEVATOR *****************************/
+
         public static final int LeftElevatorMotorID = 61;
         public static final int RightElevatorMotorID = 62; 
-        public static final int HallEffectID = 29; 
+
+        public static final int HallEffectID = 63; 
     }
 
     /***************************************************************************/
@@ -113,10 +116,10 @@ public class Constants {
     public static final class ShooterConstants {
         public static final double GearRatio = 1; // CHANGE
 
-        public static final double SpeakerVelocity = 40; // CHANGE
-        public static final double AmpVelocity = 20; // CHANGE
-        public static final double SourceIntakeVelocity = -SpeakerVelocity; // CHANGE
-        public static final double ShooterFloorIntakeVelocity = -AmpVelocity; // CHANGE
+        public static final double SpeakerVelocity = 50; // CHANGE
+        public static final double AmpVelocity = 10; // CHANGE
+        public static final double SourceIntakeVelocity = -20; // CHANGE
+        public static final double ShooterFloorIntakeVelocity = -20; // CHANGE
         public static final double TrapVelocity = SpeakerVelocity; // CHANGE
 
         public static final double SpeakerAngle = 30; // CHANGE

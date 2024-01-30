@@ -3,41 +3,57 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.12,
-        "y": 6.1
+        "x": 2.11,
+        "y": 5.58
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8280939848916735,
-        "y": 6.349080776865257
+        "x": 2.7674625349250697,
+        "y": 5.865751324095241
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.328474250698502,
-        "y": 6.760317778448057
+        "x": 5.144975493654691,
+        "y": 6.3971821230679495
       },
       "prevControl": {
-        "x": 5.3335492999111,
-        "y": 6.419907488252477
+        "x": 3.8442953022574455,
+        "y": 6.374407226347932
       },
       "nextControl": {
-        "x": 5.309883080486076,
-        "y": 8.007325518073033
+        "x": 6.467643745472676,
+        "y": 6.420342030498876
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.5931294038514,
-        "y": 7.4330238290106205
+        "x": 7.6892991702650075,
+        "y": 5.820916118684089
       },
       "prevControl": {
-        "x": 8.546764866967234,
-        "y": 7.244466559245619
+        "x": 7.032209324802461,
+        "y": 5.822748894144389
+      },
+      "nextControl": {
+        "x": 8.178982751484021,
+        "y": 5.819550277989445
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.385343465131376,
+        "y": 5.820916118684089
+      },
+      "prevControl": {
+        "x": 8.032956565913132,
+        "y": 5.822935187537042
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,18 +62,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.5,
+      "waypointRelativePos": 2,
       "rotationDegrees": 0,
-      "rotateFast": true
-    },
-    {
-      "waypointRelativePos": 0.4,
-      "rotationDegrees": -165.0347575993066,
-      "rotateFast": true
-    },
-    {
-      "waypointRelativePos": 0,
-      "rotationDegrees": -166.30578852347668,
       "rotateFast": false
     }
   ],

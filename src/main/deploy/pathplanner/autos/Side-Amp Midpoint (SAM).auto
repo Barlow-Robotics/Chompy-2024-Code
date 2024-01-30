@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.49942318674856173,
-      "y": 7.052222765964194
+      "x": 0.490784250087019,
+      "y": 7.039008480794739
     },
-    "rotation": 178.42
+    "rotation": 90.05134382948182
   },
   "command": {
     "type": "sequential",
@@ -14,31 +14,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Go to speaker from left"
+            "pathName": "Side-To-Amp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Turn in place"
+            "pathName": "Turn at amp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Get First Speaker piece"
+            "pathName": "Amp-to-midpiece"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Go to speaker from left"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Speaker to side-midpoint (SSM)"
+            "pathName": "midpeice-to-speaker"
           }
         }
       ]

@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.12,
-        "y": 6.1
+        "x": 2.11,
+        "y": 5.58
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8280939848916735,
-        "y": 6.349080776865257
+        "x": 2.6530288384650844,
+        "y": 5.572511265392902
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.328474250698502,
-        "y": 6.760317778448057
+        "x": 3.383278535075589,
+        "y": 5.58
       },
       "prevControl": {
-        "x": 5.3335492999111,
-        "y": 6.419907488252477
+        "x": 3.184367979708182,
+        "y": 5.57673678286014
       },
       "nextControl": {
-        "x": 5.309883080486076,
-        "y": 8.007325518073033
+        "x": 3.582189090442996,
+        "y": 5.58326321713986
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.5931294038514,
-        "y": 7.4330238290106205
+        "x": 2.11,
+        "y": 5.579037699672622
       },
       "prevControl": {
-        "x": 8.546764866967234,
-        "y": 7.244466559245619
+        "x": 1.6006601896537132,
+        "y": 5.583960300073378
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,23 +46,36 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.5,
+      "waypointRelativePos": 0.05,
       "rotationDegrees": 0,
-      "rotateFast": true
+      "rotateFast": false
     },
     {
-      "waypointRelativePos": 0.4,
-      "rotationDegrees": -165.0347575993066,
-      "rotateFast": true
-    },
-    {
-      "waypointRelativePos": 0,
-      "rotationDegrees": -166.30578852347668,
+      "waypointRelativePos": 0.35,
+      "rotationDegrees": 0.0,
       "rotateFast": false
     }
   ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Prepare to shoot into speaker",
+      "waypointRelativePos": 2.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot into Speaker"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -71,7 +84,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -179.55792105443166,
     "rotateFast": false
   },
   "reversed": false,

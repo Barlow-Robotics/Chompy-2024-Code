@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.514538001298225,
-        "y": 7.098630396334866
+        "x": 8.12,
+        "y": 7.45
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0126967082292375,
-        "y": 7.29661525367827
+        "x": 7.397129794259588,
+        "y": 7.408123253746508
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.841858620284405,
-        "y": 7.573832166321049
+        "x": 2.5761604648209295,
+        "y": 6.240425371475743
       },
       "prevControl": {
-        "x": 1.3971724435986186,
-        "y": 7.395019599740693
+        "x": 4.720887176149352,
+        "y": 6.827221115379731
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,35 +30,15 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0,
-      "rotationDegrees": 90.0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 90.0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 0,
-      "rotateFast": false
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": -162.4955284940605,
+      "rotateFast": true
     }
   ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Score In Amp",
+      "name": "New Event Marker",
       "waypointRelativePos": 1.0,
       "command": {
         "type": "parallel",
@@ -67,13 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Shoot into Amp"
-              }
-            },
-            {
-              "type": "wait",
-              "data": {
-                "waitTime": 2.0
+                "name": "Shoot into Speaker"
               }
             }
           ]
@@ -89,11 +63,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.84615306947026,
+    "rotation": -163.036942295949,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Amp",
+  "folder": "Speaker",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

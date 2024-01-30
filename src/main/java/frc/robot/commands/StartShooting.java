@@ -45,7 +45,7 @@ public class StartShooting extends Command {
                 shooterSub.shooterVelState = ShooterVelState.IntakeFromSource;
                 break;
             case IntakeFromFloor:
-                shooterSub.setVelocity(ShooterConstants.ShooterFloorIntakeVelocity);
+                shooterSub.setVelocity(ShooterConstants.FloorIntakeVelocity);
                 shooterSub.shooterVelState = ShooterVelState.IntakeFromFloor;
                 break;
             case Trap:

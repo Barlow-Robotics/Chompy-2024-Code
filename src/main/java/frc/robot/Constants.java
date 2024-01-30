@@ -138,10 +138,12 @@ public class Constants {
     public static final class ShooterConstants {
         public static final double GearRatio = 1; // CHANGE
 
+        public static final double jKgMetersSquared = 0.0005;
+
         public static final double SpeakerVelocity = 50; // CHANGE
         public static final double AmpVelocity = 10; // CHANGE
         public static final double SourceIntakeVelocity = -20; // CHANGE
-        public static final double ShooterFloorIntakeVelocity = -20; // CHANGE
+        public static final double FloorIntakeVelocity = -20; // CHANGE
         public static final double TrapVelocity = SpeakerVelocity; // CHANGE
 
         public static final double SpeakerAngle = 30; // CHANGE
@@ -149,6 +151,15 @@ public class Constants {
         public static final double IntakeFromSourceAngle = 90; // CHANGE
         public static final double IntakeFromFloorAngle = 120; // CHANGE
         public static final double TrapAngle = 150; // CHANGE
+
+        public static final double ShooterKP = 0.5; // An error of 1 rotation per second results in 2V output
+        public static final double ShooterKI = 0.5; // An error of 1 rotation per second increases output by 0.5V every second
+        public static final double ShooterKD =  0.0001; // A change of 1 rotation per second squared results in 0.01 volts output // CHANGE ?
+        public static final double ShooterKV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
+        
+        public static final double PeakShooterForwardVoltage = 8; // Peak output of 8 voltspublic static final double PeakShooterForwardVoltage = 8; // Peak output of 8 volts
+        public static final double PeakShooterReverseVoltage = -8; 
+
     }
 
     /***************************************************************************/

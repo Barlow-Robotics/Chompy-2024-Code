@@ -12,7 +12,6 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FloorIntakeConstants;
 import frc.robot.Constants;
@@ -22,11 +21,6 @@ import org.littletonrobotics.junction.Logger;
 
 public class FloorIntake extends SubsystemBase {
 
-    // temp constants - move to constants file?
-    boolean simulationInitialized = false;
-    // private static final int simulationVelocity = 6800; // CHANGE
-    // private static final double simulationTime = 0.5; // CHANGE
-
     CANSparkMax upperMotor;
     RelativeEncoder upperEncoder;
     SparkPIDController upperPidController;
@@ -34,6 +28,9 @@ public class FloorIntake extends SubsystemBase {
     CANSparkMax lowerMotor;
     RelativeEncoder lowerEncoder;
     SparkPIDController lowerPidController;
+
+    boolean simulationInitialized = false;
+    boolean isIntaking = false; 
 
     public FloorIntake() {
 
@@ -66,41 +63,27 @@ public class FloorIntake extends SubsystemBase {
 
     @Override
     public void periodic() {
+        advantageKitLogging();
     }
 
     public void startIntaking() {
         upperPidController.setReference(FloorIntakeConstants.MotorVelocity, ControlType.kVelocity);
         lowerPidController.setReference(FloorIntakeConstants.MotorVelocity, ControlType.kVelocity);
-        Logger.recordOutput("FloorIntake/DesiredPercentOutput", FloorIntakeConstants.MotorVelocity);
+        isIntaking = true;
     }
 
     public void stopIntaking() {
         upperPidController.setReference(0, ControlType.kVelocity);
         lowerPidController.setReference(0, ControlType.kVelocity);
+        isIntaking = false; 
     }
 
-    public double getRPMUpper() {
-        return upperEncoder.getVelocity();
-    }
+    /* LOGGING */
 
-    public double getRPMLower() {
-        return lowerEncoder.getVelocity();
-    }
-
-    public boolean isIntaking() {
-        // if (((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMUpper()) && ((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMLower())) {
-        //     return true; 
-        // } else if ((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMUpper()) {
-        //     System.out.println("Upper motor isn't up to speed");
-        //     return false;
-        // } else {
-        //     System.out.println("Lower motor isn't up to speed");
-        //     return false;
-        // }
-        Logger.recordOutput("FloorIntake/RPMUpper", getRPMUpper());
-        Logger.recordOutput("FloorIntake/RPMLower", getRPMLower());
-        return ((Constants.LowerToleranceLimit * FloorIntakeConstants.MotorVelocity) <= getRPMUpper()) && 
-                ((Constants.LowerToleranceLimit * FloorIntakeConstants.MotorVelocity) <= getRPMLower());
+    private void advantageKitLogging() {
+        Logger.recordOutput("FloorIntake/ActualRPMLower", lowerEncoder.getVelocity());
+        Logger.recordOutput("FloorIntake/ActualRPMUpper", upperEncoder.getVelocity());
+        Logger.recordOutput("FloorIntake/IsIntaking", isIntaking);
     }
 
     /* CONFIG */
@@ -124,8 +107,9 @@ public class FloorIntake extends SubsystemBase {
         controller.setOutputRange(-1, 1);
     }
 
-    // Simulation Code
-    public void simulationInit() {
+    /* SIMULATION */
+
+    private void simulationInit() {
         REVPhysicsSim.getInstance().addSparkMax(upperMotor, DCMotor.getNeo550(1));
         REVPhysicsSim.getInstance().addSparkMax(lowerMotor, DCMotor.getNeo550(1));
     }

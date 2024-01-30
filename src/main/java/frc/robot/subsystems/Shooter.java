@@ -98,8 +98,6 @@ public class Shooter extends SubsystemBase {
         }
 
         breakBeam = new DigitalInput(ElectronicIDs.BreakBeamID);
-
-        networkTableInit();
     }
 
     @Override
@@ -168,8 +166,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isNoteLoaded() {
-        // return breakBeam.get();
-        return false;
+        return breakBeam.get();
     }
 
     public void setShooterVelState(ShooterVelState newState) {
@@ -199,10 +196,6 @@ public class Shooter extends SubsystemBase {
         builder.addBooleanProperty("Floor Intaking", this::isShooterFloorIntaking, null);
         builder.addBooleanProperty("Trap Shooting", this::isTrapShooting, null);
         // builder.addBooleanProperty("Note Loaded", this::isNoteLoaded, null);
-    }
-
-    public void networkTableInit() {
-        NetworkTableInstance.getDefault().getEntry("shooter/Desired Rotations Per Second").setDouble(0);
     }
 
     /* SIMULATION */

@@ -142,28 +142,29 @@ public class Shooter extends SubsystemBase {
         return upperShooterMotor.getClosedLoopError().getValue();
     }
 
+    public boolean isWithinTolerance(double desiredSpeed) {
+        return (getLowerShooterVelocity() >= Constants.LowerToleranceLimit * desiredSpeed) &&
+                (getLowerShooterVelocity() <= Constants.UpperToleranceLimit * desiredSpeed);
+    }
+
     public boolean isSpeakerShooting() {
-        return getLowerShooterVelocity() >= .95 * ShooterConstants.SpeakerVelocity;
+        return isWithinTolerance(ShooterConstants.SpeakerVelocity);
     }
 
     public boolean isAmpShooting() {
-        return (getLowerShooterVelocity() >= .95 * ShooterConstants.AmpVelocity) &&
-                (getLowerShooterVelocity() <= 1.05 * ShooterConstants.AmpVelocity);
+        return isWithinTolerance(ShooterConstants.AmpVelocity);
     }
 
     public boolean isSourceIntaking() {
-        return (getLowerShooterVelocity() >= .95 * ShooterConstants.SourceIntakeVelocity)
-                && (getLowerShooterVelocity() <= 1.05 * ShooterConstants.SourceIntakeVelocity);
+        return isWithinTolerance(ShooterConstants.SourceIntakeVelocity);
     }
 
     public boolean isShooterFloorIntaking() {
-        return (getLowerShooterVelocity() >= .95 * ShooterConstants.ShooterFloorIntakeVelocity)
-                && (getLowerShooterVelocity() <= 1.05 * ShooterConstants.ShooterFloorIntakeVelocity);
+        return isWithinTolerance(ShooterConstants.ShooterFloorIntakeVelocity);
     }
 
     public boolean isTrapShooting() {
-        return (getLowerShooterVelocity() >= .95 * ShooterConstants.TrapVelocity)
-                && (getLowerShooterVelocity() <= 1.05 * ShooterConstants.TrapVelocity);
+        return isWithinTolerance(ShooterConstants.TrapVelocity);
     }
 
     public boolean isNoteLoaded() {

@@ -9,7 +9,6 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Joystick;
 
 public class Constants {
 
@@ -20,8 +19,10 @@ public class Constants {
     public static final double Falcon500MaxRPM = 6300;
     public static final double KrakenX60MaxRPM = 6000;
     
-    // beep boop beep
-
+    public static final double toleranceLimit = 0.05;
+    public static final double LowerToleranceLimit = 1 - toleranceLimit;
+    public static final double UpperToleranceLimit = 1 + toleranceLimit;
+    
     public static final class ElectronicIDs {
 
         public static final int DriverControllerPort = 1;

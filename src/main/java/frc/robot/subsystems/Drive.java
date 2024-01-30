@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -27,31 +26,12 @@ import com.kauailabs.navx.frc.AHRS;
 
 public class Drive extends SubsystemBase {
 
-    /*********************************************************************/
-    /***************************** CONSTANTS *****************************/
-
-    public static final double MaxAngularSpeed = Math.PI; // 1/2 rotation per second
-
-    public static final boolean GyroReversed = false;
-    public static final double kTrackWidth = 0.762;
-
-    public static final double kWheelBase = 0.762; // Distance between right and left wheels
-    public final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-        new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-        new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)
-    );
-    
-    /*******************************************************************************/
-    /*******************************************************************************/
-
     private final SwerveModule frontLeft = new SwerveModule(
             "frontLeft",
             ElectronicIDs.FrontLeftDriveMotorID,
             ElectronicIDs.FrontLeftTurnMotorID,
             ElectronicIDs.FrontLeftTurnEncoderID,
-            Math.toDegrees(1.5171039327979088) / 360.0, 
+            Math.toDegrees(DriveConstants.FrontLeftMagnetOffsetInRadians) / 360.0, 
             false
     );
 
@@ -60,7 +40,7 @@ public class Drive extends SubsystemBase {
             ElectronicIDs.FrontRightDriveMotorID,
             ElectronicIDs.FrontRightTurnMotorID,
             ElectronicIDs.FrontRightTurnEncoderID,
-            Math.toDegrees(1.7456666082143784) / 360.0, 
+            Math.toDegrees(DriveConstants.FrontRightMagnetOffsetInRadians) / 360.0, 
             true
     );
 
@@ -69,7 +49,7 @@ public class Drive extends SubsystemBase {
             ElectronicIDs.BackLeftDriveMotorID,
             ElectronicIDs.BackLeftTurnMotorID,
             ElectronicIDs.BackLeftTurnEncoderID,
-            Math.toDegrees(-2.7626938149333) / 360.0, 
+            Math.toDegrees(DriveConstants.BackLeftMagnetOffsetInRadians) / 360.0, 
             false
     );
 
@@ -78,7 +58,7 @@ public class Drive extends SubsystemBase {
             ElectronicIDs.BackRightDriveMotorID,
             ElectronicIDs.BackRightTurnMotorID,
             ElectronicIDs.BackRightTurnEncoderID,
-            Math.toDegrees(-2.305568464100361) / 360.0,
+            Math.toDegrees(DriveConstants.BackRightMagnetOffsetInRadians) / 360.0,
             true
     );
 
@@ -94,7 +74,7 @@ public class Drive extends SubsystemBase {
         navX.reset();
 
         odometry = new SwerveDriveOdometry(
-            kinematics,
+            DriveConstants.kinematics,
             navX.getRotation2d(),
             new SwerveModulePosition[] {
                     frontLeft.getPosition(),
@@ -145,7 +125,7 @@ public class Drive extends SubsystemBase {
 
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
 
-        var swerveModuleDesiredStates = kinematics.toSwerveModuleStates(
+        var swerveModuleDesiredStates = DriveConstants.kinematics.toSwerveModuleStates(
                 fieldRelative
                         ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
                                 navX.getRotation2d())
@@ -164,8 +144,8 @@ public class Drive extends SubsystemBase {
     }
 
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
-        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
-        SwerveModuleState[] targetStates = kinematics.toSwerveModuleStates(targetSpeeds);
+        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, DriveConstants.TimestepDurationInSeconds);
+        SwerveModuleState[] targetStates = DriveConstants.kinematics.toSwerveModuleStates(targetSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, Constants.DriveConstants.MaxDriveableVelocity);
         frontLeft.setDesiredState(targetStates[0]);
         frontRight.setDesiredState(targetStates[1]);
@@ -204,7 +184,7 @@ public class Drive extends SubsystemBase {
     }
 
     public double getTurnRate() {
-        return navX.getRate() * (GyroReversed ? -1.0 : 1.0); // degrees per second
+        return navX.getRate() * (DriveConstants.GyroReversed ? -1.0 : 1.0); // degrees per second
     }
 
     public SwerveModuleState[] getModuleStates() {
@@ -224,7 +204,7 @@ public class Drive extends SubsystemBase {
       }
 
     public ChassisSpeeds getSpeeds() {
-        return kinematics.toChassisSpeeds(getModuleStates());
+        return DriveConstants.kinematics.toChassisSpeeds(getModuleStates());
     }
 
     public void simulationInit() {
@@ -256,7 +236,7 @@ public class Drive extends SubsystemBase {
                 moduleDeltas[index] = new SwerveModulePosition(current.distanceMeters - previous.distanceMeters, current.angle);
                 previous.distanceMeters = current.distanceMeters;
         }
-        var twist = kinematics.toTwist2d(moduleDeltas);
+        var twist = DriveConstants.kinematics.toTwist2d(moduleDeltas);
 
         int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
         SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));

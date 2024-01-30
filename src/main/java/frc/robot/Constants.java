@@ -9,6 +9,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
 public class Constants {
 
@@ -76,10 +77,30 @@ public class Constants {
     /***************************************************************************/
 
     public static final class DriveConstants {
+            public static final double MaxAngularSpeed = Math.PI; // 1/2 rotation per second
+
+            public static final boolean GyroReversed = false;
+            public static final double TrackWidth = 0.762;
+
+            public static final double WheelBase = 0.762; // CHANGE - Distance between right and left wheels
+            public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+                new Translation2d(WheelBase / 2, TrackWidth / 2),
+                new Translation2d(WheelBase / 2, -TrackWidth / 2),
+                new Translation2d(-WheelBase / 2, TrackWidth / 2),
+                new Translation2d(-WheelBase / 2, -TrackWidth / 2)
+            );
+
         public static final double MaxDriveableVelocity = 3.6;
 
         public static final double PhysicalMaxSpeedMetersPerSecond = 4.0; // CHANGE
         public static final double PhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI; // CHANGE
+
+        public static final double FrontLeftMagnetOffsetInRadians = 1.5171039327979088;
+        public static final double FrontRightMagnetOffsetInRadians = 1.7456666082143784;
+        public static final double BackLeftMagnetOffsetInRadians = -2.7626938149333;
+        public static final double BackRightMagnetOffsetInRadians = -2.305568464100361;
+
+        public static final double TimestepDurationInSeconds = 0.02;
     }
 
     public static final class AutoConstants {

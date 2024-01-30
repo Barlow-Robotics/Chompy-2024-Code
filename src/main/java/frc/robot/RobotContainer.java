@@ -62,12 +62,6 @@ public class RobotContainer {
 
     private Trigger climbButton;
 
-    private Trigger moveToSpeakerButton;
-    private Trigger moveToAmpButton;
-    private Trigger moveToSourceButton;
-    private Trigger moveToFloorButton;
-    private Trigger moveToTrapButton;
-
     // private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {

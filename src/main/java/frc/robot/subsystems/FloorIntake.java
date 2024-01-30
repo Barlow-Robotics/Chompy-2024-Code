@@ -12,20 +12,19 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FloorIntakeConstants;
 import frc.robot.Constants.ElectronicIDs;
 import com.revrobotics.REVPhysicsSim;
+import org.littletonrobotics.junction.Logger;
 
 public class FloorIntake extends SubsystemBase {
 
     // temp constants - move to constants file?
     boolean simulationInitialized = false;
-    private static final int simulationVelocity = 6800; // CHANGE
-    private static final double simulationTime = 0.5; // CHANGE
+    // private static final int simulationVelocity = 6800; // CHANGE
+    // private static final double simulationTime = 0.5; // CHANGE
 
     CANSparkMax upperMotor;
     RelativeEncoder upperEncoder;
@@ -71,7 +70,7 @@ public class FloorIntake extends SubsystemBase {
     public void startIntaking() {
         upperPidController.setReference(FloorIntakeConstants.MotorVelocity, ControlType.kVelocity);
         lowerPidController.setReference(FloorIntakeConstants.MotorVelocity, ControlType.kVelocity);
-        NetworkTableInstance.getDefault().getEntry("floorIntake/Desired Percent Output").setDouble(FloorIntakeConstants.MotorVelocity);
+        Logger.recordOutput("FloorIntake/DesiredPercentOutput", FloorIntakeConstants.MotorVelocity);
     }
 
     public void stopIntaking() {
@@ -97,6 +96,8 @@ public class FloorIntake extends SubsystemBase {
         //     System.out.println("Lower motor isn't up to speed");
         //     return false;
         // }
+        Logger.recordOutput("FloorIntake/RPMUpper", getRPMUpper());
+        Logger.recordOutput("FloorIntake/RPMLower", getRPMLower());
         return ((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMUpper()) && 
                 ((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMLower());
     }
@@ -120,13 +121,6 @@ public class FloorIntake extends SubsystemBase {
         controller.setIZone(kIz);
         controller.setFF(kFF);
         controller.setOutputRange(-1, 1);
-    }
-
-    public void initSendable(SendableBuilder builder) {
-        builder.setSmartDashboardType("Floor Intake Subsystem");
-        builder.addDoubleProperty("RPM Upper", this::getRPMUpper, null);
-        builder.addDoubleProperty("RPM Lower", this::getRPMLower, null);
-        builder.addBooleanProperty("Floor Intaking", this::isIntaking, null);
     }
 
     // Simulation Code

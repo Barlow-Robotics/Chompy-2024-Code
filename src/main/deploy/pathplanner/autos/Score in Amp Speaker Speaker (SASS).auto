@@ -5,7 +5,7 @@
       "x": 0.514538001298225,
       "y": 7.098630396334866
     },
-    "rotation": 90.60929231736114
+    "rotation": 90.43225195707642
   },
   "command": {
     "type": "sequential",
@@ -14,25 +14,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Go to amp from left position"
+            "pathName": "[test]Score In Amp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "amp to first note"
+            "pathName": "Amp to Piece to Speaker"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Score amp from first note"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Amp to sidemid-midpoint (ASMM)"
+            "pathName": "Amp to speaker (picked up top piece)"
           }
         }
       ]

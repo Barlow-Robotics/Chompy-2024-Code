@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.514538001298225,
-      "y": 7.098630396334866
+      "x": 0.6,
+      "y": 3.4005276390182413
     },
-    "rotation": 90.60929231736114
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
@@ -14,25 +14,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Go to amp from left position"
+            "pathName": "Right To Speaker"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "amp to first note"
+            "pathName": "Speaker to Right Note"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Score amp from first note"
+            "pathName": "Right Note to Speaker"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Amp to sidemid-midpoint (ASMM)"
+            "pathName": "Speaker to Mid-Right"
           }
         }
       ]

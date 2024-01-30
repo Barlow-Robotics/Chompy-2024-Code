@@ -5,7 +5,7 @@
       "x": 0.514538001298225,
       "y": 7.098630396334866
     },
-    "rotation": 90.60929231736114
+    "rotation": 90.02657842746835
   },
   "command": {
     "type": "sequential",
@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Amp to sidemid-midpoint (ASMM)"
+            "pathName": "Amp to side-midpoint (ASM)"
           }
         }
       ]

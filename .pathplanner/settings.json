@@ -3,8 +3,9 @@
   "robotLength": 0.9398,
   "holonomicMode": true,
   "pathFolders": [
-    "Speaker",
-    "Amp"
+    "Amp",
+    "Simple Paths",
+    "Speaker"
   ],
   "autoFolders": [
     "test"

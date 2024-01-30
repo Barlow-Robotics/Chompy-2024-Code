@@ -15,6 +15,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FloorIntakeConstants;
+import frc.robot.Constants;
 import frc.robot.Constants.ElectronicIDs;
 import com.revrobotics.REVPhysicsSim;
 import org.littletonrobotics.junction.Logger;
@@ -98,8 +99,8 @@ public class FloorIntake extends SubsystemBase {
         // }
         Logger.recordOutput("FloorIntake/RPMUpper", getRPMUpper());
         Logger.recordOutput("FloorIntake/RPMLower", getRPMLower());
-        return ((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMUpper()) && 
-                ((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMLower());
+        return ((Constants.LowerToleranceLimit * FloorIntakeConstants.MotorVelocity) <= getRPMUpper()) && 
+                ((Constants.LowerToleranceLimit * FloorIntakeConstants.MotorVelocity) <= getRPMLower());
     }
 
     /* CONFIG */

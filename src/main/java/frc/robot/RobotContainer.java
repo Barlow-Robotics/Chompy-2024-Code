@@ -56,6 +56,12 @@ public class RobotContainer {
     Joystick operatorController;
     
     /* BUTTONS */
+    private Trigger moveToSpeakerButton;
+    private Trigger moveToAmpButton;
+    private Trigger moveToSourceButton;
+    private Trigger moveToFloorButton;
+    private Trigger moveToTrapButton;
+
     public Trigger shootButton;
 
     private Trigger toggleFloorIntakeButton;

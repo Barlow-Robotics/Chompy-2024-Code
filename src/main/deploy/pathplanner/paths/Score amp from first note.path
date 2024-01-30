@@ -32,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Score In Amp",
+      "name": "Score Amp",
       "waypointRelativePos": 1.0,
       "command": {
         "type": "parallel",
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Shoot into Amp"
+                "name": "Shoot Amp"
               }
             },
             {

@@ -99,8 +99,8 @@ public class RobotContainer {
                 driveSub
         );
 
-        NamedCommands.registerCommand("Leave Area", Commands.print("***********************************Left Area"));
-        NamedCommands.registerCommand("Shoot into Amp", Commands.print("*******************************Shot in amp"));
+        NamedCommands.registerCommand("Shoot Speaker", Commands.print("***********************************Left Area"));
+        NamedCommands.registerCommand("Shoot Amp", Commands.print("*******************************Shot in amp"));
 
         configureBindings();
 

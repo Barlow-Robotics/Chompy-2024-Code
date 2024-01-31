@@ -16,12 +16,14 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
@@ -37,29 +39,32 @@ import frc.robot.sim.PhysicsSim;
 
 public class Shooter extends SubsystemBase {
     private final TalonFX lowerShooterMotor;
+    private final TalonFXSimState lowerShooterMotorSim;
+    private final DCMotorSim lowerMotorModel = 
+        new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, ShooterConstants.jKgMetersSquared);
+    
     private final TalonFX upperShooterMotor;
+    private final TalonFXSimState upperShooterMotorSim;
+    private final DCMotorSim upperMotorModel = 
+        new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, ShooterConstants.jKgMetersSquared);
+
     private final CANSparkMax indexMotor;
     private final RelativeEncoder indexEncoder;
     private final SparkPIDController indexPidController;
-    private final VelocityVoltage voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
+    
+    private final VelocityVoltage voltageVelocity = 
+        new VelocityVoltage(0, 0, true, 0, 0, 
+                            false, false, false);
     private final NeutralOut brake = new NeutralOut();
 
-    private final TalonFXSimState lowerShooterMotorSim;
-    private final DCMotorSim lowerMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1),
-            1, ShooterConstants.jKgMetersSquared);
+    DigitalInput breakBeam;
+    DIOSim breakBeamSim;
 
-    private final TalonFXSimState upperShooterMotorSim;
-    private final DCMotorSim upperMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1),
-            1, ShooterConstants.jKgMetersSquared);
-    
     public enum ShooterVelState {
         Stopped, Speaker, Amp, IntakeFromSource, IntakeFromFloor, Trap
     }
 
     public ShooterVelState shooterVelState = ShooterVelState.Stopped;
-
-    DigitalInput breakBeam;
-    DIOSim breakBeamSim;
 
     private boolean simulationInitialized = false;
     private boolean isIndexing = false;
@@ -68,13 +73,19 @@ public class Shooter extends SubsystemBase {
     private GenericEntry shuffleBoardSpeed = tab.add("ShuffleBoard Speed", 1).getEntry();
 
     public Shooter() {
-        lowerShooterMotor = new TalonFX(ElectronicsIDs.LowerShooterMotorID); // slot 0
-        upperShooterMotor = new TalonFX(ElectronicsIDs.UpperShooterMotorID); // slot 0
-        TalonFXConfiguration configs = new TalonFXConfiguration();
-        MotorOutputConfigs upperMotorOutputConfigs = new MotorOutputConfigs();
-        setTalonConfigs(configs);
-        applyLowerMotorConfigs(configs);
-        applyUpperMotorConfigs(upperShooterMotor, configs, upperMotorOutputConfigs);
+        lowerShooterMotor = new TalonFX(ElectronicsIDs.LowerShooterMotorID); 
+        upperShooterMotor = new TalonFX(ElectronicsIDs.UpperShooterMotorID); 
+        
+        TalonFXConfiguration talonConfigs = new TalonFXConfiguration();
+        MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+       
+        setTalonConfigs(talonConfigs);
+        applyMotorConfigs(
+            lowerShooterMotor, "lowerShooterMotor", 
+            talonConfigs, motorOutputConfigs, InvertedValue.CounterClockwise_Positive);
+        applyMotorConfigs(
+            upperShooterMotor, "upperShooterMotor", 
+            talonConfigs, motorOutputConfigs, InvertedValue.Clockwise_Positive);
 
         lowerShooterMotorSim = lowerShooterMotor.getSimState();
         upperShooterMotorSim = upperShooterMotor.getSimState();
@@ -130,10 +141,6 @@ public class Shooter extends SubsystemBase {
         return motor.getVelocity().getValue();
     }
 
-    private double getClosedLoopError(TalonFX motor) {
-        return motor.getClosedLoopError().getValue();
-    }
-
     private boolean isWithinVelocityTolerance(double desiredSpeed) {
         return (getRPS(lowerShooterMotor) >= Constants.LowerToleranceLimit * desiredSpeed) &&
                 (getRPS(lowerShooterMotor) <= Constants.UpperToleranceLimit * desiredSpeed) &&
@@ -164,8 +171,8 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Shooter/ActualRPMLower", getRPS(lowerShooterMotor));
         Logger.recordOutput("Shooter/ActualRPMUpper", getRPS(upperShooterMotor));
         Logger.recordOutput("Shooter/IsIndexing", isIndexing);
-        Logger.recordOutput("Shooter/ClosedLoopErrorLower", getClosedLoopError(lowerShooterMotor));
-        Logger.recordOutput("Shooter/ClosedLoopErrorUpper", getClosedLoopError(upperShooterMotor));
+        Logger.recordOutput("Shooter/ClosedLoopErrorLower", lowerShooterMotor.getClosedLoopError().getValue());
+        Logger.recordOutput("Shooter/ClosedLoopErrorUpper", upperShooterMotor.getClosedLoopError().getValue());
         Logger.recordOutput("Shooter/IsShootingAmp", isWithinVelocityTolerance(ShooterConstants.AmpVelocity));
         Logger.recordOutput("Shooter/IsShootingSpeaker", isWithinVelocityTolerance(ShooterConstants.SpeakerVelocity));
         Logger.recordOutput("Shooter/IsShootingTrap", isWithinVelocityTolerance(ShooterConstants.TrapVelocity));
@@ -185,23 +192,11 @@ public class Shooter extends SubsystemBase {
         configs.Voltage.PeakReverseVoltage = ShooterConstants.PeakShooterReverseVoltage;
     }
 
-    private void applyLowerMotorConfigs(TalonFXConfiguration configs) {
-        StatusCode status = StatusCode.StatusCodeNotInitialized;
-
-        // attempt setting configs up to 5 times
-        for (int i = 0; i < 5; ++i) {
-            status = lowerShooterMotor.getConfigurator().apply(configs, 0.05);
-            if (status.isOK())
-                break;
-        }
-        // if it didn't work after 5th time, print out an error
-        if (!status.isOK()) {
-            System.out.println("Could not apply configs to left, error code: " + status.toString());
-        }
-    }
-
-    private void applyUpperMotorConfigs(TalonFX motor, TalonFXConfiguration talonConfigs, MotorOutputConfigs motorOutputConfigs) {
-        motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    private void applyMotorConfigs(
+        TalonFX motor, String motorName, 
+        TalonFXConfiguration talonConfigs, MotorOutputConfigs motorOutputConfigs, InvertedValue inversion) {
+        
+        motorOutputConfigs.Inverted = inversion;
         
         StatusCode status = StatusCode.StatusCodeNotInitialized;
 
@@ -212,7 +207,7 @@ public class Shooter extends SubsystemBase {
                 break;
         }
         if (!status.isOK()) {
-            System.out.println("Could not apply configs to right, error code: " + status.toString());
+            System.out.println("Could not apply talon configs to " + motorName + " error code: " + status.toString());
         }
 
         for (int i = 0; i < 5; ++i) {
@@ -221,19 +216,16 @@ public class Shooter extends SubsystemBase {
                 break;
         }
         if (!status.isOK()) {
-            System.out.println("Could not apply configs to right, error code: " + status.toString());
+            System.out.println("Could not apply motor output configs to " + motorName + " error code: " + status.toString());
         }
-
     }
 
     private void motorAndEncoderConfig(CANSparkMax motor, RelativeEncoder encoder, boolean inverted) {
-
         motor.restoreFactoryDefaults();
         motor.setIdleMode(IdleMode.kBrake);
         motor.setInverted(inverted);
 
         encoder = motor.getEncoder();
-        // encoder.setVelocityConversionFactor(); // Probably don't need this :)
     }
 
     private void setPIDControllerValues(SparkPIDController controller, double kP, double kI, double kD, double kIz, double kFF) {
@@ -244,11 +236,13 @@ public class Shooter extends SubsystemBase {
         controller.setFF(kFF);
         controller.setOutputRange(-1, 1);
     }
+
     /* SIMULATION */
 
     public void simulationInit() {
         PhysicsSim.getInstance().addTalonFX(lowerShooterMotor, 0.001);
         PhysicsSim.getInstance().addTalonFX(upperShooterMotor, 0.001);
+        REVPhysicsSim.getInstance().addSparkMax(indexMotor, DCMotor.getNeo550(1));
 
         lowerShooterMotorSim.Orientation = ChassisReference.CounterClockwise_Positive; // CHANGE
         upperShooterMotorSim.Orientation = ChassisReference.Clockwise_Positive; // CHANGE

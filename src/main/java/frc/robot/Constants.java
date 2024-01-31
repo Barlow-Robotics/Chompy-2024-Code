@@ -71,7 +71,8 @@ public class Constants {
         public static final int LeftElevatorMotorID = 61;
         public static final int RightElevatorMotorID = 62; 
 
-        public static final int HallEffectID = 63; 
+        public static final int BottomHallEffectID = 6;
+        public static final int TopHallEffectID = 7; 
     }
 
     /***************************************************************************/
@@ -181,34 +182,50 @@ public class Constants {
         public static final double PeakShooterForwardVoltage = 8; // Peak output of 8 voltspublic static final double PeakShooterForwardVoltage = 8; // Peak output of 8 volts
         public static final double PeakShooterReverseVoltage = -8;
 
-		public static final double IndexVelocity = 0;
+		public static final double IndexRPM = 100;
 
-        public static final double IndexKP = 0; // Change All
+        public static final double IndexKP = 0.5; // Change All
         public static final double IndexKI = 0; 
         public static final double IndexKD = 0; 
         public static final double IndexIZone = 0; 
-        public static final double IndexFF = 0; 
+        public static final double IndexFF = 0.12; 
         
     }
 
+    /***************************************************************************/
+    /***************************************************************************/
+    /***************************************************************************/
+
     public static final class ShooterPositionConstants {
 
+        public static final double RotationsPerElevatorInch = 1; // CHANGE
+
+        public static final double ElevatorKP = 0.5;
+        public static final double ElevatorKI = 0;
+        public static final double ElevatorKD = 0;
+        public static final double ElevatorIZone = 0;
+        public static final double ElevatorFF = 0.12;
+
+        public static final double AngleKP = 0.5;
+        public static final double AngleKI = 0;
+        public static final double AngleKD = 0;
+        public static final double AngleIZone = 0;
+        public static final double AngleFF = 0.12;
+
         public static final double SpeakerAngle = 30; // CHANGE
-        public static final double AmpAngle = 60; // CHANGE
-        public static final double IntakeFromSourceAngle = 90; // CHANGE
-        public static final double IntakeFromFloorAngle = 120; // CHANGE
-        public static final double TrapAngle = 150; // CHANGE
-
-        
         public static final double SpeakerHeight = 0; // CHANGE
+
+        public static final double AmpAngle = 60; // CHANGE
         public static final double AmpHeight = 0; // CHANGE
-        public static final double IntakeFromSourceHeight = 0; // CHANGE
-        public static final double IntakeFromFloorHeight = 0; // CHANGE
+
+        public static final double SourceIntakeAngle = 90; // CHANGE
+        public static final double SourceIntakeHeight = 0; // CHANGE
+
+        public static final double FloorIntakeAngle = 120; // CHANGE
+        public static final double FloorIntakeHeight = 0; // CHANGE
+
+        public static final double TrapAngle = 150; // CHANGE
         public static final double TrapHeight = 0; // CHANGE
-
-        public static final double RotationsPerElevatorInch = 0; // CHANGE
-
-
     }
 
     /***************************************************************************/

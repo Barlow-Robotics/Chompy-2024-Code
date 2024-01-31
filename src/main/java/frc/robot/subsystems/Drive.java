@@ -82,8 +82,6 @@ public class Drive extends SubsystemBase {
                     backLeft.getPosition(),
                     backRight.getPosition()
             });
-
-    
     }
 
     @Override
@@ -183,19 +181,12 @@ public class Drive extends SubsystemBase {
     }
 
     public SwerveModuleState[] getModuleStates() {
-
         return new SwerveModuleState[] {
             frontLeft.getState(),
             frontRight.getState(),
             backLeft.getState(),
             backRight.getState()
         };
-
-        // SwerveModuleState[] states = new SwerveModuleState[modules.length];
-        // for (int i = 0; i < modules.length; i++) {
-        //   states[i] = modules[i].getState();
-        // }
-        // return states;
       }
 
     public ChassisSpeeds getSpeeds() {

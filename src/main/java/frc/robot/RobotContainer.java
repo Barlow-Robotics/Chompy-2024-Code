@@ -99,8 +99,8 @@ public class RobotContainer {
                 driveSub
         );
 
-        NamedCommands.registerCommand("Shoot Speaker", Commands.print("***********************************Left Area"));
-        NamedCommands.registerCommand("Shoot Amp", Commands.print("*******************************Shot in amp"));
+        NamedCommands.registerCommand("Shoot Speaker", Commands.print("***********************************Shoot into Speaker"));
+        NamedCommands.registerCommand("Shoot Amp", Commands.print("*******************************Shoot into Amp"));
 
         configureBindings();
 
@@ -176,6 +176,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new PathPlannerAuto("Triple Amp Midside");
+        return new PathPlannerAuto("Score in Amp Speaker Speaker V1 (SASS)");
     }
 }

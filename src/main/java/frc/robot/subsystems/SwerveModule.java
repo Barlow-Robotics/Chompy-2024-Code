@@ -41,8 +41,7 @@ public class SwerveModule {
     private static final double VelocityConversionFactor = WheelCircumference / Constants.SecondsPerMinute / GearRatio;
 
     private static final double MaxRPM = 5820;
-    public static final double MaxVelocityPerSecond = MaxRPM * VelocityConversionFactor;
-
+    public static final double MaxVelocityPerSecond = MaxRPM * VelocityConversionFactor; // 4.586818358467871
     /* DRIVE ENCODER */
     private static final double DriveKP = 0.04; // REQUIRES TUNING 
     private static final double DriveKI = 0.0015;

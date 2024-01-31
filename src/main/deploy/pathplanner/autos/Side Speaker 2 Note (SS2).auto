@@ -18,6 +18,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Shoot Speaker"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Speaker to Right Note"
@@ -27,6 +33,12 @@
           "type": "path",
           "data": {
             "pathName": "Right Note to Speaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Speaker"
           }
         },
         {

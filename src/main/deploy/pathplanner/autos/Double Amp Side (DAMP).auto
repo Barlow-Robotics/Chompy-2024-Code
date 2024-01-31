@@ -18,6 +18,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Shoot Amp"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "amp to first note"
@@ -27,6 +33,12 @@
           "type": "path",
           "data": {
             "pathName": "Score amp from first note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Amp"
           }
         },
         {

@@ -18,6 +18,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Shoot Amp"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Turn at amp"
@@ -33,6 +39,12 @@
           "type": "path",
           "data": {
             "pathName": "midpeice-to-speaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Speaker"
           }
         }
       ]

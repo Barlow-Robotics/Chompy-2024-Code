@@ -18,6 +18,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Shoot Speaker"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Front-Turn-180"
@@ -27,6 +33,12 @@
           "type": "path",
           "data": {
             "pathName": "Speaker-shoot-to-piece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Speaker"
           }
         },
         {

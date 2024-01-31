@@ -14,7 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "[test]Score In Amp"
+            "pathName": "Score In Amp"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Amp"
           }
         },
         {
@@ -24,9 +30,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Shoot Speaker"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Amp to speaker (picked up top piece)"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Speaker"
           }
         }
       ]

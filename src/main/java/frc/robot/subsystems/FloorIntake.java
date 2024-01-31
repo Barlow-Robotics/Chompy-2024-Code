@@ -15,7 +15,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FloorIntakeConstants;
 import frc.robot.Constants;
-import frc.robot.Constants.ElectronicIDs;
+import frc.robot.Constants.ElectronicsIDs;
 import com.revrobotics.REVPhysicsSim;
 import org.littletonrobotics.junction.Logger;
 
@@ -35,7 +35,7 @@ public class FloorIntake extends SubsystemBase {
     public FloorIntake() {
 
         /* UPPER MOTOR CONFIG */
-        upperMotor = new CANSparkMax(ElectronicIDs.UpperFloorMotorID, MotorType.kBrushless);
+        upperMotor = new CANSparkMax(ElectronicsIDs.UpperFloorMotorID, MotorType.kBrushless);
         upperEncoder = upperMotor.getEncoder();
         motorAndEncoderConfig(upperMotor, upperEncoder, false); // CHANGE - These true/false values may need to be flipped
         upperPidController = upperMotor.getPIDController();
@@ -48,7 +48,7 @@ public class FloorIntake extends SubsystemBase {
                 FloorIntakeConstants.UpperFF);
 
         /* LOWER MOTOR CONFIG */
-        lowerMotor = new CANSparkMax(ElectronicIDs.LowerFloorMotorID, MotorType.kBrushless);
+        lowerMotor = new CANSparkMax(ElectronicsIDs.LowerFloorMotorID, MotorType.kBrushless);
         lowerEncoder = lowerMotor.getEncoder();
         motorAndEncoderConfig(lowerMotor, lowerEncoder, true); // CHANGE - These true/false values may need to be flipped
         lowerPidController = lowerMotor.getPIDController();

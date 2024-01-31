@@ -16,27 +16,33 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.DIOSim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.ElectronicIDs;
+import frc.robot.Constants.ElectronicsIDs;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.sim.PhysicsSim;
 
 public class Shooter extends SubsystemBase {
     private final TalonFX lowerShooterMotor;
     private final TalonFX upperShooterMotor;
-    // private final CANSparkMax indexMotor;
+    private final CANSparkMax indexMotor;
+    private final RelativeEncoder indexEncoder;
+    private final SparkPIDController indexPidController;
+    private final VelocityVoltage voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
+    private final NeutralOut brake = new NeutralOut();
 
     private final TalonFXSimState lowerShooterMotorSim;
     private final DCMotorSim lowerMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1),
@@ -45,10 +51,7 @@ public class Shooter extends SubsystemBase {
     private final TalonFXSimState upperShooterMotorSim;
     private final DCMotorSim upperMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1),
             1, ShooterConstants.jKgMetersSquared);
-
-    private final VelocityVoltage voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0, false, false, false);
-    private final NeutralOut brake = new NeutralOut();
-
+    
     public enum ShooterVelState {
         Stopped, Speaker, Amp, IntakeFromSource, IntakeFromFloor, Trap
     }
@@ -58,50 +61,37 @@ public class Shooter extends SubsystemBase {
     DigitalInput breakBeam;
     DIOSim breakBeamSim;
 
-    boolean simulationInitialized = false;
+    private boolean simulationInitialized = false;
+    private boolean isIndexing = false;
 
     private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
     private GenericEntry shuffleBoardSpeed = tab.add("ShuffleBoard Speed", 1).getEntry();
-    private GenericEntry shuffleBoardSpeedBool = tab.add("Use ShuffleBoard Speed", false).getEntry();
 
     public Shooter() {
-        lowerShooterMotor = new TalonFX(ElectronicIDs.LowerShooterMotorID); // slot 0
-        upperShooterMotor = new TalonFX(ElectronicIDs.UpperShooterMotorID); // slot 0
+        lowerShooterMotor = new TalonFX(ElectronicsIDs.LowerShooterMotorID); // slot 0
+        upperShooterMotor = new TalonFX(ElectronicsIDs.UpperShooterMotorID); // slot 0
+        TalonFXConfiguration configs = new TalonFXConfiguration();
+        MotorOutputConfigs upperMotorOutputConfigs = new MotorOutputConfigs();
+        setTalonConfigs(configs);
+        applyLowerMotorConfigs(configs);
+        applyUpperMotorConfigs(upperShooterMotor, configs, upperMotorOutputConfigs);
 
         lowerShooterMotorSim = lowerShooterMotor.getSimState();
         upperShooterMotorSim = upperShooterMotor.getSimState();
 
-        TalonFXConfiguration configs = new TalonFXConfiguration();
-        configs.Slot0.kP = ShooterConstants.ShooterKP;
-        // configs.Slot0.kI = ShooterConstants.ShooterKI;
-        // configs.Slot0.kD = ShooterConstants.ShooterKD;
-        configs.Slot0.kV = ShooterConstants.ShooterKV;
-        configs.Voltage.PeakForwardVoltage = ShooterConstants.PeakShooterForwardVoltage; // Peak output of 8 volts
-        configs.Voltage.PeakReverseVoltage = ShooterConstants.PeakShooterReverseVoltage;
+        indexMotor = new CANSparkMax(ElectronicsIDs.IndexMotorID, MotorType.kBrushless);
+        indexEncoder = indexMotor.getEncoder();
+        motorAndEncoderConfig(indexMotor, indexEncoder, false); // CHANGE - These true/false values may need to be flipped
+        indexPidController = indexMotor.getPIDController();
+        setPIDControllerValues(
+                indexPidController,
+                ShooterConstants.IndexKP,
+                ShooterConstants.IndexKI,
+                ShooterConstants.IndexKD,
+                ShooterConstants.IndexIZone,
+                ShooterConstants.IndexFF);
 
-        MotorOutputConfigs upperMotorOutputConfigs = new MotorOutputConfigs();
-        upperMotorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
-
-        applyLowerMotorConfigs(configs);
-        applyUpperMotorConfigs(upperShooterMotor, configs, upperMotorOutputConfigs);
-        // StatusCode statusLeft = StatusCode.StatusCodeNotInitialized;
-        // StatusCode statusRight = StatusCode.StatusCodeNotInitialized;
-        // for (int i = 0; i < 5; ++i) {
-        // statusLeft = lowerShooterMotor.getConfigurator().apply(configs);
-        // statusRight = upperShooterMotor.getConfigurator().apply(configs);
-        // statusRight =
-        // upperShooterMotor.getConfigurator().apply(upperMotorOutputConfigs);
-        // if (statusLeft.isOK() && statusRight.isOK())
-        // break;
-        // }
-        // if (!statusLeft.isOK()) {
-        // System.out.println("Could not apply configs to left, error code: " +
-        // statusLeft.toString());
-        // } else if (!statusRight.isOK()) {
-        // System.out.println("Could not apply configs to right, error code: " +
-        // statusRight.toString());
-        // }
-        breakBeam = new DigitalInput(ElectronicIDs.BreakBeamID);
+        breakBeam = new DigitalInput(ElectronicsIDs.BreakBeamID);
     }
 
     @Override
@@ -109,23 +99,31 @@ public class Shooter extends SubsystemBase {
         advantageKitLogging();
     }
 
-    public void setVelocity(double rotsPerSecond) {
-        if (shuffleBoardSpeedBool.getBoolean(false)) {
-            if (shuffleBoardSpeed.getDouble(-1.0) <= Constants.Falcon500MaxRPM / 60) { // max rps: 105
-                rotsPerSecond = shuffleBoardSpeed.getDouble(-1.0);
-            }
+    public void setVelocity(double shooterRPM, double indexRPM) {
+        if (shuffleBoardSpeed.getDouble(-1.0) <= Constants.Falcon500MaxRPM / 60) { // max rps: 105
+                shooterRPM = shuffleBoardSpeed.getDouble(-1.0);
         }
 
-        lowerShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
-        upperShooterMotor.setControl(voltageVelocity.withVelocity(rotsPerSecond));
+        shooterRPM /= 60;
 
-        NetworkTableInstance.getDefault().getEntry("shooter/Desired Rotations Per Second").setDouble(rotsPerSecond);
+        lowerShooterMotor.setControl(voltageVelocity.withVelocity(shooterRPM));
+        upperShooterMotor.setControl(voltageVelocity.withVelocity(shooterRPM));
+
+        if (isWithinVelocityTolerance(shooterRPM)) {
+            indexPidController.setReference(indexRPM, ControlType.kVelocity);
+            isIndexing = true;
+        }
+       
+        Logger.recordOutput("Shooter/DesiredShooterRPM", shooterRPM);
+        Logger.recordOutput("Shooter/DesiredIndexRPM", indexRPM);
     }
 
     public void stopShooting() {
         lowerShooterMotor.setControl(brake);
         upperShooterMotor.setControl(brake);
         shooterVelState = ShooterVelState.Stopped;
+        indexPidController.setReference(0, ControlType.kVelocity);
+        isIndexing = false;
     }
 
     private double getRPS(TalonFX motor) {
@@ -136,9 +134,11 @@ public class Shooter extends SubsystemBase {
         return motor.getClosedLoopError().getValue();
     }
 
-    public boolean isWithinTolerance(double desiredSpeed) {
+    private boolean isWithinVelocityTolerance(double desiredSpeed) {
         return (getRPS(lowerShooterMotor) >= Constants.LowerToleranceLimit * desiredSpeed) &&
-                (getRPS(lowerShooterMotor) <= Constants.UpperToleranceLimit * desiredSpeed);
+                (getRPS(lowerShooterMotor) <= Constants.UpperToleranceLimit * desiredSpeed) &&
+                (getRPS(upperShooterMotor) >= Constants.LowerToleranceLimit * desiredSpeed) &&
+                (getRPS(upperShooterMotor) <= Constants.UpperToleranceLimit * desiredSpeed);
     }
 
     public boolean isNoteLoaded() {
@@ -163,17 +163,27 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Shooter/State", getShooterVelStateAsString());
         Logger.recordOutput("Shooter/ActualRPMLower", getRPS(lowerShooterMotor));
         Logger.recordOutput("Shooter/ActualRPMUpper", getRPS(upperShooterMotor));
+        Logger.recordOutput("Shooter/IsIndexing", isIndexing);
         Logger.recordOutput("Shooter/ClosedLoopErrorLower", getClosedLoopError(lowerShooterMotor));
         Logger.recordOutput("Shooter/ClosedLoopErrorUpper", getClosedLoopError(upperShooterMotor));
-        Logger.recordOutput("Shooter/ShootingAmp", isWithinTolerance(ShooterConstants.AmpVelocity));
-        Logger.recordOutput("Shooter/ShootingSpeaker", isWithinTolerance(ShooterConstants.SpeakerVelocity));
-        Logger.recordOutput("Shooter/ShootingTrap", isWithinTolerance(ShooterConstants.TrapVelocity));
-        Logger.recordOutput("Shooter/IntakingSource", isWithinTolerance(ShooterConstants.SourceIntakeVelocity));
-        Logger.recordOutput("Shooter/IntakingFloor", isWithinTolerance(ShooterConstants.FloorIntakeVelocity));
-        Logger.recordOutput("Shooter/NoteLoaded", isNoteLoaded());
+        Logger.recordOutput("Shooter/IsShootingAmp", isWithinVelocityTolerance(ShooterConstants.AmpVelocity));
+        Logger.recordOutput("Shooter/IsShootingSpeaker", isWithinVelocityTolerance(ShooterConstants.SpeakerVelocity));
+        Logger.recordOutput("Shooter/IsShootingTrap", isWithinVelocityTolerance(ShooterConstants.TrapVelocity));
+        Logger.recordOutput("Shooter/IsIntakingSource", isWithinVelocityTolerance(ShooterConstants.SourceIntakeVelocity));
+        Logger.recordOutput("Shooter/IsIntakingFloor", isWithinVelocityTolerance(ShooterConstants.FloorIntakeVelocity));
+        Logger.recordOutput("Shooter/IsNoteLoaded", isNoteLoaded());
     }
 
     /* CONFIG */
+
+    private void setTalonConfigs(TalonFXConfiguration configs) {
+        configs.Slot0.kP = ShooterConstants.ShooterKP;
+        // configs.Slot0.kI = ShooterConstants.ShooterKI;
+        // configs.Slot0.kD = ShooterConstants.ShooterKD;
+        configs.Slot0.kV = ShooterConstants.ShooterKV;
+        configs.Voltage.PeakForwardVoltage = ShooterConstants.PeakShooterForwardVoltage; // Peak output of 8 volts
+        configs.Voltage.PeakReverseVoltage = ShooterConstants.PeakShooterReverseVoltage;
+    }
 
     private void applyLowerMotorConfigs(TalonFXConfiguration configs) {
         StatusCode status = StatusCode.StatusCodeNotInitialized;
@@ -190,8 +200,9 @@ public class Shooter extends SubsystemBase {
         }
     }
 
-    private void applyUpperMotorConfigs(TalonFX motor, TalonFXConfiguration talonConfigs,
-            MotorOutputConfigs motorOutputConfigs) {
+    private void applyUpperMotorConfigs(TalonFX motor, TalonFXConfiguration talonConfigs, MotorOutputConfigs motorOutputConfigs) {
+        motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+        
         StatusCode status = StatusCode.StatusCodeNotInitialized;
 
         // attempt setting configs up to 5 times
@@ -215,6 +226,24 @@ public class Shooter extends SubsystemBase {
 
     }
 
+    private void motorAndEncoderConfig(CANSparkMax motor, RelativeEncoder encoder, boolean inverted) {
+
+        motor.restoreFactoryDefaults();
+        motor.setIdleMode(IdleMode.kBrake);
+        motor.setInverted(inverted);
+
+        encoder = motor.getEncoder();
+        // encoder.setVelocityConversionFactor(); // Probably don't need this :)
+    }
+
+    private void setPIDControllerValues(SparkPIDController controller, double kP, double kI, double kD, double kIz, double kFF) {
+        controller.setP(kP);
+        controller.setI(kI);
+        controller.setD(kD);
+        controller.setIZone(kIz);
+        controller.setFF(kFF);
+        controller.setOutputRange(-1, 1);
+    }
     /* SIMULATION */
 
     public void simulationInit() {

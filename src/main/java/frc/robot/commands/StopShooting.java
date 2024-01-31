@@ -9,32 +9,30 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Shooter.ShooterVelState;
 
 public class StopShooting extends Command {
-  
-  Shooter shooterSub;
 
-  public StopShooting(Shooter s) {
-    shooterSub = s;
-    addRequirements(shooterSub);
-  }
+    Shooter shooterSub;
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
+    public StopShooting(Shooter shooterSub) {
+        this.shooterSub = shooterSub;
+        addRequirements(shooterSub);
+    }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    shooterSub.setShooterVelState(ShooterVelState.Stopped);
-    shooterSub.setVelocity(0);
-  }
+    @Override
+    public void initialize() {
+    }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
+    @Override
+    public void execute() {
+        shooterSub.setVelocity(0, 0);
+        shooterSub.setShooterVelState(ShooterVelState.Stopped);
+    }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return true;
-  }
+    @Override
+    public void end(boolean interrupted) {
+    }
+
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
 }

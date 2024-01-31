@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.ElectronicIDs;
+import frc.robot.Constants.ElectronicsIDs;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -58,7 +58,7 @@ public class DriveRobot extends Command {
         double rawY;
         double rawRot;
         
-        if(DriverStation.getJoystickName(ElectronicIDs.DriverControllerPort).equals("Logitech Extreme 3D")) {
+        if(DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Extreme 3D")) {
             rawX = -driverController.getRawAxis(this.ControllerYSpeedID);  
             rawY = -driverController.getRawAxis(this.ControllerXSpeedID);
             rawRot = -driverController.getRawAxis(this.ControllerRotID); 

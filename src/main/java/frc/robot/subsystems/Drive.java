@@ -16,7 +16,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.ElectronicIDs;
+import frc.robot.Constants.ElectronicsIDs;
 import org.littletonrobotics.junction.Logger;
 import java.lang.Math;
 import frc.robot.Constants;
@@ -28,36 +28,36 @@ public class Drive extends SubsystemBase {
 
     private final SwerveModule frontLeft = new SwerveModule(
             "frontLeft",
-            ElectronicIDs.FrontLeftDriveMotorID,
-            ElectronicIDs.FrontLeftTurnMotorID,
-            ElectronicIDs.FrontLeftTurnEncoderID,
+            ElectronicsIDs.FrontLeftDriveMotorID,
+            ElectronicsIDs.FrontLeftTurnMotorID,
+            ElectronicsIDs.FrontLeftTurnEncoderID,
             Math.toDegrees(DriveConstants.FrontLeftMagnetOffsetInRadians) / 360.0, 
             false
     );
 
     private final SwerveModule frontRight = new SwerveModule(
             "frontRight",
-            ElectronicIDs.FrontRightDriveMotorID,
-            ElectronicIDs.FrontRightTurnMotorID,
-            ElectronicIDs.FrontRightTurnEncoderID,
+            ElectronicsIDs.FrontRightDriveMotorID,
+            ElectronicsIDs.FrontRightTurnMotorID,
+            ElectronicsIDs.FrontRightTurnEncoderID,
             Math.toDegrees(DriveConstants.FrontRightMagnetOffsetInRadians) / 360.0, 
             true
     );
 
     private final SwerveModule backLeft = new SwerveModule(
             "backLeft",
-            ElectronicIDs.BackLeftDriveMotorID,
-            ElectronicIDs.BackLeftTurnMotorID,
-            ElectronicIDs.BackLeftTurnEncoderID,
+            ElectronicsIDs.BackLeftDriveMotorID,
+            ElectronicsIDs.BackLeftTurnMotorID,
+            ElectronicsIDs.BackLeftTurnEncoderID,
             Math.toDegrees(DriveConstants.BackLeftMagnetOffsetInRadians) / 360.0, 
             false
     );
 
     private final SwerveModule backRight = new SwerveModule(
             "backRight",
-            ElectronicIDs.BackRightDriveMotorID,
-            ElectronicIDs.BackRightTurnMotorID,
-            ElectronicIDs.BackRightTurnEncoderID,
+            ElectronicsIDs.BackRightDriveMotorID,
+            ElectronicsIDs.BackRightTurnMotorID,
+            ElectronicsIDs.BackRightTurnEncoderID,
             Math.toDegrees(DriveConstants.BackRightMagnetOffsetInRadians) / 360.0,
             true
     );
@@ -106,11 +106,6 @@ public class Drive extends SubsystemBase {
         return odometry.getPoseMeters();
     }
     
-    public void scoreAmp() {
-        System.out.println("*******************************Shot in amp");
-        return;
-    }
-
     public void resetOdometry(Pose2d pose) {
         odometry.resetPosition(
                 navX.getRotation2d(),

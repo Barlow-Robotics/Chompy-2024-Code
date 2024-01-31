@@ -8,11 +8,8 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -20,10 +17,11 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ElectronicIDs;
-import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.ElectronicsIDs;
+import frc.robot.Constants.ShooterPositionConstants;
 import frc.robot.sim.PhysicsSim;
+
+import frc.robot.Constants;
 
 public class ShooterPosition extends SubsystemBase {
 
@@ -33,7 +31,7 @@ public class ShooterPosition extends SubsystemBase {
     TalonFX leftElevatorMotor;
     TalonFX rightElevatorMotor;
 
-    boolean simulationInitialized = false;
+    private boolean simulationInitialized = false;
     private final TalonFXSimState angleMotorSim;
     private final DCMotorSim angleMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1),
             1, 0.0005);
@@ -51,9 +49,9 @@ public class ShooterPosition extends SubsystemBase {
     public ShooterPositionState shooterPosState = ShooterPositionState.IntakeFromFloor;
 
     public ShooterPosition() {
-        angleMotor = new TalonFX(ElectronicIDs.AngleMotorID);
-        leftElevatorMotor = new TalonFX(ElectronicIDs.LeftElevatorMotorID);
-        rightElevatorMotor = new TalonFX(ElectronicIDs.RightElevatorMotorID);
+        angleMotor = new TalonFX(ElectronicsIDs.AngleMotorID);
+        leftElevatorMotor = new TalonFX(ElectronicsIDs.LeftElevatorMotorID);
+        rightElevatorMotor = new TalonFX(ElectronicsIDs.RightElevatorMotorID);
 
         angleMotorSim = angleMotor.getSimState();
         leftMotorSim = leftElevatorMotor.getSimState();
@@ -61,7 +59,7 @@ public class ShooterPosition extends SubsystemBase {
 
         rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), true));
 
-        bottomHallEffect = new DigitalInput(ElectronicIDs.HallEffectID);
+        bottomHallEffect = new DigitalInput(ElectronicsIDs.HallEffectID);
         TalonFXConfiguration configs = new TalonFXConfiguration();
         configs.Slot0.kP = 0.5; // An error of 1 rotation per second results in 2V output (CHANGE)
         // configs.Slot0.kI = 0.5; // An error of 1 rotation per second increases output by 0.5V every second (CHANGE)
@@ -121,37 +119,44 @@ public class ShooterPosition extends SubsystemBase {
         return shooterPosState.toString();
     }
 
-    public boolean isSpeakerAngled() {
-        return (getAngle() >= .95 * ShooterConstants.SpeakerAngle)
-                && (getAngle() <= 1.05 * ShooterConstants.SpeakerAngle);
+    private boolean isWithinPositionTolerance(double desiredAngle, double desiredElevatorHeight) {
+        return (getAngle() >= Constants.LowerToleranceLimit * desiredAngle) &&
+                (getAngle() <= Constants.UpperToleranceLimit * desiredAngle) && 
+                (getHeight() >= Constants.LowerToleranceLimit * desiredElevatorHeight) && 
+                (getHeight() <= Constants.UpperToleranceLimit * desiredElevatorHeight);
     }
 
-    public boolean isAmpAngled() {
-        return (getAngle() >= .95 * ShooterConstants.AmpAngle)
-                && (getAngle() <= 1.05 * ShooterConstants.AmpAngle);
+    public boolean isWithinPositionTolerance(double desiredAngle) {
+        return (getAngle() >= Constants.LowerToleranceLimit * desiredAngle) &&
+                (getAngle() <= Constants.UpperToleranceLimit * desiredAngle);
     }
 
-    public boolean isSourceAngled() {
-        return (getAngle() >= .95 * ShooterConstants.IntakeFromSourceAngle)
-                && (getAngle() <= 1.05 * ShooterConstants.IntakeFromSourceAngle);
+    public boolean isSpeakerPositioned() {
+        return isWithinPositionTolerance(ShooterPositionConstants.SpeakerAngle, ShooterPositionConstants.SpeakerHeight);
     }
 
-    public boolean isFloorAngled() {
-        return (getAngle() >= .95 * ShooterConstants.IntakeFromFloorAngle)
-                && (getAngle() <= 1.05 * ShooterConstants.IntakeFromFloorAngle);
+    public boolean isAmpPositioned() {
+        return isWithinPositionTolerance(ShooterPositionConstants.AmpAngle, ShooterPositionConstants.AmpHeight);
+    }
+
+    public boolean isSourcePositioned() {
+        return isWithinPositionTolerance(ShooterPositionConstants.IntakeFromSourceAngle, ShooterPositionConstants.IntakeFromSourceHeight);
+    }
+
+    public boolean isFloorPositioned() {
+        return isWithinPositionTolerance(ShooterPositionConstants.IntakeFromFloorAngle, ShooterPositionConstants.IntakeFromFloorHeight);
     }
 
     public boolean isTrapAngled() {
-        return (getAngle() >= .95 * ShooterConstants.TrapAngle)
-                && (getAngle() <= 1.05 * ShooterConstants.TrapAngle);
+        return isWithinPositionTolerance(ShooterPositionConstants.TrapAngle);
     }
 
     public void setHeight(double height) {
-        leftElevatorMotor.setPosition(height * ElevatorConstants.RotationsPerElevatorInch);
+        leftElevatorMotor.setPosition(height * ShooterPositionConstants.RotationsPerElevatorInch);
     }
 
     public double getHeight() {
-        return leftElevatorMotor.getPosition().getValueAsDouble() / ElevatorConstants.RotationsPerElevatorInch;
+        return leftElevatorMotor.getPosition().getValueAsDouble() / ShooterPositionConstants.RotationsPerElevatorInch;
     }
 
     public boolean getBottomHallEffect() {
@@ -162,10 +167,10 @@ public class ShooterPosition extends SubsystemBase {
         builder.setSmartDashboardType("Shooter Angle Subsystem");
         builder.addStringProperty("State", this::getShooterPosStateAsString, null);
         builder.addDoubleProperty("Angle", this::getAngle, null);
-        builder.addBooleanProperty("Speaker Angle", this::isSpeakerAngled, null);
-        builder.addBooleanProperty("Amp Angle", this::isAmpAngled, null);
-        builder.addBooleanProperty("Source Angle", this::isSourceAngled, null);
-        builder.addBooleanProperty("Floor Angle", this::isFloorAngled, null);
+        builder.addBooleanProperty("Speaker Angle", this::isSpeakerPositioned, null);
+        builder.addBooleanProperty("Amp Angle", this::isAmpPositioned, null);
+        builder.addBooleanProperty("Source Angle", this::isSourcePositioned, null);
+        builder.addBooleanProperty("Floor Angle", this::isFloorPositioned, null);
         builder.addBooleanProperty("Trap Angle", this::isTrapAngled, null);
         builder.addDoubleProperty("Elevator Height", this::getHeight, null);
         builder.addBooleanProperty("Bottom Hall Effect", this::getBottomHallEffect, null);

@@ -11,6 +11,8 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
+import edu.wpi.first.math.util.Units;
+
 public class Constants {
 
     public static final double SecondsPerMinute = 60;
@@ -24,7 +26,7 @@ public class Constants {
     public static final double LowerToleranceLimit = 1 - toleranceLimit;
     public static final double UpperToleranceLimit = 1 + toleranceLimit;
     
-    public static final class ElectronicIDs {
+    public static final class ElectronicsIDs {
 
         public static final int DriverControllerPort = 1;
         public static final int OperatorControllerPort = 2;
@@ -55,8 +57,8 @@ public class Constants {
         public static final int LowerShooterMotorID = 41;
         public static final int UpperShooterMotorID = 42;
         public static final int AngleMotorID = 43;
-
-        public static final int BreakBeamID = 4; // CHANGE
+        public static final int IndexMotorID = 44;
+        public static final int BreakBeamID = 4;
 
         /***************************** FLOOR INTAKE *****************************/
 
@@ -115,7 +117,7 @@ public class Constants {
     /***************************************************************************/
     /***************************************************************************/
 
-    public static final class Swerve {
+    public static final class SwerveConstants {
         public static final Translation2d flModuleOffset = new Translation2d(0.4, 0.4);
         public static final Translation2d frModuleOffset = new Translation2d(0.4, -0.4);
         public static final Translation2d blModuleOffset = new Translation2d(-0.4, 0.4);
@@ -129,6 +131,31 @@ public class Constants {
                 maxModuleSpeed,
                 flModuleOffset.getNorm(), // Drive base radius (distance from center to furthest module)
                 new ReplanningConfig());
+
+        public static final double WheelRadius = Units.inchesToMeters(2.0);
+        public static final double WheelCircumference = 2.0 * WheelRadius * Math.PI;
+        public static final double GearRatio = 6.75;
+        public static final double VelocityConversionFactor = WheelCircumference / Constants.SecondsPerMinute / GearRatio;
+
+        public static final double MaxRPM = 5820;
+        public static final double MaxVelocityPerSecond = MaxRPM * VelocityConversionFactor;
+
+        /* DRIVE ENCODER */
+        public static final double DriveKP = 0.04; // REQUIRES TUNING 
+        public static final double DriveKI = 0.0015;
+        public static final double DriveKD = 0;
+        public static final double DriveIZone = 0.15;
+        public static final double DriveFF = 1.0 / MaxVelocityPerSecond;
+
+        /* TURN ENCODER */
+        public static final int CANCoderResolution = 4096;
+        public static final double PositionConversionFactor = WheelCircumference / GearRatio;
+        public static final double TurnKP = 1; // Need to change
+        public static final double TurnKI = 0;
+        public static final double TurnKD = 0;
+
+        public static final double ModuleMaxAngularVelocity = 3.0 * 2.0 * Math.PI; // #revolutions * radians per revolution (rad/sec)
+        public static final double ModuleMaxAngularAcceleration = 12 * Math.PI; // radians per second squared
     }
 
     /***************************************************************************/
@@ -146,19 +173,41 @@ public class Constants {
         public static final double FloorIntakeVelocity = -20; // CHANGE
         public static final double TrapVelocity = SpeakerVelocity; // CHANGE
 
-        public static final double SpeakerAngle = 30; // CHANGE
-        public static final double AmpAngle = 60; // CHANGE
-        public static final double IntakeFromSourceAngle = 90; // CHANGE
-        public static final double IntakeFromFloorAngle = 120; // CHANGE
-        public static final double TrapAngle = 150; // CHANGE
-
         public static final double ShooterKP = 0.5; // An error of 1 rotation per second results in 2V output
         public static final double ShooterKI = 0.5; // An error of 1 rotation per second increases output by 0.5V every second
         public static final double ShooterKD =  0.0001; // A change of 1 rotation per second squared results in 0.01 volts output // CHANGE ?
         public static final double ShooterKV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
         
         public static final double PeakShooterForwardVoltage = 8; // Peak output of 8 voltspublic static final double PeakShooterForwardVoltage = 8; // Peak output of 8 volts
-        public static final double PeakShooterReverseVoltage = -8; 
+        public static final double PeakShooterReverseVoltage = -8;
+
+		public static final double IndexVelocity = 0;
+
+        public static final double IndexKP = 0; // Change All
+        public static final double IndexKI = 0; 
+        public static final double IndexKD = 0; 
+        public static final double IndexIZone = 0; 
+        public static final double IndexFF = 0; 
+        
+    }
+
+    public static final class ShooterPositionConstants {
+
+        public static final double SpeakerAngle = 30; // CHANGE
+        public static final double AmpAngle = 60; // CHANGE
+        public static final double IntakeFromSourceAngle = 90; // CHANGE
+        public static final double IntakeFromFloorAngle = 120; // CHANGE
+        public static final double TrapAngle = 150; // CHANGE
+
+        
+        public static final double SpeakerHeight = 0; // CHANGE
+        public static final double AmpHeight = 0; // CHANGE
+        public static final double IntakeFromSourceHeight = 0; // CHANGE
+        public static final double IntakeFromFloorHeight = 0; // CHANGE
+        public static final double TrapHeight = 0; // CHANGE
+
+        public static final double RotationsPerElevatorInch = 0; // CHANGE
+
 
     }
 
@@ -189,23 +238,7 @@ public class Constants {
     /***************************************************************************/
     /***************************************************************************/
     /***************************************************************************/
-
-    public static final class ElevatorConstants {
-
-        public static final double SpeakerHeight = 0; // CHANGE
-        public static final double AmpHeight = 0; // CHANGE
-        public static final double IntakeFromSourceHeight = 0; // CHANGE
-        public static final double IntakeFromFloorHeight = 0; // CHANGE
-        public static final double TrapHeight = 0; // CHANGE
-
-        public static final double RotationsPerElevatorInch = 0; // CHANGE
-
-    }
-
-    /***************************************************************************/
-    /***************************************************************************/
-    /***************************************************************************/
-
+    
     public final class LogitechDAConstants {
         public static final int LeftStickX = 0; // LDA = Logitech Dual Action
         public static final int LeftStickY = 1;

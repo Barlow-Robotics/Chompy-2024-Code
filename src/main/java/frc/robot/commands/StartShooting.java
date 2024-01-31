@@ -5,58 +5,24 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Shooter.ShooterVelState;
-import frc.robot.subsystems.ShooterPosition;
-import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
 
 public class StartShooting extends Command {
   
   Shooter shooterSub;
-  ShooterPosition shooterPositionSub;
 
-  public StartShooting(Shooter s, ShooterPosition sp) {
+  public StartShooting(Shooter s) {
     shooterSub = s;
-    shooterPositionSub = sp;
-    addRequirements(shooterSub, shooterPositionSub);
+    addRequirements(shooterSub);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    ShooterPositionState shooterPosition = shooterPositionSub.getShooterPosState();
-
-    switch (shooterPosition) {
-            case MovingToPosition:
-              shooterSub.setVelocity(0);
-              shooterSub.setShooterVelState(ShooterVelState.Stopped);
-              break;
-            case Speaker:
-                shooterSub.setVelocity(ShooterConstants.SpeakerVelocity);
-                shooterSub.shooterVelState = ShooterVelState.Speaker;
-                break;
-            case Amp:
-                shooterSub.setVelocity(ShooterConstants.AmpVelocity);
-                shooterSub.shooterVelState = ShooterVelState.Amp;
-                break;
-            case IntakeFromSource:
-                shooterSub.setVelocity(ShooterConstants.SourceIntakeVelocity);
-                shooterSub.shooterVelState = ShooterVelState.IntakeFromSource;
-                break;
-            case IntakeFromFloor:
-                shooterSub.setVelocity(ShooterConstants.FloorIntakeVelocity);
-                shooterSub.shooterVelState = ShooterVelState.IntakeFromFloor;
-                break;
-            case Trap:
-                shooterSub.setVelocity(ShooterConstants.TrapVelocity);
-                shooterSub.shooterVelState = ShooterVelState.Trap;
-                break;
-        }
   }
 
   @Override
   public void execute() {
+    shooterSub.setVelocity(SetShooterPosition.desiredShooterVelocity, SetShooterPosition.desiredIndexVelocity);
   }
 
   @Override

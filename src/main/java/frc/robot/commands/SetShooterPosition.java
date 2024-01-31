@@ -5,8 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants;
+import frc.robot.Constants.ShooterPositionConstants;
 import frc.robot.subsystems.ShooterPosition;
 import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
 
@@ -16,11 +17,12 @@ public class SetShooterPosition extends Command {
     ShooterPositionState desiredState;
     double desiredAngle;
     double desiredHeight;
+    public static double desiredShooterVelocity = 0; 
+    public static double desiredIndexVelocity = 0;
 
-
-  public SetShooterPosition(ShooterPosition shooterAngleSub, ShooterPositionState shooterPositionState) {
+  public SetShooterPosition(ShooterPosition shooterAngleSub, ShooterPositionState desiredState) {
         this.shooterPositionSub = shooterAngleSub;
-        this.desiredState = shooterPositionState;
+        this.desiredState = desiredState;
 
         addRequirements(shooterAngleSub);
     }
@@ -30,31 +32,41 @@ public class SetShooterPosition extends Command {
         switch (desiredState) {
             case Speaker:
                 shooterPositionSub.setShooterPosState(ShooterPositionState.MovingToPosition);
-                desiredAngle = ShooterConstants.SpeakerAngle;
-                desiredHeight = ElevatorConstants.SpeakerHeight;
+                desiredAngle = ShooterPositionConstants.SpeakerAngle;
+                desiredHeight = ShooterPositionConstants.SpeakerHeight;
+                desiredShooterVelocity = ShooterConstants.SpeakerVelocity;
+                desiredIndexVelocity = ShooterConstants.IndexVelocity;
                 shooterPositionSub.setShooterPosState(ShooterPositionState.Speaker);
                 break;
             case Amp:
                 shooterPositionSub.setShooterPosState(ShooterPositionState.MovingToPosition);
-                desiredAngle = ShooterConstants.AmpAngle;
-                desiredHeight = ElevatorConstants.AmpHeight;
+                desiredAngle = ShooterPositionConstants.AmpAngle;
+                desiredHeight = ShooterPositionConstants.AmpHeight;
+                desiredShooterVelocity = ShooterConstants.AmpVelocity;
+                desiredIndexVelocity = ShooterConstants.IndexVelocity;
                 shooterPositionSub.setShooterPosState(ShooterPositionState.Amp);
                 break;
             case IntakeFromSource:
                 shooterPositionSub.setShooterPosState(ShooterPositionState.MovingToPosition);
-                desiredAngle = ShooterConstants.IntakeFromSourceAngle;
-                desiredHeight = ElevatorConstants.IntakeFromSourceHeight;
+                desiredAngle = ShooterPositionConstants.IntakeFromSourceAngle;
+                desiredHeight = ShooterPositionConstants.IntakeFromSourceHeight;
+                desiredShooterVelocity = ShooterConstants.SourceIntakeVelocity;
+                desiredIndexVelocity = -ShooterConstants.IndexVelocity;
                 shooterPositionSub.setShooterPosState(ShooterPositionState.IntakeFromSource);
                 break;
             case IntakeFromFloor:
                 shooterPositionSub.setShooterPosState(ShooterPositionState.MovingToPosition);
-                desiredAngle = ShooterConstants.IntakeFromFloorAngle;
-                desiredHeight = ElevatorConstants.IntakeFromFloorHeight;
+                desiredAngle = ShooterPositionConstants.IntakeFromFloorAngle;
+                desiredHeight = ShooterPositionConstants.IntakeFromFloorHeight;
+                desiredShooterVelocity = ShooterConstants.FloorIntakeVelocity;
+                desiredIndexVelocity = -ShooterConstants.IndexVelocity;
                 shooterPositionSub.setShooterPosState(ShooterPositionState.IntakeFromFloor);
                 break;
             case Trap:
                 shooterPositionSub.setShooterPosState(ShooterPositionState.MovingToPosition);
-                shooterPositionSub.setAngle(ShooterConstants.TrapAngle);
+                shooterPositionSub.setAngle(ShooterPositionConstants.TrapAngle);
+                desiredShooterVelocity = ShooterConstants.TrapVelocity;
+                desiredIndexVelocity = ShooterConstants.IndexVelocity;
                 shooterPositionSub.setShooterPosState(ShooterPositionState.Trap);
                 break;
         }
@@ -73,6 +85,9 @@ public class SetShooterPosition extends Command {
 
     @Override
     public boolean isFinished() {
-        return (shooterPositionSub.getAngle() == desiredAngle) && (shooterPositionSub.getHeight() == desiredHeight);
+        return (shooterPositionSub.getAngle() >= Constants.LowerToleranceLimit * desiredAngle) &&
+                (shooterPositionSub.getAngle() <= Constants.UpperToleranceLimit * desiredAngle) && 
+                (shooterPositionSub.getHeight() >= Constants.LowerToleranceLimit * desiredHeight) && 
+                (shooterPositionSub.getHeight() <= Constants.UpperToleranceLimit * desiredHeight);
     }
 }

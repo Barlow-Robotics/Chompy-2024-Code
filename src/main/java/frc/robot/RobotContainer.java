@@ -10,9 +10,14 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import com.pathplanner.lib.util.PathPlannerLogging;
+import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -74,7 +79,7 @@ public class RobotContainer {
     private Trigger moveToFloorButton;
     private Trigger moveToTrapButton;
 
-    // private final SendableChooser<Command> autoChooser;
+    private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
         AutoBuilder.configureHolonomic(
@@ -98,9 +103,22 @@ public class RobotContainer {
                 },
                 driveSub
         );
+        PathPlannerLogging.setLogActivePathCallback(
+            (activePath) -> {
+            Logger.recordOutput(
+                "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+            });
+        PathPlannerLogging.setLogTargetPoseCallback(
+            (targetPose) -> {
+            Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+            });
+
 
         NamedCommands.registerCommand("Shoot Speaker", Commands.print("***********************************Shoot into Speaker"));
         NamedCommands.registerCommand("Shoot Amp", Commands.print("*******************************Shoot into Amp"));
+        autoChooser = AutoBuilder.buildAutoChooser();
+        autoChooser.setDefaultOption("Right-Side Straight-Line Auto", new PathPlannerAuto("Right-Side Straight-Line Auto"));
+        Shuffleboard.getTab("Auto").add("Path Name", autoChooser);
 
         configureBindings();
 
@@ -176,6 +194,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new PathPlannerAuto("Score in Amp Speaker Speaker V1 (SASS)");
+        return autoChooser.getSelected();
+        // return new PathPlannerAuto("Score in Amp Speaker Speaker V1 (SASS)");
     }
 }

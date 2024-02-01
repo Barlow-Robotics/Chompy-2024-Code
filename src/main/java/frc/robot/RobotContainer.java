@@ -92,9 +92,9 @@ public class RobotContainer {
                 driveSub::getSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 driveSub::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig(
-                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-                        4.5, // Max module speed, in m/s
+                        new PIDConstants(5, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(5, 0.0, 0.0), // Rotation PID constants
+                        4.59, // Max module speed, in m/s
                         0.4, // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API for the options here
                 ),
@@ -117,20 +117,20 @@ public class RobotContainer {
             Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
             });
 
-        NamedCommands.registerCommand(
-            "Shoot Speaker",
-            setShooterSpeakerAngleCmd
-        );
+        // NamedCommands.registerCommand(
+        //     "Shoot Speaker",
+        //     setShooterSpeakerAngleCmd
+        // );
 
-        NamedCommands.registerCommand(
-            "Shoot Amp",
-            setShooterAmpAngleCmd
-        );
+        // NamedCommands.registerCommand(
+        //     "Shoot Amp",
+        //     setShooterAmpAngleCmd
+        // );
 
         
-        // NamedCommands.registerCommand("Shoot Speaker", Commands.print("***********************************Shoot into Speaker"));
+        NamedCommands.registerCommand("Shoot Speaker", Commands.print("***********************************Shoot into Speaker"));
         // NamedCommands.registerCommand("Shoot Speaker", Commands.runOnce(moveShooterToAmpCommand));
-        // NamedCommands.registerCommand("Shoot Amp", Commands.print("*******************************Shoot into Amp"));
+        NamedCommands.registerCommand("Shoot Amp", Commands.print("*******************************Shoot into Amp"));
         NamedCommands.registerCommand("Floor Intake", Commands.print("*******************************Activate Floor Intake"));
         NamedCommands.registerCommand("Go to Amp Position", Commands.print("*******************************Go to Amp Position for the Elevator"));
         NamedCommands.registerCommand("Spin Up Intake Flywheel", Commands.print("*******************************Go to Spin Up Intake Flywheel"));

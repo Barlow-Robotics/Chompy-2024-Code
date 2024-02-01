@@ -133,27 +133,28 @@ public class RobotContainer {
         moveToAmpButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper); // top
         moveToAmpButton.onTrue(setShooterPosAmpCmd);
 
-        moveToSourceButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // right stick press
+        moveToSourceButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY); // claw
         moveToSourceButton.onTrue(setShooterPosSourceIntakeCmd);
 
-        moveToFloorButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY); // claw
+        moveToFloorButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // station
         moveToFloorButton.onTrue(setShooterPosFloorIntakeCmd);
         
-        moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home
+        moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button on mantis controller
         moveToTrapButton.onTrue(setShooterPosTrapCmd);
 
         /******************** SHOOTER ********************/
 
-        shootButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle 
+        shootButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home 
         shootButton.onTrue(startShootingCmd).onFalse(stopShootingCmd);
 
         /***************** FLOOR INTAKE *****************/
-        toggleFloorIntakeButton = new JoystickButton(operatorController, LogitechDAConstants.LeftBumper); //floor 
+        
+        toggleFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // floor 
         toggleFloorIntakeButton.onTrue(startIntakeCmd).onFalse(stopIntakeCmd);
 
         /******************** CLIMB ********************/
         
-        climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB);
+        climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller
         // climbButton.onTrue(climbCmd);
     }
 

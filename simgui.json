@@ -21,10 +21,12 @@
       "/SmartDashboard/Elevator": "Subsystem",
       "/SmartDashboard/Example Auto": "Command",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/FloorIntake": "Subsystem",
       "/SmartDashboard/On-the-fly path": "Command",
       "/SmartDashboard/Pathfind to Pickup Pos": "Command",
       "/SmartDashboard/Pathfind to Scoring Pos": "Command",
       "/SmartDashboard/Scheduler": "Scheduler",
+      "/SmartDashboard/Shooter": "Subsystem",
       "/SmartDashboard/ShooterAngle": "Subsystem"
     },
     "windows": {
@@ -61,23 +63,31 @@
     "transitory": {
       "AdvantageKit": {
         "RealOutputs": {
+          "FloorIntake": {
+            "open": true
+          },
+          "Shooter": {
+            "open": true
+          },
+          "ShooterPosition": {
+            "open": true
+          },
           "open": true
-        }
+        },
+        "open": true
       },
       "Shuffleboard": {
         ".metadata": {
           "open": true
-        },
-        "open": true
+        }
       },
       "SmartDashboard": {
-        "ShooterPosition": {
-          "open": true
-        },
         "Shooter": {
           "open": true
         },
-        "open": true
+        "ShooterPosition": {
+          "open": true
+        }
       },
       "floorIntake": {
         "open": true

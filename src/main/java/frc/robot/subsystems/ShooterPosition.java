@@ -8,7 +8,6 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.NeutralOut;
@@ -17,7 +16,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -93,24 +91,24 @@ public class ShooterPosition extends SubsystemBase {
         advantageKitLogging();
     }
 
-    /** @param angle Desired angle in fraction of a rotation */ // May want to CHANGE this to degrees
-    public void setAngle(double angle) {
-        angleMotor.setPosition(angle);
-        Logger.recordOutput("ShooterPosition/AngleDesired", angle);
+    /** @param desiredAngle Desired angle in fraction of a rotation */ // May want to CHANGE this to degrees
+    public void setAngle(double desiredAngle) {
+        angleMotor.setPosition(desiredAngle);
+        Logger.recordOutput("ShooterPosition/DesiredAngle", desiredAngle);
     }
 
     public double getAngle() {
         return angleMotor.getPosition().getValue();
     }
 
-    public void setHeight(double height) {
-        leftElevatorMotor.setPosition(height * ShooterPositionConstants.RotationsPerElevatorInch);
+    public void setHeight(double desiredHeight) {
+        leftElevatorMotor.setPosition(desiredHeight * ShooterPositionConstants.RotationsPerElevatorInch);
+        Logger.recordOutput("ShooterPosition/DesiredAngle", desiredHeight);
     }
 
     public double getHeight() {
         return leftElevatorMotor.getPosition().getValueAsDouble() / ShooterPositionConstants.RotationsPerElevatorInch;
     }
-
 
     public void setShooterPosState(ShooterPositionState newState) {
         shooterPosState = newState;
@@ -135,10 +133,7 @@ public class ShooterPosition extends SubsystemBase {
     }
 
     public boolean isWithinPositionTolerance(double desiredAngle, double desiredHeight) {
-        return (getAngle() >= Constants.LowerToleranceLimit * desiredAngle) &&
-                (getAngle() <= Constants.UpperToleranceLimit * desiredAngle) &&
-                (getHeight() >= Constants.LowerToleranceLimit * desiredHeight) &&
-                (getHeight() <= Constants.UpperToleranceLimit * desiredHeight);
+        return isWithinAngleTolerance(desiredAngle) && isWithinHeightTolerance(desiredHeight);
     }
 
     public boolean isAtBottom() {
@@ -151,7 +146,8 @@ public class ShooterPosition extends SubsystemBase {
 
     private void advantageKitLogging() {
         Logger.recordOutput("ShooterPosition/State", getShooterPosStateAsString());
-        Logger.recordOutput("ShooterPosition/AngleActual", getAngle());
+        Logger.recordOutput("ShooterPosition/ActualAngle", getAngle());
+        Logger.recordOutput("ShooterPosition/ActualHeight", getHeight());
         Logger.recordOutput("ShooterPosition/IsAtSpeakerAngle", isWithinAngleTolerance(ShooterPositionConstants.SpeakerAngle));
         Logger.recordOutput("ShooterPosition/IsAtSpeakerHeight", isWithinHeightTolerance(ShooterPositionConstants.SpeakerHeight));
         Logger.recordOutput("ShooterPosition/IsAtAmpAngle", isWithinAngleTolerance(ShooterPositionConstants.AmpAngle));

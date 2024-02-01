@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Shooter.ShooterVelState;
 
 public class StopShooting extends Command {
 
@@ -24,7 +23,6 @@ public class StopShooting extends Command {
     @Override
     public void execute() {
         shooterSub.setVelocity(0, 0);
-        shooterSub.setShooterVelState(ShooterVelState.Stopped);
     }
 
     @Override

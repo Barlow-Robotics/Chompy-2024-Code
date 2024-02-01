@@ -95,9 +95,9 @@ public class Drive extends SubsystemBase {
                         backRight.getPosition()
                 });
 
-        Logger.recordOutput("Pose", odometry.getPoseMeters());
+        Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
         SwerveModuleState[] swerveModuleActualStates = new SwerveModuleState[] {frontLeft.getState(), frontRight.getState(), backLeft.getState(), backRight.getState()};
-        Logger.recordOutput("SwerveStates/ActualStates", swerveModuleActualStates);
+        Logger.recordOutput("Drive/StatesActual", swerveModuleActualStates);
     }
 
     public Pose2d getPose() {
@@ -129,7 +129,7 @@ public class Drive extends SubsystemBase {
         backLeft.setDesiredState(swerveModuleDesiredStates[2]);
         backRight.setDesiredState(swerveModuleDesiredStates[3]);
 
-        Logger.recordOutput("SwerveStates/DesiredStates", swerveModuleDesiredStates);
+        Logger.recordOutput("Drive/StatesDesired", swerveModuleDesiredStates);
     }
 
     public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {

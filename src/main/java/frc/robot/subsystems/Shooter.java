@@ -60,12 +60,6 @@ public class Shooter extends SubsystemBase {
     DigitalInput breakBeam;
     DIOSim breakBeamSim;
 
-    public enum ShooterVelState {
-        Stopped, Speaker, Amp, IntakeFromSource, IntakeFromFloor, Trap
-    }
-
-    public ShooterVelState shooterVelState = ShooterVelState.Stopped;
-
     private boolean simulationInitialized = false;
     private boolean isIndexing = false;
 
@@ -111,9 +105,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setVelocity(double shooterRPM, double indexRPM) {
-        if (shuffleBoardSpeed.getDouble(-1.0) <= Constants.Falcon500MaxRPM / 60) { // max rps: 105
-                shooterRPM = shuffleBoardSpeed.getDouble(-1.0);
-        }
+        // if (shuffleBoardSpeed.getDouble(-1.0) <= Constants.Falcon500MaxRPM / 60) { // max rps: 105
+        //         shooterRPM = shuffleBoardSpeed.getDouble(-1.0);
+        // }
+        Logger.recordOutput("Shooter/DesiredShooterRPM", shooterRPM);
+        Logger.recordOutput("Shooter/DesiredIndexRPM", indexRPM);
 
         shooterRPM /= 60;
 
@@ -123,61 +119,44 @@ public class Shooter extends SubsystemBase {
         if (isWithinVelocityTolerance(shooterRPM)) {
             indexPidController.setReference(indexRPM, ControlType.kVelocity);
             isIndexing = true;
-        }
-       
-        Logger.recordOutput("Shooter/DesiredShooterRPM", shooterRPM);
-        Logger.recordOutput("Shooter/DesiredIndexRPM", indexRPM);
+        }       
     }
 
     public void stopShooting() {
         lowerShooterMotor.setControl(brake);
         upperShooterMotor.setControl(brake);
-        shooterVelState = ShooterVelState.Stopped;
         indexPidController.setReference(0, ControlType.kVelocity);
         isIndexing = false;
     }
 
-    private double getRPS(TalonFX motor) {
-        return motor.getVelocity().getValue();
+    private double getRPM(TalonFX motor) {
+        return motor.getVelocity().getValue()*Constants.SecondsPerMinute;
     }
 
-    private boolean isWithinVelocityTolerance(double desiredSpeed) {
-        return (getRPS(lowerShooterMotor) >= Constants.LowerToleranceLimit * desiredSpeed) &&
-                (getRPS(lowerShooterMotor) <= Constants.UpperToleranceLimit * desiredSpeed) &&
-                (getRPS(upperShooterMotor) >= Constants.LowerToleranceLimit * desiredSpeed) &&
-                (getRPS(upperShooterMotor) <= Constants.UpperToleranceLimit * desiredSpeed);
+    private boolean isWithinVelocityTolerance(double desiredRPM) {
+        return (getRPM(lowerShooterMotor) >= Constants.LowerToleranceLimit * desiredRPM) &&
+                (getRPM(lowerShooterMotor) <= Constants.UpperToleranceLimit * desiredRPM) &&
+                (getRPM(upperShooterMotor) >= Constants.LowerToleranceLimit * desiredRPM) &&
+                (getRPM(upperShooterMotor) <= Constants.UpperToleranceLimit * desiredRPM);
     }
 
     public boolean isNoteLoaded() {
         return breakBeam.get();
     }
 
-    public void setShooterVelState(ShooterVelState newState) {
-        shooterVelState = newState;
-    }
-
-    public ShooterVelState getShooterVelState() {
-        return shooterVelState;
-    }
-
-    public String getShooterVelStateAsString() {
-        return shooterVelState.toString();
-    }
-
     /* LOGGING */
 
     private void advantageKitLogging() {
-        Logger.recordOutput("Shooter/State", getShooterVelStateAsString());
-        Logger.recordOutput("Shooter/ActualRPMLower", getRPS(lowerShooterMotor));
-        Logger.recordOutput("Shooter/ActualRPMUpper", getRPS(upperShooterMotor));
+        Logger.recordOutput("Shooter/ActualRPMLower", getRPM(lowerShooterMotor));
+        Logger.recordOutput("Shooter/ActualRPMUpper", getRPM(upperShooterMotor));
         Logger.recordOutput("Shooter/IsIndexing", isIndexing);
         Logger.recordOutput("Shooter/ClosedLoopErrorLower", lowerShooterMotor.getClosedLoopError().getValue());
         Logger.recordOutput("Shooter/ClosedLoopErrorUpper", upperShooterMotor.getClosedLoopError().getValue());
-        Logger.recordOutput("Shooter/IsShootingAmp", isWithinVelocityTolerance(ShooterConstants.AmpVelocity));
-        Logger.recordOutput("Shooter/IsShootingSpeaker", isWithinVelocityTolerance(ShooterConstants.SpeakerVelocity));
-        Logger.recordOutput("Shooter/IsShootingTrap", isWithinVelocityTolerance(ShooterConstants.TrapVelocity));
-        Logger.recordOutput("Shooter/IsIntakingSource", isWithinVelocityTolerance(ShooterConstants.SourceIntakeVelocity));
-        Logger.recordOutput("Shooter/IsIntakingFloor", isWithinVelocityTolerance(ShooterConstants.FloorIntakeVelocity));
+        Logger.recordOutput("Shooter/IsShootingAmp", isWithinVelocityTolerance(ShooterConstants.AmpRPM));
+        Logger.recordOutput("Shooter/IsShootingSpeaker", isWithinVelocityTolerance(ShooterConstants.SpeakerRPM));
+        Logger.recordOutput("Shooter/IsShootingTrap", isWithinVelocityTolerance(ShooterConstants.TrapRPM));
+        Logger.recordOutput("Shooter/IsIntakingSource", isWithinVelocityTolerance(ShooterConstants.SourceRPM));
+        Logger.recordOutput("Shooter/IsIntakingFloor", isWithinVelocityTolerance(ShooterConstants.FloorRPM));
         Logger.recordOutput("Shooter/IsNoteLoaded", isNoteLoaded());
     }
 

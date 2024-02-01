@@ -33,7 +33,7 @@ public class SetShooterPosition extends Command {
                 shooterPositionSub.setShooterPosState(ShooterPositionState.MovingToPosition);
                 desiredAngle = ShooterPositionConstants.SpeakerAngle;
                 desiredHeight = ShooterPositionConstants.SpeakerHeight;
-                desiredShooterVelocity = ShooterConstants.SpeakerVelocity;
+                desiredShooterVelocity = ShooterConstants.SpeakerRPM;
                 desiredIndexVelocity = ShooterConstants.IndexRPM;
                 shooterPositionSub.setShooterPosState(ShooterPositionState.Speaker);
                 break;
@@ -41,7 +41,7 @@ public class SetShooterPosition extends Command {
                 shooterPositionSub.setShooterPosState(ShooterPositionState.MovingToPosition);
                 desiredAngle = ShooterPositionConstants.AmpAngle;
                 desiredHeight = ShooterPositionConstants.AmpHeight;
-                desiredShooterVelocity = ShooterConstants.AmpVelocity;
+                desiredShooterVelocity = ShooterConstants.AmpRPM;
                 desiredIndexVelocity = ShooterConstants.IndexRPM;
                 shooterPositionSub.setShooterPosState(ShooterPositionState.Amp);
                 break;
@@ -49,7 +49,7 @@ public class SetShooterPosition extends Command {
                 shooterPositionSub.setShooterPosState(ShooterPositionState.MovingToPosition);
                 desiredAngle = ShooterPositionConstants.SourceIntakeAngle;
                 desiredHeight = ShooterPositionConstants.SourceIntakeHeight;
-                desiredShooterVelocity = ShooterConstants.SourceIntakeVelocity;
+                desiredShooterVelocity = ShooterConstants.SourceRPM;
                 desiredIndexVelocity = -ShooterConstants.IndexRPM;
                 shooterPositionSub.setShooterPosState(ShooterPositionState.SourceIntake);
                 break;
@@ -57,14 +57,14 @@ public class SetShooterPosition extends Command {
                 shooterPositionSub.setShooterPosState(ShooterPositionState.MovingToPosition);
                 desiredAngle = ShooterPositionConstants.FloorIntakeAngle;
                 desiredHeight = ShooterPositionConstants.FloorIntakeHeight;
-                desiredShooterVelocity = ShooterConstants.FloorIntakeVelocity;
+                desiredShooterVelocity = ShooterConstants.FloorRPM;
                 desiredIndexVelocity = -ShooterConstants.IndexRPM;
                 shooterPositionSub.setShooterPosState(ShooterPositionState.FloorIntake);
                 break;
             case Trap:
                 shooterPositionSub.setShooterPosState(ShooterPositionState.MovingToPosition);
                 shooterPositionSub.setAngle(ShooterPositionConstants.TrapAngle);
-                desiredShooterVelocity = ShooterConstants.TrapVelocity;
+                desiredShooterVelocity = ShooterConstants.TrapRPM;
                 desiredIndexVelocity = ShooterConstants.IndexRPM;
                 shooterPositionSub.setShooterPosState(ShooterPositionState.Trap);
                 break;

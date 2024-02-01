@@ -168,11 +168,11 @@ public class Constants {
 
         public static final double jKgMetersSquared = 0.0005;
 
-        public static final double SpeakerVelocity = 50; // CHANGE
-        public static final double AmpVelocity = 10; // CHANGE
-        public static final double SourceIntakeVelocity = -20; // CHANGE
-        public static final double FloorIntakeVelocity = -20; // CHANGE
-        public static final double TrapVelocity = SpeakerVelocity; // CHANGE
+        public static final double SpeakerRPM = 4000; // CHANGE
+        public static final double AmpRPM = 2000; // CHANGE
+        public static final double SourceRPM = -2000; // CHANGE
+        public static final double FloorRPM = -1000; // CHANGE
+        public static final double TrapRPM = 2000; // CHANGE
 
         public static final double ShooterKP = 0.5; // An error of 1 rotation per second results in 2V output
         public static final double ShooterKI = 0.5; // An error of 1 rotation per second increases output by 0.5V every second
@@ -182,14 +182,13 @@ public class Constants {
         public static final double PeakShooterForwardVoltage = 8; // Peak output of 8 voltspublic static final double PeakShooterForwardVoltage = 8; // Peak output of 8 volts
         public static final double PeakShooterReverseVoltage = -8;
 
-		public static final double IndexRPM = 100;
+		public static final double IndexRPM = 1000;
 
         public static final double IndexKP = 0.5; // Change All
         public static final double IndexKI = 0; 
         public static final double IndexKD = 0; 
         public static final double IndexIZone = 0; 
         public static final double IndexFF = 0.12; 
-        
     }
 
     /***************************************************************************/
@@ -216,7 +215,7 @@ public class Constants {
         public static final double SpeakerHeight = 0; // CHANGE
 
         public static final double AmpAngle = 60; // CHANGE
-        public static final double AmpHeight = 0; // CHANGE
+        public static final double AmpHeight = 10; // CHANGE
 
         public static final double SourceIntakeAngle = 90; // CHANGE
         public static final double SourceIntakeHeight = 0; // CHANGE
@@ -225,7 +224,7 @@ public class Constants {
         public static final double FloorIntakeHeight = 0; // CHANGE
 
         public static final double TrapAngle = 150; // CHANGE
-        public static final double TrapHeight = 0; // CHANGE
+        public static final double TrapHeight = 10; // CHANGE
     }
 
     /***************************************************************************/
@@ -249,7 +248,7 @@ public class Constants {
         public static final double LowerIZone = 0.1; // CHANGE
         public static final double LowerFF = 1; // CHANGE
 
-        public static final double MotorVelocity = 0.2; // CHANGE
+        public static final double MotorVelocity = 2000; // CHANGE
     }
 
     /***************************************************************************/

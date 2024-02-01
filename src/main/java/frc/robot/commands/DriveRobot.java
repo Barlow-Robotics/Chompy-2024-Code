@@ -75,13 +75,13 @@ public class DriveRobot extends Command {
         driveSub.drive(XSpeed, YSpeed, Rot, FieldRelative);
 
         /* LOGGING */
-        Logger.recordOutput("Raw Yaw Input", rawRot);
-        Logger.recordOutput("Raw XSpeed", rawX);
-        Logger.recordOutput("Raw YSpeed", rawY);
+        Logger.recordOutput("Drive/RawYawInput", rawRot);
+        Logger.recordOutput("Drive/RawXSpeed", rawX);
+        Logger.recordOutput("Drive/RawYSpeed", rawY);
 
-        Logger.recordOutput("Yaw Input", Rot);
-        Logger.recordOutput("XSpeed", YSpeed);
-        Logger.recordOutput("YSpeed", XSpeed);
+        Logger.recordOutput("Drive/YawInput", Rot);
+        Logger.recordOutput("Drive/XSpeed", YSpeed);
+        Logger.recordOutput("Drive/YSpeed", XSpeed);
     }
 
     @Override

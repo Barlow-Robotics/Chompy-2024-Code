@@ -12,6 +12,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -20,6 +21,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveRobot;
@@ -32,6 +35,7 @@ import frc.robot.commands.Climb;
 
 import frc.robot.commands.ToggleIntake;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
 
 public class RobotContainer {
     /* SUBSYSTEMS */
@@ -113,9 +117,25 @@ public class RobotContainer {
             Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
             });
 
+        NamedCommands.registerCommand(
+            "Shoot Speaker",
+            setShooterSpeakerAngleCmd
+        );
 
-        NamedCommands.registerCommand("Shoot Speaker", Commands.print("***********************************Shoot into Speaker"));
-        NamedCommands.registerCommand("Shoot Amp", Commands.print("*******************************Shoot into Amp"));
+        NamedCommands.registerCommand(
+            "Shoot Amp",
+            setShooterAmpAngleCmd
+        );
+
+        
+        // NamedCommands.registerCommand("Shoot Speaker", Commands.print("***********************************Shoot into Speaker"));
+        // NamedCommands.registerCommand("Shoot Speaker", Commands.runOnce(moveShooterToAmpCommand));
+        // NamedCommands.registerCommand("Shoot Amp", Commands.print("*******************************Shoot into Amp"));
+        NamedCommands.registerCommand("Floor Intake", Commands.print("*******************************Activate Floor Intake"));
+        NamedCommands.registerCommand("Go to Amp Position", Commands.print("*******************************Go to Amp Position for the Elevator"));
+        NamedCommands.registerCommand("Spin Up Intake Flywheel", Commands.print("*******************************Go to Spin Up Intake Flywheel"));
+        NamedCommands.registerCommand("Go to Speaker Position", Commands.print("*******************************Go to Speaker Position for the Elevator"));
+
         autoChooser = AutoBuilder.buildAutoChooser();
         autoChooser.setDefaultOption("Right-Side Straight-Line Auto", new PathPlannerAuto("Right-Side Straight-Line Auto"));
         Shuffleboard.getTab("Auto").add("Path Name", autoChooser);

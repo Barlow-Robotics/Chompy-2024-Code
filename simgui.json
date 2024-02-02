@@ -67,9 +67,18 @@
             "open": true
           },
           "Shooter": {
+            "Is": {
+              "open": true
+            },
             "open": true
           },
           "ShooterPosition": {
+            "Source": {
+              "open": true
+            },
+            "Speaker": {
+              "open": true
+            },
             "open": true
           },
           "open": true

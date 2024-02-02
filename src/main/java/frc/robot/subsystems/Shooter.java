@@ -118,11 +118,13 @@ public class Shooter extends SubsystemBase {
 
         if (isWithinVelocityTolerance(shooterRPM)) {
             indexPidController.setReference(indexRPM, ControlType.kVelocity);
-            isIndexing = true;
+            if(indexEncoder.getVelocity() >= Constants.LowerToleranceLimit * ShooterConstants.IndexRPM) {
+                isIndexing = true;
+            }
         }       
     }
 
-    public void stopShooting() {
+    public void stopMotors() {
         lowerShooterMotor.setControl(brake);
         upperShooterMotor.setControl(brake);
         indexPidController.setReference(0, ControlType.kVelocity);
@@ -141,7 +143,8 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isNoteLoaded() {
-        return breakBeam.get();
+        // return breakBeam.get();
+        return false;
     }
 
     /* LOGGING */
@@ -149,15 +152,16 @@ public class Shooter extends SubsystemBase {
     private void advantageKitLogging() {
         Logger.recordOutput("Shooter/ActualRPMLower", getRPM(lowerShooterMotor));
         Logger.recordOutput("Shooter/ActualRPMUpper", getRPM(upperShooterMotor));
-        Logger.recordOutput("Shooter/IsIndexing", isIndexing);
+        Logger.recordOutput("Shooter/ActualRPMIndex", indexEncoder.getVelocity());
+        Logger.recordOutput("Shooter/Is/Indexing", isIndexing);
         Logger.recordOutput("Shooter/ClosedLoopErrorLower", lowerShooterMotor.getClosedLoopError().getValue());
         Logger.recordOutput("Shooter/ClosedLoopErrorUpper", upperShooterMotor.getClosedLoopError().getValue());
-        Logger.recordOutput("Shooter/IsNoteLoaded", isNoteLoaded());
-        Logger.recordOutput("Shooter/Velocity/IsShootingAmp", isWithinVelocityTolerance(ShooterConstants.AmpRPM));
-        Logger.recordOutput("Shooter/Velocity/IsShootingSpeaker", isWithinVelocityTolerance(ShooterConstants.SpeakerRPM));
-        Logger.recordOutput("Shooter/Velocity/IsShootingTrap", isWithinVelocityTolerance(ShooterConstants.TrapRPM));
-        Logger.recordOutput("Shooter/Velocity/IsIntakingSource", isWithinVelocityTolerance(ShooterConstants.SourceRPM));
-        Logger.recordOutput("Shooter/Velocity/IsIntakingFloor", isWithinVelocityTolerance(ShooterConstants.FloorRPM));
+        Logger.recordOutput("Shooter/Is/NoteLoaded", isNoteLoaded());
+        Logger.recordOutput("Shooter/Is/ShootingAmp", isWithinVelocityTolerance(ShooterConstants.AmpRPM));
+        Logger.recordOutput("Shooter/Is/ShootingSpeaker", isWithinVelocityTolerance(ShooterConstants.SpeakerRPM));
+        Logger.recordOutput("Shooter/Is/ShootingTrap", isWithinVelocityTolerance(ShooterConstants.TrapRPM));
+        Logger.recordOutput("Shooter/Is/IntakingSource", isWithinVelocityTolerance(ShooterConstants.SourceRPM));
+        Logger.recordOutput("Shooter/Is/IntakingFloor", isWithinVelocityTolerance(ShooterConstants.FloorRPM));
     }
 
     /* CONFIG */

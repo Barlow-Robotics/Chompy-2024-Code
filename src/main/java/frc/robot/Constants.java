@@ -17,8 +17,8 @@ public class Constants {
 
     public static final double SecondsPerMinute = 60;
 
-    public static final double Neo550MaxRPM = 11000; // CHANGE
-    public static final double NeoMaxRPM = 5676; // CHANGE
+    public static final double Neo550MaxRPM = 11000;
+    public static final double NeoMaxRPM = 5676;
     public static final double Falcon500MaxRPM = 6300;
     public static final double KrakenX60MaxRPM = 6000;
     
@@ -63,8 +63,7 @@ public class Constants {
         /***************************** FLOOR INTAKE *****************************/
 
         // FloorMotorID = 5{locationOnBot}
-        public static final int UpperFloorMotorID = 51;
-        public static final int LowerFloorMotorID = 52;
+        public static final int FloorMotorID = 51;
  
         /***************************** ELEVATOR *****************************/
 
@@ -93,9 +92,9 @@ public class Constants {
                 new Translation2d(-WheelBase / 2, -TrackWidth / 2)
             );
 
-        public static final double MaxDriveableVelocity = 3.6;
+        public static final double MaxDriveableVelocity = 3.6; // m/s? (CHANGE if this is the wrong unit)
 
-        public static final double PhysicalMaxSpeedMetersPerSecond = 4.0; // CHANGE
+        public static final double PhysicalMaxSpeedMetersPerSecond = Units.feetToMeters(15.1); // 15.1 f/s from Mr. Kinahan's spreadsheet  
         public static final double PhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI; // CHANGE
 
         public static final double FrontLeftMagnetOffsetInRadians = 1.5171039327979088;
@@ -164,7 +163,8 @@ public class Constants {
     /***************************************************************************/
 
     public static final class ShooterConstants {
-        public static final double GearRatio = 1; // CHANGE
+        public static final double FlywheelGearRatio = 1; // CHANGE
+        public static final double IndexGearRatio = 1; // CHANGE
 
         public static final double jKgMetersSquared = 0.0005;
 
@@ -184,11 +184,11 @@ public class Constants {
 
 		public static final double IndexRPM = 1000;
 
-        public static final double IndexKP = 0.5; // Change All
-        public static final double IndexKI = 0; 
-        public static final double IndexKD = 0; 
-        public static final double IndexIZone = 0; 
-        public static final double IndexFF = 0.12; 
+        public static final double IndexKP = 0.5; // CHANGE
+        public static final double IndexKI = 0; // CHANGE
+        public static final double IndexKD = 0; // CHANGE
+        public static final double IndexIZone = 0; // CHANGE
+        public static final double IndexFF = 0.12; // CHANGE
     }
 
     /***************************************************************************/
@@ -198,7 +198,7 @@ public class Constants {
     public static final class ShooterPositionConstants {
 
         public static final double ElevatorGearRatio = 15;
-        public static final double ShooterAngleGearRatio = 46.67; // From K's spreadsheet, might change
+        public static final double ShooterAngleGearRatio = 46.67; // From K's spreadsheet
 
         public static final double ElevatorSprocketDiameter = Units.inchesToMeters(2.36);
         public static final double ElevatorSprocketCircumference = ElevatorSprocketDiameter * Math.PI;
@@ -242,19 +242,12 @@ public class Constants {
     public static final class FloorIntakeConstants {
         // upper = 1_ | lower = 2_
 
-        /* UPPER PID CONTROLLER */
-        public static final double UpperKP = 0.5; // CHANGE
-        public static final double UpperKI = 0.1; // CHANGE
-        public static final double UpperKD = 0.1; // CHANGE
-        public static final double UpperIZone = 0.1; // CHANGE
-        public static final double UpperFF = 1; // CHANGE
-
-        /* LOWER PID CONTROLLER */
-        public static final double LowerKP = 0.5; // CHANGE
-        public static final double LowerKI = 0.1; // CHANGE
-        public static final double LowerKD = 0.1; // CHANGE
-        public static final double LowerIZone = 0.1; // CHANGE
-        public static final double LowerFF = 1; // CHANGE
+        /* PID CONTROLLER */
+        public static final double KP = 0.5; // CHANGE
+        public static final double KI = 0.1; // CHANGE
+        public static final double KD = 0.1; // CHANGE
+        public static final double IZone = 0.1; // CHANGE
+        public static final double FF = 1; // CHANGE
 
         public static final double MotorVelocity = 2000; // CHANGE
     }

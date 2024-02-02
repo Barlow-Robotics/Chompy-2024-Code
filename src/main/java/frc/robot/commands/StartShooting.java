@@ -7,17 +7,20 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FloorIntake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterPosition;
 import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
 
 public class StartShooting extends Command {
 
     Shooter shooterSub;
     FloorIntake floorIntakeSub;
+    ShooterPosition shooterPositionSub;
 
-    public StartShooting(Shooter shooterSub, FloorIntake floorIntakeSub) {
+    public StartShooting(Shooter shooterSub, FloorIntake floorIntakeSub, ShooterPosition shooterPositionSub) {
         this.shooterSub = shooterSub;
         this.floorIntakeSub = floorIntakeSub;
-        addRequirements(shooterSub, floorIntakeSub);
+        this.shooterPositionSub = shooterPositionSub;
+        addRequirements(shooterSub, floorIntakeSub, shooterPositionSub);
     }
 
     @Override
@@ -27,15 +30,15 @@ public class StartShooting extends Command {
     @Override
     public void execute() {
         shooterSub.setVelocity(SetShooterPosition.desiredShooterVelocity, SetShooterPosition.desiredIndexVelocity);
-        if (SetShooterPosition.desiredState == ShooterPositionState.FloorIntake) {
+        if (shooterPositionSub.shooterPosState == ShooterPositionState.FloorIntake) {
             floorIntakeSub.startIntaking();
             if (shooterSub.isNoteLoaded()) {
-                shooterSub.stopShooting();
+                shooterSub.stopMotors();
                 floorIntakeSub.stopIntaking();
             }
-        } else if (SetShooterPosition.desiredState == ShooterPositionState.SourceIntake) {
+        } else if (shooterPositionSub.shooterPosState == ShooterPositionState.SourceIntake) {
             if (shooterSub.isNoteLoaded()) {
-                shooterSub.stopShooting();
+                shooterSub.stopMotors();
             }
         } else {
             floorIntakeSub.stopIntaking();
@@ -44,10 +47,12 @@ public class StartShooting extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        shooterSub.stopMotors();
+        floorIntakeSub.stopIntaking();
     }
 
     @Override
     public boolean isFinished() {
-        return true;
+        return false;
     }
 }

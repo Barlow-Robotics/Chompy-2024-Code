@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.util.Units;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -57,7 +59,7 @@ public class ShooterPosition extends SubsystemBase {
     DigitalInput topHallEffect;
 
     public enum ShooterPositionState {
-        Speaker, Amp, SourceIntake, FloorIntake, Trap, MovingToPosition
+        Speaker, Amp, SourceIntake, FloorIntake, Trap, MovingToPosition, Interrupted
     }
 
     public ShooterPositionState shooterPosState = ShooterPositionState.FloorIntake;
@@ -92,20 +94,23 @@ public class ShooterPosition extends SubsystemBase {
         advantageKitLogging();
     }
 
-    /** @param desiredAngle Desired angle in fraction of a rotation */ // May want to CHANGE this to degrees
+    /** @param desiredAngle Desired angle in degrees */
     public void setAngle(double desiredAngle) {
-        angleMotor.setPosition(desiredAngle);
-        Logger.recordOutput("ShooterPosition/DesiredAngle", desiredAngle);
+        Logger.recordOutput("ShooterPosition/SettingAngle", desiredAngle);
+        desiredAngle = Units.degreesToRotations(desiredAngle);
+        MotionMagicVoltage request = new MotionMagicVoltage(desiredAngle);
+        leftElevatorMotor.setControl(request.withFeedForward(ShooterPositionConstants.ElevatorFF));
     }
 
+    /** @return angle in degrees */
     public double getAngle() {
-        return angleMotor.getPosition().getValue();
+        return Units.rotationsToDegrees(angleMotor.getPosition().getValue());
     }
 
     public void setHeight(double desiredHeight) {
+        Logger.recordOutput("ShooterPosition/SettingAngle", desiredHeight);
         MotionMagicVoltage request = new MotionMagicVoltage(desiredHeight * ShooterPositionConstants.RotationsPerElevatorInch);
         leftElevatorMotor.setControl(request.withFeedForward(ShooterPositionConstants.ElevatorFF));
-        Logger.recordOutput("ShooterPosition/DesiredAngle", desiredHeight);
     }
 
     public double getHeight() {
@@ -150,14 +155,14 @@ public class ShooterPosition extends SubsystemBase {
         Logger.recordOutput("ShooterPosition/State", getShooterPosStateAsString());
         Logger.recordOutput("ShooterPosition/ActualAngle", getAngle());
         Logger.recordOutput("ShooterPosition/ActualHeight", getHeight());
-        Logger.recordOutput("ShooterPosition/Speaker/IsAtSpeakerAngle", isWithinAngleTolerance(ShooterPositionConstants.SpeakerAngle));
-        Logger.recordOutput("ShooterPosition/Speaker/IsAtSpeakerHeight", isWithinHeightTolerance(ShooterPositionConstants.SpeakerHeight));
+        Logger.recordOutput("ShooterPosition/Speaker/IsAtAngle", isWithinAngleTolerance(ShooterPositionConstants.SpeakerAngle));
+        Logger.recordOutput("ShooterPosition/Speaker/IsAtHeight", isWithinHeightTolerance(ShooterPositionConstants.SpeakerHeight));
         Logger.recordOutput("ShooterPosition/Amp/IsAtAmpAngle", isWithinAngleTolerance(ShooterPositionConstants.AmpAngle));
         Logger.recordOutput("ShooterPosition/Amp/IsAtAmpHeight", isWithinHeightTolerance(ShooterPositionConstants.AmpHeight));
-        Logger.recordOutput("ShooterPosition/Source/IsAtSourceAngle", isWithinAngleTolerance(ShooterPositionConstants.SourceIntakeAngle));
-        Logger.recordOutput("ShooterPosition/Source/IsAtSourceHeight", isWithinHeightTolerance(ShooterPositionConstants.SourceIntakeHeight));
-        Logger.recordOutput("ShooterPosition/Floor/IsAtFloorAngle", isWithinAngleTolerance(ShooterPositionConstants.FloorIntakeAngle));
-        Logger.recordOutput("ShooterPosition/Floor/IsAtFloorHeight", isWithinHeightTolerance(ShooterPositionConstants.FloorIntakeHeight));
+        Logger.recordOutput("ShooterPosition/Source/IsAtAngle", isWithinAngleTolerance(ShooterPositionConstants.SourceIntakeAngle));
+        Logger.recordOutput("ShooterPosition/Source/IsAtHeight", isWithinHeightTolerance(ShooterPositionConstants.SourceIntakeHeight));
+        Logger.recordOutput("ShooterPosition/Floor/IsAtAngle", isWithinAngleTolerance(ShooterPositionConstants.FloorIntakeAngle));
+        Logger.recordOutput("ShooterPosition/Floor/IsAtHeight", isWithinHeightTolerance(ShooterPositionConstants.FloorIntakeHeight));
         Logger.recordOutput("ShooterPosition/Trap/IsAtTrapAngle", isWithinAngleTolerance(ShooterPositionConstants.TrapAngle));
         Logger.recordOutput("ShooterPosition/Trap/IsAtTrapHeight", isWithinHeightTolerance(ShooterPositionConstants.TrapHeight));
         Logger.recordOutput("ShooterPosition/IsAtBottom", isAtBottom());

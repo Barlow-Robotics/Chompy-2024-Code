@@ -14,51 +14,31 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FloorIntakeConstants;
-import frc.robot.Constants;
 import frc.robot.Constants.ElectronicsIDs;
 import com.revrobotics.REVPhysicsSim;
 import org.littletonrobotics.junction.Logger;
 
 public class FloorIntake extends SubsystemBase {
 
-    CANSparkMax upperMotor;
-    RelativeEncoder upperEncoder;
-    SparkPIDController upperPidController;
-
-    CANSparkMax lowerMotor;
-    RelativeEncoder lowerEncoder;
-    SparkPIDController lowerPidController;
+    CANSparkMax intakeMotor;
+    RelativeEncoder intakeEncoder;
+    SparkPIDController intakePidController;
 
     boolean simulationInitialized = false;
     boolean isIntaking = false; 
 
     public FloorIntake() {
-
-        /* UPPER MOTOR CONFIG */
-        upperMotor = new CANSparkMax(ElectronicsIDs.UpperFloorMotorID, MotorType.kBrushless);
-        upperEncoder = upperMotor.getEncoder();
-        motorAndEncoderConfig(upperMotor, upperEncoder, false); // CHANGE - These true/false values may need to be flipped
-        upperPidController = upperMotor.getPIDController();
+        intakeMotor = new CANSparkMax(ElectronicsIDs.FloorMotorID, MotorType.kBrushless);
+        intakeEncoder = intakeMotor.getEncoder();
+        motorAndEncoderConfig(intakeMotor, intakeEncoder, false); // CHANGE - These true/false values may need to be flipped
+        intakePidController = intakeMotor.getPIDController();
         setPIDControllerValues(
-                upperPidController,
-                FloorIntakeConstants.UpperKP,
-                FloorIntakeConstants.UpperKI,
-                FloorIntakeConstants.UpperKD,
-                FloorIntakeConstants.UpperIZone,
-                FloorIntakeConstants.UpperFF);
-
-        /* LOWER MOTOR CONFIG */
-        lowerMotor = new CANSparkMax(ElectronicsIDs.LowerFloorMotorID, MotorType.kBrushless);
-        lowerEncoder = lowerMotor.getEncoder();
-        motorAndEncoderConfig(lowerMotor, lowerEncoder, true); // CHANGE - These true/false values may need to be flipped
-        lowerPidController = lowerMotor.getPIDController();
-        setPIDControllerValues(
-                lowerPidController,
-                FloorIntakeConstants.LowerKP,
-                FloorIntakeConstants.LowerKI,
-                FloorIntakeConstants.LowerKD,
-                FloorIntakeConstants.LowerIZone,
-                FloorIntakeConstants.LowerFF);
+                intakePidController,
+                FloorIntakeConstants.KP,
+                FloorIntakeConstants.KI,
+                FloorIntakeConstants.KD,
+                FloorIntakeConstants.IZone,
+                FloorIntakeConstants.FF);
     }
 
     @Override
@@ -67,22 +47,19 @@ public class FloorIntake extends SubsystemBase {
     }
 
     public void startIntaking() {
-        upperPidController.setReference(FloorIntakeConstants.MotorVelocity, ControlType.kVelocity);
-        lowerPidController.setReference(FloorIntakeConstants.MotorVelocity, ControlType.kVelocity);
+        intakePidController.setReference(FloorIntakeConstants.MotorVelocity, ControlType.kVelocity);
         isIntaking = true;
     }
 
     public void stopIntaking() {
-        upperPidController.setReference(0, ControlType.kVelocity);
-        lowerPidController.setReference(0, ControlType.kVelocity);
+        intakePidController.setReference(0, ControlType.kVelocity);
         isIntaking = false; 
     }
 
     /* LOGGING */
 
     private void advantageKitLogging() {
-        Logger.recordOutput("FloorIntake/ActualRPMLower", lowerEncoder.getVelocity());
-        Logger.recordOutput("FloorIntake/ActualRPMUpper", upperEncoder.getVelocity());
+        Logger.recordOutput("FloorIntake/ActualRPM", intakeEncoder.getVelocity());
         Logger.recordOutput("FloorIntake/IsIntaking", isIntaking);
     }
 
@@ -110,8 +87,7 @@ public class FloorIntake extends SubsystemBase {
     /* SIMULATION */
 
     private void simulationInit() {
-        REVPhysicsSim.getInstance().addSparkMax(upperMotor, DCMotor.getNeo550(1));
-        REVPhysicsSim.getInstance().addSparkMax(lowerMotor, DCMotor.getNeo550(1));
+        REVPhysicsSim.getInstance().addSparkMax(intakeMotor, DCMotor.getNeo550(1));
     }
 
     @Override

@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.SerialPort;
 
 public class Constants {
 
@@ -162,6 +163,14 @@ public class Constants {
     /***************************************************************************/
     /***************************************************************************/
     /***************************************************************************/
+    public static final class UnderGlowConstants {
+        public static final SerialPort.Port Port = SerialPort.Port.kUSB1;
+        public static final int BlueAlliance = 0;
+        public static final int RedAlliance = 1;
+        public static final int NeonGreen = 8;
+        public static final int NoteLoaded = 16;
+        public static final int Shooting = 32;
+    }
 
     public static final class ShooterConstants {
         public static final double GearRatio = 1; // CHANGE

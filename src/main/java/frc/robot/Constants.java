@@ -167,9 +167,13 @@ public class Constants {
         public static final SerialPort.Port Port = SerialPort.Port.kUSB1;
         public static final int BlueAlliance = 0; // 0b00000000
         public static final int RedAlliance = 1; // 0b00000001
-        public static final int NoteLoaded = 16;
-        public static final int Shooting = 32;
-        public static final int NeonGreen = 128; // 0b10000000
+        public static final int Enabled = 2; // 0b00000010
+        public static final int NoteLoaded = 4; // 0b00000100
+        public static final int Shooting = 8; // 0b00001000
+        public static final int Auto = 16; // 0b00010000
+        public static final int NeonGreen = 32; // 0b00100000
+        public static final int extra = 64; // 0b01000000
+        public static final int extra2 = 128; // 0b10000000
     }
 
     public static final class ShooterConstants {

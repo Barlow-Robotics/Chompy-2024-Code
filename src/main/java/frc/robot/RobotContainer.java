@@ -34,6 +34,7 @@ public class RobotContainer {
     public final Shooter shooterSub = new Shooter();
     public final ShooterPosition shooterPositionSub = new ShooterPosition();
     public final FloorIntake floorIntakeSub = new FloorIntake();
+    public final Vision visionSub = new Vision(); 
 
     /* COMMANDS */
     private final SetShooterPosition setShooterPosSpeakerCmd = new SetShooterPosition(shooterPositionSub, ShooterPositionState.Speaker);

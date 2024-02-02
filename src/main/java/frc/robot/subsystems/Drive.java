@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -98,6 +99,7 @@ public class Drive extends SubsystemBase {
         Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
         SwerveModuleState[] swerveModuleActualStates = new SwerveModuleState[] {frontLeft.getState(), frontRight.getState(), backLeft.getState(), backRight.getState()};
         Logger.recordOutput("Drive/StatesActual", swerveModuleActualStates);
+        configureLogging(odometry);
     }
 
     public Pose2d getPose() {
@@ -227,6 +229,11 @@ public class Drive extends SubsystemBase {
         int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
         SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
         angle.set(navX.getAngle() - Units.radiansToDegrees(twist.dtheta));
-    }    
+    } 
+    
+    public void configureLogging(SwerveDriveOdometry odometry) {
+        Logger.recordOutput("Drive/Odometry/X", odometry.getPoseMeters().getX());
+        Logger.recordOutput("Drive/Odometry/Y", odometry.getPoseMeters().getY());
+    }
     
 }

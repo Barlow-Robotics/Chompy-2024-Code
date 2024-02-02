@@ -13,7 +13,7 @@ import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
 public class SetShooterPosition extends Command {
     
     ShooterPosition shooterPositionSub;
-    ShooterPositionState desiredState;
+    public static ShooterPositionState desiredState;
     double desiredAngle;
     double desiredHeight;
     public static double desiredShooterVelocity = 0; 

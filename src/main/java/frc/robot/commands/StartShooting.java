@@ -5,31 +5,49 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.FloorIntake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
 
 public class StartShooting extends Command {
-  
-  Shooter shooterSub;
 
-  public StartShooting(Shooter s) {
-    shooterSub = s;
-    addRequirements(shooterSub);
-  }
+    Shooter shooterSub;
+    FloorIntake floorIntakeSub;
 
-  @Override
-  public void initialize() {
-  }
+    public StartShooting(Shooter shooterSub, FloorIntake floorIntakeSub) {
+        this.shooterSub = shooterSub;
+        this.floorIntakeSub = floorIntakeSub;
+        addRequirements(shooterSub, floorIntakeSub);
+    }
 
-  @Override
-  public void execute() {
-    shooterSub.setVelocity(SetShooterPosition.desiredShooterVelocity, SetShooterPosition.desiredIndexVelocity);
-  }
+    @Override
+    public void initialize() {
+    }
 
-  @Override
-  public void end(boolean interrupted) {}
+    @Override
+    public void execute() {
+        shooterSub.setVelocity(SetShooterPosition.desiredShooterVelocity, SetShooterPosition.desiredIndexVelocity);
+        if (SetShooterPosition.desiredState == ShooterPositionState.FloorIntake) {
+            floorIntakeSub.startIntaking();
+            if (shooterSub.isNoteLoaded()) {
+                shooterSub.stopShooting();
+                floorIntakeSub.stopIntaking();
+            }
+        } else if (SetShooterPosition.desiredState == ShooterPositionState.SourceIntake) {
+            if (shooterSub.isNoteLoaded()) {
+                shooterSub.stopShooting();
+            }
+        } else {
+            floorIntakeSub.stopIntaking();
+        }
+    }
 
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+    @Override
+    public void end(boolean interrupted) {
+    }
+
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
 }

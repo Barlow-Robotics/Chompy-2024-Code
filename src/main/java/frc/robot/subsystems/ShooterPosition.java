@@ -10,6 +10,7 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -102,7 +103,8 @@ public class ShooterPosition extends SubsystemBase {
     }
 
     public void setHeight(double desiredHeight) {
-        leftElevatorMotor.setPosition(desiredHeight * ShooterPositionConstants.RotationsPerElevatorInch);
+        MotionMagicVoltage request = new MotionMagicVoltage(desiredHeight * ShooterPositionConstants.RotationsPerElevatorInch);
+        leftElevatorMotor.setControl(request.withFeedForward(ShooterPositionConstants.ElevatorFF));
         Logger.recordOutput("ShooterPosition/DesiredAngle", desiredHeight);
     }
 
@@ -148,16 +150,16 @@ public class ShooterPosition extends SubsystemBase {
         Logger.recordOutput("ShooterPosition/State", getShooterPosStateAsString());
         Logger.recordOutput("ShooterPosition/ActualAngle", getAngle());
         Logger.recordOutput("ShooterPosition/ActualHeight", getHeight());
-        Logger.recordOutput("ShooterPosition/IsAtSpeakerAngle", isWithinAngleTolerance(ShooterPositionConstants.SpeakerAngle));
-        Logger.recordOutput("ShooterPosition/IsAtSpeakerHeight", isWithinHeightTolerance(ShooterPositionConstants.SpeakerHeight));
-        Logger.recordOutput("ShooterPosition/IsAtAmpAngle", isWithinAngleTolerance(ShooterPositionConstants.AmpAngle));
-        Logger.recordOutput("ShooterPosition/IsAtAmpHeight", isWithinHeightTolerance(ShooterPositionConstants.AmpHeight));
-        Logger.recordOutput("ShooterPosition/IsAtSourceAngle", isWithinAngleTolerance(ShooterPositionConstants.SourceIntakeAngle));
-        Logger.recordOutput("ShooterPosition/IsAtSourceHeight", isWithinHeightTolerance(ShooterPositionConstants.SourceIntakeHeight));
-        Logger.recordOutput("ShooterPosition/IsAtFloorAngle", isWithinAngleTolerance(ShooterPositionConstants.FloorIntakeAngle));
-        Logger.recordOutput("ShooterPosition/IsAtFloorHeight", isWithinHeightTolerance(ShooterPositionConstants.FloorIntakeHeight));
-        Logger.recordOutput("ShooterPosition/IsAtTrapAngle", isWithinAngleTolerance(ShooterPositionConstants.TrapAngle));
-        Logger.recordOutput("ShooterPosition/IsAtTrapHeight", isWithinHeightTolerance(ShooterPositionConstants.TrapHeight));
+        Logger.recordOutput("ShooterPosition/Speaker/IsAtSpeakerAngle", isWithinAngleTolerance(ShooterPositionConstants.SpeakerAngle));
+        Logger.recordOutput("ShooterPosition/Speaker/IsAtSpeakerHeight", isWithinHeightTolerance(ShooterPositionConstants.SpeakerHeight));
+        Logger.recordOutput("ShooterPosition/Amp/IsAtAmpAngle", isWithinAngleTolerance(ShooterPositionConstants.AmpAngle));
+        Logger.recordOutput("ShooterPosition/Amp/IsAtAmpHeight", isWithinHeightTolerance(ShooterPositionConstants.AmpHeight));
+        Logger.recordOutput("ShooterPosition/Source/IsAtSourceAngle", isWithinAngleTolerance(ShooterPositionConstants.SourceIntakeAngle));
+        Logger.recordOutput("ShooterPosition/Source/IsAtSourceHeight", isWithinHeightTolerance(ShooterPositionConstants.SourceIntakeHeight));
+        Logger.recordOutput("ShooterPosition/Floor/IsAtFloorAngle", isWithinAngleTolerance(ShooterPositionConstants.FloorIntakeAngle));
+        Logger.recordOutput("ShooterPosition/Floor/IsAtFloorHeight", isWithinHeightTolerance(ShooterPositionConstants.FloorIntakeHeight));
+        Logger.recordOutput("ShooterPosition/Trap/IsAtTrapAngle", isWithinAngleTolerance(ShooterPositionConstants.TrapAngle));
+        Logger.recordOutput("ShooterPosition/Trap/IsAtTrapHeight", isWithinHeightTolerance(ShooterPositionConstants.TrapHeight));
         Logger.recordOutput("ShooterPosition/IsAtBottom", isAtBottom());
         Logger.recordOutput("ShooterPosition/IsAtTop", isAtTop());
     }

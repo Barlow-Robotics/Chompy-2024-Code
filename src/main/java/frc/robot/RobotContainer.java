@@ -42,8 +42,8 @@ public class RobotContainer {
     private final SetShooterPosition setShooterPosFloorIntakeCmd = new SetShooterPosition(shooterPositionSub, ShooterPositionState.FloorIntake);
     private final SetShooterPosition setShooterPosTrapCmd = new SetShooterPosition(shooterPositionSub, ShooterPositionState.Trap);
 
-    private final StartShooting startShootingCmd = new StartShooting(shooterSub);
-    private final StopShooting stopShootingCmd = new StopShooting(shooterSub);
+    private final StartShooting startShootingCmd = new StartShooting(shooterSub, floorIntakeSub);
+    private final StopShooting stopShootingCmd = new StopShooting(shooterSub, floorIntakeSub);
     
     private final StartIntake startIntakeCmd = new StartIntake(floorIntakeSub);
     private final StopIntake stopIntakeCmd = new StopIntake(floorIntakeSub);

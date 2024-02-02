@@ -152,12 +152,12 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Shooter/IsIndexing", isIndexing);
         Logger.recordOutput("Shooter/ClosedLoopErrorLower", lowerShooterMotor.getClosedLoopError().getValue());
         Logger.recordOutput("Shooter/ClosedLoopErrorUpper", upperShooterMotor.getClosedLoopError().getValue());
-        Logger.recordOutput("Shooter/IsShootingAmp", isWithinVelocityTolerance(ShooterConstants.AmpRPM));
-        Logger.recordOutput("Shooter/IsShootingSpeaker", isWithinVelocityTolerance(ShooterConstants.SpeakerRPM));
-        Logger.recordOutput("Shooter/IsShootingTrap", isWithinVelocityTolerance(ShooterConstants.TrapRPM));
-        Logger.recordOutput("Shooter/IsIntakingSource", isWithinVelocityTolerance(ShooterConstants.SourceRPM));
-        Logger.recordOutput("Shooter/IsIntakingFloor", isWithinVelocityTolerance(ShooterConstants.FloorRPM));
         Logger.recordOutput("Shooter/IsNoteLoaded", isNoteLoaded());
+        Logger.recordOutput("Shooter/Velocity/IsShootingAmp", isWithinVelocityTolerance(ShooterConstants.AmpRPM));
+        Logger.recordOutput("Shooter/Velocity/IsShootingSpeaker", isWithinVelocityTolerance(ShooterConstants.SpeakerRPM));
+        Logger.recordOutput("Shooter/Velocity/IsShootingTrap", isWithinVelocityTolerance(ShooterConstants.TrapRPM));
+        Logger.recordOutput("Shooter/Velocity/IsIntakingSource", isWithinVelocityTolerance(ShooterConstants.SourceRPM));
+        Logger.recordOutput("Shooter/Velocity/IsIntakingFloor", isWithinVelocityTolerance(ShooterConstants.FloorRPM));
     }
 
     /* CONFIG */

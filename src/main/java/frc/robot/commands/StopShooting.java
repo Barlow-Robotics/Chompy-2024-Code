@@ -5,15 +5,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.FloorIntake;
 import frc.robot.subsystems.Shooter;
 
 public class StopShooting extends Command {
 
-    Shooter shooterSub;
+   Shooter shooterSub;
+    FloorIntake floorIntakeSub;
 
-    public StopShooting(Shooter shooterSub) {
+    public StopShooting(Shooter shooterSub, FloorIntake floorIntakeSub) {
         this.shooterSub = shooterSub;
-        addRequirements(shooterSub);
+        this.floorIntakeSub = floorIntakeSub;
+        addRequirements(shooterSub, floorIntakeSub);
     }
 
     @Override
@@ -23,6 +26,7 @@ public class StopShooting extends Command {
     @Override
     public void execute() {
         shooterSub.setVelocity(0, 0);
+        floorIntakeSub.stopIntaking();
     }
 
     @Override

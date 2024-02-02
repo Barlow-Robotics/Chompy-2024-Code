@@ -50,6 +50,7 @@ public class Robot extends LoggedRobot {
         SmartDashboard.putData(robotContainer.shooterSub);
         // SmartDashboard.putData(robotContainer.shooterPositionSub);
         SmartDashboard.putData(robotContainer.floorIntakeSub);
+        robotContainer.visionSub.periodic(); 
 
         CommandScheduler.getInstance().run();
     }

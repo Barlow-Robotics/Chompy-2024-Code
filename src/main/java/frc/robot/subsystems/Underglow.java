@@ -28,15 +28,16 @@ public class Underglow extends SubsystemBase {
 
     @Override
     public void periodic() {
-        int desiredMode = Constants.UnderGlowConstants.NeonGreen;
+        int desiredMode = 0;
         
         Alliance alliance = DriverStation.getAlliance().get();
-        if (alliance == Alliance.Red) {
-            desiredMode = Constants.UnderGlowConstants.BlueAlliance;
+
+        if (alliance == Alliance.Blue) {
+            desiredMode += Constants.UnderGlowConstants.BlueAlliance;
         } else if (alliance == Alliance.Red) {
-            desiredMode = Constants.UnderGlowConstants.RedAlliance;
+            desiredMode += Constants.UnderGlowConstants.RedAlliance;
         } else {
-            desiredMode = Constants.UnderGlowConstants.NeonGreen;
+            desiredMode += Constants.UnderGlowConstants.NeonGreen;
         }
 
         if (currentMode != desiredMode && port != null) {

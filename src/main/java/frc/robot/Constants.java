@@ -165,11 +165,11 @@ public class Constants {
     /***************************************************************************/
     public static final class UnderGlowConstants {
         public static final SerialPort.Port Port = SerialPort.Port.kUSB1;
-        public static final int BlueAlliance = 0;
-        public static final int RedAlliance = 1;
-        public static final int NeonGreen = 8;
+        public static final int BlueAlliance = 0; // 0b00000000
+        public static final int RedAlliance = 1; // 0b00000001
         public static final int NoteLoaded = 16;
         public static final int Shooting = 32;
+        public static final int NeonGreen = 128; // 0b10000000
     }
 
     public static final class ShooterConstants {

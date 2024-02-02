@@ -197,8 +197,16 @@ public class Constants {
 
     public static final class ShooterPositionConstants {
 
-        public static final double RotationsPerElevatorInch = 1; // CHANGE
+        public static final double ElevatorGearRatio = 15;
+        public static final double ShooterAngleGearRatio = 46.67; // From K's spreadsheet, might change
 
+        public static final double ElevatorSprocketDiameter = Units.inchesToMeters(2.36);
+        public static final double ElevatorSprocketCircumference = ElevatorSprocketDiameter * Math.PI;
+
+        public static final double ShooterAngleMaxSpeed = (Falcon500MaxRPM/60*360)/ElevatorGearRatio; // deg/sec
+        public static final double ElevatorMaxSpeed = (Falcon500MaxRPM/60/ElevatorGearRatio)*ElevatorSprocketCircumference; // m/s
+        public static final double RotationsPerElevatorInch = ElevatorGearRatio / Units.metersToInches(ElevatorSprocketCircumference);
+        
         public static final double ElevatorKP = 0.5;
         public static final double ElevatorKI = 0;
         public static final double ElevatorKD = 0;

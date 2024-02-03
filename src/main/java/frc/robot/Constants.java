@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -212,13 +214,16 @@ public class Constants {
     }
     public static final class VisionConstants {
         public static final int CameraLightID = 0; // Need to change
-        public static final String kCameraName = "Global_Shutter_Camera";
+        public static final String kPoseCameraName = "Global_Shutter_Camera";
+        public static final String kTargetCameraName = "Arducam_OV9281_USB_Camera";
+        public static final PoseStrategy kPrimaryVisionStrategy = PoseStrategy.CLOSEST_TO_REFERENCE_POSE;
+        public static final PoseStrategy kFallbackVisionStrategy = PoseStrategy.LOWEST_AMBIGUITY;
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kRobotToCam =
                 new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0, 0, 0));
 
         // // The layout of the AprilTags on the field
-        public static final AprilTagFieldLayout kTagLayout =
+        public static final AprilTagFieldLayout kFieldTagLayout =
                 AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
         // The standard deviations of our vision estimated poses, which affect correction rate

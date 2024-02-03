@@ -4,11 +4,14 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.VisionConstants.kCameraName;
+import static frc.robot.Constants.VisionConstants.kFallbackVisionStrategy;
 import static frc.robot.Constants.VisionConstants.kMultiTagStdDevs;
+import static frc.robot.Constants.VisionConstants.kPoseCameraName;
 import static frc.robot.Constants.VisionConstants.kRobotToCam;
 import static frc.robot.Constants.VisionConstants.kSingleTagStdDevs;
-import static frc.robot.Constants.VisionConstants.kTagLayout;
+import static frc.robot.Constants.VisionConstants.kFieldTagLayout;
+import static frc.robot.Constants.VisionConstants.kTargetCameraName;
+import static frc.robot.Constants.VisionConstants.kPrimaryVisionStrategy;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -17,15 +20,12 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -50,53 +50,43 @@ public class Vision extends SubsystemBase {
     private /* final */ PhotonPoseEstimator photonEstimator;
     private double lastEstTimestamp = 0;
 
-    private PhotonCameraSim cameraSim;
+    private PhotonCameraSim poseCameraSim;
     private VisionSystemSim visionSim;
-
+    private Transform3d robotToCamera;
 
     boolean aprilTagDetected = false;
 
-    private PoseStrategy primaryStrategy;
-    private Transform3d robotToCamera;
-
     public Vision() /* throws IOException */ {
-        targetCamera = new PhotonCamera("Global_Shutter_Camera");
-        poseCamera = new PhotonCamera("Arducam_OV9281_USB_Camera");
-        {
-            AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+        targetCamera = new PhotonCamera(kTargetCameraName);
+        poseCamera = new PhotonCamera(kPoseCameraName);
 
-            PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
-                    PoseStrategy.CLOSEST_TO_REFERENCE_POSE, poseCamera, kRobotToCam);
+        photonEstimator = new PhotonPoseEstimator(kFieldTagLayout, kPrimaryVisionStrategy, poseCamera, kRobotToCam);
+        photonEstimator.setMultiTagFallbackStrategy(kFallbackVisionStrategy);
 
-            photonEstimator = new PhotonPoseEstimator(
-                    aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, poseCamera, kRobotToCam);
-            photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        // ----- Simulation
+        if (Robot.isSimulation()) {
+            // Create the vision system simulation which handles cameras and targets on the
+            // field.
+            visionSim = new VisionSystemSim("main");
+            // Add all the AprilTags inside the tag layout as visible targets to this
+            // simulated field.
+            visionSim.addAprilTags(kFieldTagLayout);
+            // Create simulated camera properties. These can be set to mimic your actual
+            // camera.
+            var cameraProp = new SimCameraProperties();
+            cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
+            cameraProp.setCalibError(0.35, 0.10);
+            cameraProp.setFPS(15);
+            cameraProp.setAvgLatencyMs(50);
+            cameraProp.setLatencyStdDevMs(15);
+            // Create a PhotonCameraSim which will update the linked PhotonCamera's values
+            // with visible
+            // targets.
+            poseCameraSim = new PhotonCameraSim(poseCamera, cameraProp);
+            // Add the simulated camera to view the targets on this simulated field.
+            visionSim.addCamera(poseCameraSim, kRobotToCam);
 
-            // ----- Simulation
-            if (Robot.isSimulation()) {
-                // Create the vision system simulation which handles cameras and targets on the
-                // field.
-                visionSim = new VisionSystemSim("main");
-                // Add all the AprilTags inside the tag layout as visible targets to this
-                // simulated field.
-                visionSim.addAprilTags(aprilTagFieldLayout);
-                // Create simulated camera properties. These can be set to mimic your actual
-                // camera.
-                var cameraProp = new SimCameraProperties();
-                cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
-                cameraProp.setCalibError(0.35, 0.10);
-                cameraProp.setFPS(15);
-                cameraProp.setAvgLatencyMs(50);
-                cameraProp.setLatencyStdDevMs(15);
-                // Create a PhotonCameraSim which will update the linked PhotonCamera's values
-                // with visible
-                // targets.
-                cameraSim = new PhotonCameraSim(poseCamera, cameraProp);
-                // Add the simulated camera to view the targets on this simulated field.
-                visionSim.addCamera(cameraSim, kRobotToCam);
-
-                cameraSim.enableDrawWireframe(true);
-            }
+            poseCameraSim.enableDrawWireframe(true);
         }
 
         // catch (IOException e) {
@@ -108,77 +98,52 @@ public class Vision extends SubsystemBase {
         // fieldTags.getTagPose(target.getFiducialId()), robotToCamera);
     }
 
-    public void PhotonPoseEstimator(
-            AprilTagFieldLayout fieldTags,
-            PoseStrategy strategy,
-            Transform3d robotToCamera) {
-        //this.fieldTags = fieldTags;
-        this.primaryStrategy = strategy;
-        //this.camera = camera;
-        this.robotToCamera = robotToCamera;
-        PhotonTrackedTarget target;
-        // Pose3d robotPose =
-        // PhotonUtils.estimateFieldToRobot(target.getBestCameraToTarget(),
-        // fieldTags.getTagPose(target.getFiducialId()), robotToCamera);
-    }
-
     public void initSendable(SendableBuilder builder) {
         // builder.addDoubleProperty("Estimated Global Pose",
         // this::getEstimatedGlobalPose, null);
     }
     
-    public PhotonPipelineResult getLatestResult() {
-        return poseCamera.getLatestResult();
+    public PhotonPipelineResult getLatestPoseResult() {
+         return poseCamera.getLatestResult();
     } 
 
-
     public void periodic() {
-        var result = getLatestResult() ;
+        var result = getLatestPoseResult();
+
         if ( result.hasTargets()) {
             var target = result.getBestTarget() ;   
             
             var toTarget = target.getBestCameraToTarget() ;
-            var tagPose = kTagLayout.getTagPose(target.getFiducialId()).orElse(new Pose3d()); 
+            var tagPose = kFieldTagLayout.getTagPose(target.getFiducialId()).orElse(new Pose3d()); 
             var transform3d = new Transform3d();
 
             Pose3d robotPose = 
                 PhotonUtils.estimateFieldToRobotAprilTag(
                     toTarget, tagPose, 
                     transform3d);
-                    double range =
-                    PhotonUtils.calculateDistanceToTargetMeters(
-                            1,
-                            .1,
-                            Units.degreesToRadians( 20.0),
-                            Units.degreesToRadians(result.getBestTarget().getPitch()));
-            int wpk = 1 ;
+
+            double range =
+                PhotonUtils.calculateDistanceToTargetMeters(
+                        1,
+                        .1,
+                        Units.degreesToRadians( 20.0),
+                        Units.degreesToRadians(result.getBestTarget().getPitch()));
+
             NetworkTableInstance.getDefault().getEntry("distanceFromX")
                         .setDouble(robotPose.getX());
-        NetworkTableInstance.getDefault().getEntry("distanceFromY")
-                        .setDouble(robotPose.getY());
-        NetworkTableInstance.getDefault().getEntry("distanceFromZ")
-                        .setDouble(robotPose.getZ());
+            NetworkTableInstance.getDefault().getEntry("distanceFromY")
+                            .setDouble(robotPose.getY());
+            NetworkTableInstance.getDefault().getEntry("distanceFromZ")
+                            .setDouble(robotPose.getZ());
         }
 
-        
         var poseEstimate = getEstimatedGlobalPose() ;
         if ( !poseEstimate.isEmpty()) {
             int wpk = 1 ;
         }
-
-
-
     }
-
-
-
             // SmartDashboard.putData(getEstimatedGlobalPose());
         
-
-    
-
-   
-
     /**
      * The latest estimated robot pose on the field from vision data. This may be
      * empty. This should
@@ -209,7 +174,7 @@ public class Vision extends SubsystemBase {
 
     public Matrix<N3, N1> getEstimationStdDevs(Pose2d estimatedPose) {
         var estStdDevs = kSingleTagStdDevs;
-        var targets = getLatestResult().getTargets();
+        var targets = getLatestPoseResult().getTargets();
         int numTags = 0;
         double avgDist = 0;
         for (var tgt : targets) {
@@ -258,7 +223,7 @@ public class Vision extends SubsystemBase {
     }
 
     public boolean getAprilTagDetected() {
-        return getLatestResult().hasTargets();
+        return getLatestPoseResult().hasTargets();
     }
 
     // private void addNetworkTableEntries() {

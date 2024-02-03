@@ -87,23 +87,15 @@ public class Constants {
         public static final double MaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
         public static final boolean GyroReversed = false;
-        public static final double TrackWidth = 0.762;
 
-        public static final double WheelBase = 0.762; // CHANGE - Distance between right and left wheels
+        public static final double TrackWidth = Units.inchesToMeters(27); // Distance between left and right wheels
+        public static final double WheelBase = Units.inchesToMeters(25); // Distance between front and back wheels
         public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-                new Translation2d(WheelBase / 2, TrackWidth / 2),
-                new Translation2d(WheelBase / 2, -TrackWidth / 2),
-                new Translation2d(-WheelBase / 2, TrackWidth / 2),
-                new Translation2d(-WheelBase / 2, -TrackWidth / 2));
-            public static final boolean GyroReversed = false;
-            public static final double TrackWidth = Units.inchesToMeters(27); // Distance between left and right wheels
-            public static final double WheelBase = Units.inchesToMeters(25); // Distance between front and back wheels
-            public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-                new Translation2d(WheelBase / 2, TrackWidth / 2), // front left 
+                new Translation2d(WheelBase / 2, TrackWidth / 2), // front left
                 new Translation2d(WheelBase / 2, -TrackWidth / 2), // front right
                 new Translation2d(-WheelBase / 2, TrackWidth / 2), // back left
                 new Translation2d(-WheelBase / 2, -TrackWidth / 2) // back right
-            );
+        );
 
         public static final double MaxAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
         public static final double MaxDriveableVelocity = 3.6; // m/s? (CHANGE if this is the wrong unit)
@@ -122,7 +114,8 @@ public class Constants {
 
     public static final class AutoConstants {
         public static final double MaxSpeedMetersPerSecond = DriveConstants.PhysicalMaxSpeedMetersPerSecond / 4; // CHANGE
-        public static final double MaxAngularSpeedRadiansPerSecond = DriveConstants.PhysicalMaxAngularSpeedRadiansPerSecond/ 10; // Default is 540 degress
+        public static final double MaxAngularSpeedRadiansPerSecond = DriveConstants.PhysicalMaxAngularSpeedRadiansPerSecond
+                / 10; // Default is 540 degress
         // public static final double MaxAccelerationMetersPerSecondSquared = 3;
         public static final double MaxAutoAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
         public static final double MaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4; // default: 720 deg
@@ -193,8 +186,10 @@ public class Constants {
 
         public static final double ShooterKP = 0.5; // An error of 1 rotation/sec results in 2V output
         public static final double ShooterKI = 0.5; // An error of 1 rotation/sec increases output by 0.5V every sec
-        public static final double ShooterKD = 0.0001; // A change of 1 rotation/sec squared results in 0.01V output // CHANGE ?
-        public static final double ShooterKV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
+        public static final double ShooterKD = 0.0001; // A change of 1 rotation/sec squared results in 0.01V output //
+                                                       // CHANGE ?
+        public static final double ShooterKV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V,
+                                                     // 1/8.33 = 0.12 volts / Rotation per second
 
         public static final double PeakShooterForwardVoltage = 8; // Peak output of 8 volt
         public static final double PeakShooterReverseVoltage = -8;

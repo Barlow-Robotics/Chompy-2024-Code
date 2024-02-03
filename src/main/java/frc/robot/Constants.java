@@ -82,14 +82,13 @@ public class Constants {
             public static final double MaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
             public static final boolean GyroReversed = false;
-            public static final double TrackWidth = 0.762;
-
-            public static final double WheelBase = 0.762; // CHANGE - Distance between right and left wheels
+            public static final double TrackWidth = Units.inchesToMeters(27); // Distance between left and right wheels
+            public static final double WheelBase = Units.inchesToMeters(25); // Distance between front and back wheels
             public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-                new Translation2d(WheelBase / 2, TrackWidth / 2),
-                new Translation2d(WheelBase / 2, -TrackWidth / 2),
-                new Translation2d(-WheelBase / 2, TrackWidth / 2),
-                new Translation2d(-WheelBase / 2, -TrackWidth / 2)
+                new Translation2d(WheelBase / 2, TrackWidth / 2), // front left 
+                new Translation2d(WheelBase / 2, -TrackWidth / 2), // front right
+                new Translation2d(-WheelBase / 2, TrackWidth / 2), // back left
+                new Translation2d(-WheelBase / 2, -TrackWidth / 2) // back right
             );
 
         public static final double MaxDriveableVelocity = 3.6; // m/s? (CHANGE if this is the wrong unit)

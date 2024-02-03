@@ -12,16 +12,16 @@ import frc.robot.Constants.ShooterPositionConstants;
 import frc.robot.subsystems.ShooterPosition;
 import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
 
-public class SetShooterPosition extends Command {
+public class SetMouthPosition extends Command {
     
     private ShooterPosition shooterPositionSub;
     private ShooterPositionState desiredState;
     private double desiredAngle;
     private double desiredHeight;
-    public static double desiredShooterVelocity = 0; 
-    public static double desiredIndexVelocity = 0;
+    public static double desiredShooterVelocity = ShooterConstants.FloorRPM; 
+    public static double desiredIndexVelocity = ShooterConstants.IndexRPM;
 
-  public SetShooterPosition(ShooterPosition shooterAngleSub, ShooterPositionState desiredState) {
+  public SetMouthPosition(ShooterPosition shooterAngleSub, ShooterPositionState desiredState) {
         this.shooterPositionSub = shooterAngleSub;
         this.desiredState = desiredState;
 

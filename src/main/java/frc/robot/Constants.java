@@ -21,11 +21,15 @@ public class Constants {
     public static final double NeoMaxRPM = 5676;
     public static final double Falcon500MaxRPM = 6300;
     public static final double KrakenX60MaxRPM = 6000;
-    
+
     public static final double toleranceLimit = 0.05;
     public static final double LowerToleranceLimit = 1 - toleranceLimit;
     public static final double UpperToleranceLimit = 1 + toleranceLimit;
-    
+
+    /***************************************************************************/
+    /***************************************************************************/
+    /***************************************************************************/
+
     public static final class ElectronicsIDs {
 
         public static final int DriverControllerPort = 1;
@@ -64,14 +68,14 @@ public class Constants {
 
         // FloorMotorID = 5{locationOnBot}
         public static final int FloorMotorID = 51;
- 
+
         /***************************** ELEVATOR *****************************/
 
         public static final int LeftElevatorMotorID = 61;
-        public static final int RightElevatorMotorID = 62; 
+        public static final int RightElevatorMotorID = 62;
 
         public static final int BottomHallEffectID = 6;
-        public static final int TopHallEffectID = 7; 
+        public static final int TopHallEffectID = 7;
     }
 
     /***************************************************************************/
@@ -79,22 +83,24 @@ public class Constants {
     /***************************************************************************/
 
     public static final class DriveConstants {
-            public static final double MaxAngularSpeed = Math.PI; // 1/2 rotation per second
+        /** radians */
+        public static final double MaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
-            public static final boolean GyroReversed = false;
-            public static final double TrackWidth = 0.762;
+        public static final boolean GyroReversed = false;
+        public static final double TrackWidth = 0.762;
 
-            public static final double WheelBase = 0.762; // CHANGE - Distance between right and left wheels
-            public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+        public static final double WheelBase = 0.762; // CHANGE - Distance between right and left wheels
+        public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
                 new Translation2d(WheelBase / 2, TrackWidth / 2),
                 new Translation2d(WheelBase / 2, -TrackWidth / 2),
                 new Translation2d(-WheelBase / 2, TrackWidth / 2),
-                new Translation2d(-WheelBase / 2, -TrackWidth / 2)
-            );
+                new Translation2d(-WheelBase / 2, -TrackWidth / 2));
 
+        public static final double MaxAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
         public static final double MaxDriveableVelocity = 3.6; // m/s? (CHANGE if this is the wrong unit)
 
-        public static final double PhysicalMaxSpeedMetersPerSecond = Units.feetToMeters(15.1); // 15.1 f/s from Mr. Kinahan's spreadsheet  
+        public static final double PhysicalMaxSpeedMetersPerSecond = Units.feetToMeters(15.1); // 15.1 f/s from Mr. K's
+                                                                                               // spreadsheet
         public static final double PhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI; // CHANGE
 
         public static final double FrontLeftMagnetOffsetInRadians = 1.5171039327979088;
@@ -107,10 +113,10 @@ public class Constants {
 
     public static final class AutoConstants {
         public static final double MaxSpeedMetersPerSecond = DriveConstants.PhysicalMaxSpeedMetersPerSecond / 4; // CHANGE
-        public static final double MaxAngularSpeedRadiansPerSecond = DriveConstants.PhysicalMaxAngularSpeedRadiansPerSecond
-                / 10; // Default is 540 degress
-        public static final double MaxAccelerationMetersPerSecondSquared = 3; // CHANGE
-        public static final double MaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4; // default is 720 degrees
+        public static final double MaxAngularSpeedRadiansPerSecond = DriveConstants.PhysicalMaxAngularSpeedRadiansPerSecond/ 10; // Default is 540 degress
+        // public static final double MaxAccelerationMetersPerSecondSquared = 3;
+        public static final double MaxAutoAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
+        public static final double MaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4; // default: 720 deg
     }
 
     /***************************************************************************/
@@ -135,13 +141,14 @@ public class Constants {
         public static final double WheelRadius = Units.inchesToMeters(2.0);
         public static final double WheelCircumference = 2.0 * WheelRadius * Math.PI;
         public static final double GearRatio = 6.75;
-        public static final double VelocityConversionFactor = WheelCircumference / Constants.SecondsPerMinute / GearRatio;
+        public static final double VelocityConversionFactor = WheelCircumference / Constants.SecondsPerMinute
+                / GearRatio;
 
         public static final double MaxRPM = 5820;
         public static final double MaxVelocityPerSecond = MaxRPM * VelocityConversionFactor;
 
         /* DRIVE ENCODER */
-        public static final double DriveKP = 0.04; // REQUIRES TUNING 
+        public static final double DriveKP = 0.04; // REQUIRES TUNING
         public static final double DriveKI = 0.0015;
         public static final double DriveKD = 0;
         public static final double DriveIZone = 0.15;
@@ -154,7 +161,8 @@ public class Constants {
         public static final double TurnKI = 0;
         public static final double TurnKD = 0;
 
-        public static final double ModuleMaxAngularVelocity = 3.0 * 2.0 * Math.PI; // #revolutions * radians per revolution (rad/sec)
+        public static final double ModuleMaxAngularVelocity = 3.0 * 2.0 * Math.PI; // #revolutions * radians per
+                                                                                   // revolution (rad/sec)
         public static final double ModuleMaxAngularAcceleration = 12 * Math.PI; // radians per second squared
     }
 
@@ -174,15 +182,15 @@ public class Constants {
         public static final double FloorRPM = -1000; // CHANGE
         public static final double TrapRPM = 2000; // CHANGE
 
-        public static final double ShooterKP = 0.5; // An error of 1 rotation per second results in 2V output
-        public static final double ShooterKI = 0.5; // An error of 1 rotation per second increases output by 0.5V every second
-        public static final double ShooterKD =  0.0001; // A change of 1 rotation per second squared results in 0.01 volts output // CHANGE ?
+        public static final double ShooterKP = 0.5; // An error of 1 rotation/sec results in 2V output
+        public static final double ShooterKI = 0.5; // An error of 1 rotation/sec increases output by 0.5V every sec
+        public static final double ShooterKD = 0.0001; // A change of 1 rotation/sec squared results in 0.01V output // CHANGE ?
         public static final double ShooterKV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
-        
-        public static final double PeakShooterForwardVoltage = 8; // Peak output of 8 voltspublic static final double PeakShooterForwardVoltage = 8; // Peak output of 8 volts
+
+        public static final double PeakShooterForwardVoltage = 8; // Peak output of 8 volt
         public static final double PeakShooterReverseVoltage = -8;
 
-		public static final double IndexRPM = 1000;
+        public static final double IndexRPM = 1000;
 
         public static final double IndexKP = 0.5; // CHANGE
         public static final double IndexKI = 0; // CHANGE
@@ -203,10 +211,12 @@ public class Constants {
         public static final double ElevatorSprocketDiameter = Units.inchesToMeters(2.36);
         public static final double ElevatorSprocketCircumference = ElevatorSprocketDiameter * Math.PI;
 
-        public static final double ShooterAngleMaxSpeed = (Falcon500MaxRPM/60*360)/ElevatorGearRatio; // deg/sec
-        public static final double ElevatorMaxSpeed = (Falcon500MaxRPM/60/ElevatorGearRatio)*ElevatorSprocketCircumference; // m/s
-        public static final double RotationsPerElevatorInch = ElevatorGearRatio / Units.metersToInches(ElevatorSprocketCircumference);
-        
+        public static final double ShooterAngleMaxSpeed = (Falcon500MaxRPM / 60 * 360) / ElevatorGearRatio; // deg/sec
+        public static final double ElevatorMaxSpeed = (Falcon500MaxRPM / 60 / ElevatorGearRatio)
+                * ElevatorSprocketCircumference; // m/s
+        public static final double RotationsPerElevatorInch = ElevatorGearRatio
+                / Units.metersToInches(ElevatorSprocketCircumference);
+
         public static final double ElevatorKP = 0.5;
         public static final double ElevatorKI = 0;
         public static final double ElevatorKD = 0;
@@ -255,7 +265,7 @@ public class Constants {
     /***************************************************************************/
     /***************************************************************************/
     /***************************************************************************/
-    
+
     public final class LogitechDAConstants {
         public static final int LeftStickX = 0; // LDA = Logitech Dual Action
         public static final int LeftStickY = 1;

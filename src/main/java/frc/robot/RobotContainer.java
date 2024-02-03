@@ -36,14 +36,14 @@ public class RobotContainer {
     public final FloorIntake floorIntakeSub = new FloorIntake();
 
     /* COMMANDS */
-    private final SetShooterPosition setShooterPosSpeakerCmd = new SetShooterPosition(shooterPositionSub, ShooterPositionState.Speaker);
-    private final SetShooterPosition setShooterPosAmpCmd = new SetShooterPosition(shooterPositionSub, ShooterPositionState.Amp);
-    private final SetShooterPosition setShooterPosSourceIntakeCmd = new SetShooterPosition(shooterPositionSub, ShooterPositionState.SourceIntake);
-    private final SetShooterPosition setShooterPosFloorIntakeCmd = new SetShooterPosition(shooterPositionSub, ShooterPositionState.FloorIntake);
-    private final SetShooterPosition setShooterPosTrapCmd = new SetShooterPosition(shooterPositionSub, ShooterPositionState.Trap);
+    private final SetMouthPosition setShooterPosSpeakerCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.Speaker);
+    private final SetMouthPosition setShooterPosAmpCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.Amp);
+    private final SetMouthPosition setShooterPosSourceIntakeCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.SourceIntake);
+    private final SetMouthPosition setShooterPosFloorIntakeCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.FloorIntake);
+    private final SetMouthPosition setShooterPosTrapCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.Trap);
 
-    private final StartShooting startShootingCmd = new StartShooting(shooterSub, floorIntakeSub, shooterPositionSub);
-    private final StopShooting stopShootingCmd = new StopShooting(shooterSub, floorIntakeSub);
+    private final StartShooterIntake startShootingCmd = new StartShooterIntake(shooterSub, floorIntakeSub, shooterPositionSub);
+    private final StopShooterIntake stopShootingCmd = new StopShooterIntake(shooterSub, floorIntakeSub);
     
     private final StartIntake startIntakeCmd = new StartIntake(floorIntakeSub);
     private final StopIntake stopIntakeCmd = new StopIntake(floorIntakeSub);

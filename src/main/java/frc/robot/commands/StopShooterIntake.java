@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FloorIntake;
 import frc.robot.subsystems.Shooter;
 
-public class StopShooting extends Command {
+public class StopShooterIntake extends Command {
 
    Shooter shooterSub;
     FloorIntake floorIntakeSub;
 
-    public StopShooting(Shooter shooterSub, FloorIntake floorIntakeSub) {
+    public StopShooterIntake(Shooter shooterSub, FloorIntake floorIntakeSub) {
         this.shooterSub = shooterSub;
         this.floorIntakeSub = floorIntakeSub;
         addRequirements(shooterSub, floorIntakeSub);

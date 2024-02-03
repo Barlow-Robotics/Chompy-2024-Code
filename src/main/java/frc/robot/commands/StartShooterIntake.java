@@ -10,13 +10,13 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPosition;
 import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
 
-public class StartShooting extends Command {
+public class StartShooterIntake extends Command {
 
     Shooter shooterSub;
     FloorIntake floorIntakeSub;
     ShooterPosition shooterPositionSub;
 
-    public StartShooting(Shooter shooterSub, FloorIntake floorIntakeSub, ShooterPosition shooterPositionSub) {
+    public StartShooterIntake(Shooter shooterSub, FloorIntake floorIntakeSub, ShooterPosition shooterPositionSub) {
         this.shooterSub = shooterSub;
         this.floorIntakeSub = floorIntakeSub;
         this.shooterPositionSub = shooterPositionSub;
@@ -29,7 +29,14 @@ public class StartShooting extends Command {
 
     @Override
     public void execute() {
-        shooterSub.setVelocity(SetShooterPosition.desiredShooterVelocity, SetShooterPosition.desiredIndexVelocity);
+
+        // Check to make sure you don't accidentally try to intake a second note
+        if ((shooterPositionSub.shooterPosState == ShooterPositionState.SourceIntake ||
+                shooterPositionSub.shooterPosState == ShooterPositionState.FloorIntake)
+                && shooterSub.isNoteLoaded())
+            return;
+
+        shooterSub.setVelocity(SetMouthPosition.desiredShooterVelocity, SetMouthPosition.desiredIndexVelocity);
         if (shooterPositionSub.shooterPosState == ShooterPositionState.FloorIntake) {
             floorIntakeSub.startIntaking();
             if (shooterSub.isNoteLoaded()) {

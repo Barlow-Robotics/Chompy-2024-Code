@@ -105,5 +105,16 @@ public class Robot extends LoggedRobot {
     @Override
     public void simulationPeriodic() {
         REVPhysicsSim.getInstance().run();
+
+        var simPose = robotContainer.driveSub.getPose();
+
+        robotContainer.visionSub.simulationPeriodic(simPose);
+
+        /*
+        frc::Field2d& debugField = vision.GetSimDebugField();
+        debugField.GetObject("EstimatedRobot")->SetPose(drivetrain.GetPose());
+        debugField.GetObject("EstimatedRobotModules")
+            ->SetPoses(drivetrain.GetModulePoses());
+            */
     }
 }

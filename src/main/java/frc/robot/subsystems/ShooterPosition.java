@@ -99,15 +99,14 @@ public class ShooterPosition extends SubsystemBase {
         Logger.recordOutput("ShooterPosition/SettingAngle", desiredAngle);
         desiredAngle = Units.degreesToRotations(desiredAngle);
         MotionMagicVoltage request = new MotionMagicVoltage(desiredAngle);
-        leftElevatorMotor.setControl(request.withFeedForward(ShooterPositionConstants.ElevatorFF));
+        leftElevatorMotor.setControl(request/*.withFeedForward(ShooterPositionConstants.AngleFF)*/);
     }
 
-    /** @return angle in degrees */
-    public double getAngle() {
+    public double getDegrees() {
         return Units.rotationsToDegrees(angleMotor.getPosition().getValue());
     }
 
-    public void setHeight(double desiredHeight) {
+    public void setInches(double desiredHeight) {
         Logger.recordOutput("ShooterPosition/SettingAngle", desiredHeight);
         MotionMagicVoltage request = new MotionMagicVoltage(desiredHeight * ShooterPositionConstants.RotationsPerElevatorInch);
         leftElevatorMotor.setControl(request.withFeedForward(ShooterPositionConstants.ElevatorFF));
@@ -130,8 +129,8 @@ public class ShooterPosition extends SubsystemBase {
     }
 
     private boolean isWithinAngleTolerance(double desiredAngle) {
-        return (getAngle() >= Constants.LowerToleranceLimit * desiredAngle) &&
-                (getAngle() <= Constants.UpperToleranceLimit * desiredAngle);
+        return (getDegrees() >= Constants.LowerToleranceLimit * desiredAngle) &&
+                (getDegrees() <= Constants.UpperToleranceLimit * desiredAngle);
     }
 
     private boolean isWithinHeightTolerance(double desiredHeight) {
@@ -153,7 +152,7 @@ public class ShooterPosition extends SubsystemBase {
 
     private void advantageKitLogging() {
         Logger.recordOutput("ShooterPosition/State", getShooterPosStateAsString());
-        Logger.recordOutput("ShooterPosition/ActualAngle", getAngle());
+        Logger.recordOutput("ShooterPosition/ActualAngle", getDegrees());
         Logger.recordOutput("ShooterPosition/ActualHeight", getHeight());
         Logger.recordOutput("ShooterPosition/Speaker/IsAtAngle", isWithinAngleTolerance(ShooterPositionConstants.SpeakerAngle));
         Logger.recordOutput("ShooterPosition/Speaker/IsAtHeight", isWithinHeightTolerance(ShooterPositionConstants.SpeakerHeight));

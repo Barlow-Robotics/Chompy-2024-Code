@@ -68,7 +68,7 @@ public class SetMouthPosition extends Command {
     @Override
     public void execute() {
         shooterPositionSub.setAngle(desiredAngle);
-        shooterPositionSub.setHeight(desiredHeight);
+        shooterPositionSub.setInches(desiredHeight);
     }
 
     @Override

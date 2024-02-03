@@ -15,6 +15,9 @@
         "header": {
           "open": true
         }
+      },
+      "window": {
+        "visible": false
       }
     }
   },
@@ -74,14 +77,10 @@
           "Shooter": {
             "Is": {
               "open": true
-            },
-            "open": true
+            }
           },
           "ShooterPosition": {
-            "Source": {
-              "open": true
-            },
-            "Speaker": {
+            "Amp": {
               "open": true
             },
             "open": true
@@ -114,7 +113,9 @@
   "NetworkTables Info": {
     "Connections": {
       "open": true
-    },
-    "visible": true
+    }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }

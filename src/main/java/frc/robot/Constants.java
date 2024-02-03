@@ -22,6 +22,9 @@ public class Constants {
     public static final double Falcon500MaxRPM = 6300;
     public static final double KrakenX60MaxRPM = 6000;
 
+    public static final double TalonFXUnitsPerRotation = 2048;
+    public static final double CANCoderUnitsPerRotation = 4096;
+
     public static final double toleranceLimit = 0.05;
     public static final double LowerToleranceLimit = 1 - toleranceLimit;
     public static final double UpperToleranceLimit = 1 + toleranceLimit;

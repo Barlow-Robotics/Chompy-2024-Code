@@ -50,6 +50,7 @@ public class Robot extends LoggedRobot {
         SmartDashboard.putData(robotContainer.shooterSub);
         // SmartDashboard.putData(robotContainer.shooterPositionSub);
         SmartDashboard.putData(robotContainer.floorIntakeSub);
+        robotContainer.visionSub.periodic(); 
 
         CommandScheduler.getInstance().run();
     }
@@ -104,5 +105,16 @@ public class Robot extends LoggedRobot {
     @Override
     public void simulationPeriodic() {
         REVPhysicsSim.getInstance().run();
+
+        var simPose = robotContainer.driveSub.getPose();
+
+        robotContainer.visionSub.simulationPeriodic(simPose);
+
+        /*
+        frc::Field2d& debugField = vision.GetSimDebugField();
+        debugField.GetObject("EstimatedRobot")->SetPose(drivetrain.GetPose());
+        debugField.GetObject("EstimatedRobotModules")
+            ->SetPoses(drivetrain.GetModulePoses());
+            */
     }
 }

@@ -10,7 +10,14 @@
   "command": {
     "type": "sequential",
     "data": {
-      "commands": []
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4 Note Auto (4NA) Path"
+          }
+        }
+      ]
     }
   },
   "folder": null,

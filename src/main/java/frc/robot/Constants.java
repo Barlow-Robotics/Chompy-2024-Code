@@ -95,6 +95,7 @@ public class Constants {
                 new Translation2d(WheelBase / 2, -TrackWidth / 2),
                 new Translation2d(-WheelBase / 2, TrackWidth / 2),
                 new Translation2d(-WheelBase / 2, -TrackWidth / 2));
+            public static final boolean GyroReversed = false;
             public static final double TrackWidth = Units.inchesToMeters(27); // Distance between left and right wheels
             public static final double WheelBase = Units.inchesToMeters(25); // Distance between front and back wheels
             public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(

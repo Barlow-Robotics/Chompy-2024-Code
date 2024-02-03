@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 5.0
+        "x": 1.8725993424209073,
+        "y": 4.776285524793272
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.1207337322082054,
-        "y": 0.9187357124714254
+        "x": 1.9967126924994594,
+        "y": 2.010636271272543
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "end-right-to-speaker"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 0.7718187612301154
       },
       "prevControl": {
-        "x": 5.9234106153397486,
-        "y": 0.36554377275421257
+        "x": 5.380078246267604,
+        "y": 0.8611328657842502
       },
       "nextControl": null,
       "isLocked": false,

@@ -27,7 +27,8 @@
       "/SmartDashboard/Pathfind to Scoring Pos": "Command",
       "/SmartDashboard/Scheduler": "Scheduler",
       "/SmartDashboard/Shooter": "Subsystem",
-      "/SmartDashboard/ShooterAngle": "Subsystem"
+      "/SmartDashboard/ShooterAngle": "Subsystem",
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
     },
     "windows": {
       "/SmartDashboard/Field": {

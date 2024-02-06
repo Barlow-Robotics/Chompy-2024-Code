@@ -13,6 +13,7 @@ import static frc.robot.Constants.VisionConstants.kTagLayout;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -152,12 +153,14 @@ public class Vision extends SubsystemBase {
                             Units.degreesToRadians( 20.0),
                             Units.degreesToRadians(result.getBestTarget().getPitch()));
             int wpk = 1 ;
-            NetworkTableInstance.getDefault().getEntry("distanceFromX")
-                        .setDouble(robotPose.getX());
-        NetworkTableInstance.getDefault().getEntry("distanceFromY")
-                        .setDouble(robotPose.getY());
-        NetworkTableInstance.getDefault().getEntry("distanceFromZ")
-                        .setDouble(robotPose.getZ());
+
+            advantageKitLogging(); 
+        //     NetworkTableInstance.getDefault().getEntry("distanceFromX")
+        //                 .setDouble(robotPose.getX());
+        // NetworkTableInstance.getDefault().getEntry("distanceFromY")
+        //                 .setDouble(robotPose.getY());
+        // NetworkTableInstance.getDefault().getEntry("distanceFromZ")
+        //                 .setDouble(robotPose.getZ());
         }
 
         
@@ -259,6 +262,14 @@ public class Vision extends SubsystemBase {
 
     public boolean getAprilTagDetected() {
         return getLatestResult().hasTargets();
+    }
+    private void advantageKitLogging() {
+        Logger.recordOutput("vision/xPosition", robotToCamera.getX());
+        Logger.recordOutput("vision/yPosition", robotToCamera.getY() );
+        Logger.recordOutput("vision/zPosition", robotToCamera.getZ());
+
+        
+        
     }
 
     // private void addNetworkTableEntries() {

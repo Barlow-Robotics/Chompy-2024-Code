@@ -40,7 +40,7 @@ public class Robot extends LoggedRobot {
         Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
 
         robotContainer.shooterSub.stopMotors();
-        robotContainer.floorIntakeSub.stopIntaking();
+        robotContainer.floorIntakeSub.stop();
     }
 
     @Override
@@ -57,6 +57,10 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledInit() {
+        robotContainer.driveSub.stop();
+        robotContainer.floorIntakeSub.stop();
+        robotContainer.shooterSub.stopMotors();
+        //robotContainer.shooterPositionSub.stopMotors(); // CHANGE - create a function to safely stop everything in this sub when we disbale
     }
 
     @Override
@@ -106,7 +110,7 @@ public class Robot extends LoggedRobot {
     public void simulationPeriodic() {
         REVPhysicsSim.getInstance().run();
 
-        var simPose = robotContainer.driveSub.getPose();
+        var simPose = robotContainer.driveSub.getPoseWithoutVision();
 
         robotContainer.visionSub.simulationPeriodic(simPose);
 

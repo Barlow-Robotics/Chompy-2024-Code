@@ -101,7 +101,7 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        advantageKitLogging();
+        logData();
     }
 
     public void setVelocity(double shooterRPM, double indexRPM) {
@@ -111,13 +111,13 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Shooter/DesiredShooterRPM", shooterRPM);
         Logger.recordOutput("Shooter/DesiredIndexRPM", indexRPM);
 
-        shooterRPM /= 60;
+        double shooterRPS = shooterRPM / 60;
 
-        lowerFlywheelMotor.setControl(voltageVelocity.withVelocity(shooterRPM));
-        upperFlywheelMotor.setControl(voltageVelocity.withVelocity(shooterRPM));
+        lowerFlywheelMotor.setControl(voltageVelocity.withVelocity(shooterRPS));
+        upperFlywheelMotor.setControl(voltageVelocity.withVelocity(shooterRPS));
 
         // while (!isWithinVelocityTolerance(shooterRPM)) { }
-        Logger.recordOutput("Shooter/WithinToleranceFlywheels", isWithinVelocityTolerance(shooterRPM));
+        Logger.recordOutput("Shooter/WithinToleranceFlywheels", isWithinVelocityTolerance(shooterRPS));
 
         indexPidController.setReference(indexRPM, ControlType.kVelocity);
         if(indexEncoder.getVelocity() >= Constants.LowerToleranceLimit * ShooterConstants.IndexRPM) {
@@ -150,7 +150,7 @@ public class Shooter extends SubsystemBase {
 
     /* LOGGING */
 
-    private void advantageKitLogging() {
+    private void logData() {
         Logger.recordOutput("Shooter/ActualRPMLower", getRPM(lowerFlywheelMotor));
         Logger.recordOutput("Shooter/ActualRPMUpper", getRPM(upperFlywheelMotor));
         Logger.recordOutput("Shooter/ActualRPMIndex", indexEncoder.getVelocity());

@@ -31,31 +31,31 @@ public class StartShooterIntake extends Command {
     public void execute() {
 
         // Check to make sure you don't accidentally try to intake a second note
-        if ((shooterPositionSub.shooterPosState == ShooterPositionState.SourceIntake ||
-                shooterPositionSub.shooterPosState == ShooterPositionState.FloorIntake)
+        if ((shooterPositionSub.getShooterPosState() == ShooterPositionState.SourceIntake ||
+                shooterPositionSub.getShooterPosState() == ShooterPositionState.FloorIntake)
                 && shooterSub.isNoteLoaded())
             return;
 
         shooterSub.setVelocity(SetMouthPosition.desiredShooterVelocity, SetMouthPosition.desiredIndexVelocity);
-        if (shooterPositionSub.shooterPosState == ShooterPositionState.FloorIntake) {
-            floorIntakeSub.startIntaking();
+        if (shooterPositionSub.getShooterPosState() == ShooterPositionState.FloorIntake) {
+            floorIntakeSub.start();
             if (shooterSub.isNoteLoaded()) {
                 shooterSub.stopMotors();
-                floorIntakeSub.stopIntaking();
+                floorIntakeSub.stop();
             }
-        } else if (shooterPositionSub.shooterPosState == ShooterPositionState.SourceIntake) {
+        } else if (shooterPositionSub.getShooterPosState() == ShooterPositionState.SourceIntake) {
             if (shooterSub.isNoteLoaded()) {
                 shooterSub.stopMotors();
             }
         } else {
-            floorIntakeSub.stopIntaking();
+            floorIntakeSub.stop();
         }
     }
 
     @Override
     public void end(boolean interrupted) {
         shooterSub.stopMotors();
-        floorIntakeSub.stopIntaking();
+        floorIntakeSub.stop();
     }
 
     @Override

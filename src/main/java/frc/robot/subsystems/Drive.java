@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -18,6 +19,8 @@ import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElectronicsIDs;
+import frc.robot.Constants.VisionConstants;
+
 import org.littletonrobotics.junction.Logger;
 import java.lang.Math;
 import frc.robot.Constants;
@@ -67,8 +70,11 @@ public class Drive extends SubsystemBase {
 
     private final SwerveDriveOdometry odometry;
 
+    private final SwerveDrivePoseEstimator poseEstimator;
+
     private SwerveModulePosition[] previousPositions = new SwerveModulePosition[4] ;
 
+    private Vision visionSub = new Vision();
 
     public Drive() {
         navX = new AHRS(Port.kMXP);
@@ -83,6 +89,19 @@ public class Drive extends SubsystemBase {
                     backLeft.getPosition(),
                     backRight.getPosition()
             });
+
+        poseEstimator = new SwerveDrivePoseEstimator (
+            DriveConstants.kinematics,
+            navX.getRotation2d(),
+            new SwerveModulePosition[] {
+                frontLeft.getPosition(),
+                frontRight.getPosition(),
+                backLeft.getPosition(),
+                backRight.getPosition()},
+            getPoseWithoutVision(),
+            visionSub.getEstimationStdDevs(getPoseWithoutVision()), // not sure if these last two arguments are correct, might need to CHANGE!! -Ang
+            VisionConstants.kMultiTagStdDevs
+            );
     }
 
     @Override
@@ -99,11 +118,17 @@ public class Drive extends SubsystemBase {
         Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
         SwerveModuleState[] swerveModuleActualStates = new SwerveModuleState[] {frontLeft.getState(), frontRight.getState(), backLeft.getState(), backRight.getState()};
         Logger.recordOutput("Drive/StatesActual", swerveModuleActualStates);
-        configureLogging(odometry);
+
+        Logger.recordOutput("Drive/Odometry/X", odometry.getPoseMeters().getX());
+        Logger.recordOutput("Drive/Odometry/Y", odometry.getPoseMeters().getY());
     }
 
-    public Pose2d getPose() {
+    public Pose2d getPoseWithoutVision() {
         return odometry.getPoseMeters();
+    }
+
+    public Pose2d getPoseWithVision() {
+        return poseEstimator.getEstimatedPosition();
     }
     
     public void resetOdometry(Pose2d pose) {
@@ -135,7 +160,8 @@ public class Drive extends SubsystemBase {
     }
 
     public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {
-        driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, getPose().getRotation()));
+        //driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, getPoseWithoutVision().getRotation()));
+        driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, getPoseWithVision().getRotation()));
     }
 
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
@@ -155,15 +181,8 @@ public class Drive extends SubsystemBase {
         backLeft.setDesiredState(desiredStates[2]);
         backRight.setDesiredState(desiredStates[3]);
     }
-
-    public void resetEncoders() {
-        frontLeft.resetEncoders();
-        backLeft.resetEncoders();
-        frontRight.resetEncoders();
-        backRight.resetEncoders();
-    }
-
-    public void stopModules() {
+    
+    public void stop() {
         frontLeft.stop();
         frontRight.stop();
         backLeft.stop();
@@ -182,7 +201,7 @@ public class Drive extends SubsystemBase {
         return navX.getRate() * (DriveConstants.GyroReversed ? -1.0 : 1.0); // degrees per second
     }
 
-    public SwerveModuleState[] getModuleStates() {
+    private SwerveModuleState[] getModuleStates() {
         return new SwerveModuleState[] {
             frontLeft.getState(),
             frontRight.getState(),
@@ -230,10 +249,5 @@ public class Drive extends SubsystemBase {
         SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
         angle.set(navX.getAngle() - Units.radiansToDegrees(twist.dtheta));
     } 
-    
-    public void configureLogging(SwerveDriveOdometry odometry) {
-        Logger.recordOutput("Drive/Odometry/X", odometry.getPoseMeters().getX());
-        Logger.recordOutput("Drive/Odometry/Y", odometry.getPoseMeters().getY());
-    }
     
 }

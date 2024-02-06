@@ -100,17 +100,8 @@ public class SwerveModule {
 
         canCoderConfiguration.MagnetSensor = magnetConfig;
 
-        // wpk - these lines can be removed. They are left overs from Phoenix 5
-        // need to be added
-        // canCoderConfiguration.initializationStrategy =
-        // SensorInitializationStrategy.BootToAbsolutePosition; // BW sets sensor to be
-        // absolute zero
-        // canCoderConfiguration.sensorCoefficient = Math.PI / 2048.0;
-
         turnEncoder.getConfigurator().apply(canCoderConfiguration);
         if (Robot.isSimulation()) {
-            // wpk added this line because we need to set angle to zero
-            // need to figure out if this is needed for real robot too (maybe not)
             turnEncoder.setPosition(0.0, 0.1);
         }
 

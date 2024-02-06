@@ -46,7 +46,7 @@ public class RobotContainer {
     private final StartShooterIntake startShootingCmd = new StartShooterIntake(shooterSub, floorIntakeSub, shooterPositionSub);
     private final StopShooterIntake stopShootingCmd = new StopShooterIntake(shooterSub, floorIntakeSub);
     
-    private final StartIntake startIntakeCmd = new StartIntake(floorIntakeSub);
+    //private final StartIntake startIntakeCmd = new StartIntake(floorIntakeSub);
     private final StopIntake stopIntakeCmd = new StopIntake(floorIntakeSub);
 
     // private final Climb climbCmd = new Climb(shooterPositionSub);
@@ -73,7 +73,8 @@ public class RobotContainer {
 
     public RobotContainer() {
         AutoBuilder.configureHolonomic(
-                driveSub::getPose, // Robot pose supplier
+                // driveSub::getPoseWithoutVision, // Robot pose supplier
+                driveSub::getPoseWithVision, // Robot pose supplier
                 driveSub::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
                 driveSub::getSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 driveSub::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
@@ -150,8 +151,8 @@ public class RobotContainer {
 
         /***************** FLOOR INTAKE *****************/
         
-        toggleFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // floor 
-        toggleFloorIntakeButton.onTrue(startIntakeCmd).onFalse(stopIntakeCmd);
+        // toggleFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // floor 
+        // toggleFloorIntakeButton.onTrue(startIntakeCmd).onFalse(stopIntakeCmd);
 
         /******************** CLIMB ********************/
         

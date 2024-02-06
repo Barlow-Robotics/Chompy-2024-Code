@@ -20,7 +20,7 @@ import org.littletonrobotics.junction.Logger;
 
 public class FloorIntake extends SubsystemBase {
 
-    CANSparkMax intakeMotor;
+    CANSparkMax intakeMotor;  // may change to TalonFX for Kraken motors per wpk
     RelativeEncoder intakeEncoder;
     SparkPIDController intakePidController;
 
@@ -30,59 +30,56 @@ public class FloorIntake extends SubsystemBase {
     public FloorIntake() {
         intakeMotor = new CANSparkMax(ElectronicsIDs.FloorMotorID, MotorType.kBrushless);
         intakeEncoder = intakeMotor.getEncoder();
-        motorAndEncoderConfig(intakeMotor, intakeEncoder, false); // CHANGE - These true/false values may need to be flipped
-        intakePidController = intakeMotor.getPIDController();
-        setPIDControllerValues(
-                intakePidController,
-                FloorIntakeConstants.KP,
-                FloorIntakeConstants.KI,
-                FloorIntakeConstants.KD,
-                FloorIntakeConstants.IZone,
-                FloorIntakeConstants.FF);
-    }
+        configMotor(intakeMotor, false); // CHANGE - These true/false values may need to be flipped
+            }
 
     @Override
     public void periodic() {
-        advantageKitLogging();
+        logData();
     }
 
-    public void startIntaking() {
+    public void start() {
         intakePidController.setReference(FloorIntakeConstants.MotorVelocity, ControlType.kVelocity);
         isIntaking = true;
     }
 
-    public void stopIntaking() {
+    public void stop() {
         intakePidController.setReference(0, ControlType.kVelocity);
         isIntaking = false; 
     }
 
     /* LOGGING */
 
-    private void advantageKitLogging() {
+    private void logData() {
         Logger.recordOutput("FloorIntake/ActualRPM", intakeEncoder.getVelocity());
         Logger.recordOutput("FloorIntake/IsIntaking", isIntaking);
     }
 
     /* CONFIG */
 
-    private void motorAndEncoderConfig(CANSparkMax motor, RelativeEncoder encoder, boolean inverted) {
+    private void configMotor(CANSparkMax motor, boolean inverted) {
 
         motor.restoreFactoryDefaults();
         motor.setIdleMode(IdleMode.kBrake);
         motor.setInverted(inverted);
 
-        encoder = motor.getEncoder();
+        // per Angela, this will be done in hardware
+        //motor.setSmartCurrentLimit() or motor.setSecondaryCurrentLimit ?  to 40 or lower
+        // motor.burnFlash(); ?  to not cause limits to default if there is a brownout
+
+        // encoder = motor.getEncoder();
         // encoder.setVelocityConversionFactor(); // Probably don't need this :)
+    
+        intakePidController = intakeMotor.getPIDController();
+        // set PID Controller Values
+        intakePidController.setP(FloorIntakeConstants.KP);
+        intakePidController.setI(FloorIntakeConstants.KI);
+        intakePidController.setD(FloorIntakeConstants.KD);
+        intakePidController.setIZone(FloorIntakeConstants.IZone);
+        intakePidController.setFF(FloorIntakeConstants.FF);
+        intakePidController.setOutputRange(-1, 1);    
     }
 
-    private void setPIDControllerValues(SparkPIDController controller, double kP, double kI, double kD, double kIz, double kFF) {
-        controller.setP(kP);
-        controller.setI(kI);
-        controller.setD(kD);
-        controller.setIZone(kIz);
-        controller.setFF(kFF);
-        controller.setOutputRange(-1, 1);
-    }
 
     /* SIMULATION */
 

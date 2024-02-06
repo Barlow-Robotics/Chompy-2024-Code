@@ -62,7 +62,7 @@ public class SetMouthPosition extends Command {
                 break;
         }
         Logger.recordOutput("ShooterPosition/DesiredAngle", desiredAngle);
-        Logger.recordOutput("ShooterPosition/DesiredAngle", desiredHeight);
+        Logger.recordOutput("ShooterPosition/DesiredHeight", desiredHeight);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class SetMouthPosition extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        shooterPositionSub.shooterPosState = ShooterPositionState.Interrupted;
+        shooterPositionSub.setShooterPosState(ShooterPositionState.Interrupted);
     }
 
     @Override

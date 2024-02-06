@@ -56,13 +56,11 @@ public class ShooterPosition extends SubsystemBase {
     private final NeutralOut brake = new NeutralOut();
 
     DigitalInput bottomHallEffect;
-    DigitalInput topHallEffect;
 
     public enum ShooterPositionState {
         Speaker, Amp, SourceIntake, FloorIntake, Trap, MovingToPosition, Interrupted
     }
-
-    public ShooterPositionState shooterPosState = ShooterPositionState.FloorIntake;
+    private ShooterPositionState shooterPosState = ShooterPositionState.FloorIntake;
 
     private boolean simulationInitialized = false;
 
@@ -86,20 +84,16 @@ public class ShooterPosition extends SubsystemBase {
         applyMotorConfigs(rightElevatorMotor, "rightElevatorMotor", configs, motorOutputConfigs, InvertedValue.CounterClockwise_Positive); // CHANGE
 
         bottomHallEffect = new DigitalInput(ElectronicsIDs.BottomHallEffectID);
-        topHallEffect = new DigitalInput(ElectronicsIDs.TopHallEffectID);
     }
 
     @Override
     public void periodic() {
-        advantageKitLogging();
+        logData();
     }
-
     /** @param desiredAngle Desired angle in degrees */
     public void setAngle(double desiredAngle) {
-        Logger.recordOutput("ShooterPosition/SettingAngle", desiredAngle);
-        desiredAngle = Units.degreesToRotations(desiredAngle);
-        MotionMagicVoltage request = new MotionMagicVoltage(desiredAngle);
-        leftElevatorMotor.setControl(request/*.withFeedForward(ShooterPositionConstants.AngleFF)*/);
+        MotionMagicVoltage request = new MotionMagicVoltage(Units.degreesToRotations(desiredAngle));
+        leftElevatorMotor.setControl(request.withFeedForward(ShooterPositionConstants.AngleFF));
     }
 
     public double getDegrees() {
@@ -107,7 +101,6 @@ public class ShooterPosition extends SubsystemBase {
     }
 
     public void setInches(double desiredHeight) {
-        Logger.recordOutput("ShooterPosition/SettingAngle", desiredHeight);
         MotionMagicVoltage request = new MotionMagicVoltage(desiredHeight * ShooterPositionConstants.RotationsPerElevatorInch);
         leftElevatorMotor.setControl(request.withFeedForward(ShooterPositionConstants.ElevatorFF));
     }
@@ -146,11 +139,7 @@ public class ShooterPosition extends SubsystemBase {
         return !bottomHallEffect.get(); // might need to get rid of the ! depending on how the hall effect works
     }
 
-    public boolean isAtTop() {
-        return !topHallEffect.get();
-    }
-
-    private void advantageKitLogging() {
+    private void logData() {
         Logger.recordOutput("ShooterPosition/State", getShooterPosStateAsString());
         Logger.recordOutput("ShooterPosition/ActualAngle", getDegrees());
         Logger.recordOutput("ShooterPosition/ActualHeight", getHeight());
@@ -165,7 +154,6 @@ public class ShooterPosition extends SubsystemBase {
         Logger.recordOutput("ShooterPosition/Trap/IsAtTrapAngle", isWithinAngleTolerance(ShooterPositionConstants.TrapAngle));
         Logger.recordOutput("ShooterPosition/Trap/IsAtTrapHeight", isWithinHeightTolerance(ShooterPositionConstants.TrapHeight));
         Logger.recordOutput("ShooterPosition/IsAtBottom", isAtBottom());
-        Logger.recordOutput("ShooterPosition/IsAtTop", isAtTop());
     }
 
     /* CONFIG */

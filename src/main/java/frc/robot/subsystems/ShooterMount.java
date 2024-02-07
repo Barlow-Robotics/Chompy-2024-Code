@@ -30,7 +30,7 @@ import frc.robot.sim.PhysicsSim;
 
 import frc.robot.Constants;
 
-public class ShooterPosition extends SubsystemBase {
+public class ShooterMount extends SubsystemBase {
 
     TalonFX angleMotor;
     private final TalonFXSimState angleMotorSim;
@@ -64,7 +64,7 @@ public class ShooterPosition extends SubsystemBase {
 
     private boolean simulationInitialized = false;
 
-    public ShooterPosition() {
+    public ShooterMount() {
         angleMotor = new TalonFX(ElectronicsIDs.AngleMotorID);
         angleMotorSim = angleMotor.getSimState();
 
@@ -91,7 +91,7 @@ public class ShooterPosition extends SubsystemBase {
         logData();
     }
     /** @param desiredAngle Desired angle in degrees */
-    public void setAngle(double desiredAngle) {
+    public void setDegrees(double desiredAngle) {
         MotionMagicVoltage request = new MotionMagicVoltage(Units.degreesToRotations(desiredAngle));
         leftElevatorMotor.setControl(request.withFeedForward(ShooterPositionConstants.AngleFF));
     }
@@ -168,9 +168,6 @@ public class ShooterPosition extends SubsystemBase {
         configs.Slot1.kI = ShooterPositionConstants.ElevatorKI;
         configs.Slot1.kD = ShooterPositionConstants.ElevatorKD;
         configs.Slot1.kV = ShooterPositionConstants.ElevatorFF;
-       
-        configs.Voltage.PeakForwardVoltage = ShooterConstants.PeakShooterForwardVoltage; // Peak output of 8 volts
-        configs.Voltage.PeakReverseVoltage = ShooterConstants.PeakShooterReverseVoltage;
     }
 
     private void applyMotorConfigs(

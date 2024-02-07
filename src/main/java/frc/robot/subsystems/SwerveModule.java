@@ -136,28 +136,14 @@ public class SwerveModule {
         final double turnOutput = turnPIDController.calculate(
                 turnEncoder.getAbsolutePosition().getValueAsDouble() * 2.0 * Math.PI,
                 state.angle.getRadians());
-
         final double turnFF = TurnFF.calculate(turnPIDController.getSetpoint().velocity);
         turnMotor.setVoltage(turnOutput + turnFF);
 
         if (RobotBase.isSimulation()) {
-            // double angle = state.angle.getRadians();
             CANcoderSimState encoderSim = turnEncoder.getSimState();
-
-            // int rawPosition = 0;
-            // if (angle < 0) {
-            // rawPosition = 4096 + (int) ((angle / Math.PI) * 2048.0);
-            // } else {
-            // rawPosition = (int) ((angle / Math.PI) * 2048.0);
-            // }
             encoderSim.setRawPosition(state.angle.getDegrees() / 180.0);
             Logger.recordOutput("CANCoder " + swerveName,
                     turnEncoder.getAbsolutePosition().getValueAsDouble());
-            // Logger.recordOutput("CANCoder Raw " + swerveName, rawPosition);
-            // Logger.recordOutput("Module Desired State Angle" + swerveName,
-            // desiredState.angle.getRadians());
-            // Logger.recordOutput("Module State Angle" + swerveName,
-            // desiredState.angle.getRadians());
         }
     }
 

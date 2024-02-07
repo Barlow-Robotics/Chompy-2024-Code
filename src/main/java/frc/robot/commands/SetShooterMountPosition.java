@@ -9,19 +9,19 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterPositionConstants;
-import frc.robot.subsystems.ShooterPosition;
-import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
+import frc.robot.subsystems.ShooterMount;
+import frc.robot.subsystems.ShooterMount.ShooterPositionState;
 
-public class SetMouthPosition extends Command {
+public class SetShooterMountPosition extends Command {
     
-    private ShooterPosition shooterPositionSub;
+    private ShooterMount shooterPositionSub;
     private ShooterPositionState desiredState;
     private double desiredAngle;
     private double desiredHeight;
     public static double desiredShooterVelocity = ShooterConstants.FloorRPM; 
     public static double desiredIndexVelocity = ShooterConstants.IndexRPM;
 
-  public SetMouthPosition(ShooterPosition shooterAngleSub, ShooterPositionState desiredState) {
+  public SetShooterMountPosition(ShooterMount shooterAngleSub, ShooterPositionState desiredState) {
         this.shooterPositionSub = shooterAngleSub;
         this.desiredState = desiredState;
 
@@ -67,7 +67,7 @@ public class SetMouthPosition extends Command {
 
     @Override
     public void execute() {
-        shooterPositionSub.setAngle(desiredAngle);
+        shooterPositionSub.setDegrees(desiredAngle);
         shooterPositionSub.setInches(desiredHeight);
     }
 

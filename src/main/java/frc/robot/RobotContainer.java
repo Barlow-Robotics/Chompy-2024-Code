@@ -19,12 +19,13 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElectronicsIDs;
 import frc.robot.Constants.LogitechDAConstants;
+import frc.robot.Constants.LogitechExtreme3DConstants;
 import frc.robot.Constants.RadioMasterConstants;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.*;
 
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
+import frc.robot.subsystems.ShooterMount.ShooterPositionState;
 
 public class RobotContainer {
 
@@ -32,23 +33,20 @@ public class RobotContainer {
 
     public final Drive driveSub = new Drive();
     public final Shooter shooterSub = new Shooter();
-    public final ShooterPosition shooterPositionSub = new ShooterPosition();
+    public final ShooterMount shooterPositionSub = new ShooterMount();
     public final FloorIntake floorIntakeSub = new FloorIntake();
     public final Vision visionSub = new Vision(); 
 
     /* COMMANDS */
-    private final SetMouthPosition setShooterPosSpeakerCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.Speaker);
-    private final SetMouthPosition setShooterPosAmpCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.Amp);
-    private final SetMouthPosition setShooterPosSourceIntakeCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.SourceIntake);
-    private final SetMouthPosition setShooterPosFloorIntakeCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.FloorIntake);
-    private final SetMouthPosition setShooterPosTrapCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.Trap);
+    private final SetShooterMountPosition setShooterPosSpeakerCmd = new SetShooterMountPosition(shooterPositionSub, ShooterPositionState.Speaker);
+    private final SetShooterMountPosition setShooterPosAmpCmd = new SetShooterMountPosition(shooterPositionSub, ShooterPositionState.Amp);
+    private final SetShooterMountPosition setShooterPosSourceIntakeCmd = new SetShooterMountPosition(shooterPositionSub, ShooterPositionState.SourceIntake);
+    private final SetShooterMountPosition setShooterPosFloorIntakeCmd = new SetShooterMountPosition(shooterPositionSub, ShooterPositionState.FloorIntake);
+    private final SetShooterMountPosition setShooterPosTrapCmd = new SetShooterMountPosition(shooterPositionSub, ShooterPositionState.Trap);
 
     private final StartShooterIntake startShootingCmd = new StartShooterIntake(shooterSub, floorIntakeSub, shooterPositionSub);
     private final StopShooterIntake stopShootingCmd = new StopShooterIntake(shooterSub, floorIntakeSub);
     
-    //private final StartIntake startIntakeCmd = new StartIntake(floorIntakeSub);
-    private final StopIntake stopIntakeCmd = new StopIntake(floorIntakeSub);
-
     // private final Climb climbCmd = new Climb(shooterPositionSub);
 
     /* CONTROLLERS */
@@ -64,8 +62,6 @@ public class RobotContainer {
     private Trigger moveToTrapButton;
 
     public Trigger shootButton;
-
-    private Trigger toggleFloorIntakeButton;
 
     private Trigger climbButton;
 
@@ -107,15 +103,24 @@ public class RobotContainer {
                 new DriveRobot(
                         driveSub, 
                         driverController, 
-                        LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY, LogitechDAConstants.RightStickX, 
+                        LogitechExtreme3DConstants.AxisX, LogitechExtreme3DConstants.AxisY, LogitechExtreme3DConstants.AxisZRotate, 
                         true));
-        } else {
+        } else if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Radiomaster TX12 Joystick")){
                 driveSub.setDefaultCommand(
                 new DriveRobot(
                         driveSub, 
                         driverController, 
                         RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
                         true));
+        } else if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Dual Action")){
+                driveSub.setDefaultCommand(
+                new DriveRobot(
+                        driveSub, 
+                        driverController, 
+                        LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY, LogitechDAConstants.RightStickX, 
+                        true));
+        } else {
+            System.out.println("Unknown controller");
         }
 
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`

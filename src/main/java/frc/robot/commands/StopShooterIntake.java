@@ -25,7 +25,7 @@ public class StopShooterIntake extends Command {
 
     @Override
     public void execute() {
-        shooterSub.stopMotors();
+        shooterSub.stop();
         floorIntakeSub.stop();
     }
 

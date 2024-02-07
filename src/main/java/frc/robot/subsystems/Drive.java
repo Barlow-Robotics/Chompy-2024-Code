@@ -27,7 +27,6 @@ import frc.robot.Constants;
 
 import com.kauailabs.navx.frc.AHRS;
 
-
 public class Drive extends SubsystemBase {
 
     private final SwerveModule frontLeft = new SwerveModule(
@@ -35,27 +34,24 @@ public class Drive extends SubsystemBase {
             ElectronicsIDs.FrontLeftDriveMotorID,
             ElectronicsIDs.FrontLeftTurnMotorID,
             ElectronicsIDs.FrontLeftTurnEncoderID,
-            Math.toDegrees(DriveConstants.FrontLeftMagnetOffsetInRadians) / 360.0, 
-            false
-    );
+            Math.toDegrees(DriveConstants.FrontLeftMagnetOffsetInRadians) / 360.0,
+            false);
 
     private final SwerveModule frontRight = new SwerveModule(
             "frontRight",
             ElectronicsIDs.FrontRightDriveMotorID,
             ElectronicsIDs.FrontRightTurnMotorID,
             ElectronicsIDs.FrontRightTurnEncoderID,
-            Math.toDegrees(DriveConstants.FrontRightMagnetOffsetInRadians) / 360.0, 
-            true
-    );
+            Math.toDegrees(DriveConstants.FrontRightMagnetOffsetInRadians) / 360.0,
+            true);
 
     private final SwerveModule backLeft = new SwerveModule(
             "backLeft",
             ElectronicsIDs.BackLeftDriveMotorID,
             ElectronicsIDs.BackLeftTurnMotorID,
             ElectronicsIDs.BackLeftTurnEncoderID,
-            Math.toDegrees(DriveConstants.BackLeftMagnetOffsetInRadians) / 360.0, 
-            false
-    );
+            Math.toDegrees(DriveConstants.BackLeftMagnetOffsetInRadians) / 360.0,
+            false);
 
     private final SwerveModule backRight = new SwerveModule(
             "backRight",
@@ -63,8 +59,7 @@ public class Drive extends SubsystemBase {
             ElectronicsIDs.BackRightTurnMotorID,
             ElectronicsIDs.BackRightTurnEncoderID,
             Math.toDegrees(DriveConstants.BackRightMagnetOffsetInRadians) / 360.0,
-            true
-    );
+            true);
 
     private AHRS navX;
 
@@ -72,7 +67,7 @@ public class Drive extends SubsystemBase {
 
     private final SwerveDrivePoseEstimator poseEstimator;
 
-    private SwerveModulePosition[] previousPositions = new SwerveModulePosition[4] ;
+    private SwerveModulePosition[] previousPositions = new SwerveModulePosition[4];
 
     private Vision visionSub = new Vision();
 
@@ -81,27 +76,27 @@ public class Drive extends SubsystemBase {
         navX.reset();
 
         odometry = new SwerveDriveOdometry(
-            DriveConstants.kinematics,
-            navX.getRotation2d(),
-            new SwerveModulePosition[] {
-                    frontLeft.getPosition(),
-                    frontRight.getPosition(),
-                    backLeft.getPosition(),
-                    backRight.getPosition()
-            });
+                DriveConstants.kinematics,
+                navX.getRotation2d(),
+                new SwerveModulePosition[] {
+                        frontLeft.getPosition(),
+                        frontRight.getPosition(),
+                        backLeft.getPosition(),
+                        backRight.getPosition()
+                });
 
-        poseEstimator = new SwerveDrivePoseEstimator (
-            DriveConstants.kinematics,
-            navX.getRotation2d(),
-            new SwerveModulePosition[] {
-                frontLeft.getPosition(),
-                frontRight.getPosition(),
-                backLeft.getPosition(),
-                backRight.getPosition()},
-            getPoseWithoutVision(),
-            visionSub.getEstimationStdDevs(getPoseWithoutVision()), // not sure if these last two arguments are correct, might need to CHANGE!! -Ang
-            VisionConstants.kMultiTagStdDevs
-            );
+        poseEstimator = new SwerveDrivePoseEstimator(
+                DriveConstants.kinematics,
+                navX.getRotation2d(),
+                new SwerveModulePosition[] {
+                        frontLeft.getPosition(),
+                        frontRight.getPosition(),
+                        backLeft.getPosition(),
+                        backRight.getPosition() },
+                getPoseWithoutVision(),
+                visionSub.getEstimationStdDevs(getPoseWithoutVision()), // not sure if these last two arguments are
+                                                                        // correct, might need to CHANGE!! -Ang
+                VisionConstants.kMultiTagStdDevs);
     }
 
     @Override
@@ -116,7 +111,8 @@ public class Drive extends SubsystemBase {
                 });
 
         Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
-        SwerveModuleState[] swerveModuleActualStates = new SwerveModuleState[] {frontLeft.getState(), frontRight.getState(), backLeft.getState(), backRight.getState()};
+        SwerveModuleState[] swerveModuleActualStates = new SwerveModuleState[] { frontLeft.getState(),
+                frontRight.getState(), backLeft.getState(), backRight.getState() };
         Logger.recordOutput("Drive/StatesActual", swerveModuleActualStates);
 
         Logger.recordOutput("Drive/Odometry/X", odometry.getPoseMeters().getX());
@@ -130,7 +126,7 @@ public class Drive extends SubsystemBase {
     public Pose2d getPoseWithVision() {
         return poseEstimator.getEstimatedPosition();
     }
-    
+
     public void resetOdometry(Pose2d pose) {
         odometry.resetPosition(
                 navX.getRotation2d(),
@@ -150,7 +146,8 @@ public class Drive extends SubsystemBase {
                         ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
                                 navX.getRotation2d())
                         : new ChassisSpeeds(xSpeed, ySpeed, rot));
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleDesiredStates, DriveConstants.MaxDriveableVelocity);
+        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleDesiredStates,
+                DriveConstants.MaxDriveableVelocity);
         frontLeft.setDesiredState(swerveModuleDesiredStates[0]);
         frontRight.setDesiredState(swerveModuleDesiredStates[1]);
         backLeft.setDesiredState(swerveModuleDesiredStates[2]);
@@ -159,13 +156,30 @@ public class Drive extends SubsystemBase {
         Logger.recordOutput("Drive/StatesDesired", swerveModuleDesiredStates);
     }
 
-    public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {
-        //driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, getPoseWithoutVision().getRotation()));
-        driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, getPoseWithVision().getRotation()));
-    }
+    // public void drive(double xSpeed, double ySpeed, double rot, boolean
+    // fieldRelative) {
+
+    // var swerveModuleDesiredStates =
+    // DriveConstants.kinematics.toSwerveModuleStates(
+    // fieldRelative
+    // ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
+    // navX.getRotation2d())
+    // : ChassisSpeeds.discretize(
+    // new ChassisSpeeds(xSpeed, ySpeed, rot),
+    // DriveConstants.TimestepDurationInSeconds));
+    // SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleDesiredStates,
+    // DriveConstants.MaxDriveableVelocity);
+    // frontLeft.setDesiredState(swerveModuleDesiredStates[0]);
+    // frontRight.setDesiredState(swerveModuleDesiredStates[1]);
+    // backLeft.setDesiredState(swerveModuleDesiredStates[2]);
+    // backRight.setDesiredState(swerveModuleDesiredStates[3]);
+
+    // Logger.recordOutput("Drive/StatesDesired", swerveModuleDesiredStates);
+    // }
 
     public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
-        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, DriveConstants.TimestepDurationInSeconds);
+        ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds,
+                DriveConstants.TimestepDurationInSeconds);
         SwerveModuleState[] targetStates = DriveConstants.kinematics.toSwerveModuleStates(targetSpeeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, Constants.DriveConstants.MaxDriveableVelocity);
         frontLeft.setDesiredState(targetStates[0]);
@@ -181,7 +195,7 @@ public class Drive extends SubsystemBase {
         backLeft.setDesiredState(desiredStates[2]);
         backRight.setDesiredState(desiredStates[3]);
     }
-    
+
     public void stop() {
         frontLeft.stop();
         frontRight.stop();
@@ -203,16 +217,18 @@ public class Drive extends SubsystemBase {
 
     private SwerveModuleState[] getModuleStates() {
         return new SwerveModuleState[] {
-            frontLeft.getState(),
-            frontRight.getState(),
-            backLeft.getState(),
-            backRight.getState()
+                frontLeft.getState(),
+                frontRight.getState(),
+                backLeft.getState(),
+                backRight.getState()
         };
-      }
+    }
 
     public ChassisSpeeds getSpeeds() {
         return DriveConstants.kinematics.toChassisSpeeds(getModuleStates());
     }
+
+    /* SIMULATION */
 
     public void simulationInit() {
         frontLeft.simulationInit();
@@ -233,21 +249,22 @@ public class Drive extends SubsystemBase {
                 frontRight.getPosition(),
                 backLeft.getPosition(),
                 backRight.getPosition()
-            } ;
-    
+        };
+
         var moduleDeltas = new SwerveModulePosition[modulePositions.length];
         for (int index = 0; index < modulePositions.length; index++) {
-                var current = modulePositions[index];
-                var previous = previousPositions[index];
+            var current = modulePositions[index];
+            var previous = previousPositions[index];
 
-                moduleDeltas[index] = new SwerveModulePosition(current.distanceMeters - previous.distanceMeters, current.angle);
-                previous.distanceMeters = current.distanceMeters;
+            moduleDeltas[index] = new SwerveModulePosition(current.distanceMeters - previous.distanceMeters,
+                    current.angle);
+            previous.distanceMeters = current.distanceMeters;
         }
         var twist = DriveConstants.kinematics.toTwist2d(moduleDeltas);
 
         int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
         SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
         angle.set(navX.getAngle() - Units.radiansToDegrees(twist.dtheta));
-    } 
-    
+    }
+
 }

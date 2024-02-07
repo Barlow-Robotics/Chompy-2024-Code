@@ -134,10 +134,6 @@ public class Constants {
         public static final double MaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4; // default: 720 deg
     }
 
-    /***************************************************************************/
-    /***************************************************************************/
-    /***************************************************************************/
-
     public static final class SwerveConstants {
         public static final Translation2d flModuleOffset = new Translation2d(0.4, 0.4);
         public static final Translation2d frModuleOffset = new Translation2d(0.4, -0.4);
@@ -204,9 +200,6 @@ public class Constants {
         public static final double ShooterKV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V,
                                                      // 1/8.33 = 0.12 volts / Rotation per second
 
-        public static final double PeakShooterForwardVoltage = 8; // Peak output of 8 volt
-        public static final double PeakShooterReverseVoltage = -8;
-
         public static final double IndexRPM = 1000;
 
         public static final double IndexKP = 0.5; // CHANGE
@@ -214,25 +207,6 @@ public class Constants {
         public static final double IndexKD = 0; // CHANGE
         public static final double IndexIZone = 0; // CHANGE
         public static final double IndexFF = 0.12; // CHANGE
-    }
-    public static final class VisionConstants {
-        public static final int CameraLightID = 0; // Need to change
-        public static final String kPoseCameraName = "Global_Shutter_Camera";
-        public static final String kTargetCameraName = "Arducam_OV9281_USB_Camera";
-        public static final PoseStrategy kPrimaryVisionStrategy = PoseStrategy.CLOSEST_TO_REFERENCE_POSE;
-        public static final PoseStrategy kFallbackVisionStrategy = PoseStrategy.LOWEST_AMBIGUITY;
-        // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
-        public static final Transform3d kRobotToCam =
-                new Transform3d(new Translation3d(0.0, 0.0, 1.0), new Rotation3d(0, 0, 0));
-
-        // // The layout of the AprilTags on the field
-        public static final AprilTagFieldLayout kFieldTagLayout =
-                AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-
-        // The standard deviations of our vision estimated poses, which affect correction rate
-        // (Fake values. Experiment and determine estimation noise on an actual robot.)
-        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
-        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
 
     /***************************************************************************/
@@ -302,6 +276,30 @@ public class Constants {
     /***************************************************************************/
     /***************************************************************************/
 
+    public static final class VisionConstants {
+        public static final int CameraLightID = 0; // Need to change
+        public static final String kPoseCameraName = "Global_Shutter_Camera";
+        public static final String kTargetCameraName = "Arducam_OV9281_USB_Camera";
+        public static final PoseStrategy kPrimaryVisionStrategy = PoseStrategy.CLOSEST_TO_REFERENCE_POSE;
+        public static final PoseStrategy kFallbackVisionStrategy = PoseStrategy.LOWEST_AMBIGUITY;
+        // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
+        public static final Transform3d kRobotToCam =
+                new Transform3d(new Translation3d(0.0, 0.0, 1.0), new Rotation3d(0, 0, 0));
+
+        // // The layout of the AprilTags on the field
+        public static final AprilTagFieldLayout kFieldTagLayout =
+                AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+
+        // The standard deviations of our vision estimated poses, which affect correction rate
+        // (Fake values. Experiment and determine estimation noise on an actual robot.)
+        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+    }
+
+    /***************************************************************************/
+    /***************************************************************************/
+    /***************************************************************************/
+
     public final class LogitechDAConstants {
         public static final int LeftStickX = 0; // LDA = Logitech Dual Action
         public static final int LeftStickY = 1;
@@ -319,6 +317,28 @@ public class Constants {
         public static final int StartButton = 10;
         public static final int LeftStick = 11; // Move Speaker
         public static final int RightStick = 12; // Move Amp
+        public static final double ForwardAxisAttenuation = -0.5;
+        public static final double LateralAxisAttenuation = 0.5;
+        public static final double YawAxisAttenuation = 0.5;
+    }
+
+    public final class LogitechExtreme3DConstants {
+        public static final int AxisX = 0; 
+        public static final int AxisY = 1;
+        public static final int AxisZRotate = 2; 
+        public static final int Slider = 3; 
+        public static final int Trigger = 1; 
+        public static final int ButtonStick = 2; 
+        public static final int Button3 = 3; 
+        public static final int Button4 = 4; 
+        public static final int Button5 = 5; 
+        public static final int Button6 = 6;
+        public static final int Button7 = 7; 
+        public static final int Button8 = 8;
+        public static final int Button9 = 9; 
+        public static final int Button10 = 10;
+        public static final int Button11 = 11;
+        public static final int Button12 = 12;
         public static final double ForwardAxisAttenuation = -0.5;
         public static final double LateralAxisAttenuation = 0.5;
         public static final double YawAxisAttenuation = 0.5;

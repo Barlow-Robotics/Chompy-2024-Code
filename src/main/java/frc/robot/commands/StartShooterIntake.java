@@ -7,16 +7,16 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FloorIntake;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.ShooterPosition;
-import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
+import frc.robot.subsystems.ShooterMount;
+import frc.robot.subsystems.ShooterMount.ShooterPositionState;
 
 public class StartShooterIntake extends Command {
 
     Shooter shooterSub;
     FloorIntake floorIntakeSub;
-    ShooterPosition shooterPositionSub;
+    ShooterMount shooterPositionSub;
 
-    public StartShooterIntake(Shooter shooterSub, FloorIntake floorIntakeSub, ShooterPosition shooterPositionSub) {
+    public StartShooterIntake(Shooter shooterSub, FloorIntake floorIntakeSub, ShooterMount shooterPositionSub) {
         this.shooterSub = shooterSub;
         this.floorIntakeSub = floorIntakeSub;
         this.shooterPositionSub = shooterPositionSub;
@@ -36,16 +36,16 @@ public class StartShooterIntake extends Command {
                 && shooterSub.isNoteLoaded())
             return;
 
-        shooterSub.setVelocity(SetMouthPosition.desiredShooterVelocity, SetMouthPosition.desiredIndexVelocity);
+        shooterSub.start(SetShooterMountPosition.desiredShooterVelocity, SetShooterMountPosition.desiredIndexVelocity);
         if (shooterPositionSub.getShooterPosState() == ShooterPositionState.FloorIntake) {
             floorIntakeSub.start();
             if (shooterSub.isNoteLoaded()) {
-                shooterSub.stopMotors();
+                shooterSub.stop();
                 floorIntakeSub.stop();
             }
         } else if (shooterPositionSub.getShooterPosState() == ShooterPositionState.SourceIntake) {
             if (shooterSub.isNoteLoaded()) {
-                shooterSub.stopMotors();
+                shooterSub.stop();
             }
         } else {
             floorIntakeSub.stop();
@@ -54,7 +54,7 @@ public class StartShooterIntake extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        shooterSub.stopMotors();
+        shooterSub.stop();
         floorIntakeSub.stop();
     }
 

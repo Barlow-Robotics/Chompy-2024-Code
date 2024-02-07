@@ -237,19 +237,19 @@ public class Constants {
         public static final double AngleKI = 0;
         public static final double AngleKD = 0;
         public static final double AngleIZone = 0;
-        public static final double AngleFF = 0.12;
+        public static final double AngleFF = 0.11;
 
         public static final double SpeakerAngle = 30; // CHANGE
-        public static final double SpeakerHeight = 0; // CHANGE
+        public static final double SpeakerHeight = 20; // CHANGE
 
         public static final double AmpAngle = 60; // CHANGE
         public static final double AmpHeight = 10; // CHANGE
 
         public static final double SourceIntakeAngle = 90; // CHANGE
-        public static final double SourceIntakeHeight = 0; // CHANGE
+        public static final double SourceIntakeHeight = 15; // CHANGE
 
         public static final double FloorIntakeAngle = 120; // CHANGE
-        public static final double FloorIntakeHeight = 0; // CHANGE
+        public static final double FloorIntakeHeight = 5; // CHANGE
 
         public static final double TrapAngle = 150; // CHANGE
         public static final double TrapHeight = 10; // CHANGE

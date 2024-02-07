@@ -16,6 +16,7 @@ import static frc.robot.Constants.VisionConstants.kPrimaryVisionStrategy;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -219,11 +220,20 @@ public class Vision extends SubsystemBase {
     }
 
     public double getAprilTagDistToCenter() {
-        return 0;
+        return this.aprilTagDistToCenter;
     }
 
     public boolean getAprilTagDetected() {
         return getLatestPoseResult().hasTargets();
+    }
+
+    public boolean aprilTagIsVisible() {
+        return this.aprilTagDetected;
+    }
+    private void advantageKitLogging() {
+        Logger.recordOutput("vision/xPosition", robotToCamera.getX());
+        Logger.recordOutput("vision/yPosition", robotToCamera.getY() );
+        Logger.recordOutput("vision/zPosition", robotToCamera.getZ());
     }
 
     // private void addNetworkTableEntries() {

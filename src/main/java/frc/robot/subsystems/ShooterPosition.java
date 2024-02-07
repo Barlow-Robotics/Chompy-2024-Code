@@ -84,6 +84,14 @@ public class ShooterPosition extends SubsystemBase {
         applyMotorConfigs(rightElevatorMotor, "rightElevatorMotor", configs, motorOutputConfigs, InvertedValue.CounterClockwise_Positive); // CHANGE
 
         bottomHallEffect = new DigitalInput(ElectronicsIDs.BottomHallEffectID);
+        
+        var motionMagicConfigs = configs.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 1.5; // Target cruise velocity of 80 rps
+        motionMagicConfigs.MotionMagicAcceleration = 3; // Target acceleration of 160 rps/s (0.5 seconds)
+        motionMagicConfigs.MotionMagicJerk = 30; // Target jerk of 1600 rps/s/s (0.1 seconds)
+
+        leftElevatorMotor.getConfigurator().apply(configs);
+        rightElevatorMotor.getConfigurator().apply(configs);
     }
 
     @Override
@@ -93,7 +101,7 @@ public class ShooterPosition extends SubsystemBase {
     /** @param desiredAngle Desired angle in degrees */
     public void setAngle(double desiredAngle) {
         MotionMagicVoltage request = new MotionMagicVoltage(Units.degreesToRotations(desiredAngle));
-        leftElevatorMotor.setControl(request.withFeedForward(ShooterPositionConstants.AngleFF));
+        angleMotor.setControl(request.withFeedForward(ShooterPositionConstants.AngleFF * Math.sin(Units.degreesToRadians(desiredAngle))));
     }
 
     public double getDegrees() {
@@ -164,11 +172,6 @@ public class ShooterPosition extends SubsystemBase {
         configs.Slot0.kD = ShooterPositionConstants.AngleKD;
         configs.Slot0.kV = ShooterPositionConstants.AngleFF;
 
-        configs.Slot1.kP = ShooterPositionConstants.ElevatorKP;
-        configs.Slot1.kI = ShooterPositionConstants.ElevatorKI;
-        configs.Slot1.kD = ShooterPositionConstants.ElevatorKD;
-        configs.Slot1.kV = ShooterPositionConstants.ElevatorFF;
-       
         configs.Voltage.PeakForwardVoltage = ShooterConstants.PeakShooterForwardVoltage; // Peak output of 8 volts
         configs.Voltage.PeakReverseVoltage = ShooterConstants.PeakShooterReverseVoltage;
     }

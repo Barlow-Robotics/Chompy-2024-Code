@@ -257,11 +257,15 @@ public class Vision extends SubsystemBase {
     }
 
     public double getAprilTagDistToCenter() {
-        return 0;
+        return this.aprilTagDistToCenter;
     }
 
     public boolean getAprilTagDetected() {
         return getLatestResult().hasTargets();
+    }
+
+    public boolean aprilTagIsVisible() {
+        return this.aprilTagDetected;
     }
     private void advantageKitLogging() {
         Logger.recordOutput("vision/xPosition", robotToCamera.getX());

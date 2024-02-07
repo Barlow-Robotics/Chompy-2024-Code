@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElectronicsIDs;
@@ -34,6 +35,7 @@ public class RobotContainer {
     public final Shooter shooterSub = new Shooter();
     public final ShooterPosition shooterPositionSub = new ShooterPosition();
     public final FloorIntake floorIntakeSub = new FloorIntake();
+    public final Underglow underglowSub = new Underglow();
 
     /* COMMANDS */
     private final SetShooterPosition setShooterPosSpeakerCmd = new SetShooterPosition(shooterPositionSub, ShooterPositionState.Speaker);
@@ -67,6 +69,9 @@ public class RobotContainer {
     private Trigger toggleFloorIntakeButton;
 
     private Trigger climbButton;
+    private Trigger LEDHumanSourceButton;
+    private Trigger LEDHumanFloorButton;
+
 
     // private final SendableChooser<Command> autoChooser;
 
@@ -149,13 +154,21 @@ public class RobotContainer {
 
         /***************** FLOOR INTAKE *****************/
         
-        toggleFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // floor 
-        toggleFloorIntakeButton.onTrue(startIntakeCmd).onFalse(stopIntakeCmd);
+        // toggleFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // floor 
+        // toggleFloorIntakeButton.onTrue(startIntakeCmd).onFalse(stopIntakeCmd);
 
         /******************** CLIMB ********************/
         
-        climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller
+        // climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller
         // climbButton.onTrue(climbCmd);
+
+        /********************* LED BINDINGS ************************************* */
+
+        LEDHumanSourceButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper); 
+        LEDHumanSourceButton.onTrue(new InstantCommand(() -> underglowSub.LEDHumanSource = true)).onFalse(new InstantCommand(() -> underglowSub.LEDHumanSource = false));
+
+        LEDHumanFloorButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); 
+        LEDHumanFloorButton.onTrue(new InstantCommand(() -> underglowSub.LEDHumanFloor = true)).onFalse(new InstantCommand(() -> underglowSub.LEDHumanFloor = false));
     }
 
     public Command getAutonomousCommand() {

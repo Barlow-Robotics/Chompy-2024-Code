@@ -171,9 +171,9 @@ public class Constants {
         public static final int NoteLoaded = 4; // 0b00000100
         public static final int Shooting = 8; // 0b00001000
         public static final int Auto = 16; // 0b00010000
-        public static final int NeonGreen = 32; // 0b00100000
-        public static final int extra = 64; // 0b01000000
-        public static final int extra2 = 128; // 0b10000000
+        public static final int RobotFloorSource = 32; // 0b00100000
+        public static final int Climbing = 64; // 0b01000000
+        public static final int RobotSource = 128; // 0b10000000
     }
 
     public static final class ShooterConstants {

@@ -14,6 +14,8 @@ import frc.robot.Constants;
 
 public class Underglow extends SubsystemBase {
     /** Creates a new UnderGlow. */
+    public boolean LEDHumanSource = false;
+    public boolean LEDHumanFloor = false;
     SerialPort port = null;
 
     int currentMode = 1;
@@ -36,9 +38,13 @@ public class Underglow extends SubsystemBase {
             desiredMode += Constants.UnderGlowConstants.BlueAlliance;
         } else if (alliance == Alliance.Red) {
             desiredMode += Constants.UnderGlowConstants.RedAlliance;
-        } else {
-            desiredMode += Constants.UnderGlowConstants.NeonGreen;
+        } else if (LEDHumanSource == true) {
+            desiredMode += Constants.UnderGlowConstants.RobotSource;
+        } if (LEDHumanFloor == true)
+        {
+            desiredMode += Constants.UnderGlowConstants.RobotFloorSource;
         }
+        
 
         if (currentMode != desiredMode && port != null) {
             try {

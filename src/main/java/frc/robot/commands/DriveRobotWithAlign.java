@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElectronicsIDs;
 
@@ -28,12 +29,24 @@ public class DriveRobotWithAlign extends Command {
     int ControllerYSpeedID;
     int ControllerRotID;
     boolean FieldRelative;
+    private double leftVelocity;
+    private double rightVelocity;
+    private double adjustment;
+    private int missedFrames = 0;
+
+    private double error;
+
+
 
     Trigger autoAlignButton;
+    Trigger toggleTargetButton;
 
     double DeadBand = 0.08;
 
     public PIDController pid;
+    
+    public String selectedTarget = "None";
+
     
     public DriveRobotWithAlign(
        
@@ -45,6 +58,8 @@ public class DriveRobotWithAlign extends Command {
         boolean FieldRelative,
         Vision v, 
         Trigger autoAlignButton,
+        Trigger toggleTargetButton,
+
         Drive d) {
        
         driveSub = d;
@@ -79,6 +94,8 @@ public class DriveRobotWithAlign extends Command {
         // and the chassis (positive X is forward, Positive Y is left), we use the controller X input as the drive Y input
         // and the conztroller Y input as the drive X input.
         boolean autoAlignEnabled = autoAlignButton.getAsBoolean();
+                boolean toggleTarget = toggleTargetButton.getAsBoolean();
+
 
         double rawX;
         double rawY;
@@ -108,6 +125,42 @@ public class DriveRobotWithAlign extends Command {
         Logger.recordOutput("Drive/YawInput", Rot);
         Logger.recordOutput("Drive/XSpeed", YSpeed);
         Logger.recordOutput("Drive/YSpeed", XSpeed);
+
+        if (toggleTarget == true) { /* switch indicates game piece with switch value of 1 (maybe or 0?) */
+
+            selectedTarget = "Game Piece";
+
+            if (visionSub.aprilTagIsVisible()) {
+                error = visionSub.aprilTagDistToCenter();
+                adjustment = pid.calculate(error);
+                adjustment = Math.signum(adjustment)
+                        * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
+                leftVelocity = DriveConstants.CorrectionRotationSpeed - adjustment;
+                rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
+
+                driveSub.setSpeeds(leftVelocity, rightVelocity);
+            } else {
+                missedFrames++;
+            }
+        } else { /* switch indicates april tag with switch value of -1 */
+
+            selectedTarget = "April Tag";
+
+            if (visionSub.aprilTagIsVisible()) {
+                error = visionSub.aprilTagDistanceFromCenter();
+                adjustment = pid.calculate(error);
+                adjustment = Math.signum(adjustment)
+                        * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
+                leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
+                rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
+
+                driveSub.setSpeeds(leftVelocity, rightVelocity);
+            } else {
+                missedFrames++;
+            }
+            yaw = pid.calculate(visionSub.gamePieceDistanceFromCenter());
+            lastAutoSteer = true;
+        }
     }
 
     @Override

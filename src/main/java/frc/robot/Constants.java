@@ -120,7 +120,14 @@ public class Constants {
         public static final double BackRightMagnetOffsetInRadians = -2.305568464100361;
 
         public static final double TimestepDurationInSeconds = 0.02;
-    }
+
+        public static final double AutoAlignkP = 0.003;
+        public static final double AutoAlignkI = 0.0;
+        public static final double AutoAlignkD = 0.0;
+
+        public static final double CorrectionRotationSpeed = 2.0;
+            }
+
 
     public static final class AutoConstants {
         public static final double MaxSpeedMetersPerSecond = DriveConstants.PhysicalMaxSpeedMetersPerSecond / 4; // CHANGE

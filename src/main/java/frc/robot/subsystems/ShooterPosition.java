@@ -9,6 +9,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.util.Units;
 
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -65,6 +66,8 @@ public class ShooterPosition extends SubsystemBase {
     private boolean simulationInitialized = false;
 
     public ShooterPosition() {
+        
+        bottomHallEffect = new DigitalInput(ElectronicsIDs.BottomHallEffectID);
         angleMotor = new TalonFX(ElectronicsIDs.AngleMotorID);
         angleMotorSim = angleMotor.getSimState();
 
@@ -81,27 +84,19 @@ public class ShooterPosition extends SubsystemBase {
         setTalonConfigs(configs);
         applyMotorConfigs(angleMotor, "angleMotor", configs, motorOutputConfigs, InvertedValue.Clockwise_Positive); // CHANGE
         applyMotorConfigs(leftElevatorMotor, "leftElevatorMotor", configs, motorOutputConfigs, InvertedValue.Clockwise_Positive); // CHANGE
-        applyMotorConfigs(rightElevatorMotor, "rightElevatorMotor", configs, motorOutputConfigs, InvertedValue.CounterClockwise_Positive); // CHANGE
-
-        bottomHallEffect = new DigitalInput(ElectronicsIDs.BottomHallEffectID);
+        applyMotorConfigs(rightElevatorMotor, "rightElevatorMotor", configs, motorOutputConfigs, InvertedValue.CounterClockwise_Positive); // CHANGE    
         
-        var motionMagicConfigs = configs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 1.5; // Target cruise velocity of 80 rps
-        motionMagicConfigs.MotionMagicAcceleration = 3; // Target acceleration of 160 rps/s (0.5 seconds)
-        motionMagicConfigs.MotionMagicJerk = 30; // Target jerk of 1600 rps/s/s (0.1 seconds)
-
-        leftElevatorMotor.getConfigurator().apply(configs);
-        rightElevatorMotor.getConfigurator().apply(configs);
     }
 
     @Override
     public void periodic() {
         logData();
     }
+
     /** @param desiredAngle Desired angle in degrees */
     public void setAngle(double desiredAngle) {
-        MotionMagicVoltage request = new MotionMagicVoltage(Units.degreesToRotations(desiredAngle));
-        angleMotor.setControl(request.withFeedForward(ShooterPositionConstants.AngleFF * Math.sin(Units.degreesToRadians(desiredAngle))));
+        final MotionMagicVoltage request = new MotionMagicVoltage(Units.degreesToRotations(desiredAngle));
+        angleMotor.setControl(request/*.withFeedForward(ShooterPositionConstants.AngleFF * Math.sin(Units.degreesToRadians(desiredAngle)))*/);
     }
 
     public double getDegrees() {
@@ -110,7 +105,7 @@ public class ShooterPosition extends SubsystemBase {
 
     public void setInches(double desiredHeight) {
         MotionMagicVoltage request = new MotionMagicVoltage(desiredHeight * ShooterPositionConstants.RotationsPerElevatorInch);
-        leftElevatorMotor.setControl(request.withFeedForward(ShooterPositionConstants.ElevatorFF));
+        leftElevatorMotor.setControl(request/*.withFeedForward(ShooterPositionConstants.ElevatorFF)*/);
     }
 
     public double getHeight() {
@@ -181,6 +176,18 @@ public class ShooterPosition extends SubsystemBase {
             TalonFXConfiguration talonConfigs, MotorOutputConfigs motorOutputConfigs, InvertedValue inversion) {
 
         motorOutputConfigs.Inverted = inversion;
+
+        if (motorName.equals("angleMotor")) {
+            var motionMagicConfigs = talonConfigs.MotionMagic;
+            motionMagicConfigs.MotionMagicCruiseVelocity = ShooterPositionConstants.AngleMMCruiseVel;
+            motionMagicConfigs.MotionMagicAcceleration = ShooterPositionConstants.AngleMMAcceleration;
+            motionMagicConfigs.MotionMagicJerk = ShooterPositionConstants.AngleMMJerk; 
+        } else if (motorName.indexOf("ElevatorMotor") != -1) {
+            var motionMagicConfigs = talonConfigs.MotionMagic;
+            motionMagicConfigs.MotionMagicCruiseVelocity = ShooterPositionConstants.ElevatorMMCruiseVel;
+            motionMagicConfigs.MotionMagicAcceleration = ShooterPositionConstants.ElevatorMMAcceleration;
+            motionMagicConfigs.MotionMagicJerk = ShooterPositionConstants.ElevatorMMJerk; 
+        }
 
         StatusCode status = StatusCode.StatusCodeNotInitialized;
 

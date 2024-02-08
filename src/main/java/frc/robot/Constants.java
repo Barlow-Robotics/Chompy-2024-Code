@@ -279,6 +279,14 @@ public class Constants {
 
         public static final double TrapAngle = 150; // CHANGE
         public static final double TrapHeight = 10; // CHANGE
+
+        public static final double AngleMMCruiseVel = 1.5; // CHANGE - Target cruise velocity of 1.5 rps
+        public static final double AngleMMAcceleration = 3; // CHANGE - Target acceleration of 3 rps/s (0.5 seconds)
+        public static final double AngleMMJerk = 30; // CHANGE - Target jerk of 30 rps/s/s (0.1 seconds)
+
+        public static final double ElevatorMMCruiseVel = 80; // CHANGE - Target cruise velocity of 80 rps
+        public static final double ElevatorMMAcceleration = 160; // CHANGE - Target acceleration of 160 rps/s (0.5 seconds)
+        public static final double ElevatorMMJerk = 1600; // CHANGE - Target jerk of 1600 rps/s/s (0.1 seconds)
     }
 
     /***************************************************************************/

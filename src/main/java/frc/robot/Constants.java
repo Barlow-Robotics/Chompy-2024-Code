@@ -269,7 +269,7 @@ public class Constants {
         public static final double IZone = 0.1; // CHANGE
         public static final double FF = 1; // CHANGE
 
-        public static final double MotorVelocity = 2000; // CHANGE
+        public static final double MotorRPM = 2000; // CHANGE
     }
 
     /***************************************************************************/

@@ -202,7 +202,7 @@ public class Shooter extends SubsystemBase {
 
     private void motorAndEncoderConfig(CANSparkMax motor, RelativeEncoder encoder, boolean inverted) {
         motor.restoreFactoryDefaults();
-        motor.setIdleMode(IdleMode.kBrake);
+        // motor.setIdleMode(IdleMode.kBrake);
         motor.setInverted(inverted);
 
         encoder = motor.getEncoder();

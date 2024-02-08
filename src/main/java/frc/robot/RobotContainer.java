@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -130,7 +132,9 @@ public class RobotContainer {
     private void configureBindings() {
 
         driverController = new Joystick(ElectronicsIDs.DriverControllerPort);
+        Logger.recordOutput("Controllers/Driver", DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort));
         operatorController = new Joystick(ElectronicsIDs.OperatorControllerPort);
+        Logger.recordOutput("Controllers/Operator", DriverStation.getJoystickName(ElectronicsIDs.OperatorControllerPort));
         
         /******************** SET SHOOTER POSITION ********************/
 

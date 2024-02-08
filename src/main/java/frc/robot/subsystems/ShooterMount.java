@@ -176,8 +176,6 @@ public class ShooterMount extends SubsystemBase {
         configs.Slot1.kI = ShooterPositionConstants.ElevatorKI;
         configs.Slot1.kD = ShooterPositionConstants.ElevatorKD;
         configs.Slot1.kV = ShooterPositionConstants.ElevatorFF;
-        configs.Voltage.PeakForwardVoltage = ShooterConstants.PeakShooterForwardVoltage; // Peak output of 8 volts
-        configs.Voltage.PeakReverseVoltage = ShooterConstants.PeakShooterReverseVoltage;
     }
 
     private void applyMotorConfigs(

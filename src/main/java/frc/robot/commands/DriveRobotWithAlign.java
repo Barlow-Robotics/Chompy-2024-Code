@@ -88,13 +88,25 @@ public class DriveRobotWithAlign extends Command {
         pid.reset();
     }
 
+    //add key for auto align button
+
     @Override
     public void execute() {
         // Since the coordinate systems differ from the controller (x is left right and y is fwd back) 
         // and the chassis (positive X is forward, Positive Y is left), we use the controller X input as the drive Y input
         // and the conztroller Y input as the drive X input.
         boolean autoAlignEnabled = autoAlignButton.getAsBoolean();
-                boolean toggleTarget = toggleTargetButton.getAsBoolean();
+        boolean toggleTarget = toggleTargetButton.getAsBoolean();
+        var alignYawControl = 0.0;
+
+        if (autoAlignEnabled) {
+            var OffSet = (visionSub.getTargetOffSet());
+            if (OffSet.isPresent()){
+                alignYawControl = pid.calculate(OffSet.getAsDouble());
+
+            }
+        }
+
 
 
         double rawX;
@@ -109,6 +121,9 @@ public class DriveRobotWithAlign extends Command {
             rawX = driverController.getRawAxis(this.ControllerYSpeedID);  
             rawY = -driverController.getRawAxis(this.ControllerXSpeedID);
             rawRot = -driverController.getRawAxis(this.ControllerRotID); 
+        }
+        if (autoAlignEnabled) {
+            rawRot = alignYawControl;
         }
 
         double XSpeed = MathUtil.applyDeadband(rawX, DeadBand) * DriveConstants.MaxDriveableVelocity;
@@ -125,25 +140,10 @@ public class DriveRobotWithAlign extends Command {
         Logger.recordOutput("Drive/YawInput", Rot);
         Logger.recordOutput("Drive/XSpeed", YSpeed);
         Logger.recordOutput("Drive/YSpeed", XSpeed);
-
-        if (toggleTarget == true) { /* switch indicates game piece with switch value of 1 (maybe or 0?) */
-
-            selectedTarget = "Game Piece";
-
-            if (visionSub.aprilTagIsVisible()) {
-                error = visionSub.getAprilTagDistToCenter();
-                adjustment = pid.calculate(error);
-                adjustment = Math.signum(adjustment)
-                        * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
-                leftVelocity = DriveConstants.CorrectionRotationSpeed - adjustment;
-                rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
-
-                driveSub.setSpeeds(leftVelocity, rightVelocity);
-            } else {
-                missedFrames++;
-            }
-        } 
+        
     }
+
+
 
     @Override
     public void end(boolean interrupted) {

@@ -15,6 +15,7 @@ import static frc.robot.Constants.VisionConstants.kPrimaryVisionStrategy;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.OptionalDouble;
 
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
@@ -54,6 +55,7 @@ public class Vision extends SubsystemBase {
     private PhotonCameraSim poseCameraSim;
     private VisionSystemSim visionSim;
     private Transform3d robotToCamera;
+    private PhotonTrackedTarget target;
 
     boolean aprilTagDetected = false;
 
@@ -112,7 +114,7 @@ public class Vision extends SubsystemBase {
         var result = getLatestPoseResult();
 
         if ( result.hasTargets()) {
-            var target = result.getBestTarget() ;   
+         target = result.getBestTarget() ;   
             
             var toTarget = target.getBestCameraToTarget() ;
             var tagPose = kFieldTagLayout.getTagPose(target.getFiducialId()).orElse(new Pose3d()); 
@@ -136,12 +138,14 @@ public class Vision extends SubsystemBase {
                             .setDouble(robotPose.getY());
             NetworkTableInstance.getDefault().getEntry("distanceFromZ")
                             .setDouble(robotPose.getZ());
+            
         }
 
         var poseEstimate = getEstimatedGlobalPose() ;
         if ( !poseEstimate.isEmpty()) {
             int wpk = 1 ;
         }
+         advantageKitLogging();
     }
             // SmartDashboard.putData(getEstimatedGlobalPose());
         
@@ -219,10 +223,6 @@ public class Vision extends SubsystemBase {
         return visionSim.getDebugField();
     }
 
-    public double getAprilTagDistToCenter() {
-        return this.aprilTagDistToCenter;
-    }
-
     public boolean getAprilTagDetected() {
         return getLatestPoseResult().hasTargets();
     }
@@ -230,10 +230,25 @@ public class Vision extends SubsystemBase {
     public boolean aprilTagIsVisible() {
         return this.aprilTagDetected;
     }
+
+    public OptionalDouble getTargetOffSet() {
+       if (target != null) {
+             return OptionalDouble.of(target.getBestCameraToTarget().getY());
+        }else{
+            return OptionalDouble.empty();
+        }
+    }
     private void advantageKitLogging() {
+        if (robotToCamera != null) {
         Logger.recordOutput("vision/xPosition", robotToCamera.getX());
         Logger.recordOutput("vision/yPosition", robotToCamera.getY() );
         Logger.recordOutput("vision/zPosition", robotToCamera.getZ());
+        }
+
+        if (target != null) {
+        Logger.recordOutput("vision/alignToFiducialID", target.getFiducialId());
+        Logger.recordOutput("vision/bestCameraToTarget", target.getBestCameraToTarget());
+        }
     }
 
     // private void addNetworkTableEntries() {

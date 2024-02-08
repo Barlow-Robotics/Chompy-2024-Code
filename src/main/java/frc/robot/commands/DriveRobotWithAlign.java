@@ -131,7 +131,7 @@ public class DriveRobotWithAlign extends Command {
             selectedTarget = "Game Piece";
 
             if (visionSub.aprilTagIsVisible()) {
-                error = visionSub.aprilTagDistToCenter();
+                error = visionSub.getAprilTagDistToCenter();
                 adjustment = pid.calculate(error);
                 adjustment = Math.signum(adjustment)
                         * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
@@ -142,25 +142,7 @@ public class DriveRobotWithAlign extends Command {
             } else {
                 missedFrames++;
             }
-        } else { /* switch indicates april tag with switch value of -1 */
-
-            selectedTarget = "April Tag";
-
-            if (visionSub.aprilTagIsVisible()) {
-                error = visionSub.aprilTagDistanceFromCenter();
-                adjustment = pid.calculate(error);
-                adjustment = Math.signum(adjustment)
-                        * Math.min(Math.abs(adjustment), Constants.DriveConstants.CorrectionRotationSpeed / 4.0);
-                leftVelocity = Constants.DriveConstants.CorrectionRotationSpeed - adjustment;
-                rightVelocity = Constants.DriveConstants.CorrectionRotationSpeed + adjustment;
-
-                driveSub.setSpeeds(leftVelocity, rightVelocity);
-            } else {
-                missedFrames++;
-            }
-            yaw = pid.calculate(visionSub.gamePieceDistanceFromCenter());
-            lastAutoSteer = true;
-        }
+        } 
     }
 
     @Override

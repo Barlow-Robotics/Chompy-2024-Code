@@ -9,14 +9,22 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.util.Units;
 
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -26,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElectronicsIDs;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterPositionConstants;
+import frc.robot.Robot;
 import frc.robot.sim.PhysicsSim;
 
 import frc.robot.Constants;
@@ -47,24 +56,28 @@ public class ShooterMount extends SubsystemBase {
     private final DCMotorSim rightElevatorMotorModel = new DCMotorSim(
             edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, 0.0005);
 
-    private final VelocityVoltage angleVoltageVelocity = 
-        new VelocityVoltage(0, 0, true, 0, 0, 
-                            false, false, false);
-    private final VelocityVoltage elevatorVoltageVelocity = 
-        new VelocityVoltage(0, 0, true, 0, 1, 
-                            false, false, false);
+    private final VelocityVoltage angleVoltageVelocity = new VelocityVoltage(0, 0, true, 0, 0,
+            false, false, false);
+    private final VelocityVoltage elevatorVoltageVelocity = new VelocityVoltage(0, 0, true, 0, 1,
+            false, false, false);
     private final NeutralOut brake = new NeutralOut();
 
     DigitalInput bottomHallEffect;
 
+    private final CANcoder angleEncoder;
+    private final CANcoderSimState angleEncoderSim;
+
     public enum ShooterPositionState {
         Speaker, Amp, SourceIntake, FloorIntake, Trap, MovingToPosition, Interrupted
     }
+
     private ShooterPositionState shooterPosState = ShooterPositionState.FloorIntake;
 
     private boolean simulationInitialized = false;
 
     public ShooterMount() {
+        bottomHallEffect = new DigitalInput(ElectronicsIDs.BottomHallEffectID);
+
         angleMotor = new TalonFX(ElectronicsIDs.AngleMotorID);
         angleMotorSim = angleMotor.getSimState();
 
@@ -75,42 +88,38 @@ public class ShooterMount extends SubsystemBase {
         rightElevatorMotorSim = rightElevatorMotor.getSimState();
         rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), true));
 
+        angleEncoder = new CANcoder(ElectronicsIDs.AngleEncoderID, "rio");
+        angleEncoderSim = angleEncoder.getSimState();
         TalonFXConfiguration configs = new TalonFXConfiguration();
         MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-
-        setTalonConfigs(configs);
         applyMotorConfigs(angleMotor, "angleMotor", configs, motorOutputConfigs, InvertedValue.Clockwise_Positive); // CHANGE
-        applyMotorConfigs(leftElevatorMotor, "leftElevatorMotor", configs, motorOutputConfigs, InvertedValue.Clockwise_Positive); // CHANGE
-        applyMotorConfigs(rightElevatorMotor, "rightElevatorMotor", configs, motorOutputConfigs, InvertedValue.CounterClockwise_Positive); // CHANGE
+        applyMotorConfigs(leftElevatorMotor, "leftElevatorMotor", configs, motorOutputConfigs,
+                InvertedValue.Clockwise_Positive); // CHANGE
+        applyMotorConfigs(rightElevatorMotor, "rightElevatorMotor", configs, motorOutputConfigs,
+                InvertedValue.CounterClockwise_Positive); // CHANGE
 
-        bottomHallEffect = new DigitalInput(ElectronicsIDs.BottomHallEffectID);
-        
-        var motionMagicConfigs = configs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = 1.5; // Target cruise velocity of 80 rps
-        motionMagicConfigs.MotionMagicAcceleration = 3; // Target acceleration of 160 rps/s (0.5 seconds)
-        motionMagicConfigs.MotionMagicJerk = 30; // Target jerk of 1600 rps/s/s (0.1 seconds)
-
-        leftElevatorMotor.getConfigurator().apply(configs);
-        rightElevatorMotor.getConfigurator().apply(configs);
+        applyMagnetConfigs(configs);
     }
 
     @Override
     public void periodic() {
         logData();
     }
+
     /** @param desiredAngle Desired angle in degrees */
-    public void setDegrees(double desiredAngle) {
-        MotionMagicVoltage request = new MotionMagicVoltage(Units.degreesToRotations(desiredAngle));
-        angleMotor.setControl(request.withFeedForward(ShooterPositionConstants.AngleFF * Math.sin(Units.degreesToRadians(desiredAngle))));
+    public void setAngle(double desiredAngle) {
+        final MotionMagicVoltage request = new MotionMagicVoltage(Units.degreesToRotations(desiredAngle));
+        angleMotor.setControl(request/* * .withFeedForward(ShooterPositionConstants.AngleFF) */);
     }
 
-    public double getDegrees() {
-        return Units.rotationsToDegrees(angleMotor.getPosition().getValue());
+    public double getAngleDegrees() {
+        return Units.rotationsToDegrees(angleEncoder.getPosition().getValue());
     }
 
     public void setInches(double desiredHeight) {
-        MotionMagicVoltage request = new MotionMagicVoltage(desiredHeight * ShooterPositionConstants.RotationsPerElevatorInch);
-        leftElevatorMotor.setControl(request.withFeedForward(ShooterPositionConstants.ElevatorFF));
+        MotionMagicVoltage request = new MotionMagicVoltage(
+                desiredHeight * ShooterPositionConstants.RotationsPerElevatorInch);
+        leftElevatorMotor.setControl(request/* .withFeedForward(ShooterPositionConstants.ElevatorFF) */);
     }
 
     public double getHeight() {
@@ -130,8 +139,8 @@ public class ShooterMount extends SubsystemBase {
     }
 
     private boolean isWithinAngleTolerance(double desiredAngle) {
-        return (getDegrees() >= Constants.LowerToleranceLimit * desiredAngle) &&
-                (getDegrees() <= Constants.UpperToleranceLimit * desiredAngle);
+        return (getAngleDegrees() >= Constants.LowerToleranceLimit * desiredAngle) &&
+                (getAngleDegrees() <= Constants.UpperToleranceLimit * desiredAngle);
     }
 
     private boolean isWithinHeightTolerance(double desiredHeight) {
@@ -149,38 +158,59 @@ public class ShooterMount extends SubsystemBase {
 
     private void logData() {
         Logger.recordOutput("ShooterPosition/State", getShooterPosStateAsString());
-        Logger.recordOutput("ShooterPosition/ActualAngle", getDegrees());
+        Logger.recordOutput("ShooterPosition/ActualAngle", getAngleDegrees());
         Logger.recordOutput("ShooterPosition/ActualHeight", getHeight());
-        Logger.recordOutput("ShooterPosition/Speaker/IsAtAngle", isWithinAngleTolerance(ShooterPositionConstants.SpeakerAngle));
-        Logger.recordOutput("ShooterPosition/Speaker/IsAtHeight", isWithinHeightTolerance(ShooterPositionConstants.SpeakerHeight));
-        Logger.recordOutput("ShooterPosition/Amp/IsAtAmpAngle", isWithinAngleTolerance(ShooterPositionConstants.AmpAngle));
-        Logger.recordOutput("ShooterPosition/Amp/IsAtAmpHeight", isWithinHeightTolerance(ShooterPositionConstants.AmpHeight));
-        Logger.recordOutput("ShooterPosition/Source/IsAtAngle", isWithinAngleTolerance(ShooterPositionConstants.SourceIntakeAngle));
-        Logger.recordOutput("ShooterPosition/Source/IsAtHeight", isWithinHeightTolerance(ShooterPositionConstants.SourceIntakeHeight));
-        Logger.recordOutput("ShooterPosition/Floor/IsAtAngle", isWithinAngleTolerance(ShooterPositionConstants.FloorIntakeAngle));
-        Logger.recordOutput("ShooterPosition/Floor/IsAtHeight", isWithinHeightTolerance(ShooterPositionConstants.FloorIntakeHeight));
-        Logger.recordOutput("ShooterPosition/Trap/IsAtTrapAngle", isWithinAngleTolerance(ShooterPositionConstants.TrapAngle));
-        Logger.recordOutput("ShooterPosition/Trap/IsAtTrapHeight", isWithinHeightTolerance(ShooterPositionConstants.TrapHeight));
+        Logger.recordOutput("ShooterPosition/Speaker/IsAtAngle",
+                isWithinAngleTolerance(ShooterPositionConstants.SpeakerAngle));
+        Logger.recordOutput("ShooterPosition/Speaker/IsAtHeight",
+                isWithinHeightTolerance(ShooterPositionConstants.SpeakerHeight));
+        Logger.recordOutput("ShooterPosition/Amp/IsAtAmpAngle",
+                isWithinAngleTolerance(ShooterPositionConstants.AmpAngle));
+        Logger.recordOutput("ShooterPosition/Amp/IsAtAmpHeight",
+                isWithinHeightTolerance(ShooterPositionConstants.AmpHeight));
+        Logger.recordOutput("ShooterPosition/Source/IsAtAngle",
+                isWithinAngleTolerance(ShooterPositionConstants.SourceIntakeAngle));
+        Logger.recordOutput("ShooterPosition/Source/IsAtHeight",
+                isWithinHeightTolerance(ShooterPositionConstants.SourceIntakeHeight));
+        Logger.recordOutput("ShooterPosition/Floor/IsAtAngle",
+                isWithinAngleTolerance(ShooterPositionConstants.FloorIntakeAngle));
+        Logger.recordOutput("ShooterPosition/Floor/IsAtHeight",
+                isWithinHeightTolerance(ShooterPositionConstants.FloorIntakeHeight));
+        Logger.recordOutput("ShooterPosition/Trap/IsAtTrapAngle",
+                isWithinAngleTolerance(ShooterPositionConstants.TrapAngle));
+        Logger.recordOutput("ShooterPosition/Trap/IsAtTrapHeight",
+                isWithinHeightTolerance(ShooterPositionConstants.TrapHeight));
         Logger.recordOutput("ShooterPosition/IsAtBottom", isAtBottom());
     }
 
     /* CONFIG */
 
-    private void setTalonConfigs(TalonFXConfiguration configs) {
-        configs.Slot0.kP = ShooterPositionConstants.AngleKP;
-        configs.Slot0.kI = ShooterPositionConstants.AngleKI;
-        configs.Slot0.kD = ShooterPositionConstants.AngleKD;
-        configs.Slot0.kV = ShooterPositionConstants.AngleFF;
+    private void applyMotorConfigs(TalonFX motor, String motorName, TalonFXConfiguration configs,
+            MotorOutputConfigs motorOutputConfigs, InvertedValue inversion) {
 
-        configs.Slot1.kP = ShooterPositionConstants.ElevatorKP;
-        configs.Slot1.kI = ShooterPositionConstants.ElevatorKI;
-        configs.Slot1.kD = ShooterPositionConstants.ElevatorKD;
-        configs.Slot1.kV = ShooterPositionConstants.ElevatorFF;
-    }
+        if (motorName.equals("angleMotor")) {
+            configs.Slot0.kP = ShooterPositionConstants.AngleKP;
+            configs.Slot0.kI = ShooterPositionConstants.AngleKI;
+            configs.Slot0.kD = ShooterPositionConstants.AngleKD;
+            configs.Slot0.kV = ShooterPositionConstants.AngleFF;
 
-    private void applyMotorConfigs(
-            TalonFX motor, String motorName,
-            TalonFXConfiguration talonConfigs, MotorOutputConfigs motorOutputConfigs, InvertedValue inversion) {
+            var motionMagicConfigs = configs.MotionMagic;
+            motionMagicConfigs.MotionMagicCruiseVelocity = ShooterPositionConstants.AngleMMCruiseVel;
+            motionMagicConfigs.MotionMagicAcceleration = ShooterPositionConstants.AngleMMAcceleration;
+            motionMagicConfigs.MotionMagicJerk = ShooterPositionConstants.AngleMMJerk;
+        } else if (motorName.indexOf("ElevatorMotor") != -1) {
+            configs.Slot0.kP = ShooterPositionConstants.ElevatorKP;
+            configs.Slot0.kI = ShooterPositionConstants.ElevatorKI;
+            configs.Slot0.kD = ShooterPositionConstants.ElevatorKD;
+            configs.Slot0.kV = ShooterPositionConstants.ElevatorFF;
+
+            var motionMagicConfigs = configs.MotionMagic;
+            motionMagicConfigs.MotionMagicCruiseVelocity = ShooterPositionConstants.ElevatorMMCruiseVel;
+            motionMagicConfigs.MotionMagicAcceleration = ShooterPositionConstants.ElevatorMMAcceleration;
+            motionMagicConfigs.MotionMagicJerk = ShooterPositionConstants.ElevatorMMJerk;
+        }
+
+        configs.Voltage.PeakForwardVoltage = ShooterConstants.PeakShooterForwardVoltage; // Peak output of 8 volts
 
         motorOutputConfigs.Inverted = inversion;
 
@@ -188,7 +218,7 @@ public class ShooterMount extends SubsystemBase {
 
         // attempt setting configs up to 5 times
         for (int i = 0; i < 5; ++i) {
-            status = motor.getConfigurator().apply(talonConfigs, 0.05);
+            status = motor.getConfigurator().apply(configs, 0.05);
             if (status.isOK())
                 break;
         }
@@ -205,6 +235,23 @@ public class ShooterMount extends SubsystemBase {
             System.out.println(
                     "Could not apply motor output configs to " + motorName + " error code: " + status.toString());
         }
+    }
+    private void applyMagnetConfigs(TalonFXConfiguration configs) {
+        MagnetSensorConfigs magnetConfig = new MagnetSensorConfigs();
+        var canCoderConfiguration = new CANcoderConfiguration();
+        magnetConfig.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+        if (!Robot.isSimulation()) {
+            magnetConfig.MagnetOffset = 0.0;
+        } else {
+            magnetConfig.MagnetOffset = 0.0; // CHANGE
+        }
+        magnetConfig.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+
+        canCoderConfiguration.MagnetSensor = magnetConfig;
+
+        configs.Feedback.FeedbackRemoteSensorID = angleEncoder.getDeviceID();
+        configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+        angleEncoder.getConfigurator().apply(canCoderConfiguration);
     }
 
     /* SIMULATION */

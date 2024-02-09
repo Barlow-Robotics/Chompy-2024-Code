@@ -62,6 +62,9 @@
     }
   },
   "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    },
     "retained": {
       "SmartDashboard": {
         "Auto Mode": {
@@ -72,17 +75,16 @@
     "transitory": {
       "AdvantageKit": {
         "RealOutputs": {
-          "FloorIntake": {
-            "open": true
-          },
           "Shooter": {
             "Is": {
               "open": true
-            },
-            "open": true
+            }
           },
           "ShooterPosition": {
             "Amp": {
+              "open": true
+            },
+            "Speaker": {
               "open": true
             },
             "Trap": {

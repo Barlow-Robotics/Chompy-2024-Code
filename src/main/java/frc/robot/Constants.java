@@ -86,6 +86,7 @@ public class Constants {
 
         public static final int LeftElevatorMotorID = 61;
         public static final int RightElevatorMotorID = 62;
+        public static final int AngleEncoderID = 63;
 
         public static final int BottomHallEffectID = 6;
         public static final int TopHallEffectID = 7;
@@ -220,27 +221,15 @@ public class Constants {
 
         public static final double ElevatorGearRatio = 15;
         public static final double ShooterAngleGearRatio = 46.67; // From K's spreadsheet
-
         public static final double ElevatorSprocketDiameter = Units.inchesToMeters(2.36);
         public static final double ElevatorSprocketCircumference = ElevatorSprocketDiameter * Math.PI;
 
         public static final double ShooterAngleMaxSpeed = (Falcon500MaxRPM / 60 * 360) / ElevatorGearRatio; // deg/sec
         public static final double ElevatorMaxSpeed = (Falcon500MaxRPM / 60 / ElevatorGearRatio)
                 * ElevatorSprocketCircumference; // m/s
-        public static final double RotationsPerElevatorInch = ElevatorGearRatio
-                / Units.metersToInches(ElevatorSprocketCircumference);
+        public static final double RotationsPerElevatorInch = ElevatorGearRatio / Units.metersToInches(ElevatorSprocketCircumference);
 
-        public static final double ElevatorKP = 0.5;
-        public static final double ElevatorKI = 0;
-        public static final double ElevatorKD = 0;
-        public static final double ElevatorIZone = 0;
-        public static final double ElevatorFF = 0.12;
-
-        public static final double AngleKP = 0.5;
-        public static final double AngleKI = 0;
-        public static final double AngleKD = 0;
-        public static final double AngleIZone = 0;
-        public static final double AngleFF = 0.11;
+        public static final int IndexMotorCurrentLimit = 30; // CHANGE
 
         public static final double SpeakerAngle = 30; // CHANGE
         public static final double SpeakerHeight = 20; // CHANGE
@@ -256,6 +245,26 @@ public class Constants {
 
         public static final double TrapAngle = 150; // CHANGE
         public static final double TrapHeight = 10; // CHANGE
+
+        public static final double AngleKP = 0.5;
+        public static final double AngleKI = 0;
+        public static final double AngleKD = 0;
+        public static final double AngleIZone = 0;
+        public static final double AngleFF = 0.11;
+
+        public static final double AngleMMCruiseVel = 1.5; // CHANGE - Target cruise velocity of 1.5 rps
+        public static final double AngleMMAcceleration = 3; // CHANGE - Target acceleration of 3 rps/s (0.5 seconds)
+        public static final double AngleMMJerk = 30; // CHANGE - Target jerk of 30 rps/s/s (0.1 seconds)
+
+        public static final double ElevatorKP = 0.5;
+        public static final double ElevatorKI = 0;
+        public static final double ElevatorKD = 0;
+        public static final double ElevatorIZone = 0;
+        public static final double ElevatorFF = 0.12;
+
+        public static final double ElevatorMMCruiseVel = 80; // CHANGE - Target cruise velocity of 80 rps
+        public static final double ElevatorMMAcceleration = 160; // CHANGE - Target acceleration of 160 rps/s (0.5 seconds)
+        public static final double ElevatorMMJerk = 1600; // CHANGE - Target jerk of 1600 rps/s/s (0.1 seconds)
     }
 
     /***************************************************************************/
@@ -372,11 +381,13 @@ public class Constants {
         public static final int RightStickX = 4;
         public static final int RightStickY = 5;
         // Angle Trap?
+
+        // need to CHANGE these comments b/c they're not right
         public static final int ButtonA = 1; // Shoot Trap
         public static final int ButtonB = 2; // Climb
-        public static final int ButtonX = 3; // Floor Intake
+        public static final int ButtonX = 3; // Auto Align
         public static final int ButtonY = 4; // Angle Speaker
-        public static final int LeftBumper = 5; // Shoot Amp
+        public static final int LeftBumper = 5; // Move to Amp
         public static final int RightBumper = 6; // Shoot Speaker
         // public static final int BackButton = 7;
         public static final int StartButton = 8; // Angle Amp

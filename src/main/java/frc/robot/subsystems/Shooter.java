@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ElectronicsIDs;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.ShooterPositionConstants;
 import frc.robot.sim.PhysicsSim;
 
 public class Shooter extends SubsystemBase {
@@ -97,6 +98,8 @@ public class Shooter extends SubsystemBase {
                 ShooterConstants.IndexFF);
 
         breakBeam = new DigitalInput(ElectronicsIDs.BreakBeamID);
+        indexMotor.setSmartCurrentLimit(ShooterPositionConstants.IndexMotorCurrentLimit);
+        
     }
 
     @Override

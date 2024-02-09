@@ -118,6 +118,14 @@ public class Drive extends SubsystemBase {
 
         Logger.recordOutput("Drive/Odometry/X", odometry.getPoseMeters().getX());
         Logger.recordOutput("Drive/Odometry/Y", odometry.getPoseMeters().getY());
+        Logger.recordOutput("Drive/CurrentSupply/FrontLeftDrive", frontLeft.getDriveCurrent());
+        Logger.recordOutput("Drive/CurrentSupply/FrontLeftTurn", frontLeft.getTurnCurrent());
+        Logger.recordOutput("Drive/CurrentSupply/FrontRightDrive", frontRight.getDriveCurrent());
+        Logger.recordOutput("Drive/CurrentSupply/FrontRightTurn", frontRight.getTurnCurrent());
+        Logger.recordOutput("Drive/CurrentSupply/BackLeftDrive", backLeft.getDriveCurrent());
+        Logger.recordOutput("Drive/CurrentSupply/BackLeftTurn", backLeft.getTurnCurrent());
+        Logger.recordOutput("Drive/CurrentSupply/BackRightDrive", backRight.getDriveCurrent());
+        Logger.recordOutput("Drive/CurrentSupply/BackRightTurn", backRight.getTurnCurrent());
     }
 
     public Pose2d getPoseWithoutVision() {

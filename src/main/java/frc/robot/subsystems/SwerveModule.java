@@ -31,12 +31,6 @@ import frc.robot.Robot;
 import frc.robot.Constants.SwerveConstants;
 
 public class SwerveModule {
-    /*********************************************************************/
-    /***************************** CONSTANTS *****************************/
-
-    /**********************************************************************/
-    /**********************************************************************/
-
     private final CANSparkMax driveMotor;
     private final RelativeEncoder driveEncoder;
     public final SparkPIDController drivePIDController;
@@ -121,6 +115,14 @@ public class SwerveModule {
                 driveEncoder.getPosition(),
                 new Rotation2d(turnEncoder.getAbsolutePosition().getValueAsDouble() * Math.PI));
     }
+
+    public double getTurnCurrent() {
+        return turnMotor.getOutputCurrent();
+    } 
+
+    public double getDriveCurrent() {
+        return driveMotor.getOutputCurrent();
+    } 
 
     public void setDesiredState(SwerveModuleState desiredState) {
 

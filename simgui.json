@@ -80,6 +80,9 @@
               "open": true
             }
           },
+          "ShooterMount": {
+            "open": true
+          },
           "ShooterPosition": {
             "Amp": {
               "open": true
@@ -126,6 +129,7 @@
     },
     "Server": {
       "open": true
-    }
+    },
+    "visible": true
   }
 }

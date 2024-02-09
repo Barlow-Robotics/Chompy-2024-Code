@@ -33,8 +33,11 @@ public class StartShooterIntake extends Command {
         // Check to make sure you don't accidentally try to intake a second note
         if ((shooterPositionSub.getShooterPosState() == ShooterPositionState.SourceIntake ||
                 shooterPositionSub.getShooterPosState() == ShooterPositionState.FloorIntake)
-                && shooterSub.isNoteLoaded())
+                && shooterSub.isNoteLoaded()) {
+            shooterSub.stop();
+            floorIntakeSub.stop();
             return;
+        }
 
         shooterSub.start(SetShooterMountPosition.desiredShooterVelocity, SetShooterMountPosition.desiredIndexVelocity);
         if (shooterPositionSub.getShooterPosState() == ShooterPositionState.FloorIntake) {

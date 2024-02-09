@@ -10,7 +10,9 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 
+/*
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -21,10 +23,10 @@ import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.system.plant.DCMotor;
+*/
 
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -70,8 +72,7 @@ public class FloorIntake extends SubsystemBase {
     }
 
     public boolean isIntaking() {
-        return intakeMotor.getVelocity().getValue() >= Constants.LowerToleranceLimit * FloorIntakeConstants.MotorRPM
-                / 60;
+        return intakeMotor.getVelocity().getValue() >= Constants.LowerToleranceLimit * FloorIntakeConstants.MotorRPM / 60;
     }
 
     /* LOGGING */
@@ -79,16 +80,12 @@ public class FloorIntake extends SubsystemBase {
     private void logData() {
         Logger.recordOutput("FloorIntake/ActualRPM", intakeMotor.getVelocity().getValue());
         Logger.recordOutput("FloorIntake/IsIntaking", isIntaking());
+        Logger.recordOutput("FloorIntake/CurrentSupply", intakeMotor.getSupplyCurrent().getValue());
     }
 
     /* CONFIG */
+
     private void configMotor(boolean inverted) {
-
-        // Configure the current limits
-        /* enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s) */
-        // SupplyCurrentLimitConfiguration currentLimitsConfigs = new SupplyCurrentLimitConfiguration(true, 10, 15, 0.5);
-        // intakeMotor.configSupplyCurrentLimit(currentLimitsConfigs);
-
         // set PID Values
         TalonFXConfiguration motorConfigs = new TalonFXConfiguration();
         motorConfigs.Slot0.kP = FloorIntakeConstants.KP;
@@ -102,6 +99,8 @@ public class FloorIntake extends SubsystemBase {
 
         StatusCode status = StatusCode.StatusCodeNotInitialized;
 
+        // Try five times to apply the Intake motor config
+        //    Why five times?
         for (int i = 0; i < 5; ++i) {
             status = intakeMotor.getConfigurator().apply(motorConfigs, 0.05);
             if (status.isOK())

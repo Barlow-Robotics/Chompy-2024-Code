@@ -64,6 +64,7 @@ public class Robot extends LoggedRobot {
         robotContainer.driveSub.stop();
         robotContainer.floorIntakeSub.stop();
         robotContainer.shooterSub.stop();
+        robotContainer.shooterPositionSub.stop();
         //robotContainer.shooterPositionSub.stopMotors(); // CHANGE - create a function to safely stop everything in this sub when we disbale
     }
 

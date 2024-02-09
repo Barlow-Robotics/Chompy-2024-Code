@@ -135,7 +135,6 @@ public class RobotContainer {
         Logger.recordOutput("Controllers/Driver", DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort));
         operatorController = new Joystick(ElectronicsIDs.OperatorControllerPort);
         Logger.recordOutput("Controllers/Operator", DriverStation.getJoystickName(ElectronicsIDs.OperatorControllerPort));
-        
         /******************** SET SHOOTER POSITION ********************/
 
         moveToSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle 

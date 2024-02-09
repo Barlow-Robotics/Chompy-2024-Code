@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
@@ -20,15 +21,14 @@ import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.networktables.GenericEntry;
+// import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+// import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+// import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.DIOSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -63,8 +63,8 @@ public class Shooter extends SubsystemBase {
 
     private boolean simulationInitialized = false;
 
-    private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
-    private GenericEntry shuffleBoardSpeed = tab.add("ShuffleBoard Speed", 1).getEntry();
+    // private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
+    // private GenericEntry shuffleBoardSpeed = tab.add("ShuffleBoard Speed", 1).getEntry();
 
     public Shooter() {
         lowerFlywheelMotor = new TalonFX(ElectronicsIDs.LowerShooterMotorID); 
@@ -72,7 +72,7 @@ public class Shooter extends SubsystemBase {
         
         TalonFXConfiguration talonConfigs = new TalonFXConfiguration();
         MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-       
+
         setTalonConfigs(talonConfigs);
         applyMotorConfigs(
             lowerFlywheelMotor, "lowerShooterMotor", 
@@ -164,25 +164,31 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Shooter/Is/ShootingTrap", isWithinVelocityTolerance(ShooterConstants.TrapRPM));
         Logger.recordOutput("Shooter/Is/IntakingSource", isWithinVelocityTolerance(ShooterConstants.SourceRPM));
         Logger.recordOutput("Shooter/Is/IntakingFloor", isWithinVelocityTolerance(ShooterConstants.FloorRPM));
+        Logger.recordOutput("Shooter/CurrentSupply/FlywheelLower", lowerFlywheelMotor.getSupplyCurrent().getValue());
+        Logger.recordOutput("Shooter/CurrentSupply/FlywheelUpper", upperFlywheelMotor.getSupplyCurrent().getValue());
+        Logger.recordOutput("Shooter/CurrentSupply/Index", indexMotor.getOutputCurrent());
     }
 
     /* CONFIG */
 
     private void setTalonConfigs(TalonFXConfiguration configs) {
         configs.Slot0.kP = ShooterConstants.ShooterKP;
-        // configs.Slot0.kI = ShooterConstants.ShooterKI;
-        // configs.Slot0.kD = ShooterConstants.ShooterKD;
+        configs.Slot0.kI = ShooterConstants.ShooterKI;
+        configs.Slot0.kD = ShooterConstants.ShooterKD;
         configs.Slot0.kV = ShooterConstants.ShooterKV;
     }
 
-    private void applyMotorConfigs(
-        TalonFX motor, String motorName, 
+    private void applyMotorConfigs(TalonFX motor, String motorName, 
         TalonFXConfiguration talonConfigs, MotorOutputConfigs motorOutputConfigs, InvertedValue inversion) {
         
         motorOutputConfigs.Inverted = inversion;
+
+        // set current limit
+        CurrentLimitsConfigs currentLimitConfigs = talonConfigs.CurrentLimits;
+        currentLimitConfigs.SupplyCurrentLimit = ShooterConstants.SupplyCurrentLimit;
+        currentLimitConfigs.SupplyCurrentLimitEnable = true;
         
         StatusCode status = StatusCode.StatusCodeNotInitialized;
-
         // attempt setting configs up to 5 times
         for (int i = 0; i < 5; ++i) {
             status = motor.getConfigurator().apply(talonConfigs, 0.05);

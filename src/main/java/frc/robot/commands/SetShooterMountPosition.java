@@ -67,7 +67,7 @@ public class SetShooterMountPosition extends Command {
 
     @Override
     public void execute() {
-        shooterPositionSub.setDegrees(desiredAngle);
+        shooterPositionSub.setAngle(desiredAngle);
         shooterPositionSub.setInches(desiredHeight);
     }
 

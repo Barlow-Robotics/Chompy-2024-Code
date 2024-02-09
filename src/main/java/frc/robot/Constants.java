@@ -121,7 +121,7 @@ public class Constants {
 
         public static final double TimestepDurationInSeconds = 0.02;
 
-        public static final double AutoAlignkP = 0.003;
+        public static final double AutoAlignkP = 0.05;
         public static final double AutoAlignkI = 0.0;
         public static final double AutoAlignkD = 0.0;
 

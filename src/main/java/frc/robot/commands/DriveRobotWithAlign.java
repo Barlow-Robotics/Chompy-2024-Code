@@ -39,9 +39,10 @@ public class DriveRobotWithAlign extends Command {
 
 
     Trigger autoAlignButton;
-    Trigger toggleTargetButton;
+    //Trigger toggleTargetButton;
 
     double DeadBand = 0.08;
+    double RotDeadBand = 0.01;
 
     public PIDController pid;
     
@@ -49,22 +50,16 @@ public class DriveRobotWithAlign extends Command {
 
     
     public DriveRobotWithAlign(
-       
-        
+        Drive driveSub,
         Joystick driverController, 
         int ControllerXSpeedID, 
         int ControllerYSpeedID, 
         int ControllerRotID,
         boolean FieldRelative,
-        Vision v, 
-        Trigger autoAlignButton,
-        Trigger toggleTargetButton,
-
-        Drive d) {
+        Vision visionSub, 
+        Trigger autoAlignButton
+        ) {
        
-        driveSub = d;
-        visionSub = v;
-
         this.driveSub = driveSub;
         this.driverController = driverController;
         this.ControllerXSpeedID = ControllerXSpeedID;
@@ -72,6 +67,7 @@ public class DriveRobotWithAlign extends Command {
         this.ControllerRotID = ControllerRotID;
         this.FieldRelative = FieldRelative;
         this.autoAlignButton = autoAlignButton;
+        this.visionSub = visionSub;
 
     
 
@@ -96,18 +92,16 @@ public class DriveRobotWithAlign extends Command {
         // and the chassis (positive X is forward, Positive Y is left), we use the controller X input as the drive Y input
         // and the conztroller Y input as the drive X input.
         boolean autoAlignEnabled = autoAlignButton.getAsBoolean();
-        boolean toggleTarget = toggleTargetButton.getAsBoolean();
+        //boolean toggleTarget = toggleTargetButton.getAsBoolean();
         var alignYawControl = 0.0;
 
         if (autoAlignEnabled) {
-            var OffSet = (visionSub.getTargetOffSet());
+            var OffSet = (visionSub.getTargetOffSet(14));
             if (OffSet.isPresent()){
-                alignYawControl = pid.calculate(OffSet.getAsDouble());
-
+                alignYawControl = pid.calculate(-OffSet.getAsDouble());
+                Logger.recordOutput("Align/Offset", OffSet.getAsDouble());
             }
         }
-
-
 
         double rawX;
         double rawY;
@@ -128,19 +122,20 @@ public class DriveRobotWithAlign extends Command {
 
         double XSpeed = MathUtil.applyDeadband(rawX, DeadBand) * DriveConstants.MaxDriveableVelocity;
         double YSpeed = MathUtil.applyDeadband(rawY, DeadBand) * DriveConstants.MaxDriveableVelocity;
-        double Rot = MathUtil.applyDeadband(rawRot, 2*DeadBand) * DriveConstants.MaxDriveableVelocity;
+        double Rot = MathUtil.applyDeadband(rawRot, RotDeadBand) * DriveConstants.MaxDriveableVelocity;
 
         driveSub.drive(XSpeed, YSpeed, Rot, FieldRelative);
 
         /* LOGGING */
-        Logger.recordOutput("Drive/RawYawInput", rawRot);
-        Logger.recordOutput("Drive/RawXSpeed", rawX);
-        Logger.recordOutput("Drive/RawYSpeed", rawY);
 
-        Logger.recordOutput("Drive/YawInput", Rot);
-        Logger.recordOutput("Drive/XSpeed", YSpeed);
-        Logger.recordOutput("Drive/YSpeed", XSpeed);
-        
+
+        Logger.recordOutput("Align/RawYawInput", rawRot);
+        Logger.recordOutput("Align/RawXSpeed", rawX);
+        Logger.recordOutput("Align/RawYSpeed", rawY);
+
+        Logger.recordOutput("Align/YawInput", Rot);
+        Logger.recordOutput("Align/XSpeed", YSpeed);
+        Logger.recordOutput("Align/YSpeed", XSpeed);
     }
 
 

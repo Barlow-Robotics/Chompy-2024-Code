@@ -49,6 +49,8 @@ public class RobotContainer {
     private final StartIntake startIntakeCmd = new StartIntake(floorIntakeSub);
     private final StopIntake stopIntakeCmd = new StopIntake(floorIntakeSub);
 
+    private final DriveRobotWithAlign driveRobotWithAlignCmd;
+
     // private final Climb climbCmd = new Climb(shooterPositionSub);
 
     /* CONTROLLERS */
@@ -64,6 +66,7 @@ public class RobotContainer {
     private Trigger moveToTrapButton;
 
     public Trigger shootButton;
+    public Trigger autoAlignButton;
 
     private Trigger toggleFloorIntakeButton;
 
@@ -108,6 +111,13 @@ public class RobotContainer {
                         driverController, 
                         LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY, LogitechDAConstants.RightStickX, 
                         true));
+                driveRobotWithAlignCmd = new DriveRobotWithAlign(
+                    driveSub,
+                    driverController,
+                    LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY, LogitechDAConstants.RightStickX,
+                    true,
+                    visionSub,
+                    autoAlignButton);
         } else {
                 driveSub.setDefaultCommand(
                 new DriveRobot(
@@ -115,7 +125,18 @@ public class RobotContainer {
                         driverController, 
                         RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
                         true));
+                driveRobotWithAlignCmd = new DriveRobotWithAlign(
+                    driveSub,
+                    driverController,
+                    RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
+                    true,
+                    visionSub,
+                    autoAlignButton);
         }
+
+        // We can't do this during configureBindings because driveController doesn't get created until
+        // the above if-statement.
+        autoAlignButton.whileTrue(driveRobotWithAlignCmd);
 
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
         // SmartDashboard.putData("Auto Mode", autoChooser);
@@ -155,8 +176,11 @@ public class RobotContainer {
 
         /******************** CLIMB ********************/
         
-        climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller
+        // climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller
         // climbButton.onTrue(climbCmd);
+
+        /***************** AUTO ALIGN ******************/
+        autoAlignButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX);
     }
 
     public Command getAutonomousCommand() {

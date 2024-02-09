@@ -14,6 +14,7 @@ import static frc.robot.Constants.VisionConstants.kTargetCameraName;
 import static frc.robot.Constants.VisionConstants.kPrimaryVisionStrategy;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
 
@@ -56,6 +57,7 @@ public class Vision extends SubsystemBase {
     private VisionSystemSim visionSim;
     private Transform3d robotToCamera;
     private PhotonTrackedTarget target;
+    private List<PhotonTrackedTarget> allDetectedTargets;
 
     boolean aprilTagDetected = false;
 
@@ -115,7 +117,7 @@ public class Vision extends SubsystemBase {
 
         if ( result.hasTargets()) {
          target = result.getBestTarget() ;   
-            
+           allDetectedTargets  = result.getTargets();
             var toTarget = target.getBestCameraToTarget() ;
             var tagPose = kFieldTagLayout.getTagPose(target.getFiducialId()).orElse(new Pose3d()); 
             var transform3d = new Transform3d();
@@ -231,12 +233,25 @@ public class Vision extends SubsystemBase {
         return this.aprilTagDetected;
     }
 
-    public OptionalDouble getTargetOffSet() {
+    public OptionalDouble getTargetOffSet(int targetID) {
+        if (allDetectedTargets != null) {
+            for (PhotonTrackedTarget target : allDetectedTargets) {
+                if (target.getFiducialId() == targetID) {
+                if (target.getFiducialId() == targetID) {
+                    Logger.recordOutput("vision/targetY", target.getBestCameraToTarget().getY());
+                    Logger.recordOutput("vision/targetYaw", target.getYaw());
+                    return OptionalDouble.of(target.getBestCameraToTarget().getY());
+                }
+            }
+        }
+        return OptionalDouble.empty();
+        /*
        if (target != null) {
              return OptionalDouble.of(target.getBestCameraToTarget().getY());
         }else{
             return OptionalDouble.empty();
         }
+        */
     }
     private void advantageKitLogging() {
         if (robotToCamera != null) {
@@ -249,6 +264,7 @@ public class Vision extends SubsystemBase {
         Logger.recordOutput("vision/alignToFiducialID", target.getFiducialId());
         Logger.recordOutput("vision/bestCameraToTarget", target.getBestCameraToTarget());
         }
+
     }
 
     // private void addNetworkTableEntries() {

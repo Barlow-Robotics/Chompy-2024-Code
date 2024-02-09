@@ -175,6 +175,9 @@ public class Constants {
         public static final double ModuleMaxAngularVelocity = 3.0 * 2.0 * Math.PI; // #revolutions * radians per
                                                                                    // revolution (rad/sec)
         public static final double ModuleMaxAngularAcceleration = 12 * Math.PI; // radians per second squared
+
+        public static final int StallLimit = 40;
+        public static final int FreeLimit = 40;
     }
 
     /***************************************************************************/
@@ -268,6 +271,8 @@ public class Constants {
         public static final double KD = 0.1; // CHANGE
         public static final double IZone = 0.1; // CHANGE
         public static final double FF = 1; // CHANGE
+
+        public static final int SupplyCurrentLimit = 20;
 
         public static final double MotorRPM = 2000; // CHANGE
     }

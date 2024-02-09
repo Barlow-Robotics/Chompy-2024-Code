@@ -98,7 +98,7 @@ public class RobotContainer {
 
         configureBindings();
 
-        if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Extreme 3D")) {
+        // if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Extreme 3D")) {
                 driveSub.setDefaultCommand(
                 // The left stick controls translation of the robot.
                 // Turning is controlled by the X axis of the right stick.
@@ -107,23 +107,23 @@ public class RobotContainer {
                         driverController, 
                         LogitechExtreme3DConstants.AxisX, LogitechExtreme3DConstants.AxisY, LogitechExtreme3DConstants.AxisZRotate, 
                         true));
-        } else if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Radiomaster TX12 Joystick")){
-                driveSub.setDefaultCommand(
-                new DriveRobot(
-                        driveSub, 
-                        driverController, 
-                        RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
-                        true));
-        } else if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Dual Action")){
-                driveSub.setDefaultCommand(
-                new DriveRobot(
-                        driveSub, 
-                        driverController, 
-                        LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY, LogitechDAConstants.RightStickX, 
-                        true));
-        } else {
-            System.out.println("Unknown controller");
-        }
+        // } else if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Radiomaster TX12 Joystick")){
+                // driveSub.setDefaultCommand(
+                // new DriveRobot(
+                //         driveSub, 
+                //         driverController, 
+                //         RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
+                //         true));
+        // } else if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Dual Action")){
+        //         driveSub.setDefaultCommand(
+        //         new DriveRobot(
+        //                 driveSub, 
+        //                 driverController, 
+        //                 LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY, LogitechDAConstants.RightStickX, 
+        //                 true));
+        // } else {
+        //     System.out.println("Unknown controller");
+        // }
 
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
         // SmartDashboard.putData("Auto Mode", autoChooser);

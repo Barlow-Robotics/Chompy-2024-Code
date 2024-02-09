@@ -139,6 +139,9 @@ public class SwerveModule {
         final double turnFF = TurnFF.calculate(turnPIDController.getSetpoint().velocity);
         turnMotor.setVoltage(turnOutput + turnFF);
 
+        driveMotor.setSmartCurrentLimit(SwerveConstants.StallLimit, SwerveConstants.FreeLimit);
+        turnMotor.setSmartCurrentLimit(SwerveConstants.StallLimit, SwerveConstants.FreeLimit);
+
         if (RobotBase.isSimulation()) {
             CANcoderSimState encoderSim = turnEncoder.getSimState();
             encoderSim.setRawPosition(state.angle.getDegrees() / 180.0);

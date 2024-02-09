@@ -11,7 +11,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.ctre.phoenix6.StatusCode;
 
-/*
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -22,10 +21,10 @@ import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.system.plant.DCMotor;
-*/
 
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -85,17 +84,21 @@ public class FloorIntake extends SubsystemBase {
     /* CONFIG */
     private void configMotor(boolean inverted) {
 
-        //LT CHANGE Need to add current limits
-        // var supplyCurLim = new SupplyCurrentLimitConfiguration();
-        //intakeMotor.configGetSupplyCurrentLimit(supplyCurLim);
-       // motor.setSmartCurrentLimit() or motor.setSecondaryCurrentLimit ? to 40 or lower?
-        // motor.burnFlash(); ? to not cause limits to default if there is a brownout
+        // Configure the current limits
+        /* enabled | Limit(amp) | Trigger Threshold(amp) | Trigger Threshold Time(s) */
+        // SupplyCurrentLimitConfiguration currentLimitsConfigs = new SupplyCurrentLimitConfiguration(true, 10, 15, 0.5);
+        // intakeMotor.configSupplyCurrentLimit(currentLimitsConfigs);
 
         // set PID Values
         TalonFXConfiguration motorConfigs = new TalonFXConfiguration();
         motorConfigs.Slot0.kP = FloorIntakeConstants.KP;
         motorConfigs.Slot0.kI = FloorIntakeConstants.KI;
         motorConfigs.Slot0.kD = FloorIntakeConstants.KD;
+
+        // set current limit
+        CurrentLimitsConfigs currentLimitConfigs = motorConfigs.CurrentLimits;
+        currentLimitConfigs.SupplyCurrentLimit = FloorIntakeConstants.SupplyCurrentLimit;
+        currentLimitConfigs.SupplyCurrentLimitEnable = true; // Start with stator limits off
 
         StatusCode status = StatusCode.StatusCodeNotInitialized;
 

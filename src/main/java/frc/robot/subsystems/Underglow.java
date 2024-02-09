@@ -16,9 +16,11 @@ public class Underglow extends SubsystemBase {
     /** Creates a new UnderGlow. */
     public boolean LEDHumanSource = false;
     public boolean LEDHumanFloor = false;
-    SerialPort port = null;
 
+    SerialPort port = null;
+    
     int currentMode = 1;
+
 
     public Underglow() {
         try {
@@ -30,22 +32,25 @@ public class Underglow extends SubsystemBase {
 
     @Override
     public void periodic() {
-        int desiredMode = 0;
-        
-        Alliance alliance = DriverStation.getAlliance().get();
+        byte desiredMode = 0x00;
+        byte byte2 = 0b00100000;
 
-        if (alliance == Alliance.Blue) {
-            desiredMode += Constants.UnderGlowConstants.BlueAlliance;
-        } else if (alliance == Alliance.Red) {
-            desiredMode += Constants.UnderGlowConstants.RedAlliance;
-        } else if (LEDHumanSource == true) {
+        LEDHumanFloor = true;
+        // Alliance alliance = DriverStation.getAlliance().get();
+
+        // if (alliance == Alliance.Blue) {
+        //     desiredMode += Constants.UnderGlowConstants.BlueAlliance;
+        // } else if (alliance == Alliance.Red) {
+        //     desiredMode += Constants.UnderGlowConstants.RedAlliance;
+        
+        if (LEDHumanSource == true) {
             desiredMode += Constants.UnderGlowConstants.RobotSource;
-        } if (LEDHumanFloor == true)
+        } else if (LEDHumanFloor == true)
         {
             desiredMode += Constants.UnderGlowConstants.RobotFloorSource;
         }
-        
-
+        boolean check = (byte) (desiredMode & byte2) == byte2;
+        System.out.println("************************************************Hello: " + check +  desiredMode);
         if (currentMode != desiredMode && port != null) {
             try {
                 port.write(new byte[] { (byte) desiredMode }, 1);

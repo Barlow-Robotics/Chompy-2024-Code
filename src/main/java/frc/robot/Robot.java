@@ -15,6 +15,8 @@ import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ElectronicsIDs;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.subsystems.ShooterMount.ShooterMountState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -47,6 +49,8 @@ public class Robot extends LoggedRobot {
         robotContainer.floorIntakeSub.stop();
 
         DriverStation.silenceJoystickConnectionWarning(true);
+
+        robotContainer.shooterMountSub.setHeightInches(Constants.ShooterMountConstants.FloorIntakeHeight);
     }
 
     @Override
@@ -67,7 +71,7 @@ public class Robot extends LoggedRobot {
         robotContainer.driveSub.stop();
         robotContainer.floorIntakeSub.stop();
         robotContainer.shooterSub.stop();
-        robotContainer.shooterPositionSub.stop();
+        robotContainer.shooterMountSub.stop();
         //robotContainer.shooterPositionSub.stopMotors(); // CHANGE - create a function to safely stop everything in this sub when we disbale
     }
 

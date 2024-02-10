@@ -56,8 +56,10 @@ public class SwerveModule {
         driveMotor.restoreFactoryDefaults();
         driveMotor.setIdleMode(IdleMode.kBrake);
         driveMotor.setInverted(reversed);
-
+        
         driveEncoder = driveMotor.getEncoder();
+        resetEncoders();
+
         driveEncoder.setVelocityConversionFactor(SwerveConstants.VelocityConversionFactor);
 
         double localPositionConversionFactor = SwerveConstants.PositionConversionFactor;

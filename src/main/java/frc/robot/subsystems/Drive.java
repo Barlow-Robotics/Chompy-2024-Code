@@ -20,9 +20,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElectronicsIDs;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.DriveRobot;
 
 import org.littletonrobotics.junction.Logger;
 import java.lang.Math;
+import java.util.function.Supplier;
+
 import frc.robot.Constants;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -73,8 +76,15 @@ public class Drive extends SubsystemBase {
     private Vision visionSub = new Vision();
 
     public Drive() {
+    
         navX = new AHRS(Port.kMXP);
-        navX.reset();
+        new Thread(() -> { 
+            try {
+                Thread.sleep(1000);
+                zeroHeading();
+            } catch (Exception e) {
+            }
+        }).start();
 
         odometry = new SwerveDriveOdometry(
                 DriveConstants.kinematics,
@@ -114,8 +124,12 @@ public class Drive extends SubsystemBase {
         Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
         SwerveModuleState[] swerveModuleActualStates = new SwerveModuleState[] { frontLeft.getState(),
                 frontRight.getState(), backLeft.getState(), backRight.getState() };
-        Logger.recordOutput("Drive/StatesActual", swerveModuleActualStates);
+        logData(swerveModuleActualStates);
+    }
 
+    private void logData(SwerveModuleState[] swerveModuleActualStates) {
+        Logger.recordOutput("Drive/StatesActual", swerveModuleActualStates);
+        Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
         Logger.recordOutput("Drive/Odometry/X", odometry.getPoseMeters().getX());
         Logger.recordOutput("Drive/Odometry/Y", odometry.getPoseMeters().getY());
         Logger.recordOutput("Drive/CurrentSupply/FrontLeftDrive", frontLeft.getDriveCurrent());
@@ -126,6 +140,12 @@ public class Drive extends SubsystemBase {
         Logger.recordOutput("Drive/CurrentSupply/BackLeftTurn", backLeft.getTurnCurrent());
         Logger.recordOutput("Drive/CurrentSupply/BackRightDrive", backRight.getDriveCurrent());
         Logger.recordOutput("Drive/CurrentSupply/BackRightTurn", backRight.getTurnCurrent());
+        Logger.recordOutput("Drive/RawYawInput", DriveRobot.rawRot);
+        Logger.recordOutput("Drive/RawXSpeed", DriveRobot.rawX);
+        Logger.recordOutput("Drive/RawYSpeed", DriveRobot.rawY);
+        Logger.recordOutput("Drive/YawInput", DriveRobot.SpeedRot);
+        Logger.recordOutput("Drive/XSpeed", DriveRobot.SpeedY);
+        Logger.recordOutput("Drive/YSpeed", DriveRobot.SpeedX);
     }
 
     public Pose2d getPoseWithoutVision() {
@@ -147,9 +167,36 @@ public class Drive extends SubsystemBase {
                 },
                 pose);
     }
+    public double getX() {
+        return DriveRobot.rawX;
+    }
+    public double getY() {
+        return DriveRobot.rawY;
+    }
+    public double getRot() {
+        return DriveRobot.rawRot;
+    }
+
+
+    // public void testDrive(Supplier<Double> xSuppler, Supplier<Double> ySupplier, Supplier<Double> rotSupplier, boolean fieldRelative) {
+    //     // drive(xSuppler.get(), ySupplier.get(), rotSupplier.get(), fieldRelative);
+    //     var swerveModuleDesiredStates = DriveConstants.kinematics.toSwerveModuleStates(
+    //             fieldRelative
+    //                     ? ChassisSpeeds.fromFieldRelativeSpeeds(xSuppler.get(), ySupplier.get(), rotSupplier.get(),
+    //                             navX.getRotation2d())
+    //                     : new ChassisSpeeds(xSuppler.get(), ySupplier.get(), rotSupplier.get()));
+    //     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleDesiredStates,
+    //             DriveConstants.MaxDriveableVelocity);
+    //     frontLeft.setDesiredState(swerveModuleDesiredStates[0]);
+    //     frontRight.setDesiredState(swerveModuleDesiredStates[1]);
+    //     backLeft.setDesiredState(swerveModuleDesiredStates[2]);
+    //     backRight.setDesiredState(swerveModuleDesiredStates[3]);
+
+    //     Logger.recordOutput("Drive/StatesDesired", swerveModuleDesiredStates);
+
+    // }
 
     public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-
         var swerveModuleDesiredStates = DriveConstants.kinematics.toSwerveModuleStates(
                 fieldRelative
                         ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
@@ -163,11 +210,10 @@ public class Drive extends SubsystemBase {
         backRight.setDesiredState(swerveModuleDesiredStates[3]);
 
         Logger.recordOutput("Drive/StatesDesired", swerveModuleDesiredStates);
+
     }
 
-    // public void drive(double xSpeed, double ySpeed, double rot, boolean
-    // fieldRelative) {
-
+    // public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     // var swerveModuleDesiredStates =
     // DriveConstants.kinematics.toSwerveModuleStates(
     // fieldRelative
@@ -182,7 +228,7 @@ public class Drive extends SubsystemBase {
     // frontRight.setDesiredState(swerveModuleDesiredStates[1]);
     // backLeft.setDesiredState(swerveModuleDesiredStates[2]);
     // backRight.setDesiredState(swerveModuleDesiredStates[3]);
-
+    //
     // Logger.recordOutput("Drive/StatesDesired", swerveModuleDesiredStates);
     // }
 

@@ -28,7 +28,6 @@ import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -51,12 +50,12 @@ public class ShooterMount extends SubsystemBase {
     TalonFX leftElevatorMotor;
     private final TalonFXSimState leftElevatorMotorSim;
     private final DCMotorSim leftElevatorMotorModel = new DCMotorSim(
-            edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, 0.0005);
+            edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1), 1, 0.0005);
 
     TalonFX rightElevatorMotor;
     private final TalonFXSimState rightElevatorMotorSim;
     private final DCMotorSim rightElevatorMotorModel = new DCMotorSim(
-            edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, 0.0005);
+            edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1), 1, 0.0005);
 
     private final VelocityVoltage angleVoltageVelocity = new VelocityVoltage(0, 0, true, 0, 0,
             false, false, false);
@@ -66,8 +65,8 @@ public class ShooterMount extends SubsystemBase {
 
     DigitalInput bottomHallEffect;
 
-    private final CANcoder angleEncoder;
-    private final CANcoderSimState angleEncoderSim;
+    private final CANcoder absoluteAngleEncoder;   //needs an encoder 
+    private final CANcoderSimState absoluteAngleEncoderSim;
 
     public enum ShooterPositionState {
         Speaker, Amp, SourceIntake, FloorIntake, Trap, MovingToPosition, Interrupted
@@ -90,8 +89,8 @@ public class ShooterMount extends SubsystemBase {
         rightElevatorMotorSim = rightElevatorMotor.getSimState();
         rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), true));
 
-        angleEncoder = new CANcoder(ElectronicsIDs.AngleEncoderID, "rio");
-        angleEncoderSim = angleEncoder.getSimState();
+        absoluteAngleEncoder = new CANcoder(ElectronicsIDs.AngleEncoderID, "rio");
+        absoluteAngleEncoderSim = absoluteAngleEncoder.getSimState();
         TalonFXConfiguration configs = new TalonFXConfiguration();
         MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
 
@@ -121,7 +120,7 @@ public class ShooterMount extends SubsystemBase {
     }
 
     public double getAngleDegrees() {
-        return Units.rotationsToDegrees(angleEncoder.getPosition().getValue());
+        return Units.rotationsToDegrees(absoluteAngleEncoder.getPosition().getValue());
     }
 
     public double getTalonEncoderDegrees() {
@@ -200,7 +199,8 @@ public class ShooterMount extends SubsystemBase {
                 isWithinHeightTolerance(ShooterPositionConstants.TrapHeight));
         Logger.recordOutput("ShooterMount/IsAtBottom", isAtBottom());
         Logger.recordOutput("ShooterMount/CurrentSupply/ElevatorLeft", leftElevatorMotor.getSupplyCurrent().getValue());
-        Logger.recordOutput("ShooterMount/CurrentSupply/ElevatorRight", rightElevatorMotor.getSupplyCurrent().getValue());
+        Logger.recordOutput("ShooterMount/CurrentSupply/ElevatorRight",
+                rightElevatorMotor.getSupplyCurrent().getValue());
         Logger.recordOutput("ShooterMount/CurrentSupply/Angle", angleMotor.getSupplyCurrent().getValue());
         // log number of rotations and the angle being reported back by cancoder
         // Encoder offset where the thing is 0
@@ -233,7 +233,8 @@ public class ShooterMount extends SubsystemBase {
             motionMagicConfigs.MotionMagicJerk = ShooterPositionConstants.ElevatorMMJerk;
         }
 
-        // configs.Voltage.PeakForwardVoltage = ShooterConstants.PeakShooterForwardVoltage; // Peak output of 8 volts
+        // configs.Voltage.PeakForwardVoltage =
+        // ShooterConstants.PeakShooterForwardVoltage; // Peak output of 8 volts
 
         motorOutputConfigs.Inverted = inversion;
 
@@ -259,6 +260,7 @@ public class ShooterMount extends SubsystemBase {
                     "Could not apply motor output configs to " + motorName + " error code: " + status.toString());
         }
     }
+
     private void applyAngleEncoderConfigs(TalonFXConfiguration configs) {
         MagnetSensorConfigs magnetConfig = new MagnetSensorConfigs();
         var canCoderConfiguration = new CANcoderConfiguration();
@@ -272,9 +274,9 @@ public class ShooterMount extends SubsystemBase {
 
         canCoderConfiguration.MagnetSensor = magnetConfig;
 
-        configs.Feedback.FeedbackRemoteSensorID = angleEncoder.getDeviceID();
+        configs.Feedback.FeedbackRemoteSensorID = absoluteAngleEncoder.getDeviceID();
         configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-        angleEncoder.getConfigurator().apply(canCoderConfiguration);
+        absoluteAngleEncoder.getConfigurator().apply(canCoderConfiguration);
     }
 
     /* SIMULATION */

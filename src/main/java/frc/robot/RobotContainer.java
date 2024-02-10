@@ -107,16 +107,7 @@ public class RobotContainer {
                 },
                 driveSub
         );
-        PathPlannerLogging.setLogActivePathCallback(
-            (activePath) -> {
-            Logger.recordOutput(
-                "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
-            });
-        PathPlannerLogging.setLogTargetPoseCallback(
-            (targetPose) -> {
-            Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
-            });
-
+        configurePathPlannerLogging();
         // NamedCommands.registerCommand(
         //     "Shoot Speaker",
         //     setShooterSpeakerAngleCmd
@@ -212,7 +203,19 @@ public class RobotContainer {
 
 
     }
+    private void configurePathPlannerLogging() {
 
+        PathPlannerLogging.setLogActivePathCallback(
+            (activePath) -> {
+            Logger.recordOutput(
+                "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+            });
+        PathPlannerLogging.setLogTargetPoseCallback(
+            (targetPose) -> {
+            Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+            });
+        }
+        
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
         // return new PathPlannerAuto("Score in Amp Speaker Speaker V1 (SASS)");

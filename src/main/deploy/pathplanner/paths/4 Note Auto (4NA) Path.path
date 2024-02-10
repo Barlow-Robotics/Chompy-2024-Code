@@ -1,0 +1,212 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.74,
+        "y": 6.8
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 0.17432058514095705,
+        "y": 7.779785487331695
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.909688120303947,
+        "y": 7.005931382236953
+      },
+      "prevControl": {
+        "x": 3.376105904957819,
+        "y": 7.065640450818372
+      },
+      "nextControl": {
+        "x": 1.877904944151989,
+        "y": 6.87384634077197
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.8856324170283162,
+        "y": 6.8
+      },
+      "prevControl": {
+        "x": 0.9989848677998869,
+        "y": 6.942321860209614
+      },
+      "nextControl": {
+        "x": 0.7387786541835277,
+        "y": 6.615614919972301
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.623043096577984,
+        "y": 5.5719174216060425
+      },
+      "prevControl": {
+        "x": 3.1354776655927474,
+        "y": 5.86533209953375
+      },
+      "nextControl": {
+        "x": 2.243170812137312,
+        "y": 5.354406522200638
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.5501845036037294,
+        "y": 5.5719174216060425
+      },
+      "prevControl": {
+        "x": 1.595740932101259,
+        "y": 5.315809641467339
+      },
+      "nextControl": {
+        "x": 1.513796273026535,
+        "y": 5.776483698279947
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.909688120303947,
+        "y": 6.179131070840968
+      },
+      "prevControl": {
+        "x": 1.86853246714295,
+        "y": 6.181543302738313
+      },
+      "nextControl": {
+        "x": 4.570634006864354,
+        "y": 6.175282859831248
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.936403856908864,
+        "y": 7.197039474249973
+      },
+      "prevControl": {
+        "x": 4.273642663055466,
+        "y": 6.278347098581336
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.8999999999999999,
+      "rotationDegrees": 0.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.0,
+      "rotationDegrees": -120.0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 2.45,
+      "rotationDegrees": -102.51580392280609,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 2.6,
+      "rotationDegrees": -32.12040568120953,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 3.95,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 5.3,
+      "rotationDegrees": 68.62324452252012,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Shoot Speaker",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot Speaker"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Shoot Speaker",
+      "waypointRelativePos": 2.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot Speaker"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 4.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot Speaker"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.59,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 31.776569455672217,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Speaker",
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}

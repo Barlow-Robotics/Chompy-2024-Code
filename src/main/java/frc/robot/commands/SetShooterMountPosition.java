@@ -8,21 +8,21 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.ShooterPositionConstants;
+import frc.robot.Constants.ShooterMountConstants;
 import frc.robot.subsystems.ShooterMount;
-import frc.robot.subsystems.ShooterMount.ShooterPositionState;
+import frc.robot.subsystems.ShooterMount.ShooterMountState;
 
 public class SetShooterMountPosition extends Command {
     
-    private ShooterMount shooterPositionSub;
-    private ShooterPositionState desiredState;
+    private ShooterMount shooterMountSub;
+    private ShooterMountState desiredState;
     private double desiredAngle;
     private double desiredHeight;
     public static double desiredShooterVelocity = ShooterConstants.FloorRPM; 
     public static double desiredIndexVelocity = ShooterConstants.IndexRPM;
 
-  public SetShooterMountPosition(ShooterMount shooterAngleSub, ShooterPositionState desiredState) {
-        this.shooterPositionSub = shooterAngleSub;
+  public SetShooterMountPosition(ShooterMount shooterAngleSub, ShooterMountState desiredState) {
+        this.shooterMountSub = shooterAngleSub;
         this.desiredState = desiredState;
 
         addRequirements(shooterAngleSub);
@@ -30,66 +30,66 @@ public class SetShooterMountPosition extends Command {
 
     @Override
     public void initialize() {
-        shooterPositionSub.setShooterPosState(ShooterPositionState.MovingToPosition);
+        shooterMountSub.setShooterPosState(ShooterMountState.MovingToPosition);
         switch (desiredState) {
             case Speaker:
-                desiredAngle = ShooterPositionConstants.SpeakerAngle;
-                desiredHeight = ShooterPositionConstants.SpeakerHeight;
+                desiredAngle = ShooterMountConstants.SpeakerAngle;
+                desiredHeight = ShooterMountConstants.SpeakerHeight;
                 desiredShooterVelocity = ShooterConstants.SpeakerRPM;
                 desiredIndexVelocity = ShooterConstants.IndexRPM;
                 break;
             case Amp:
-                desiredAngle = ShooterPositionConstants.AmpAngle;
-                desiredHeight = ShooterPositionConstants.AmpHeight;
+                desiredAngle = ShooterMountConstants.AmpAngle;
+                desiredHeight = ShooterMountConstants.AmpHeight;
                 desiredShooterVelocity = ShooterConstants.AmpRPM;
                 desiredIndexVelocity = ShooterConstants.IndexRPM;
                 break;
             case SourceIntake:
-                desiredAngle = ShooterPositionConstants.SourceIntakeAngle;
-                desiredHeight = ShooterPositionConstants.SourceIntakeHeight;
+                desiredAngle = ShooterMountConstants.SourceIntakeAngle;
+                desiredHeight = ShooterMountConstants.SourceIntakeHeight;
                 desiredShooterVelocity = ShooterConstants.SourceRPM;
                 desiredIndexVelocity = -ShooterConstants.IndexRPM;
                 break;
             case FloorIntake:
-                desiredAngle = ShooterPositionConstants.FloorIntakeAngle;
-                desiredHeight = ShooterPositionConstants.FloorIntakeHeight;
+                desiredAngle = ShooterMountConstants.FloorIntakeAngle;
+                desiredHeight = ShooterMountConstants.FloorIntakeHeight;
                 desiredShooterVelocity = ShooterConstants.FloorRPM;
                 desiredIndexVelocity = -ShooterConstants.IndexRPM;
                 break;
                 // LT and EH added code for climb - see comments in ShooterMount
             case PreClimb:  
-                desiredAngle = ShooterPositionConstants.TrapAngle;
+                desiredAngle = ShooterMountConstants.TrapAngle;
                 // no break b/c wants to go to PreTrap also - Ed
             case PreTrap:    
-                desiredHeight = ShooterPositionConstants.TrapHeight;
+                desiredHeight = ShooterMountConstants.TrapHeight;
                 break;
             case Climb:  // pull-up
-                desiredHeight = ShooterPositionConstants.MinHeight;
+                desiredHeight = ShooterMountConstants.MinHeight;
                 break;
             case Trap:
                 desiredShooterVelocity = ShooterConstants.TrapRPM;
                 desiredIndexVelocity = ShooterConstants.IndexRPM;
                 break;
         }
-        Logger.recordOutput("ShooterPosition/DesiredAngle", desiredAngle);
-        Logger.recordOutput("ShooterPosition/DesiredHeight", desiredHeight);
+        Logger.recordOutput("ShooterMount/DesiredAngle", desiredAngle);
+        Logger.recordOutput("ShooterMount/DesiredHeight", desiredHeight);
     }
 
     @Override
     public void execute() {
-        shooterPositionSub.setAngle(desiredAngle);
-        shooterPositionSub.setInches(desiredHeight);
+        shooterMountSub.setAngle(desiredAngle);
+        shooterMountSub.setHeightInches(desiredHeight);
     }
 
     @Override
     public void end(boolean interrupted) {
-        shooterPositionSub.setShooterPosState(ShooterPositionState.Interrupted);
+        shooterMountSub.setShooterPosState(ShooterMountState.Interrupted);
     }
 
     @Override
     public boolean isFinished() {
-        if(shooterPositionSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
-            shooterPositionSub.setShooterPosState(desiredState);
+        if(shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
+            shooterMountSub.setShooterPosState(desiredState);
             return true;
         }
         return false;        

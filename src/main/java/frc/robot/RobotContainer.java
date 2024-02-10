@@ -27,7 +27,7 @@ import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.*;
 
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.ShooterMount.ShooterPositionState;
+import frc.robot.subsystems.ShooterMount.ShooterMountState;
 
 public class RobotContainer {
 
@@ -35,19 +35,19 @@ public class RobotContainer {
 
     public final Drive driveSub = new Drive();
     public final Shooter shooterSub = new Shooter();
-    public final ShooterMount shooterPositionSub = new ShooterMount();
+    public final ShooterMount shooterMountSub = new ShooterMount();
     public final FloorIntake floorIntakeSub = new FloorIntake();
     public final Vision visionSub = new Vision(); 
 
     /* COMMANDS */
-    private final SetShooterMountPosition setShooterPosSpeakerCmd = new SetShooterMountPosition(shooterPositionSub, ShooterPositionState.Speaker);
-    private final SetShooterMountPosition setShooterPosAmpCmd = new SetShooterMountPosition(shooterPositionSub, ShooterPositionState.Amp);
-    private final SetShooterMountPosition setShooterPosSourceIntakeCmd = new SetShooterMountPosition(shooterPositionSub, ShooterPositionState.SourceIntake);
-    private final SetShooterMountPosition setShooterPosFloorIntakeCmd = new SetShooterMountPosition(shooterPositionSub, ShooterPositionState.FloorIntake);
-    private final SetShooterMountPosition setShooterPosTrapCmd = new SetShooterMountPosition(shooterPositionSub, ShooterPositionState.Trap);
+    private final SetShooterMountPosition setShooterPosSpeakerCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.Speaker);
+    private final SetShooterMountPosition setShooterPosAmpCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.Amp);
+    private final SetShooterMountPosition setShooterPosSourceIntakeCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.SourceIntake);
+    public final SetShooterMountPosition setShooterPosFloorIntakeCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.FloorIntake);
+    private final SetShooterMountPosition setShooterPosTrapCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.Trap);
 
-    private final StartShooterIntake startShootingCmd = new StartShooterIntake(shooterSub, floorIntakeSub, shooterPositionSub);
-    private final StopShooterIntake stopShootingCmd = new StopShooterIntake(shooterSub, floorIntakeSub);
+    private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub, shooterMountSub);
+    private final StopShooterIntake stopShooterIntakeCmd = new StopShooterIntake(shooterSub, floorIntakeSub);
     
     // private final Climb climbCmd = new Climb(shooterPositionSub);
 
@@ -63,7 +63,7 @@ public class RobotContainer {
     private Trigger moveToFloorButton;
     private Trigger moveToTrapButton;
 
-    public Trigger shootButton;
+    public Trigger shootIntakeButton;
 
     private Trigger climbButton;
 
@@ -154,8 +154,8 @@ public class RobotContainer {
 
         /******************** SHOOTER ********************/
 
-        shootButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home 
-        shootButton.onTrue(startShootingCmd).onFalse(stopShootingCmd);
+        shootIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home 
+        shootIntakeButton.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
 
         /***************** FLOOR INTAKE *****************/
         

@@ -8,19 +8,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FloorIntake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterMount;
-import frc.robot.subsystems.ShooterMount.ShooterPositionState;
+import frc.robot.subsystems.ShooterMount.ShooterMountState;
 
 public class StartShooterIntake extends Command {
 
     Shooter shooterSub;
     FloorIntake floorIntakeSub;
-    ShooterMount shooterPositionSub;
+    ShooterMount shooterMountSub;
 
-    public StartShooterIntake(Shooter shooterSub, FloorIntake floorIntakeSub, ShooterMount shooterPositionSub) {
+    public StartShooterIntake(Shooter shooterSub, FloorIntake floorIntakeSub, ShooterMount shooterMountSub) {
         this.shooterSub = shooterSub;
         this.floorIntakeSub = floorIntakeSub;
-        this.shooterPositionSub = shooterPositionSub;
-        addRequirements(shooterSub, floorIntakeSub, shooterPositionSub);
+        this.shooterMountSub = shooterMountSub;
+        addRequirements(shooterSub, floorIntakeSub, shooterMountSub);
     }
 
     @Override
@@ -31,8 +31,8 @@ public class StartShooterIntake extends Command {
     public void execute() {
 
         // Check to make sure you don't accidentally try to intake a second note
-        if ((shooterPositionSub.getShooterPosState() == ShooterPositionState.SourceIntake ||
-                shooterPositionSub.getShooterPosState() == ShooterPositionState.FloorIntake)
+        if ((shooterMountSub.getShooterPosState() == ShooterMountState.SourceIntake ||
+                shooterMountSub.getShooterPosState() == ShooterMountState.FloorIntake)
                 && shooterSub.isNoteLoaded()) {
             shooterSub.stop();
             floorIntakeSub.stop();
@@ -40,13 +40,13 @@ public class StartShooterIntake extends Command {
         }
 
         shooterSub.start(SetShooterMountPosition.desiredShooterVelocity, SetShooterMountPosition.desiredIndexVelocity);
-        if (shooterPositionSub.getShooterPosState() == ShooterPositionState.FloorIntake) {
+        if (shooterMountSub.getShooterPosState() == ShooterMountState.FloorIntake) {
             floorIntakeSub.start();
             if (shooterSub.isNoteLoaded()) {
                 shooterSub.stop();
                 floorIntakeSub.stop();
             }
-        } else if (shooterPositionSub.getShooterPosState() == ShooterPositionState.SourceIntake) {
+        } else if (shooterMountSub.getShooterPosState() == ShooterMountState.SourceIntake) {
             if (shooterSub.isNoteLoaded()) {
                 shooterSub.stop();
             }

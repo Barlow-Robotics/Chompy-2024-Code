@@ -89,7 +89,7 @@ public class Constants {
         public static final int AngleEncoderID = 63;
 
         public static final int BottomHallEffectID = 6;
-        public static final int TopHallEffectID = 7;
+        // public static final int TopHallEffectID = 7;
     }
 
     /***************************************************************************/
@@ -219,7 +219,7 @@ public class Constants {
     /***************************************************************************/
     /***************************************************************************/
 
-    public static final class ShooterPositionConstants {
+    public static final class ShooterMountConstants {
 
         public static final double ElevatorGearRatio = 15;
         public static final double ShooterAngleGearRatio = 46.67; // From K's spreadsheet

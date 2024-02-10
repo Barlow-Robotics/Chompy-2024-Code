@@ -13,8 +13,6 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -23,19 +21,16 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElectronicsIDs;
-//import frc.robot.Constants.LogitechDAConstants;
 import frc.robot.Constants.LogitechExtreme3DConstants;
+//import frc.robot.Constants.LogitechDAConstants;
 //import frc.robot.Constants.RadioMasterConstants;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.*;
 
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
 import frc.robot.subsystems.ShooterMount.ShooterMountState;
 
 public class RobotContainer {
@@ -62,7 +57,6 @@ public class RobotContainer {
     // LT Climb
     private final SetShooterMountPosition prepareToClimbCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.PreClimb);
     private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.Climb);
-    
 
     /* CONTROLLERS */
 
@@ -75,14 +69,14 @@ public class RobotContainer {
     private Trigger moveToSourceButton;
     private Trigger moveToFloorButton;
     private Trigger moveToTrapButton;
+    private Trigger prepareToClimbButton;   // LT added.  CHANGE if not its own buttun
+    private Trigger climbButton;
+    private Trigger shootIntakeButton;
+    private Trigger autoAlignButton;
+
+    /* AUTO */
 
     private final SendableChooser<Command> autoChooser;
-    private Trigger prepareToClimbButton;   // LT added.  CHANGE if not its own buttun
-    public Trigger shootIntakeButton;
-
-    private Trigger climbButton;
-
-    // private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
         AutoBuilder.configureHolonomic(
@@ -133,33 +127,6 @@ public class RobotContainer {
 
         configureBindings();
 
-        // if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Extreme 3D")) {
-                driveSub.setDefaultCommand(
-                // The left stick controls translation of the robot.
-                // Turning is controlled by the X axis of the right stick.
-                new DriveRobot(
-                        driveSub, 
-                        driverController, 
-                        LogitechExtreme3DConstants.AxisX, LogitechExtreme3DConstants.AxisY, LogitechExtreme3DConstants.AxisZRotate, 
-                        true));
-        // } else if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Radiomaster TX12 Joystick")){
-                // driveSub.setDefaultCommand(
-                // new DriveRobot(
-                //         driveSub, 
-                //         driverController, 
-                //         RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
-                //         true));
-        // } else if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Dual Action")){
-        //         driveSub.setDefaultCommand(
-        //         new DriveRobot(
-        //                 driveSub, 
-        //                 driverController, 
-        //                 LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY, LogitechDAConstants.RightStickX, 
-        //                 true));
-        // } else {
-        //     System.out.println("Unknown controller");
-        // }
-
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
         // SmartDashboard.putData("Auto Mode", autoChooser);
     }
@@ -168,6 +135,13 @@ public class RobotContainer {
 
         driverController = new Joystick(ElectronicsIDs.DriverControllerPort);
         operatorController = new Joystick(ElectronicsIDs.OperatorControllerPort);
+
+        /***************** AUTO ALIGN *****************/
+        
+        autoAlignButton = new JoystickButton(operatorController, XboxControllerConstants.LeftTrigger); 
+        autoAlignButton = new JoystickButton(driverController, LogitechExtreme3DConstants.ButtonStick); 
+        // autoAlignButton.onTrue(autoAlignCmd).onFalse();
+
         /******************** SET SHOOTER POSITION ********************/
 
         moveToSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle 
@@ -188,21 +162,20 @@ public class RobotContainer {
         /******************** SHOOTER ********************/
 
         shootIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home 
+        shootIntakeButton = new JoystickButton(driverController, LogitechExtreme3DConstants.Trigger);
         shootIntakeButton.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
 
-        /***************** FLOOR INTAKE *****************/
-        
-        // toggleFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // floor 
-        // toggleFloorIntakeButton.onTrue(startIntakeCmd).onFalse(stopIntakeCmd);
-
         /******************** CLIMB ********************/
+
         prepareToClimbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller.  CHANGE button binding
         prepareToClimbButton.onTrue(prepareToClimbCmd);
 
         climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller.  CHANGE button binding
         climbButton.onTrue(climbCmd);
-        // climbButton.onTrue(climbCmd);
+
+        /******************** MAX VELOCITY SWITCHER ********************/
     }
+
     private void configurePathPlannerLogging() {
 
         PathPlannerLogging.setLogActivePathCallback(
@@ -214,7 +187,7 @@ public class RobotContainer {
             (targetPose) -> {
             Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
             });
-        }
+    }
         
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();

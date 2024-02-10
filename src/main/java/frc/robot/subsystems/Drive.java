@@ -75,6 +75,8 @@ public class Drive extends SubsystemBase {
 
     private Vision visionSub = new Vision();
 
+    public double maxVelocityPerSecond = DriveConstants.MaxDriveableVelocityLow;
+
     public Drive() {
     
         navX = new AHRS(Port.kMXP);
@@ -266,7 +268,7 @@ public class Drive extends SubsystemBase {
         return navX.getRotation2d().getDegrees();
     }
 
-    public double getTurnRate() {
+    public double getTurnDegPSec() {
         return navX.getRate() * (DriveConstants.GyroReversed ? -1.0 : 1.0); // degrees per second
     }
 
@@ -281,6 +283,10 @@ public class Drive extends SubsystemBase {
 
     public ChassisSpeeds getSpeeds() {
         return DriveConstants.kinematics.toChassisSpeeds(getModuleStates());
+    }
+
+    public void setMaxMPS(double axis) {
+        maxVelocityPerSecond *= ((axis++) / 100);
     }
 
     /* SIMULATION */

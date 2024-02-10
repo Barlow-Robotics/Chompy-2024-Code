@@ -39,7 +39,7 @@ public class StartShooterIntake extends Command {
             return;
         }
 
-        shooterSub.start(SetShooterMountPosition.desiredShooterVelocity, SetShooterMountPosition.desiredIndexVelocity);
+        shooterSub.startFlywheels(SetShooterMountPosition.desiredFlywheelVelocity);
         if (shooterMountSub.getShooterPosState() == ShooterMountState.FloorIntake) {
             floorIntakeSub.start();
             if (shooterSub.isNoteLoaded()) {
@@ -57,8 +57,11 @@ public class StartShooterIntake extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        shooterSub.stop();
-        floorIntakeSub.stop();
+        shooterSub.startIndex(SetShooterMountPosition.desiredIndexVelocity);
+        if (interrupted) {
+            shooterSub.stop();
+            floorIntakeSub.stop();
+        }
     }
 
     @Override

@@ -71,7 +71,7 @@ public class ShooterMount extends SubsystemBase {
     private final CANcoderSimState absoluteAngleEncoderSim;  //CHANGE needed?  never used
 
     public enum ShooterMountState {
-        Speaker, Amp, SourceIntake, FloorIntake, PreClimb, Climb, PreTrap, Trap, MovingToPosition, Interrupted
+        Speaker, Amp, SourceIntake, FloorIntake, PreClimb, Climb, PreTrap, Trap, MovingToPosition
     }
 
     private ShooterMountState shooterPosState = ShooterMountState.FloorIntake;
@@ -337,5 +337,11 @@ public class ShooterMount extends SubsystemBase {
         rightElevatorMotorSim.setRawRotorPosition(rightElevatorMotorModel.getAngularPositionRotations());
         
         bottomHallEffectSim.setValue(isWithinHeightTolerance(0));
+    }
+
+    public void stopMotors() { // coast
+        angleMotor.set(0);
+        leftElevatorMotor.set(0);
+        rightElevatorMotor.set(0);
     }
 }

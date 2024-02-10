@@ -85,7 +85,6 @@ public class SetShooterMountPosition extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        shooterMountSub.setShooterPosState(ShooterMountState.Interrupted);
     }
 
     @Override

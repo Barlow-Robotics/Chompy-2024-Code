@@ -86,20 +86,24 @@ public class Shooter extends SubsystemBase {
         logData();
     }
 
-    public void start(double shooterRPM, double indexRPM) {
+    public void startFlywheels(double shooterRPM) {
         // if (shuffleBoardSpeed.getDouble(-1.0) <= Constants.Falcon500MaxRPM / 60) { // max rps: 105
         //         shooterRPM = shuffleBoardSpeed.getDouble(-1.0);
         // }
         Logger.recordOutput("Shooter/DesiredShooterRPM", shooterRPM);
-        Logger.recordOutput("Shooter/DesiredIndexRPM", indexRPM);
 
         double shooterRPS = shooterRPM / 60;
 
         lowerFlywheelMotor.setControl(voltageVelocity.withVelocity(shooterRPS));
         upperFlywheelMotor.setControl(voltageVelocity.withVelocity(shooterRPS));
-        indexMotor.setControl(voltageVelocity.withVelocity(indexRPM));
 
         Logger.recordOutput("Shooter/WithinToleranceFlywheels", isWithinVelocityTolerance(shooterRPS));
+    }
+
+    public void startIndex(double indexRPM) {
+        Logger.recordOutput("Shooter/DesiredIndexRPM", indexRPM);
+
+        indexMotor.setControl(voltageVelocity.withVelocity(indexRPM));
     }
 
     public void stop() {
@@ -150,7 +154,7 @@ public class Shooter extends SubsystemBase {
         configs.Slot0.kP = ShooterConstants.ShooterKP;
         configs.Slot0.kI = ShooterConstants.ShooterKI;
         configs.Slot0.kD = ShooterConstants.ShooterKD;
-        configs.Slot0.kV = ShooterConstants.ShooterKV;
+        configs.Slot0.kV = ShooterConstants.ShooterFF;
     }
 
     private void applyMotorConfigs(TalonFX motor, String motorName, 

@@ -15,12 +15,13 @@ import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ElectronicsIDs;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.subsystems.ShooterMount.ShooterMountState;
+import frc.robot.Constants.LogitechDAConstants;
+import frc.robot.Constants.LogitechExtreme3DConstants;
+import frc.robot.Constants.RadioMasterConstants;
+import frc.robot.commands.DriveRobot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Robot extends LoggedRobot {
     private Command autonomousCommand;
@@ -55,14 +56,40 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotPeriodic() {
-        SmartDashboard.putData(CommandScheduler.getInstance());
-        SmartDashboard.putData(robotContainer.driveSub);
-        SmartDashboard.putData(robotContainer.shooterSub);
-        // SmartDashboard.putData(robotContainer.shooterPositionSub);
-        SmartDashboard.putData(robotContainer.floorIntakeSub);
         robotContainer.visionSub.periodic(); 
-        Logger.recordOutput("Controllers/Driver", DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort));
-        Logger.recordOutput("Controllers/Operator", DriverStation.getJoystickName(ElectronicsIDs.OperatorControllerPort));
+
+        String currentDriverController = DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort);
+        String currentOperatorController = DriverStation.getJoystickName(ElectronicsIDs.OperatorControllerPort);
+        Logger.recordOutput("Controllers/Driver", currentDriverController);
+        Logger.recordOutput("Controllers/Operator", currentOperatorController);
+
+         if (currentDriverController.equals("Logitech Extreme 3D")) {
+                robotContainer.driveSub.setDefaultCommand(
+                // The left stick controls translation of the robot.
+                // Turning is controlled by the X axis of the right stick.
+                new DriveRobot(
+                        robotContainer.driveSub, 
+                        robotContainer.driverController, 
+                        LogitechExtreme3DConstants.AxisX, LogitechExtreme3DConstants.AxisY, LogitechExtreme3DConstants.AxisZRotate, 
+                        true));
+        } else if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Radiomaster TX12 Joystick")){
+                robotContainer.driveSub.setDefaultCommand(
+                new DriveRobot(
+                        robotContainer.driveSub, 
+                        robotContainer.driverController, 
+                        RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
+                        true));
+        } else if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Dual Action")){
+                robotContainer.driveSub.setDefaultCommand(
+                new DriveRobot(
+                        robotContainer.driveSub, 
+                        robotContainer.driverController, 
+                        LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY, LogitechDAConstants.RightStickX, 
+                        true));
+        } else {
+            System.out.println("Unknown controller");
+        }
+
         CommandScheduler.getInstance().run();
     }
 
@@ -72,7 +99,7 @@ public class Robot extends LoggedRobot {
         robotContainer.floorIntakeSub.stop();
         robotContainer.shooterSub.stop();
         robotContainer.shooterMountSub.stop();
-        //robotContainer.shooterPositionSub.stopMotors(); // CHANGE - create a function to safely stop everything in this sub when we disbale
+        robotContainer.shooterMountSub.stopMotors(); // CHANGE - create a function to safely stop everything in this sub when we disbale
     }
 
     @Override

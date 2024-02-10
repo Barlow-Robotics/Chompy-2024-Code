@@ -69,9 +69,9 @@ public class DriveRobot extends Command {
             rawRot = -driverController.getRawAxis(this.ControllerRotID); 
         }
 
-        SpeedX = MathUtil.applyDeadband(rawX, DeadBand) * DriveConstants.MaxDriveableVelocity;
-        SpeedY = MathUtil.applyDeadband(rawY, DeadBand) * DriveConstants.MaxDriveableVelocity;
-        SpeedRot = MathUtil.applyDeadband(rawRot, 2*DeadBand) * DriveConstants.MaxDriveableVelocity;
+        SpeedX = MathUtil.applyDeadband(rawX, DeadBand) * DriveConstants.MaxDriveableVelocityLow;
+        SpeedY = MathUtil.applyDeadband(rawY, DeadBand) * DriveConstants.MaxDriveableVelocityLow;
+        SpeedRot = MathUtil.applyDeadband(rawRot, 2*DeadBand) * DriveConstants.MaxDriveableVelocityLow;
 
         driveSub.drive(SpeedX, SpeedY, SpeedRot, FieldRelative);      
         // driveSub.testDrive(()->driveSub.getX(), ()->driveSub.getY(), ()->driveSub.getRot(), true);

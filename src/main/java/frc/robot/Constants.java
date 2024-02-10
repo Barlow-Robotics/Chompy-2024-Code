@@ -112,7 +112,8 @@ public class Constants {
         );
 
         public static final double MaxAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
-        public static final double MaxDriveableVelocity = 3.6; // m/s? (CHANGE if this is the wrong unit)
+        public static final double MaxDriveableVelocityLow = 3.6; // m/s? (CHANGE if this is the wrong unit)
+        public static final double MaxDriveableVelocityHigh = 4.0;
 
         public static final double PhysicalMaxSpeedMetersPerSecond = Units.feetToMeters(15.1); // 15.1 f/s from Mr. K's
                                                                                                // spreadsheet
@@ -199,12 +200,10 @@ public class Constants {
 
         public static final double ShooterKP = 0.5; // An error of 1 rotation/sec results in 2V output
         public static final double ShooterKI = 0; 
-        public static final double ShooterKD = 0; 
-                                                       // CHANGE ?
-        public static final double ShooterKV = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V,
-                                                     // 1/8.33 = 0.12 volts / Rotation per second
+        public static final double ShooterKD = 0; // CHANGE ?
+        public static final double ShooterFF = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
 
-        public static final double IndexRPM = 1000;
+        public static final double IndexRPM = 180; // CHANGE
 
         public static final double IndexKP = 0.5; // CHANGE
         public static final double IndexKI = 0; // CHANGE

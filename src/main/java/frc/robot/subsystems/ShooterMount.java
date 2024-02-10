@@ -11,7 +11,6 @@ import edu.wpi.first.math.util.Units;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -68,8 +67,15 @@ public class ShooterMount extends SubsystemBase {
     private final CANcoder absoluteAngleEncoder;   //needs an encoder 
     private final CANcoderSimState absoluteAngleEncoderSim;
 
+    /* LT & EH - adding PreClimb, Climb, and PreTrap state/code
+        PreClimb - raise elevator (to max) & put shooter in horizontal posn
+        Climb - after hooked to chain, do pull-up
+        PreTrap - once up on chain, extend elevator to reach trap
+        Trap - shoot in trap
+    Let us know if you agree!
+    */
     public enum ShooterPositionState {
-        Speaker, Amp, SourceIntake, FloorIntake, Trap, MovingToPosition, Interrupted
+        Speaker, Amp, SourceIntake, FloorIntake, PreClimb, Climb, PreTrap, Trap, MovingToPosition, Interrupted
     }
 
     private ShooterPositionState shooterPosState = ShooterPositionState.FloorIntake;
@@ -204,6 +210,8 @@ public class ShooterMount extends SubsystemBase {
         Logger.recordOutput("ShooterMount/CurrentSupply/Angle", angleMotor.getSupplyCurrent().getValue());
         // log number of rotations and the angle being reported back by cancoder
         // Encoder offset where the thing is 0
+    
+        // LT & EH CHANGE - add logging for new climb functions / consts - ClimbHeight & MinHeight
     }
 
     /* CONFIG */

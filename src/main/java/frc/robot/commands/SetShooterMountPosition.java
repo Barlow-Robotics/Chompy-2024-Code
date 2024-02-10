@@ -56,6 +56,16 @@ public class SetShooterMountPosition extends Command {
                 desiredShooterVelocity = ShooterConstants.FloorRPM;
                 desiredIndexVelocity = -ShooterConstants.IndexRPM;
                 break;
+                // LT and EH added code for climb - see comments in ShooterMount
+            case PreClimb:  
+                desiredAngle = ShooterPositionConstants.TrapAngle;
+                // no break b/c wants to go to PreTrap also - Ed
+            case PreTrap:    
+                desiredHeight = ShooterPositionConstants.TrapHeight;
+                break;
+            case Climb:  // pull-up
+                desiredHeight = ShooterPositionConstants.MinHeight;
+                break;
             case Trap:
                 desiredShooterVelocity = ShooterConstants.TrapRPM;
                 desiredIndexVelocity = ShooterConstants.IndexRPM;

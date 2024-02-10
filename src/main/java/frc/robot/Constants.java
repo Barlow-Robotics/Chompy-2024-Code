@@ -248,6 +248,10 @@ public class Constants {
         public static final double TrapAngle = 90; // CHANGE
         public static final double TrapHeight = 10; // CHANGE
 
+        public static final double ClimbHeight = 10; // CHANGE
+        public static final double MinHeight = 0; // CHANGE
+
+
         public static final double AngleKP = 0.5;
         public static final double AngleKI = 0;
         public static final double AngleKD = 0;

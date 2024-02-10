@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElectronicsIDs;
@@ -41,6 +42,7 @@ public class RobotContainer {
     public final Shooter shooterSub = new Shooter();
     public final ShooterMount shooterMountSub = new ShooterMount();
     public final FloorIntake floorIntakeSub = new FloorIntake();
+    public final Underglow underglowSub = new Underglow();
     public final Vision visionSub = new Vision(); 
 
     /* COMMANDS */
@@ -71,6 +73,8 @@ public class RobotContainer {
     private Trigger moveToTrapButton;
     private Trigger prepareToClimbButton;   // LT added.  CHANGE if not its own buttun
     private Trigger climbButton;
+    private Trigger LEDHumanSourceButton;
+    private Trigger LEDHumanFloorButton;
     private Trigger shootIntakeButton;
     private Trigger autoAlignButton;
 
@@ -161,17 +165,37 @@ public class RobotContainer {
 
         /******************** SHOOTER ********************/
 
+        shootButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home 
+        shootButton.onTrue(startShootingCmd).onFalse(stopShootingCmd);
+
+        /***************** FLOOR INTAKE *****************/
+        
+        // toggleFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // floor 
+        // toggleFloorIntakeButton.onTrue(startIntakeCmd).onFalse(stopIntakeCmd);
+
+        /******************** CLIMB ********************/
+        
+        // climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller
+        // climbButton.onTrue(climbCmd);
+
+        /********************* LED BINDINGS ************************************* */
+
+        LEDHumanSourceButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper); 
+        LEDHumanSourceButton.onTrue(new InstantCommand(() -> underglowSub.LEDHumanSource = true)).onFalse(new InstantCommand(() -> underglowSub.LEDHumanSource = false));
+
+        LEDHumanFloorButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); 
+        LEDHumanFloorButton.onTrue(new InstantCommand(() -> underglowSub.LEDHumanFloor = true)).onFalse(new InstantCommand(() -> underglowSub.LEDHumanFloor = false));
         shootIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home 
         shootIntakeButton = new JoystickButton(driverController, LogitechExtreme3DConstants.Trigger);
         shootIntakeButton.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
 
         /******************** CLIMB ********************/
 
-        prepareToClimbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller.  CHANGE button binding
-        prepareToClimbButton.onTrue(prepareToClimbCmd);
+//         prepareToClimbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller.  CHANGE button binding
+//         prepareToClimbButton.onTrue(prepareToClimbCmd);
 
-        climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller.  CHANGE button binding
-        climbButton.onTrue(climbCmd);
+//         climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller.  CHANGE button binding
+//         climbButton.onTrue(climbCmd);
 
         /******************** MAX VELOCITY SWITCHER ********************/
     }

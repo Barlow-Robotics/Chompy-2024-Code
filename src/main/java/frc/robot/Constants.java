@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.SerialPort;
 
 public class Constants {
 
@@ -184,6 +185,18 @@ public class Constants {
     /***************************************************************************/
     /***************************************************************************/
     /***************************************************************************/
+    public static final class UnderGlowConstants {
+        public static final SerialPort.Port Port = SerialPort.Port.kUSB1;
+        public static final int BlueAlliance = 0; // 0b00000000
+        public static final int RedAlliance = 1; // 0b00000001
+        public static final int Enabled = 2; // 0b00000010
+        public static final int NoteLoaded = 4; // 0b00000100
+        public static final int Shooting = 8; // 0b00001000
+        public static final int Auto = 16; // 0b00010000
+        public static final int RobotFloorSource = 32; // 0b00100000
+        public static final int Climbing = 64; // 0b01000000
+        public static final int RobotSource = 128; // 0b10000000
+    }
 
     public static final class ShooterConstants {
         public static final double FlywheelGearRatio = 1; // CHANGE

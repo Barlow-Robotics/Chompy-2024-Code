@@ -57,15 +57,15 @@ public class ShooterMount extends SubsystemBase {
             edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1), 1, 0.0005);
 
     private final VelocityVoltage angleVoltageVelocity = new VelocityVoltage(0, 0, true, 0, 0,
-            false, false, false);
+            false, false, false);  // CHANGE?  where are these intended to be used
     private final VelocityVoltage elevatorVoltageVelocity = new VelocityVoltage(0, 0, true, 0, 1,
-            false, false, false);
+            false, false, false);  // CHANGE?  where are these intended to be used
     private final NeutralOut brake = new NeutralOut();
 
     DigitalInput bottomHallEffect;
 
     private final CANcoder absoluteAngleEncoder;   //needs an encoder 
-    private final CANcoderSimState absoluteAngleEncoderSim;
+    private final CANcoderSimState absoluteAngleEncoderSim;  //CHANGE needed?  never used
 
     /* LT & EH - adding PreClimb, Climb, and PreTrap state/code
         PreClimb - raise elevator (to max) & put shooter in horizontal posn
@@ -126,11 +126,11 @@ public class ShooterMount extends SubsystemBase {
     }
 
     public double getAngleDegrees() {
-        return Units.rotationsToDegrees(absoluteAngleEncoder.getPosition().getValue());
+        return Units.rotationsToDegrees(angleMotor.getPosition().getValue());
     }
 
     public double getTalonEncoderDegrees() {
-        return Units.rotationsToDegrees(angleMotor.getPosition().getValue());
+        return Units.rotationsToDegrees(absoluteAngleEncoder.getPosition().getValue());
     }
 
     public void setInches(double desiredHeight) {
@@ -211,7 +211,13 @@ public class ShooterMount extends SubsystemBase {
         // log number of rotations and the angle being reported back by cancoder
         // Encoder offset where the thing is 0
     
-        // LT & EH CHANGE - add logging for new climb functions / consts - ClimbHeight & MinHeight
+        // LT & EH CHANGE - copied logging for new climb functions / consts - ClimbHeight & MinHeight
+        Logger.recordOutput("ShooterMount/Climb/IsAtClimbHeight",
+                isWithinHeightTolerance(ShooterPositionConstants.ClimbHeight));
+        Logger.recordOutput("ShooterMount/Climb/IsAtMinHeight",
+                isWithinHeightTolerance(ShooterPositionConstants.MinHeight));
+        
+    
     }
 
     /* CONFIG */

@@ -20,9 +20,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElectronicsIDs;
-import frc.robot.Constants.LogitechDAConstants;
+//import frc.robot.Constants.LogitechDAConstants;
 import frc.robot.Constants.LogitechExtreme3DConstants;
-import frc.robot.Constants.RadioMasterConstants;
+//import frc.robot.Constants.RadioMasterConstants;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.*;
 
@@ -50,6 +50,10 @@ public class RobotContainer {
     private final StopShooterIntake stopShootingCmd = new StopShooterIntake(shooterSub, floorIntakeSub);
     
     // private final Climb climbCmd = new Climb(shooterPositionSub);
+    // LT Climb
+    private final SetShooterMountPosition prepareToClimbCmd = new SetShooterMountPosition(shooterPositionSub, ShooterPositionState.PreClimb);
+    private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterPositionSub, ShooterPositionState.Climb);
+    
 
     /* CONTROLLERS */
 
@@ -64,7 +68,7 @@ public class RobotContainer {
     private Trigger moveToTrapButton;
 
     public Trigger shootButton;
-
+    private Trigger prepareToClimbButton;   // LT added.  CHANGE if not its own buttun
     private Trigger climbButton;
 
     // private final SendableChooser<Command> autoChooser;
@@ -132,9 +136,7 @@ public class RobotContainer {
     private void configureBindings() {
 
         driverController = new Joystick(ElectronicsIDs.DriverControllerPort);
-        Logger.recordOutput("Controllers/Driver", DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort));
         operatorController = new Joystick(ElectronicsIDs.OperatorControllerPort);
-        Logger.recordOutput("Controllers/Operator", DriverStation.getJoystickName(ElectronicsIDs.OperatorControllerPort));
         /******************** SET SHOOTER POSITION ********************/
 
         moveToSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle 
@@ -163,8 +165,11 @@ public class RobotContainer {
         // toggleFloorIntakeButton.onTrue(startIntakeCmd).onFalse(stopIntakeCmd);
 
         /******************** CLIMB ********************/
-        
-        climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller
+        prepareToClimbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller.  CHANGE button binding
+        prepareToClimbButton.onTrue(prepareToClimbCmd);
+
+        climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller.  CHANGE button binding
+        climbButton.onTrue(climbCmd);
         // climbButton.onTrue(climbCmd);
     }
 

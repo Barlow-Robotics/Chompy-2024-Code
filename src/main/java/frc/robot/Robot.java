@@ -8,12 +8,13 @@ import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-import org.xml.sax.ErrorHandler;
+//import org.xml.sax.ErrorHandler;
 
 import com.revrobotics.REVPhysicsSim;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.ElectronicsIDs;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -28,11 +29,12 @@ public class Robot extends LoggedRobot {
     public void robotInit() {
         robotContainer = new RobotContainer();
 
-        Logger.recordMetadata("ProjectName", "WPI-Swerve-Prototype"); // Set a metadata value
+        Logger.recordMetadata("ProjectName", "2024-Robot-Code"); // Set a metadata value
 
         if (isReal()) {
             Logger.addDataReceiver(new WPILOGWriter("/media/sda2/")); // Log to a USB stick
             Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+            // CHANGE - leaks below
             /*PowerDistribution pdp =*/ new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
         } else {
             Logger.addDataReceiver(new WPILOGWriter(""));
@@ -55,7 +57,8 @@ public class Robot extends LoggedRobot {
         // SmartDashboard.putData(robotContainer.shooterPositionSub);
         SmartDashboard.putData(robotContainer.floorIntakeSub);
         robotContainer.visionSub.periodic(); 
-
+        Logger.recordOutput("Controllers/Driver", DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort));
+        Logger.recordOutput("Controllers/Operator", DriverStation.getJoystickName(ElectronicsIDs.OperatorControllerPort));
         CommandScheduler.getInstance().run();
     }
 

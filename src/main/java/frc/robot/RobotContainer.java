@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -25,58 +27,49 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.DriveRobot;
-import frc.robot.Constants.LogitechDAConstants;
-import frc.robot.Constants.RadioMasterConstants;
+import frc.robot.Constants.ElectronicsIDs;
+//import frc.robot.Constants.LogitechDAConstants;
+import frc.robot.Constants.LogitechExtreme3DConstants;
+//import frc.robot.Constants.RadioMasterConstants;
 import frc.robot.Constants.XboxControllerConstants;
-import frc.robot.commands.SetShooterVelocity;
-import frc.robot.commands.SetShooterPosition;
-import frc.robot.commands.Climb;
+import frc.robot.commands.*;
 
-import frc.robot.commands.ToggleIntake;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
+import frc.robot.subsystems.ShooterMount.ShooterMountState;
 
 public class RobotContainer {
+
     /* SUBSYSTEMS */
+
     public final Drive driveSub = new Drive();
     public final Shooter shooterSub = new Shooter();
-    public final ShooterPosition shooterPositionSub = new ShooterPosition();
+    public final ShooterMount shooterMountSub = new ShooterMount();
     public final FloorIntake floorIntakeSub = new FloorIntake();
+    public final Vision visionSub = new Vision(); 
 
     /* COMMANDS */
-    private final SetShooterVelocity startShooterSpeakerCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Speaker);
-    private final SetShooterVelocity startShooterAmpCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Amp);
-    private final SetShooterVelocity startShooterSourceIntakeCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.IntakeFromSource);
-    // private final SetShooterVelocity startShooterFloorIntakeCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.IntakeFromFloor);
-    private final SetShooterVelocity startShooterTrapCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Trap);
-    private final SetShooterVelocity stopShooterCmd = new SetShooterVelocity(shooterSub, shooterSub.shooterVelState.Stopped);
-    private final ToggleIntake toggleIntakeCmd = new ToggleIntake(floorIntakeSub);
+    private final SetShooterMountPosition setShooterPosSpeakerCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.Speaker);
+    private final SetShooterMountPosition setShooterPosAmpCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.Amp);
+    private final SetShooterMountPosition setShooterPosSourceIntakeCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.SourceIntake);
+    public final SetShooterMountPosition setShooterPosFloorIntakeCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.FloorIntake);
+    private final SetShooterMountPosition setShooterPosTrapCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.Trap);
 
-    private final SetShooterPosition setShooterSpeakerAngleCmd = new SetShooterPosition(shooterPositionSub, shooterPositionSub.shooterAngleState.Speaker);
-    private final SetShooterPosition setShooterAmpAngleCmd = new SetShooterPosition(shooterPositionSub, shooterPositionSub.shooterAngleState.Amp);
-    private final SetShooterPosition setShooterSourceAngleCmd = new SetShooterPosition(shooterPositionSub, shooterPositionSub.shooterAngleState.IntakeFromSource);
-    private final SetShooterPosition setShooterFloorAngleCmd = new SetShooterPosition(shooterPositionSub, shooterPositionSub.shooterAngleState.IntakeFromFloor);
-    private final SetShooterPosition setShooterTrapAngleCmd = new SetShooterPosition(shooterPositionSub, shooterPositionSub.shooterAngleState.Trap);
+    private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub, shooterMountSub);
+    private final StopShooterIntake stopShooterIntakeCmd = new StopShooterIntake(shooterSub, floorIntakeSub);
     
-    private final Climb climbCmd = new Climb(shooterPositionSub);
+    // private final Climb climbCmd = new Climb(shooterPositionSub);
+    // LT Climb
+    private final SetShooterMountPosition prepareToClimbCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.PreClimb);
+    private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.Climb);
+    
+
     /* CONTROLLERS */
+
     Joystick driverController; 
-    
     Joystick operatorController;
     
     /* BUTTONS */
-   
-    private Trigger shootSpeakerButton;
-    private Trigger shootAmpButton;
-    private Trigger shooterSourceIntakeButton;
-    private Trigger shooterFloorIntakeButton;
-    private Trigger shootTrapButton;
-
-    private Trigger toggleFloorIntakeButton;
-
-    private Trigger climbButton;
-
     private Trigger moveToSpeakerButton;
     private Trigger moveToAmpButton;
     private Trigger moveToSourceButton;
@@ -84,10 +77,17 @@ public class RobotContainer {
     private Trigger moveToTrapButton;
 
     private final SendableChooser<Command> autoChooser;
+    private Trigger prepareToClimbButton;   // LT added.  CHANGE if not its own buttun
+    public Trigger shootIntakeButton;
+
+    private Trigger climbButton;
+
+    // private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
         AutoBuilder.configureHolonomic(
-                driveSub::getPose, // Robot pose supplier
+                // driveSub::getPoseWithoutVision, // Robot pose supplier
+                driveSub::getPoseWithVision, // Robot pose supplier
                 driveSub::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
                 driveSub::getSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 driveSub::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
@@ -133,75 +133,75 @@ public class RobotContainer {
 
         configureBindings();
 
-        if(DriverStation.getJoystickName(Constants.DriverControllerPort).equals("Logitech Extreme 3D")) {
+        // if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Extreme 3D")) {
                 driveSub.setDefaultCommand(
                 // The left stick controls translation of the robot.
                 // Turning is controlled by the X axis of the right stick.
                 new DriveRobot(
                         driveSub, 
                         driverController, 
-                       LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY, LogitechDAConstants.RightStickX, 
+                        LogitechExtreme3DConstants.AxisX, LogitechExtreme3DConstants.AxisY, LogitechExtreme3DConstants.AxisZRotate, 
                         true));
-        } else {
-                driveSub.setDefaultCommand(
-                new DriveRobot(
-                        driveSub, 
-                        driverController, 
-                        RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
-                        true));
-        }
+        // } else if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Radiomaster TX12 Joystick")){
+                // driveSub.setDefaultCommand(
+                // new DriveRobot(
+                //         driveSub, 
+                //         driverController, 
+                //         RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
+                //         true));
+        // } else if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Dual Action")){
+        //         driveSub.setDefaultCommand(
+        //         new DriveRobot(
+        //                 driveSub, 
+        //                 driverController, 
+        //                 LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY, LogitechDAConstants.RightStickX, 
+        //                 true));
+        // } else {
+        //     System.out.println("Unknown controller");
+        // }
 
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
         // SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
-
     private void configureBindings() {
 
-        driverController = new Joystick(Constants.DriverControllerPort);
-        operatorController = new Joystick(Constants.OperatorControllerPort);
-        // ***************** SHOOTING *****************
-        shootSpeakerButton = new JoystickButton(operatorController, LogitechDAConstants.LeftTrigger); // middle 
-        // shootSpeakerButton.onTrue(setShooterSpeakerAngleCmd);
-        shootSpeakerButton.onTrue(startShooterSpeakerCmd).onFalse(stopShooterCmd);
+        driverController = new Joystick(ElectronicsIDs.DriverControllerPort);
+        operatorController = new Joystick(ElectronicsIDs.OperatorControllerPort);
+        /******************** SET SHOOTER POSITION ********************/
 
-        shootAmpButton = new JoystickButton(operatorController, LogitechDAConstants.RightTrigger); // top
-        // shootAmpButton.onTrue(setShooterAmpAngleCmd);
-        shootAmpButton.onTrue(startShooterAmpCmd).onFalse(stopShooterCmd);
+        moveToSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle 
+        moveToSpeakerButton.onTrue(setShooterPosSpeakerCmd);
 
-        shooterSourceIntakeButton = new JoystickButton(operatorController, LogitechDAConstants.RightBumper); // right stick press
-        // shooterSourceIntakeButton.onTrue(setShooterSourceAngleCmd);
-        shooterSourceIntakeButton.onTrue(startShooterSourceIntakeCmd).onFalse(stopShooterCmd);
+        moveToAmpButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper); // top
+        moveToAmpButton.onTrue(setShooterPosAmpCmd);
 
-        // shooterFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY); // claw
-        // shooterFloorIntakeButton.onTrue(setShooterFloorAngleCmd);
-        // shooterFloorIntakeButton.onTrue(startShooterFloorIntakeCmd).onFalse(stopShooterCmd);
+        moveToSourceButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY); // claw
+        moveToSourceButton.onTrue(setShooterPosSourceIntakeCmd);
+
+        moveToFloorButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // station
+        moveToFloorButton.onTrue(setShooterPosFloorIntakeCmd);
         
-        shootTrapButton = new JoystickButton(operatorController, LogitechDAConstants.ButtonB); // home
-        // shootTrapButton.onTrue(setShooterTrapAngleCmd);
-        shootTrapButton.onTrue(startShooterTrapCmd).onFalse(stopShooterCmd);
+        moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button on mantis controller
+        moveToTrapButton.onTrue(setShooterPosTrapCmd);
 
-        // ***************** MISC *****************
-        // toggleFloorIntakeButton = new JoystickButton(operatorController, LogitechDAConstants.LeftBumper); //floor
-        toggleFloorIntakeButton = new JoystickButton(operatorController, LogitechDAConstants.LeftBumper); //floor 
-        toggleFloorIntakeButton.onTrue(toggleIntakeCmd);
+        /******************** SHOOTER ********************/
+
+        shootIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home 
+        shootIntakeButton.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
+
+        /***************** FLOOR INTAKE *****************/
         
-        climbButton = new JoystickButton(operatorController, LogitechDAConstants.BackButton);
+        // toggleFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // floor 
+        // toggleFloorIntakeButton.onTrue(startIntakeCmd).onFalse(stopIntakeCmd);
+
+        /******************** CLIMB ********************/
+        prepareToClimbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller.  CHANGE button binding
+        prepareToClimbButton.onTrue(prepareToClimbCmd);
+
+        climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller.  CHANGE button binding
         climbButton.onTrue(climbCmd);
-
-        // ***************** ANGLEING *****************
-        moveToSpeakerButton = new JoystickButton(operatorController, LogitechDAConstants.LeftStick);
-        moveToSpeakerButton.onTrue(setShooterSpeakerAngleCmd);
-        moveToAmpButton = new JoystickButton(operatorController, LogitechDAConstants.RightStick);
-        moveToAmpButton.onTrue(setShooterAmpAngleCmd);
-        moveToSourceButton = new JoystickButton(operatorController, LogitechDAConstants.ButtonA);
-        moveToSourceButton.onTrue(setShooterSourceAngleCmd);
-        moveToFloorButton = new JoystickButton(operatorController, LogitechDAConstants.ButtonX);
-        moveToFloorButton.onTrue(setShooterFloorAngleCmd);
-        moveToTrapButton = new JoystickButton(operatorController, LogitechDAConstants.ButtonY);
-        moveToTrapButton.onTrue(setShooterTrapAngleCmd);
-
-
+        // climbButton.onTrue(climbCmd);
     }
     private void configurePathPlannerLogging() {
 

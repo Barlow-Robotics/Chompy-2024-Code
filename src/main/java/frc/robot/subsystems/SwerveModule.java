@@ -26,10 +26,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.Constants.SwerveConstants;
 
 public class SwerveModule {
     /*********************************************************************/
@@ -87,11 +86,13 @@ public class SwerveModule {
         driveMotor.restoreFactoryDefaults();
         driveMotor.setIdleMode(IdleMode.kBrake);
         driveMotor.setInverted(reversed);
-
+        
         driveEncoder = driveMotor.getEncoder();
-        driveEncoder.setVelocityConversionFactor(VelocityConversionFactor);
+        resetEncoders();
 
-        double localPositionConversionFactor = PositionConversionFactor;
+        driveEncoder.setVelocityConversionFactor(SwerveConstants.VelocityConversionFactor);
+
+        double localPositionConversionFactor = SwerveConstants.PositionConversionFactor;
         if (RobotBase.isSimulation()) {
             localPositionConversionFactor *= 1000;
         }
@@ -99,11 +100,11 @@ public class SwerveModule {
 
         /* Config drive motor PID */
         drivePIDController = driveMotor.getPIDController();
-        drivePIDController.setP(DriveKP);
-        drivePIDController.setI(DriveKI);
-        drivePIDController.setD(DriveKD);
-        drivePIDController.setIZone(DriveIZone);
-        drivePIDController.setFF(DriveFF);
+        drivePIDController.setP(SwerveConstants.DriveKP);
+        drivePIDController.setI(SwerveConstants.DriveKI);
+        drivePIDController.setD(SwerveConstants.DriveKD);
+        drivePIDController.setIZone(SwerveConstants.DriveIZone);
+        drivePIDController.setFF(SwerveConstants.DriveFF);
         drivePIDController.setOutputRange(-1, 1);
 
         /* Set up turn motor and encoder */
@@ -125,25 +126,13 @@ public class SwerveModule {
 
         canCoderConfiguration.MagnetSensor = magnetConfig;
 
-        // wpk - these lines can be removed. They are left overs from Phoenix 5
-        // need to be added
-        // canCoderConfiguration.initializationStrategy =
-        // SensorInitializationStrategy.BootToAbsolutePosition; // BW sets sensor to be absolute zero
-        // canCoderConfiguration.sensorCoefficient = Math.PI / 2048.0;
-
         turnEncoder.getConfigurator().apply(canCoderConfiguration);
-        if ( Robot.isSimulation()) {
-            // wpk added this line because we need to set angle to zero
-            // need to figure out if this is needed for real robot too (maybe not)
-            turnEncoder.setPosition(0.0, 0.1) ;  
+        if (Robot.isSimulation()) {
+            turnEncoder.setPosition(0.0, 0.1);
         }
 
-        turnPIDController = new ProfiledPIDController(
-                1,
-                0,
-                0,
-                new TrapezoidProfile.Constraints(
-                        ModuleMaxAngularVelocity, ModuleMaxAngularAcceleration));
+        turnPIDController = new ProfiledPIDController(1, 0, 0, new TrapezoidProfile.Constraints(
+                SwerveConstants.ModuleMaxAngularVelocity, SwerveConstants.ModuleMaxAngularAcceleration));
         turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
@@ -159,6 +148,14 @@ public class SwerveModule {
                 new Rotation2d(turnEncoder.getAbsolutePosition().getValueAsDouble() * Math.PI));
     }
 
+    public double getTurnCurrent() {
+        return turnMotor.getOutputCurrent();
+    } 
+
+    public double getDriveCurrent() {
+        return driveMotor.getOutputCurrent();
+    } 
+
     public void setDesiredState(SwerveModuleState desiredState) {
 
         // Optimize the reference state to avoid spinning further than 90 degrees
@@ -173,28 +170,17 @@ public class SwerveModule {
         final double turnOutput = turnPIDController.calculate(
                 turnEncoder.getAbsolutePosition().getValueAsDouble() * 2.0 * Math.PI,
                 state.angle.getRadians());
-
         final double turnFF = TurnFF.calculate(turnPIDController.getSetpoint().velocity);
         turnMotor.setVoltage(turnOutput + turnFF);
 
-        if (RobotBase.isSimulation()) {
-            // double angle = state.angle.getRadians();
-            CANcoderSimState encoderSim = turnEncoder.getSimState();
+        driveMotor.setSmartCurrentLimit(SwerveConstants.StallLimit, SwerveConstants.FreeLimit);
+        turnMotor.setSmartCurrentLimit(SwerveConstants.StallLimit, SwerveConstants.FreeLimit);
 
-            // int rawPosition = 0;
-            // if (angle < 0) {
-            //     rawPosition = 4096 + (int) ((angle / Math.PI) * 2048.0);
-            // } else {
-            //     rawPosition = (int) ((angle / Math.PI) * 2048.0);
-            // }
+        if (RobotBase.isSimulation()) {
+            CANcoderSimState encoderSim = turnEncoder.getSimState();
             encoderSim.setRawPosition(state.angle.getDegrees() / 180.0);
             Logger.recordOutput("CANCoder " + swerveName,
                     turnEncoder.getAbsolutePosition().getValueAsDouble());
-            // Logger.recordOutput("CANCoder Raw " + swerveName, rawPosition);
-            // Logger.recordOutput("Module Desired State Angle" + swerveName,
-            //         desiredState.angle.getRadians());
-            // Logger.recordOutput("Module State Angle" + swerveName,
-            //         desiredState.angle.getRadians());
         }
     }
 

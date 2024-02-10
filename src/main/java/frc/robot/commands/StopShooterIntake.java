@@ -6,37 +6,33 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FloorIntake;
+import frc.robot.subsystems.Shooter;
 
-public class ToggleIntake extends Command {
+public class StopShooterIntake extends Command {
 
-    FloorIntake intakeSub;
+   Shooter shooterSub;
+    FloorIntake floorIntakeSub;
 
-    public ToggleIntake(FloorIntake t) {
-        intakeSub = t;
-        addRequirements(intakeSub);
+    public StopShooterIntake(Shooter shooterSub, FloorIntake floorIntakeSub) {
+        this.shooterSub = shooterSub;
+        this.floorIntakeSub = floorIntakeSub;
+        addRequirements(shooterSub, floorIntakeSub);
     }
 
-    // Called when the command is initially scheduled.
     @Override
     public void initialize() {
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (intakeSub.isIntaking()) {
-            intakeSub.stopIntaking();
-        } else {
-            intakeSub.startIntaking();
-        }
+        shooterSub.stop();
+        floorIntakeSub.stop();
     }
 
-    // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
     }
 
-    // Returns true when the command should end.
     @Override
     public boolean isFinished() {
         return true;

@@ -12,11 +12,11 @@ import frc.robot.subsystems.Shooter.ShooterVelState;
 public class SetShooterVelocity extends Command {
 
     Shooter shooterSub;
-    ShooterVelState state;
+    ShooterVelState desiredState;
 
     public SetShooterVelocity(Shooter shooterSub, ShooterVelState state) {
         this.shooterSub = shooterSub;
-        this.state = state;
+        this.desiredState = state;
         addRequirements(shooterSub);
     }
 
@@ -26,9 +26,9 @@ public class SetShooterVelocity extends Command {
 
     @Override
     public void execute() {
-        switch (state) {
+        switch (desiredState) {
             case Stopped:
-                shooterSub.setVelocity(0);
+                shooterSub.stopShooting();
                 shooterSub.shooterVelState = ShooterVelState.Stopped;
                 break;
             case Speaker:

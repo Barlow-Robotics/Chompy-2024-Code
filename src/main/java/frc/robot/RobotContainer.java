@@ -51,8 +51,8 @@ public class RobotContainer {
     
     // private final Climb climbCmd = new Climb(shooterPositionSub);
     // LT Climb
-    private final SetShooterMountPosition prepareToClimbCmd = new SetShooterMountPosition(shooterPositionSub, ShooterPositionState.PreClimb);
-    private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterPositionSub, ShooterPositionState.Climb);
+    private final SetShooterMountPosition prepareToClimbCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.PreClimb);
+    private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.Climb);
     
 
     /* CONTROLLERS */

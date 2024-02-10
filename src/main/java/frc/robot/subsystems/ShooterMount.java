@@ -221,9 +221,9 @@ public class ShooterMount extends SubsystemBase {
     
         // LT & EH CHANGE - copied logging for new climb functions / consts - ClimbHeight & MinHeight
         Logger.recordOutput("ShooterMount/Climb/IsAtClimbHeight",
-                isWithinHeightTolerance(ShooterPositionConstants.ClimbHeight));
+                isWithinHeightTolerance(ShooterMountConstants.ClimbHeight));
         Logger.recordOutput("ShooterMount/Climb/IsAtMinHeight",
-                isWithinHeightTolerance(ShooterPositionConstants.MinHeight));
+                isWithinHeightTolerance(ShooterMountConstants.MinHeight));
     }
 
     /* CONFIG */

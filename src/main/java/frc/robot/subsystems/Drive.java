@@ -75,8 +75,6 @@ public class Drive extends SubsystemBase {
 
     private Vision visionSub = new Vision();
 
-    public double maxVelocityPerSecond = DriveConstants.MaxDriveableVelocityLow;
-
     public Drive() {
     
         navX = new AHRS(Port.kMXP);
@@ -283,10 +281,6 @@ public class Drive extends SubsystemBase {
 
     public ChassisSpeeds getSpeeds() {
         return DriveConstants.kinematics.toChassisSpeeds(getModuleStates());
-    }
-
-    public void setMaxMPS(double axis) {
-        maxVelocityPerSecond *= ((axis++) / 100);
     }
 
     /* SIMULATION */

@@ -65,7 +65,7 @@ public class StartShooterIntake extends Command {
     }
 
     @Override
-    public boolean isFinished() {
+    public boolean isFinished() {// Need to CHANGE this
         return false;
     }
 }

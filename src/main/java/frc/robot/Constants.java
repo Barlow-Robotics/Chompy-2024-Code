@@ -112,8 +112,7 @@ public class Constants {
         );
 
         public static final double MaxAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
-        public static final double MaxDriveableVelocityLow = 3.6; // m/s? (CHANGE if this is the wrong unit)
-        public static final double MaxDriveableVelocityHigh = 4.0;
+        public static final double MaxDriveableVelocity = 3.6; // m/s? (CHANGE if this is the wrong unit)
 
         public static final double PhysicalMaxSpeedMetersPerSecond = Units.feetToMeters(15.1); // 15.1 f/s from Mr. K's
                                                                                                // spreadsheet

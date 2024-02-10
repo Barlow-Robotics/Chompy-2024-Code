@@ -18,7 +18,7 @@ public class SetShooterMountPosition extends Command {
     private ShooterMountState desiredState;
     private double desiredAngle;
     private double desiredHeight;
-    public static double desiredShooterVelocity = ShooterConstants.FloorRPM; 
+    public static double desiredFlywheelVelocity = ShooterConstants.FloorRPM; 
     public static double desiredIndexVelocity = ShooterConstants.IndexRPM;
 
   public SetShooterMountPosition(ShooterMount shooterAngleSub, ShooterMountState desiredState) {
@@ -35,31 +35,31 @@ public class SetShooterMountPosition extends Command {
             case Speaker:
                 desiredAngle = ShooterMountConstants.SpeakerAngle;
                 desiredHeight = ShooterMountConstants.SpeakerHeight;
-                desiredShooterVelocity = ShooterConstants.SpeakerRPM;
+                desiredFlywheelVelocity = ShooterConstants.SpeakerRPM;
                 desiredIndexVelocity = ShooterConstants.IndexRPM;
                 break;
             case Amp:
                 desiredAngle = ShooterMountConstants.AmpAngle;
                 desiredHeight = ShooterMountConstants.AmpHeight;
-                desiredShooterVelocity = ShooterConstants.AmpRPM;
+                desiredFlywheelVelocity = ShooterConstants.AmpRPM;
                 desiredIndexVelocity = ShooterConstants.IndexRPM;
                 break;
             case SourceIntake:
                 desiredAngle = ShooterMountConstants.SourceIntakeAngle;
                 desiredHeight = ShooterMountConstants.SourceIntakeHeight;
-                desiredShooterVelocity = ShooterConstants.SourceRPM;
+                desiredFlywheelVelocity = ShooterConstants.SourceRPM;
                 desiredIndexVelocity = -ShooterConstants.IndexRPM;
                 break;
             case FloorIntake:
                 desiredAngle = ShooterMountConstants.FloorIntakeAngle;
                 desiredHeight = ShooterMountConstants.FloorIntakeHeight;
-                desiredShooterVelocity = ShooterConstants.FloorRPM;
+                desiredFlywheelVelocity = ShooterConstants.FloorRPM;
                 desiredIndexVelocity = -ShooterConstants.IndexRPM;
                 break;
                 // LT and EH added code for climb - see comments in ShooterMount
             case PreClimb:  
                 desiredAngle = ShooterMountConstants.TrapAngle;
-                desiredShooterVelocity = 0;
+                desiredFlywheelVelocity = 0;
                 desiredIndexVelocity = 0;
                 // no break b/c wants to go to PreTrap also - Ed
             case PreTrap:    
@@ -69,7 +69,7 @@ public class SetShooterMountPosition extends Command {
                 desiredHeight = ShooterMountConstants.MinHeight;
                 break;
             case Trap:
-                desiredShooterVelocity = ShooterConstants.TrapRPM;
+                desiredFlywheelVelocity = ShooterConstants.TrapRPM;
                 desiredIndexVelocity = ShooterConstants.IndexRPM;
                 break;
         }

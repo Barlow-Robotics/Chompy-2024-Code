@@ -1,0 +1,18 @@
+{
+  "robotWidth": 0.8382,
+  "robotLength": 0.94,
+  "holonomicMode": true,
+  "pathFolders": [
+    "Amp",
+    "Simple Paths",
+    "Speaker"
+  ],
+  "autoFolders": [
+    "Simple Autos"
+  ],
+  "defaultMaxVel": 4.59,
+  "defaultMaxAccel": 3.0,
+  "defaultMaxAngVel": 540.0,
+  "defaultMaxAngAccel": 720.0,
+  "maxModuleSpeed": 4.5
+}

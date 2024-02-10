@@ -21,7 +21,7 @@ public class StopIntake extends Command {
 
   @Override
   public void execute() {
-    intakeSub.stopIntaking();
+    intakeSub.stop();
   }
 
   @Override

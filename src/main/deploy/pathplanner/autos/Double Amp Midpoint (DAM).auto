@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.514538001298225,
+      "y": 7.098630396334866
+    },
+    "rotation": 90.60929231736114
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Side-To-Amp"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Amp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "amp to first note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score amp from first note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot Amp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Amp to sidemid-midpoint (ASMM)"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

@@ -23,7 +23,12 @@ public class DriveRobot extends Command {
     int ControllerYSpeedID;
     int ControllerRotID;
     boolean FieldRelative;
-
+    public static double rawX;
+    public static double rawY;
+    public static double rawRot;
+    public static double SpeedX;
+    public static double SpeedY;
+    public static double SpeedRot;
     double DeadBand = 0.08;
     
     public DriveRobot(
@@ -53,12 +58,8 @@ public class DriveRobot extends Command {
         // Since the coordinate systems differ from the controller (x is left right and y is fwd back) 
         // and the chassis (positive X is forward, Positive Y is left), we use the controller X input as the drive Y input
         // and the controller Y input as the drive X input.
-
-        double rawX;
-        double rawY;
-        double rawRot;
         
-        if(DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Extreme 3D")) {
+        if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Extreme 3D")) {
             rawX = -driverController.getRawAxis(this.ControllerYSpeedID);  
             rawY = -driverController.getRawAxis(this.ControllerXSpeedID);
             rawRot = -driverController.getRawAxis(this.ControllerRotID); 
@@ -68,25 +69,18 @@ public class DriveRobot extends Command {
             rawRot = -driverController.getRawAxis(this.ControllerRotID); 
         }
 
-        double XSpeed = MathUtil.applyDeadband(rawX, DeadBand) * DriveConstants.MaxDriveableVelocity;
-        double YSpeed = MathUtil.applyDeadband(rawY, DeadBand) * DriveConstants.MaxDriveableVelocity;
-        double Rot = MathUtil.applyDeadband(rawRot, 2*DeadBand) * DriveConstants.MaxDriveableVelocity;
+        SpeedX = MathUtil.applyDeadband(rawX, DeadBand) * DriveConstants.MaxDriveableVelocity;
+        SpeedY = MathUtil.applyDeadband(rawY, DeadBand) * DriveConstants.MaxDriveableVelocity;
+        SpeedRot = MathUtil.applyDeadband(rawRot, 2*DeadBand) * DriveConstants.MaxDriveableVelocity;
 
-        driveSub.drive(XSpeed, YSpeed, Rot, FieldRelative);
-
-        /* LOGGING */
-        Logger.recordOutput("Drive/RawYawInput", rawRot);
-        Logger.recordOutput("Drive/RawXSpeed", rawX);
-        Logger.recordOutput("Drive/RawYSpeed", rawY);
-
-        Logger.recordOutput("Drive/YawInput", Rot);
-        Logger.recordOutput("Drive/XSpeed", YSpeed);
-        Logger.recordOutput("Drive/YSpeed", XSpeed);
+        driveSub.drive(SpeedX, SpeedY, SpeedRot, FieldRelative);      
+        // driveSub.testDrive(()->driveSub.getX(), ()->driveSub.getY(), ()->driveSub.getRot(), true);
     }
 
     @Override
     public void end(boolean interrupted) {
         driveSub.drive(0, 0, 0, true);
+        // driveSub.testDrive(()->0.0, ()->0.0, ()->0.0, true);
     }
 
     @Override

@@ -43,6 +43,13 @@ public class Underglow extends SubsystemBase {
         // } else if (alliance == Alliance.Red) {
         //     desiredMode += Constants.UnderGlowConstants.RedAlliance;
         
+        
+        // Alliance alliance = DriverStation.getAlliance().get();
+
+        // if (alliance == Alliance.Blue) {
+        //     desiredMode += Constants.UnderGlowConstants.BlueAlliance;
+        // } else if (alliance == Alliance.Red) {
+            // desiredMode += Constants.UnderGlowConstants.RedAlliance;  
         if (LEDHumanSource == true) {
             desiredMode += Constants.UnderGlowConstants.RobotSource;
         } else if (LEDHumanFloor == true)
@@ -50,7 +57,7 @@ public class Underglow extends SubsystemBase {
             desiredMode += Constants.UnderGlowConstants.RobotFloorSource;
         }
         boolean check = (byte) (desiredMode & byte2) == byte2;
-        System.out.println("************************************************Hello: " + check +  desiredMode);
+        System.out.println("************************************************Current Check for arduino: " + check +  desiredMode);
         if (currentMode != desiredMode && port != null) {
             try {
                 port.write(new byte[] { (byte) desiredMode }, 1);

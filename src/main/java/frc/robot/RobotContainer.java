@@ -165,8 +165,8 @@ public class RobotContainer {
 
         /******************** SHOOTER ********************/
 
-        shootButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home 
-        shootButton.onTrue(startShootingCmd).onFalse(stopShootingCmd);
+        shootIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home 
+        shootIntakeButton.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
 
         /***************** FLOOR INTAKE *****************/
         

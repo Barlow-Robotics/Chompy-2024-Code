@@ -253,6 +253,7 @@ public class Vision extends SubsystemBase {
         }
         */
     }
+
     private void advantageKitLogging() {
         if (robotToCamera != null) {
         Logger.recordOutput("vision/xPosition", robotToCamera.getX());

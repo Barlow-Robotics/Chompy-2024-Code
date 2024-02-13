@@ -157,11 +157,7 @@ public class RobotContainer {
         moveToSourceButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY); // claw
         moveToSourceButton.onTrue(setShooterPosSourceIntakeCmd);
 
-<<<<<<< Updated upstream
         moveToFloorButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // station
-=======
-        moveToFloorButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); 
->>>>>>> Stashed changes
         moveToFloorButton.onTrue(setShooterPosFloorIntakeCmd);
         
         moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button on mantis controller

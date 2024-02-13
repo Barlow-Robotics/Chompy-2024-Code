@@ -26,9 +26,10 @@ public class DriveRobot extends Command {
     public static double rawX;
     public static double rawY;
     public static double rawRot;
-    public static double SpeedX;
-    public static double SpeedY;
-    public static double SpeedRot;
+    private double SpeedX;
+    private double SpeedY;
+    private double SpeedRot;
+    
     double DeadBand = 0.08;
     
     public DriveRobot(
@@ -75,9 +76,16 @@ public class DriveRobot extends Command {
 
         driveSub.drive(SpeedX, SpeedY, SpeedRot, FieldRelative);      
         // driveSub.testDrive(()->driveSub.getX(), ()->driveSub.getY(), ()->driveSub.getRot(), true);
+
+        Logger.recordOutput("Drive/RawYawInput", rawRot);
+        Logger.recordOutput("Drive/RawXSpeed", rawX);
+        Logger.recordOutput("Drive/RawYSpeed", rawY);
+        Logger.recordOutput("Drive/YawInput", SpeedRot);
+        Logger.recordOutput("Drive/XSpeed", SpeedY);
+        Logger.recordOutput("Drive/YSpeed", SpeedX);
     }
 
-    @Override
+    // rride
     public void end(boolean interrupted) {
         driveSub.drive(0, 0, 0, true);
         // driveSub.testDrive(()->0.0, ()->0.0, ()->0.0, true);

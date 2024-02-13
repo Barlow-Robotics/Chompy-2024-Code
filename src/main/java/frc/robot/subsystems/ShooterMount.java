@@ -11,13 +11,11 @@ import edu.wpi.first.math.util.Units;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
@@ -58,10 +56,6 @@ public class ShooterMount extends SubsystemBase {
     private final DCMotorSim rightElevatorMotorModel = new DCMotorSim(
             edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, 0.0005);
 
-    private final VelocityVoltage angleVoltageVelocity = new VelocityVoltage(0, 0, true, 0, 0,
-            false, false, false);  // CHANGE?  where are these intended to be used
-    private final VelocityVoltage elevatorVoltageVelocity = new VelocityVoltage(0, 0, true, 0, 1,
-            false, false, false);  // CHANGE?  where are these intended to be used
     private final NeutralOut brake = new NeutralOut();
 
     DigitalInput bottomHallEffect;

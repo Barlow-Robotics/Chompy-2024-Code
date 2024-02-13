@@ -30,7 +30,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.DriveConstants;
 
 public class SwerveModule {
     /*********************************************************************/
@@ -43,22 +43,6 @@ public class SwerveModule {
 
     private static final double MaxRPM = 5820;
     public static final double MaxVelocityPerSecond = MaxRPM * VelocityConversionFactor; // 4.586818358467871
-    /* DRIVE ENCODER */
-    private static final double DriveKP = 0.04; // REQUIRES TUNING 
-    private static final double DriveKI = 0.0015;
-    private static final double DriveKD = 0;
-    private static final double DriveIZone = 0.15;
-    private static final double DriveFF = 1.0 / MaxVelocityPerSecond;
-
-    /* TURN ENCODER */
-    private static final int CANCoderResolution = 4096;
-    private static final double PositionConversionFactor = WheelCircumference / GearRatio;
-    private static final double TurnKP = 1; // Need to change
-    private static final double TurnKI = 0;
-    private static final double TurnKD = 0;
-
-    private static final double ModuleMaxAngularVelocity = 3.0 * 2.0 * Math.PI; // #revolutions * radians per revolution (rad/sec)
-    private static final double ModuleMaxAngularAcceleration = 12 * Math.PI; // radians per second squared
 
     /**********************************************************************/
     /**********************************************************************/
@@ -92,9 +76,9 @@ public class SwerveModule {
         driveEncoder = driveMotor.getEncoder();
         resetEncoders();
 
-        driveEncoder.setVelocityConversionFactor(SwerveConstants.VelocityConversionFactor);
+        driveEncoder.setVelocityConversionFactor(DriveConstants.VelocityConversionFactor);
 
-        double localPositionConversionFactor = SwerveConstants.PositionConversionFactor;
+        double localPositionConversionFactor = DriveConstants.PositionConversionFactor;
         if (RobotBase.isSimulation()) {
             localPositionConversionFactor *= 1000;
         }
@@ -102,11 +86,11 @@ public class SwerveModule {
 
         /* Config drive motor PID */
         drivePIDController = driveMotor.getPIDController();
-        drivePIDController.setP(SwerveConstants.DriveKP);
-        drivePIDController.setI(SwerveConstants.DriveKI);
-        drivePIDController.setD(SwerveConstants.DriveKD);
-        drivePIDController.setIZone(SwerveConstants.DriveIZone);
-        drivePIDController.setFF(SwerveConstants.DriveFF);
+        drivePIDController.setP(DriveConstants.DriveKP);
+        drivePIDController.setI(DriveConstants.DriveKI);
+        drivePIDController.setD(DriveConstants.DriveKD);
+        drivePIDController.setIZone(DriveConstants.DriveIZone);
+        drivePIDController.setFF(DriveConstants.DriveFF);
         drivePIDController.setOutputRange(-1, 1);
 
         /* Set up turn motor and encoder */
@@ -134,7 +118,7 @@ public class SwerveModule {
         }
 
         turnPIDController = new ProfiledPIDController(1, 0, 0, new TrapezoidProfile.Constraints(
-                SwerveConstants.ModuleMaxAngularVelocity, SwerveConstants.ModuleMaxAngularAcceleration));
+                DriveConstants.ModuleMaxAngularVelocity, DriveConstants.ModuleMaxAngularAcceleration));
         turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
@@ -175,8 +159,8 @@ public class SwerveModule {
         final double turnFF = TurnFF.calculate(turnPIDController.getSetpoint().velocity);
         turnMotor.setVoltage(turnOutput + turnFF);
 
-        driveMotor.setSmartCurrentLimit(SwerveConstants.StallLimit, SwerveConstants.FreeLimit);
-        turnMotor.setSmartCurrentLimit(SwerveConstants.StallLimit, SwerveConstants.FreeLimit);
+        driveMotor.setSmartCurrentLimit(DriveConstants.StallLimit, DriveConstants.FreeLimit);
+        turnMotor.setSmartCurrentLimit(DriveConstants.StallLimit, DriveConstants.FreeLimit);
 
         if (RobotBase.isSimulation()) {
             CANcoderSimState encoderSim = turnEncoder.getSimState();

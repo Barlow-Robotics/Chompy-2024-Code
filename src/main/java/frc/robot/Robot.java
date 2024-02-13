@@ -56,8 +56,6 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotPeriodic() {
-        robotContainer.visionSub.periodic(); 
-
         String currentDriverController = DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort);
         String currentOperatorController = DriverStation.getJoystickName(ElectronicsIDs.OperatorControllerPort);
         Logger.recordOutput("Controllers/Driver", currentDriverController);
@@ -116,12 +114,12 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        // log auto data 
     }
 
     @Override
     public void teleopInit() {
-        if (autonomousCommand != null) {
+        if (autonomousCommand != null)
+         {
             autonomousCommand.cancel();
         }
     }

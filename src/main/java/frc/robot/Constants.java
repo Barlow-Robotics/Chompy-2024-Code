@@ -125,18 +125,6 @@ public class Constants {
         public static final double BackRightMagnetOffsetInRadians = -2.305568464100361;
 
         public static final double TimestepDurationInSeconds = 0.02;
-    }
-
-    public static final class AutoConstants {
-        public static final double MaxSpeedMetersPerSecond = DriveConstants.PhysicalMaxSpeedMetersPerSecond / 4; // CHANGE
-        public static final double MaxAngularSpeedRadiansPerSecond = DriveConstants.PhysicalMaxAngularSpeedRadiansPerSecond
-                / 10; // Default is 540 degress
-        // public static final double MaxAccelerationMetersPerSecondSquared = 3;
-        public static final double MaxAutoAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
-        public static final double MaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4; // default: 720 deg
-    }
-
-    public static final class SwerveConstants {
         public static final Translation2d flModuleOffset = new Translation2d(0.4, 0.4);
         public static final Translation2d frModuleOffset = new Translation2d(0.4, -0.4);
         public static final Translation2d blModuleOffset = new Translation2d(-0.4, 0.4);
@@ -182,6 +170,14 @@ public class Constants {
         public static final int FreeLimit = 40;
     }
 
+    public static final class AutoConstants {
+        public static final double MaxSpeedMetersPerSecond = DriveConstants.PhysicalMaxSpeedMetersPerSecond / 4; // CHANGE
+        public static final double MaxAngularSpeedRadiansPerSecond = DriveConstants.PhysicalMaxAngularSpeedRadiansPerSecond
+                / 10; // Default is 540 degress
+        // public static final double MaxAccelerationMetersPerSecondSquared = 3;
+        public static final double MaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4; // default: 720 deg
+    }
+
     /***************************************************************************/
     /***************************************************************************/
     /***************************************************************************/
@@ -206,8 +202,7 @@ public class Constants {
 
         public static final double SpeakerRPM = 4000; // CHANGE
         public static final double AmpRPM = 2000; // CHANGE
-        public static final double SourceRPM = -2000; // CHANGE
-        public static final double FloorRPM = -1000; // CHANGE
+        public static final double IntakeRPM = -2000; // CHANGE
         public static final double TrapRPM = 2000; // CHANGE
 
         public static final double ShooterKP = 0.5; // An error of 1 rotation/sec results in 2V output
@@ -265,7 +260,7 @@ public class Constants {
 
         public static final double AngleKP = 0.5;
         public static final double AngleKI = 0;
-        public static final double AngleKD = 0;
+        public static final double AngleKD = 0.4;
         public static final double AngleIZone = 0;
         public static final double AngleFF = 0.11;
 
@@ -275,7 +270,7 @@ public class Constants {
 
         public static final double ElevatorKP = 0.5;
         public static final double ElevatorKI = 0;
-        public static final double ElevatorKD = 0;
+        public static final double ElevatorKD = 0.4;
         public static final double ElevatorIZone = 0;
         public static final double ElevatorFF = 0.12;
 
@@ -299,8 +294,8 @@ public class Constants {
         public static final double FF = 1; // CHANGE
 
         public static final int SupplyCurrentLimit = 20;
-
-        public static final double MotorRPM = 2000; // CHANGE
+		
+        public static final int MotorRPM = 1000;
     }
 
     /***************************************************************************/

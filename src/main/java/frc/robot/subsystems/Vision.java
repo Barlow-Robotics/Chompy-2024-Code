@@ -3,6 +3,7 @@
 // // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.Constants.VisionConstants.kFallbackVisionStrategy;
 import static frc.robot.Constants.VisionConstants.kMultiTagStdDevs;
@@ -35,10 +36,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTableInstance;
-//import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
-//import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -103,7 +101,7 @@ public class Vision extends SubsystemBase {
         // this::getEstimatedGlobalPose, null);
     }
     
-    public PhotonPipelineResult getLatestPoseResult() {
+    private PhotonPipelineResult getLatestPoseResult() {
          return poseCamera.getLatestResult();
     } 
 
@@ -122,19 +120,16 @@ public class Vision extends SubsystemBase {
                     toTarget, tagPose, 
                     transform3d);
 
-            double range =
+            double range = 
                 PhotonUtils.calculateDistanceToTargetMeters(
                         1,
                         .1,
                         Units.degreesToRadians( 20.0),
                         Units.degreesToRadians(result.getBestTarget().getPitch()));
 
-            NetworkTableInstance.getDefault().getEntry("distanceFromX")
-                        .setDouble(robotPose.getX());
-            NetworkTableInstance.getDefault().getEntry("distanceFromY")
-                            .setDouble(robotPose.getY());
-            NetworkTableInstance.getDefault().getEntry("distanceFromZ")
-                            .setDouble(robotPose.getZ());
+            Logger.recordOutput("Vision/distanceFromX", robotPose.getX());
+            Logger.recordOutput("Vision/distanceFromY", robotPose.getY());
+            Logger.recordOutput("Vision/distanceFromZ", robotPose.getZ());
         }
 
         var poseEstimate = getEstimatedGlobalPose() ;

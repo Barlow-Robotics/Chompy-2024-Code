@@ -223,7 +223,7 @@ public class Constants {
         public static final double IndexIZone = 0; // CHANGE
         public static final double IndexFF = 0.12; // CHANGE
 
-        public static final double SupplyCurrentLimit = 30;
+        public static final double SupplyCurrentLimit = 40;
     }
 
     /***************************************************************************/

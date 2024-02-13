@@ -6,8 +6,6 @@ package frc.robot.commands;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElectronicsIDs;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;

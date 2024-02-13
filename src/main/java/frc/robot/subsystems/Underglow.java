@@ -4,10 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.Optional;
-
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -57,7 +53,7 @@ public class Underglow extends SubsystemBase {
             desiredMode += Constants.UnderGlowConstants.RobotFloorSource;
         }
         boolean check = (byte) (desiredMode & byte2) == byte2;
-        System.out.println("************************************************Current Check for arduino: " + check +  desiredMode);
+        // System.out.println("************************************************Current Check for arduino: " + check +  desiredMode);
         if (currentMode != desiredMode && port != null) {
             try {
                 port.write(new byte[] { (byte) desiredMode }, 1);

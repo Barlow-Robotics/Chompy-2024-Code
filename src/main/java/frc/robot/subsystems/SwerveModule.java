@@ -43,22 +43,22 @@ public class SwerveModule {
 
     private static final double MaxRPM = 5820;
     public static final double MaxVelocityPerSecond = MaxRPM * VelocityConversionFactor; // 4.586818358467871
-    // /* DRIVE ENCODER */
-    // private static final double DriveKP = 0.04; // REQUIRES TUNING 
-    // private static final double DriveKI = 0.0015;
-    // private static final double DriveKD = 0;
-    // private static final double DriveIZone = 0.15;
-    // private static final double DriveFF = 1.0 / MaxVelocityPerSecond;
+    /* DRIVE ENCODER */
+    private static final double DriveKP = 0.04; // REQUIRES TUNING 
+    private static final double DriveKI = 0.0015;
+    private static final double DriveKD = 0;
+    private static final double DriveIZone = 0.15;
+    private static final double DriveFF = 1.0 / MaxVelocityPerSecond;
 
-    // /* TURN ENCODER */
-    // private static final int CANCoderResolution = 4096;
-    // private static final double PositionConversionFactor = WheelCircumference / GearRatio;
-    // private static final double TurnKP = 1; // Need to change
-    // private static final double TurnKI = 0;
-    // private static final double TurnKD = 0;
+    /* TURN ENCODER */
+    private static final int CANCoderResolution = 4096;
+    private static final double PositionConversionFactor = WheelCircumference / GearRatio;
+    private static final double TurnKP = 1; // Need to change
+    private static final double TurnKI = 0;
+    private static final double TurnKD = 0;
 
-    // private static final double ModuleMaxAngularVelocity = 3.0 * 2.0 * Math.PI; // #revolutions * radians per revolution (rad/sec)
-    // private static final double ModuleMaxAngularAcceleration = 12 * Math.PI; // radians per second squared
+    private static final double ModuleMaxAngularVelocity = 3.0 * 2.0 * Math.PI; // #revolutions * radians per revolution (rad/sec)
+    private static final double ModuleMaxAngularAcceleration = 12 * Math.PI; // radians per second squared
 
     /**********************************************************************/
     /**********************************************************************/

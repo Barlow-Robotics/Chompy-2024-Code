@@ -27,7 +27,6 @@ public class Robot extends LoggedRobot {
     private Command autonomousCommand;
 
     private RobotContainer robotContainer;
-    private PowerDistribution pdp;
 
     @Override
     public void robotInit() {
@@ -38,14 +37,14 @@ public class Robot extends LoggedRobot {
         if (isReal()) {
             Logger.addDataReceiver(new WPILOGWriter("/media/sda2/")); // Log to a USB stick
             Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-            pdp = new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
+            // CHANGE - leaks below
+            /*PowerDistribution pdp =*/ new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
         } else {
             Logger.addDataReceiver(new WPILOGWriter(""));
             Logger.addDataReceiver(new NT4Publisher());
         }
 
-        Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
-                        // be added.
+        Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
 
         robotContainer.shooterSub.stop();
         robotContainer.floorIntakeSub.stop();
@@ -57,49 +56,40 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotPeriodic() {
-        robotContainer.visionSub.periodic();
+        robotContainer.visionSub.periodic(); 
 
         String currentDriverController = DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort);
         String currentOperatorController = DriverStation.getJoystickName(ElectronicsIDs.OperatorControllerPort);
         Logger.recordOutput("Controllers/Driver", currentDriverController);
         Logger.recordOutput("Controllers/Operator", currentOperatorController);
 
-        // removing type check per wpk
-        // if (currentDriverController.equals("Logitech Extreme 3D")) {
-        robotContainer.driveSub.setDefaultCommand(
+         if (currentDriverController.equals("Logitech Extreme 3D")) {
+                robotContainer.driveSub.setDefaultCommand(
                 // The left stick controls translation of the robot.
                 // Turning is controlled by the X axis of the right stick.
                 new DriveRobot(
-                        robotContainer.driveSub,
-                        robotContainer.driverController,
-                        LogitechExtreme3DConstants.AxisX, LogitechExtreme3DConstants.AxisY,
-                        LogitechExtreme3DConstants.AxisZRotate,
+                        robotContainer.driveSub, 
+                        robotContainer.driverController, 
+                        LogitechExtreme3DConstants.AxisX, LogitechExtreme3DConstants.AxisY, LogitechExtreme3DConstants.AxisZRotate, 
                         true));
-        /*
-         * } else if
-         * (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).
-         * equals("Radiomaster TX12 Joystick")){
-         * robotContainer.driveSub.setDefaultCommand(
-         * new DriveRobot(
-         * robotContainer.driveSub,
-         * robotContainer.driverController,
-         * RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY,
-         * RadioMasterConstants.RightGimbalX,
-         * true));
-         * } else if
-         * (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).
-         * equals("Logitech Dual Action")){
-         * robotContainer.driveSub.setDefaultCommand(
-         * new DriveRobot(
-         * robotContainer.driveSub,
-         * robotContainer.driverController,
-         * LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY,
-         * LogitechDAConstants.RightStickX,
-         * true));
-         * } else {
-         * System.out.println("Unknown controller");
-         * }
-         */
+        } else if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Radiomaster TX12 Joystick")){
+                robotContainer.driveSub.setDefaultCommand(
+                new DriveRobot(
+                        robotContainer.driveSub, 
+                        robotContainer.driverController, 
+                        RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
+                        true));
+        } else if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Dual Action")){
+                robotContainer.driveSub.setDefaultCommand(
+                new DriveRobot(
+                        robotContainer.driveSub, 
+                        robotContainer.driverController, 
+                        LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY, LogitechDAConstants.RightStickX, 
+                        true));
+        } else {
+            System.out.println("Unknown controller");
+        }
+
         CommandScheduler.getInstance().run();
     }
 
@@ -109,8 +99,7 @@ public class Robot extends LoggedRobot {
         robotContainer.floorIntakeSub.stop();
         robotContainer.shooterSub.stop();
         robotContainer.shooterMountSub.stop();
-        robotContainer.shooterMountSub.stopMotors(); // CHANGE - create a function to safely stop everything in this sub
-                                                     // when we disbale
+        robotContainer.shooterMountSub.stopMotors(); // CHANGE - create a function to safely stop everything in this sub when we disbale
     }
 
     @Override
@@ -128,7 +117,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        // log auto data
+        // log auto data 
     }
 
     @Override
@@ -165,10 +154,10 @@ public class Robot extends LoggedRobot {
         robotContainer.visionSub.simulationPeriodic(simPose);
 
         /*
-         * frc::Field2d& debugField = vision.GetSimDebugField();
-         * debugField.GetObject("EstimatedRobot")->SetPose(drivetrain.GetPose());
-         * debugField.GetObject("EstimatedRobotModules")
-         * ->SetPoses(drivetrain.GetModulePoses());
-         */
+        frc::Field2d& debugField = vision.GetSimDebugField();
+        debugField.GetObject("EstimatedRobot")->SetPose(drivetrain.GetPose());
+        debugField.GetObject("EstimatedRobotModules")
+            ->SetPoses(drivetrain.GetModulePoses());
+            */
     }
 }

@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -23,9 +24,11 @@ import frc.robot.commands.DriveRobot;
 
 import org.littletonrobotics.junction.Logger;
 import java.lang.Math;
+import java.util.function.Supplier;
 
 import frc.robot.Constants;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.kauailabs.navx.frc.AHRS;
 
 public class Drive extends SubsystemBase {
@@ -68,9 +71,9 @@ public class Drive extends SubsystemBase {
 
     private final SwerveDrivePoseEstimator poseEstimator;
 
-    private Vision visionSub = new Vision();
-
     private SwerveModulePosition[] previousPositions = new SwerveModulePosition[4];
+
+    private Vision visionSub = new Vision();
 
     public Drive() {
     

@@ -148,16 +148,16 @@ public class RobotContainer {
 
         /******************** SET SHOOTER POSITION ********************/
 
-        moveToSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); 
+        moveToSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle 
         moveToSpeakerButton.onTrue(setShooterPosSpeakerCmd);
 
-        moveToAmpButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper); 
+        moveToAmpButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper); // top
         moveToAmpButton.onTrue(setShooterPosAmpCmd);
 
-        moveToSourceButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY); 
+        moveToSourceButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY); // claw
         moveToSourceButton.onTrue(setShooterPosSourceIntakeCmd);
 
-        moveToFloorButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); 
+        moveToFloorButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // station
         moveToFloorButton.onTrue(setShooterPosFloorIntakeCmd);
         
         moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button on mantis controller
@@ -165,7 +165,7 @@ public class RobotContainer {
 
         /******************** SHOOTER ********************/
 
-        shootIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // home 
+        shootIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home 
         shootIntakeButton.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
 
         /***************** FLOOR INTAKE *****************/

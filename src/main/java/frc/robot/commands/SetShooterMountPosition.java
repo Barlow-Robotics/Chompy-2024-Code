@@ -32,7 +32,6 @@ public class SetShooterMountPosition extends Command {
     public void initialize() {
         shooterMountSub.setShooterPosState(ShooterMountState.MovingToPosition);
         switch (desiredState) {
-
             case Speaker:
                 desiredAngle = ShooterMountConstants.SpeakerAngle;
                 desiredHeight = ShooterMountConstants.SpeakerHeight;

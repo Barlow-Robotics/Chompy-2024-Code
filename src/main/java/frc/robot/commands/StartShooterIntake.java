@@ -53,6 +53,7 @@ public class StartShooterIntake extends Command {
         } else {
             floorIntakeSub.stop();
         }
+    shooterSub.startIndex(SetShooterMountPosition.desiredIndexVelocity);
     }
 
     @Override

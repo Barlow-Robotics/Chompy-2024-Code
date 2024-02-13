@@ -51,12 +51,12 @@ public class ShooterMount extends SubsystemBase {
     TalonFX leftElevatorMotor;
     private final TalonFXSimState leftElevatorMotorSim;
     private final DCMotorSim leftElevatorMotorModel = new DCMotorSim(
-            edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1), 1, 0.0005);
+            edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, 0.0005);
 
     TalonFX rightElevatorMotor;
     private final TalonFXSimState rightElevatorMotorSim;
     private final DCMotorSim rightElevatorMotorModel = new DCMotorSim(
-            edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1), 1, 0.0005);
+            edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, 0.0005);
 
     private final VelocityVoltage angleVoltageVelocity = new VelocityVoltage(0, 0, true, 0, 0,
             false, false, false);  // CHANGE?  where are these intended to be used
@@ -101,13 +101,14 @@ public class ShooterMount extends SubsystemBase {
         currentLimitConfigs.SupplyCurrentLimit = ShooterConstants.SupplyCurrentLimit;
         currentLimitConfigs.SupplyCurrentLimitEnable = true;
 
-        applyMotorConfigs(angleMotor, "angleMotor", configs, motorOutputConfigs, InvertedValue.Clockwise_Positive); // CHANGE
-        applyMotorConfigs(leftElevatorMotor, "leftElevatorMotor", configs, motorOutputConfigs,
+        applyMotorConfigs(angleMotor, configs, motorOutputConfigs, InvertedValue.Clockwise_Positive); // CHANGE
+        applyMotorConfigs(leftElevatorMotor, configs, motorOutputConfigs,
                 InvertedValue.Clockwise_Positive); // CHANGE
-        applyMotorConfigs(rightElevatorMotor, "rightElevatorMotor", configs, motorOutputConfigs,
+        applyMotorConfigs(rightElevatorMotor, configs, motorOutputConfigs,
                 InvertedValue.CounterClockwise_Positive); // CHANGE
 
         applyAngleEncoderConfigs(configs);
+        stop();
     }
 
     @Override
@@ -121,17 +122,9 @@ public class ShooterMount extends SubsystemBase {
         angleMotor.setControl(request/* * .withFeedForward(ShooterPositionConstants.AngleFF) */);
     }
 
-
-
-
-
     public void setAngleWithVision(double desiredAngle) {
         // Need to make this
     }
-
-
-
-
 
     public double getAngleDegrees() {
         return Units.rotationsToDegrees(angleMotor.getPosition().getValue());
@@ -181,11 +174,6 @@ public class ShooterMount extends SubsystemBase {
         return !bottomHallEffect.get(); // might need to get rid of the ! depending on how the hall effect works
     }
 
-    public void stop() {
-        leftElevatorMotor.setControl(brake);
-        rightElevatorMotor.setControl(brake);
-    }
-
     private void logData() {
         Logger.recordOutput("ShooterMount/State", getShooterPosStateAsString());
         Logger.recordOutput("ShooterMount/ActualAngle", getAngleDegrees());
@@ -228,10 +216,10 @@ public class ShooterMount extends SubsystemBase {
 
     /* CONFIG */
 
-    private void applyMotorConfigs(TalonFX motor, String motorName, TalonFXConfiguration configs,
+    private void applyMotorConfigs(TalonFX motor, TalonFXConfiguration configs,
             MotorOutputConfigs motorOutputConfigs, InvertedValue inversion) {
 
-        if (motorName.equals("angleMotor")) {
+        if (motor == angleMotor) {
             configs.Slot0.kP = ShooterMountConstants.AngleKP;
             configs.Slot0.kI = ShooterMountConstants.AngleKI;
             configs.Slot0.kD = ShooterMountConstants.AngleKD;
@@ -241,7 +229,7 @@ public class ShooterMount extends SubsystemBase {
             motionMagicConfigs.MotionMagicCruiseVelocity = ShooterMountConstants.AngleMMCruiseVel;
             motionMagicConfigs.MotionMagicAcceleration = ShooterMountConstants.AngleMMAcceleration;
             motionMagicConfigs.MotionMagicJerk = ShooterMountConstants.AngleMMJerk;
-        } else if (motorName.indexOf("ElevatorMotor") != -1) {
+        } else if (motor == leftElevatorMotor || motor == rightElevatorMotor) {
             configs.Slot0.kP = ShooterMountConstants.ElevatorKP;
             configs.Slot0.kI = ShooterMountConstants.ElevatorKI;
             configs.Slot0.kD = ShooterMountConstants.ElevatorKD;
@@ -267,7 +255,7 @@ public class ShooterMount extends SubsystemBase {
                 break;
         }
         if (!status.isOK()) {
-            System.out.println("Could not apply talon configs to " + motorName + " error code: " + status.toString());
+            System.out.println("Could not apply talon configs to " + motor + " error code: " + status.toString());
         }
 
         for (int i = 0; i < 5; ++i) {
@@ -277,7 +265,7 @@ public class ShooterMount extends SubsystemBase {
         }
         if (!status.isOK()) {
             System.out.println(
-                    "Could not apply motor output configs to " + motorName + " error code: " + status.toString());
+                    "Could not apply motor output configs to " + motor + " error code: " + status.toString());
         }
     }
 
@@ -339,7 +327,7 @@ public class ShooterMount extends SubsystemBase {
         bottomHallEffectSim.setValue(isWithinHeightTolerance(0));
     }
 
-    public void stopMotors() { // coast
+    public void stop() { // coast
         angleMotor.set(0);
         leftElevatorMotor.set(0);
         rightElevatorMotor.set(0);

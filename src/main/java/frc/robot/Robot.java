@@ -15,9 +15,9 @@ import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ElectronicsIDs;
-import frc.robot.Constants.LogitechDAConstants;
+//import frc.robot.Constants.LogitechDAConstants;
 import frc.robot.Constants.LogitechExtreme3DConstants;
-import frc.robot.Constants.RadioMasterConstants;
+//import frc.robot.Constants.RadioMasterConstants;
 import frc.robot.commands.DriveRobot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -99,7 +99,10 @@ public class Robot extends LoggedRobot {
         robotContainer.floorIntakeSub.stop();
         robotContainer.shooterSub.stop();
         robotContainer.shooterMountSub.stop();
+<<<<<<< Updated upstream
         robotContainer.shooterMountSub.stopMotors(); // CHANGE - create a function to safely stop everything in this sub when we disbale
+=======
+>>>>>>> Stashed changes
     }
 
     @Override

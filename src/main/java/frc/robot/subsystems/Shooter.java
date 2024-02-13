@@ -43,7 +43,6 @@ public class Shooter extends SubsystemBase {
     private final DCMotorSim indexMotorModel = 
         new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1), 1, ShooterConstants.jKgMetersSquared);
 
-    
     private final VelocityVoltage voltageVelocity = 
         new VelocityVoltage(0, 0, true, 0, 0, 
                             false, false, false);
@@ -103,7 +102,9 @@ public class Shooter extends SubsystemBase {
     public void startIndex(double indexRPM) {
         Logger.recordOutput("Shooter/DesiredIndexRPM", indexRPM);
 
-        indexMotor.setControl(voltageVelocity.withVelocity(indexRPM));
+        double indexRPS = indexRPM / 60;
+
+        indexMotor.setControl(voltageVelocity.withVelocity(indexRPS));
     }
 
     public void stop() {
@@ -124,8 +125,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isNoteLoaded() {
-        // return breakBeam.get();
-        return false;
+        return breakBeam.get();
     }
 
     /* LOGGING */

@@ -10,20 +10,25 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterPositionConstants;
 import frc.robot.subsystems.ShooterPosition;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.ShooterPosition.ShooterPositionState;
+import frc.robot.subsystems.Vision.TargetToAlign;
 
 public class SetMouthPosition extends Command {
     
     private ShooterPosition shooterPositionSub;
+    private Vision visionSub;
     private ShooterPositionState desiredState;
     private double desiredAngle;
     private double desiredHeight;
     public static double desiredShooterVelocity = ShooterConstants.FloorRPM; 
     public static double desiredIndexVelocity = ShooterConstants.IndexRPM;
+    private TargetToAlign desiredTarget;
 
-  public SetMouthPosition(ShooterPosition shooterAngleSub, ShooterPositionState desiredState) {
+  public SetMouthPosition(ShooterPosition shooterAngleSub, ShooterPositionState desiredState, Vision visionSub) {
         this.shooterPositionSub = shooterAngleSub;
         this.desiredState = desiredState;
+        this.visionSub = visionSub;
 
         addRequirements(shooterAngleSub);
     }
@@ -37,18 +42,21 @@ public class SetMouthPosition extends Command {
                 desiredHeight = ShooterPositionConstants.SpeakerHeight;
                 desiredShooterVelocity = ShooterConstants.SpeakerRPM;
                 desiredIndexVelocity = ShooterConstants.IndexRPM;
+                desiredTarget = TargetToAlign.Speaker;
                 break;
             case Amp:
                 desiredAngle = ShooterPositionConstants.AmpAngle;
                 desiredHeight = ShooterPositionConstants.AmpHeight;
                 desiredShooterVelocity = ShooterConstants.AmpRPM;
                 desiredIndexVelocity = ShooterConstants.IndexRPM;
+                desiredTarget = TargetToAlign.Amp;
                 break;
             case SourceIntake:
                 desiredAngle = ShooterPositionConstants.SourceIntakeAngle;
                 desiredHeight = ShooterPositionConstants.SourceIntakeHeight;
                 desiredShooterVelocity = ShooterConstants.SourceRPM;
                 desiredIndexVelocity = -ShooterConstants.IndexRPM;
+                desiredTarget = TargetToAlign.Source;
                 break;
             case FloorIntake:
                 desiredAngle = ShooterPositionConstants.FloorIntakeAngle;
@@ -69,6 +77,7 @@ public class SetMouthPosition extends Command {
     public void execute() {
         shooterPositionSub.setAngle(desiredAngle);
         shooterPositionSub.setHeight(desiredHeight);
+        visionSub.alignTo(desiredTarget);
     }
 
     @Override

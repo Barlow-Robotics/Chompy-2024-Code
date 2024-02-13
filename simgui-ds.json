@@ -1,5 +1,15 @@
 {
+  "Keyboard 0 Settings": {
+    "window": {
+      "visible": true
+    }
+  },
   "Keyboard 1 Settings": {
+    "window": {
+      "visible": true
+    }
+  },
+  "Keyboard 2 Settings": {
     "window": {
       "visible": true
     }
@@ -12,17 +22,19 @@
           "incKey": 68
         },
         {
-          "decKey": 87,
           "incKey": 83
         },
         {
           "decKey": 69,
           "decayRate": 0.0,
-          "incKey": 82,
           "keyRate": 0.009999999776482582
+        },
+        {
+          "decKey": 50,
+          "incKey": 51
         }
       ],
-      "axisCount": 3,
+      "axisCount": 4,
       "buttonCount": 4,
       "buttonKeys": [
         90,
@@ -53,9 +65,13 @@
         {
           "decKey": 73,
           "incKey": 75
+        },
+        {
+          "decKey": 82,
+          "incKey": 81
         }
       ],
-      "axisCount": 2,
+      "axisCount": 4,
       "buttonCount": 4,
       "buttonKeys": [
         77,
@@ -100,10 +116,7 @@
       "guid": "Keyboard0"
     },
     {
-      "guid": "Keyboard1"
-    },
-    {
-      "useGamepad": true
+      "guid": "Keyboard2"
     }
   ]
 }

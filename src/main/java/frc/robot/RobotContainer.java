@@ -37,11 +37,11 @@ public class RobotContainer {
     public final Vision visionSub = new Vision(); 
 
     /* COMMANDS */
-    private final SetMouthPosition setShooterPosSpeakerCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.Speaker);
-    private final SetMouthPosition setShooterPosAmpCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.Amp);
-    private final SetMouthPosition setShooterPosSourceIntakeCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.SourceIntake);
-    private final SetMouthPosition setShooterPosFloorIntakeCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.FloorIntake);
-    private final SetMouthPosition setShooterPosTrapCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.Trap);
+    private final SetMouthPosition setShooterPosSpeakerCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.Speaker, visionSub);
+    private final SetMouthPosition setShooterPosAmpCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.Amp, visionSub);
+    private final SetMouthPosition setShooterPosSourceIntakeCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.SourceIntake, visionSub);
+    private final SetMouthPosition setShooterPosFloorIntakeCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.FloorIntake, visionSub);
+    private final SetMouthPosition setShooterPosTrapCmd = new SetMouthPosition(shooterPositionSub, ShooterPositionState.Trap, visionSub);
 
     private final StartShooterIntake startShootingCmd = new StartShooterIntake(shooterSub, floorIntakeSub, shooterPositionSub);
     private final StopShooterIntake stopShootingCmd = new StopShooterIntake(shooterSub, floorIntakeSub);

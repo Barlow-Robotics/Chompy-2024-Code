@@ -82,6 +82,7 @@ public class DriveRobotWithAlign extends Command {
     @Override
     public void initialize() {
         pid.reset();
+        visionSub.chooseBestTarget();
     }
 
     //add key for auto align button
@@ -96,7 +97,7 @@ public class DriveRobotWithAlign extends Command {
         var alignYawControl = 0.0;
 
         if (autoAlignEnabled) {
-            var OffSet = (visionSub.getTargetOffSet(14));
+            var OffSet = (visionSub.getTargetOffSet());
             if (OffSet.isPresent()){
                 alignYawControl = pid.calculate(-OffSet.getAsDouble());
                 Logger.recordOutput("Align/Offset", OffSet.getAsDouble());

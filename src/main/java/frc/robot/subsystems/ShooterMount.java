@@ -44,17 +44,17 @@ public class ShooterMount extends SubsystemBase {
     TalonFX angleMotor;
     private final TalonFXSimState angleMotorSim;
     private final DCMotorSim angleMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1),
-            1, 0.0005);
+            1, Constants.jKgMetersSquared);
 
     TalonFX leftElevatorMotor;
     private final TalonFXSimState leftElevatorMotorSim;
     private final DCMotorSim leftElevatorMotorModel = new DCMotorSim(
-            edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, 0.0005);
+            edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, Constants.jKgMetersSquared);
 
     TalonFX rightElevatorMotor;
     private final TalonFXSimState rightElevatorMotorSim;
     private final DCMotorSim rightElevatorMotorModel = new DCMotorSim(
-            edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, 0.0005);
+            edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, Constants.jKgMetersSquared);
 
     private final NeutralOut brake = new NeutralOut();
 

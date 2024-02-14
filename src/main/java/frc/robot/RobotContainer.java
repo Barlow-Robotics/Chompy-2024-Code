@@ -72,6 +72,11 @@ public class RobotContainer {
     private Trigger moveToFloorButton;
     private Trigger moveToTrapButton;
     private Trigger prepareToClimbButton;   // LT added.  CHANGE if not its own buttun
+
+    public Trigger shootButton;
+    public Trigger autoAlignButton;
+
+
     private Trigger climbButton;
     private Trigger LEDHumanSourceButton;
     private Trigger LEDHumanFloorButton;
@@ -130,6 +135,42 @@ public class RobotContainer {
         Shuffleboard.getTab("Auto").add("Path Name", autoChooser);
 
         configureBindings();
+
+        if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Extreme 3D")) {
+                driveSub.setDefaultCommand(
+                // The left stick controls translation of the robot.
+                // Turning is controlled by the X axis of the right stick.
+                new DriveRobot(
+                        driveSub, 
+                        driverController, 
+                        LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY, LogitechDAConstants.RightStickX, 
+                        true));
+                driveRobotWithAlignCmd = new DriveRobotWithAlign(
+                    driveSub,
+                    driverController,
+                    LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY, LogitechDAConstants.RightStickX,
+                    true,
+                    visionSub,
+                    autoAlignButton);
+        } else {
+                driveSub.setDefaultCommand(
+                new DriveRobot(
+                        driveSub, 
+                        driverController, 
+                        RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
+                        true));
+                driveRobotWithAlignCmd = new DriveRobotWithAlign(
+                    driveSub,
+                    driverController,
+                    RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY, RadioMasterConstants.RightGimbalX, 
+                    true,
+                    visionSub,
+                    autoAlignButton);
+        }
+
+        // We can't do this during configureBindings because driveController doesn't get created until
+        // the above if-statement.
+        autoAlignButton.whileTrue(driveRobotWithAlignCmd);
 
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
         // SmartDashboard.putData("Auto Mode", autoChooser);
@@ -198,6 +239,8 @@ public class RobotContainer {
 //         climbButton.onTrue(climbCmd);
 
         /******************** MAX VELOCITY SWITCHER ********************/
+        /***************** AUTO ALIGN ******************/
+        autoAlignButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX);
     }
 
     private void configurePathPlannerLogging() {

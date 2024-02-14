@@ -125,6 +125,29 @@ public class Constants {
         public static final double BackRightMagnetOffsetInRadians = -2.305568464100361;
 
         public static final double TimestepDurationInSeconds = 0.02;
+
+        public static final double AutoAlignkP = 0.05;
+        public static final double AutoAlignkI = 0.0;
+        public static final double AutoAlignkD = 0.0;
+
+        public static final double CorrectionRotationSpeed = 2.0;
+            }
+
+
+    public static final class AutoConstants {
+        public static final double MaxSpeedMetersPerSecond = DriveConstants.PhysicalMaxSpeedMetersPerSecond / 4; // CHANGE
+        public static final double MaxAngularSpeedRadiansPerSecond = DriveConstants.PhysicalMaxAngularSpeedRadiansPerSecond
+                / 10; // Default is 540 degress
+        // public static final double MaxAccelerationMetersPerSecondSquared = 3;
+        public static final double MaxAutoAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
+        public static final double MaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4; // default: 720 deg
+    }
+
+    /***************************************************************************/
+    /***************************************************************************/
+    /***************************************************************************/
+
+    public static final class SwerveConstants {
         public static final Translation2d flModuleOffset = new Translation2d(0.4, 0.4);
         public static final Translation2d frModuleOffset = new Translation2d(0.4, -0.4);
         public static final Translation2d blModuleOffset = new Translation2d(-0.4, 0.4);

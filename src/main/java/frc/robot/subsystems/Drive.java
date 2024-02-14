@@ -14,7 +14,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -24,11 +23,9 @@ import frc.robot.commands.DriveRobot;
 
 import org.littletonrobotics.junction.Logger;
 import java.lang.Math;
-import java.util.function.Supplier;
 
 import frc.robot.Constants;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.kauailabs.navx.frc.AHRS;
 
 public class Drive extends SubsystemBase {
@@ -140,12 +137,6 @@ public class Drive extends SubsystemBase {
         Logger.recordOutput("Drive/CurrentSupply/BackLeftTurn", backLeft.getTurnCurrent());
         Logger.recordOutput("Drive/CurrentSupply/BackRightDrive", backRight.getDriveCurrent());
         Logger.recordOutput("Drive/CurrentSupply/BackRightTurn", backRight.getTurnCurrent());
-        Logger.recordOutput("Drive/RawYawInput", DriveRobot.rawRot);
-        Logger.recordOutput("Drive/RawXSpeed", DriveRobot.rawX);
-        Logger.recordOutput("Drive/RawYSpeed", DriveRobot.rawY);
-        Logger.recordOutput("Drive/YawInput", DriveRobot.SpeedRot);
-        Logger.recordOutput("Drive/XSpeed", DriveRobot.SpeedY);
-        Logger.recordOutput("Drive/YSpeed", DriveRobot.SpeedX);
     }
 
     public Pose2d getPoseWithoutVision() {

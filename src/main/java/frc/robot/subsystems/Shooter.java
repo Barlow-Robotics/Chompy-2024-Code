@@ -117,7 +117,7 @@ public class Shooter extends SubsystemBase {
         return motor.getVelocity().getValue()*Constants.SecondsPerMinute;
     }
 
-    private boolean isWithinVelocityTolerance(double desiredRPM) {
+    public boolean isWithinVelocityTolerance(double desiredRPM) {
         return (getRPM(lowerFlywheelMotor) >= Math.abs(Constants.LowerToleranceLimit * desiredRPM)) &&
                 (getRPM(lowerFlywheelMotor) <= Math.abs(Constants.UpperToleranceLimit * desiredRPM)) &&
                 (getRPM(upperFlywheelMotor) >= Math.abs(Constants.LowerToleranceLimit * desiredRPM)) &&
@@ -134,15 +134,14 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Shooter/ActualRPMLower", getRPM(lowerFlywheelMotor));
         Logger.recordOutput("Shooter/ActualRPMUpper", getRPM(upperFlywheelMotor));
         Logger.recordOutput("Shooter/ActualRPMIndex", getRPM(indexMotor));
-        Logger.recordOutput("Shooter/Is/Indexing", isWithinVelocityTolerance(ShooterConstants.IndexRPM));
+        // Logger.recordOutput("Shooter/Is/Indexing", isWithinVelocityTolerance(ShooterConstants.IndexRPM));
         Logger.recordOutput("Shooter/ClosedLoopErrorLower", lowerFlywheelMotor.getClosedLoopError().getValue());
         Logger.recordOutput("Shooter/ClosedLoopErrorUpper", upperFlywheelMotor.getClosedLoopError().getValue());
         Logger.recordOutput("Shooter/Is/NoteLoaded", isNoteLoaded());
         Logger.recordOutput("Shooter/Is/ShootingAmp", isWithinVelocityTolerance(ShooterConstants.AmpRPM));
         Logger.recordOutput("Shooter/Is/ShootingSpeaker", isWithinVelocityTolerance(ShooterConstants.SpeakerRPM));
         Logger.recordOutput("Shooter/Is/ShootingTrap", isWithinVelocityTolerance(ShooterConstants.TrapRPM));
-        Logger.recordOutput("Shooter/Is/IntakingSource", isWithinVelocityTolerance(ShooterConstants.SourceRPM));
-        Logger.recordOutput("Shooter/Is/IntakingFloor", isWithinVelocityTolerance(ShooterConstants.FloorRPM));
+        Logger.recordOutput("Shooter/Is/Intaking", isWithinVelocityTolerance(ShooterConstants.IntakeRPM));
         Logger.recordOutput("Shooter/CurrentSupply/FlywheelLower", lowerFlywheelMotor.getSupplyCurrent().getValue());
         Logger.recordOutput("Shooter/CurrentSupply/FlywheelUpper", upperFlywheelMotor.getSupplyCurrent().getValue());
         Logger.recordOutput("Shooter/CurrentSupply/Index", indexMotor.getSupplyCurrent().getValue());

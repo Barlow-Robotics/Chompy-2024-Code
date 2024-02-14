@@ -114,6 +114,10 @@ public class ShooterMount extends SubsystemBase {
     @Override
     public void periodic() {
         logData();
+
+        if (isAtBottom() && leftElevatorMotor.getVelocity().getValue() < 0) {
+            stop();
+        }
     }
 
     /** @param desiredAngle Desired angle in degrees */

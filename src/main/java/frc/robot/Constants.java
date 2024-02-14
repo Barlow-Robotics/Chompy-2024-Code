@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 public class Constants {
 
     public static final double SecondsPerMinute = 60;
-
+    public static final double jKgMetersSquared = 0.0005;
     public static final double Neo550MaxRPM = 11000;
     public static final double NeoMaxRPM = 5676;
     public static final double Falcon500MaxRPM = 6300;
@@ -220,8 +220,6 @@ public class Constants {
     public static final class ShooterConstants {
         public static final double FlywheelGearRatio = 1; // CHANGE
         public static final double IndexGearRatio = 1; // CHANGE
-
-        public static final double jKgMetersSquared = 0.0005;
 
         public static final double SpeakerRPM = 4000; // CHANGE
         public static final double AmpRPM = 2000; // CHANGE

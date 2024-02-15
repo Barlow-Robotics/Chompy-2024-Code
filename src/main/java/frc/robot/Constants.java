@@ -306,6 +306,7 @@ public class Constants {
         public static final int SupplyCurrentLimit = 20;
 		
         public static final int MotorRPM = 1000;
+        public static final double VelocityTolerance = 0.05; // CHANGE
     }
 
     /***************************************************************************/

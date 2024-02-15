@@ -71,7 +71,7 @@ public class FloorIntake extends SubsystemBase {
     }
 
     public boolean isIntaking() {
-        return intakeMotor.getVelocity().getValue() >= Constants.LowerToleranceLimit * FloorIntakeConstants.MotorRPM / 60;
+        return intakeMotor.getVelocity().getValue() >= FloorIntakeConstants.MotorRPM / 60 - FloorIntakeConstants.VelocityTolerance;
     }
 
     /* LOGGING */

@@ -130,6 +130,7 @@
     },
     "Server": {
       "open": true
-    }
+    },
+    "visible": true
   }
 }

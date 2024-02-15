@@ -9,35 +9,38 @@ import org.littletonrobotics.junction.Logger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElectronicsIDs;
-import frc.robot.Constants.LogitechDAConstants;
 import frc.robot.Constants.LogitechExtreme3DConstants;
-import frc.robot.Constants.RadioMasterConstants;
 //import frc.robot.Constants.LogitechDAConstants;
 //import frc.robot.Constants.RadioMasterConstants;
 import frc.robot.Constants.XboxControllerConstants;
-import frc.robot.commands.*;
-
-import frc.robot.subsystems.*;
+import frc.robot.commands.DriveRobot;
+import frc.robot.commands.DriveRobotWithAlign;
+import frc.robot.commands.SetShooterMountPosition;
+import frc.robot.commands.StartShooterIntake;
+import frc.robot.commands.StopShooterIntake;
+import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.FloorIntake;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterMount;
 import frc.robot.subsystems.ShooterMount.ShooterMountState;
+import frc.robot.subsystems.Underglow;
+import frc.robot.subsystems.Vision;
 
 public class RobotContainer {
 
@@ -73,6 +76,7 @@ public class RobotContainer {
             ShooterMountState.PreClimb);
     private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.Climb);
+
 
     /* CONTROLLERS */
 
@@ -183,6 +187,14 @@ public class RobotContainer {
     //             autoAlignButton);
     // }
 
+
+        DriveRobotWithAlign driveRobotWithAlignCmd = new DriveRobotWithAlign(
+                driveSub,
+                driverController,
+                LogitechExtreme3DConstants.AxisX, LogitechExtreme3DConstants.AxisY, LogitechExtreme3DConstants.AxisZRotate,
+                true,
+                visionSub,
+                autoAlignButton);
 
         autoAlignButton.whileTrue(driveRobotWithAlignCmd);
 

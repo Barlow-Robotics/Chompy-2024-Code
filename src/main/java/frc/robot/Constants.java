@@ -155,6 +155,10 @@ public class Constants {
         public static final double DriveIZone = 0.15;
         public static final double DriveFF = 1.0 / MaxVelocityPerSecond;
 
+        public static final double AutoAlignKP = 0.04; //CHANGE
+        public static final double AutoAlignKI = 0.0015;
+        public static final double AutoAlignKD = 0;
+
         /* TURN ENCODER */
         public static final int CANCoderResolution = 4096;
         public static final double PositionConversionFactor = WheelCircumference / GearRatio;

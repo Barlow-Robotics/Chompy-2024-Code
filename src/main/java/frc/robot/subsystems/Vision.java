@@ -64,9 +64,9 @@ public class Vision extends SubsystemBase {
     private VisionSystemSim visionSim;
     private Transform3d robotToCamera;
     private PhotonTrackedTarget target;
-    private List<PhotonTrackedTarget> allDetectedTargets;
+    public static List<PhotonTrackedTarget> allDetectedTargets;
     private HashSet<Integer> targetAlignSet;
-    private OptionalInt activeAlignTarget;
+    public static OptionalInt activeAlignTarget;
     private Alliance alliance;
 
     boolean aprilTagDetected = false;

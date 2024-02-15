@@ -75,9 +75,9 @@ public class DriveRobotWithAlign extends Command {
     
 
         pid = new PIDController(
-                DriveConstants.AutoAlignkP,
-                DriveConstants.AutoAlignkI,
-                DriveConstants.AutoAlignkD);
+                DriveConstants.AutoAlignKP,
+                DriveConstants.AutoAlignKI,
+                DriveConstants.AutoAlignKD);
         
          addRequirements(driveSub);
     }
@@ -143,10 +143,10 @@ public class DriveRobotWithAlign extends Command {
     }
      
     public OptionalDouble getTargetOffSet() {
-        if (allDetectedTargets != null) {
-            if (activeAlignTarget.isPresent()) {
-                for (PhotonTrackedTarget target : allDetectedTargets) {
-                    if (target.getFiducialId() == activeAlignTarget.getAsInt()) {
+        if (Vision.allDetectedTargets != null) {
+            if (Vision.activeAlignTarget.isPresent()) {
+                for (PhotonTrackedTarget target : Vision.allDetectedTargets) {
+                    if (target.getFiducialId() == Vision.activeAlignTarget.getAsInt()) {
                         Logger.recordOutput("vision/targetY", target.getBestCameraToTarget().getY());
                         Logger.recordOutput("vision/targetYaw", target.getYaw());
                         return OptionalDouble.of(target.getBestCameraToTarget().getY());

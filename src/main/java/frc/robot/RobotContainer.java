@@ -43,7 +43,7 @@ public class RobotContainer {
     public final ShooterMount shooterMountSub = new ShooterMount();
     public final FloorIntake floorIntakeSub = new FloorIntake();
     public final Underglow underglowSub = new Underglow();
-    public final Vision visionSub = new Vision(); 
+    public final Vision visionSub = new Vision();
 
     /* COMMANDS */
     private final SetShooterMountPosition setShooterPosSpeakerCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.Speaker);
@@ -52,26 +52,29 @@ public class RobotContainer {
     private final SetShooterMountPosition setShooterPosFloorIntakeCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.FloorIntake);
     private final SetShooterMountPosition setShooterPosTrapCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.Trap);
 
-    private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub, shooterMountSub);
+    private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub,
+            shooterMountSub);
     private final StopShooterIntake stopShooterIntakeCmd = new StopShooterIntake(shooterSub, floorIntakeSub);
-    
+
     // private final Climb climbCmd = new Climb(shooterPositionSub);
     // LT Climb
-    private final SetShooterMountPosition prepareToClimbCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.PreClimb);
-    private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.Climb);
+    private final SetShooterMountPosition prepareToClimbCmd = new SetShooterMountPosition(shooterMountSub,
+            ShooterMountState.PreClimb);
+    private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterMountSub,
+            ShooterMountState.Climb);
 
     /* CONTROLLERS */
 
-    Joystick driverController; 
+    Joystick driverController;
     Joystick operatorController;
-    
+
     /* BUTTONS */
     private Trigger moveToSpeakerButton;
     private Trigger moveToAmpButton;
     private Trigger moveToSourceButton;
     private Trigger moveToFloorButton;
     private Trigger moveToTrapButton;
-    private Trigger prepareToClimbButton;   // LT added.  CHANGE if not its own buttun
+    private Trigger prepareToClimbButton; // LT added. CHANGE if not its own buttun
     private Trigger climbButton;
     private Trigger LEDHumanSourceButton;
     private Trigger LEDHumanFloorButton;
@@ -103,35 +106,41 @@ public class RobotContainer {
                     }
                     return false;
                 },
-                driveSub
-        );
+                driveSub);
         configurePathPlannerLogging();
         // NamedCommands.registerCommand(
-        //     "Shoot Speaker",
-        //     setShooterSpeakerAngleCmd
+        // "Shoot Speaker",
+        // setShooterSpeakerAngleCmd
         // );
 
         // NamedCommands.registerCommand(
-        //     "Shoot Amp",
-        //     setShooterAmpAngleCmd
+        // "Shoot Amp",
+        // setShooterAmpAngleCmd
         // );
 
-        
-        NamedCommands.registerCommand("Shoot Speaker", Commands.print("***********************************Shoot into Speaker"));
-        // NamedCommands.registerCommand("Shoot Speaker", Commands.runOnce(moveShooterToAmpCommand));
+        NamedCommands.registerCommand("Shoot Speaker",
+                Commands.print("***********************************Shoot into Speaker"));
+        // NamedCommands.registerCommand("Shoot Speaker",
+        // Commands.runOnce(moveShooterToAmpCommand));
         NamedCommands.registerCommand("Shoot Amp", Commands.print("*******************************Shoot into Amp"));
-        NamedCommands.registerCommand("Floor Intake", Commands.print("*******************************Activate Floor Intake"));
-        NamedCommands.registerCommand("Go to Amp Position", Commands.print("*******************************Go to Amp Position for the Elevator"));
-        NamedCommands.registerCommand("Spin Up Intake Flywheel", Commands.print("*******************************Go to Spin Up Intake Flywheel"));
-        NamedCommands.registerCommand("Go to Speaker Position", Commands.print("*******************************Go to Speaker Position for the Elevator"));
+        NamedCommands.registerCommand("Floor Intake",
+                Commands.print("*******************************Activate Floor Intake"));
+        NamedCommands.registerCommand("Go to Amp Position",
+                Commands.print("*******************************Go to Amp Position for the Elevator"));
+        NamedCommands.registerCommand("Spin Up Intake Flywheel",
+                Commands.print("*******************************Go to Spin Up Intake Flywheel"));
+        NamedCommands.registerCommand("Go to Speaker Position",
+                Commands.print("*******************************Go to Speaker Position for the Elevator"));
 
         autoChooser = AutoBuilder.buildAutoChooser();
-        autoChooser.setDefaultOption("Right-Side Straight-Line Auto", new PathPlannerAuto("Right-Side Straight-Line Auto"));
+        autoChooser.setDefaultOption("Right-Side Straight-Line Auto",
+                new PathPlannerAuto("Right-Side Straight-Line Auto"));
         Shuffleboard.getTab("Auto").add("Path Name", autoChooser);
 
         configureBindings();
 
-        // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
+        // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be
+        // `Commands.none()`
         // SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
@@ -141,14 +150,14 @@ public class RobotContainer {
         operatorController = new Joystick(ElectronicsIDs.OperatorControllerPort);
 
         /***************** AUTO ALIGN *****************/
-        
-        autoAlignButton = new JoystickButton(operatorController, XboxControllerConstants.LeftTrigger); 
-        autoAlignButton = new JoystickButton(driverController, LogitechExtreme3DConstants.ButtonStick); 
+
+        autoAlignButton = new JoystickButton(operatorController, XboxControllerConstants.LeftTrigger);
+        autoAlignButton = new JoystickButton(driverController, LogitechExtreme3DConstants.ButtonStick);
         // autoAlignButton.onTrue(autoAlignCmd).onFalse();
 
         /******************** SET SHOOTER POSITION ********************/
 
-        moveToSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle 
+        moveToSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle
         moveToSpeakerButton.onTrue(setShooterPosSpeakerCmd);
 
         moveToAmpButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper); // top
@@ -159,43 +168,51 @@ public class RobotContainer {
 
         moveToFloorButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // station
         moveToFloorButton.onTrue(setShooterPosFloorIntakeCmd);
-        
+
         moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button on mantis controller
         moveToTrapButton.onTrue(setShooterPosTrapCmd);
 
         /******************** SHOOTER ********************/
 
-        shootIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home 
+        shootIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home
         shootIntakeButton.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
 
         /***************** FLOOR INTAKE *****************/
-        
-        // toggleFloorIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // floor 
+
+        // toggleFloorIntakeButton = new JoystickButton(operatorController,
+        // XboxControllerConstants.ButtonX); // floor
         // toggleFloorIntakeButton.onTrue(startIntakeCmd).onFalse(stopIntakeCmd);
 
         /******************** CLIMB ********************/
-        
-        // climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller
+
+        // climbButton = new JoystickButton(operatorController,
+        // XboxControllerConstants.ButtonX); // no button on mantis controller
         // climbButton.onTrue(climbCmd);
 
         /********************* LED BINDINGS ************************************* */
 
-        LEDHumanSourceButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper); 
-        LEDHumanSourceButton.onTrue(new InstantCommand(() -> underglowSub.LEDHumanSource = true)).onFalse(new InstantCommand(() -> underglowSub.LEDHumanSource = false));
+        LEDHumanSourceButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper);
+        LEDHumanSourceButton.onTrue(new InstantCommand(() -> underglowSub.LEDHumanSource = true))
+                .onFalse(new InstantCommand(() -> underglowSub.LEDHumanSource = false));
 
-        LEDHumanFloorButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); 
-        LEDHumanFloorButton.onTrue(new InstantCommand(() -> underglowSub.LEDHumanFloor = true)).onFalse(new InstantCommand(() -> underglowSub.LEDHumanFloor = false));
-        shootIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home 
+        LEDHumanFloorButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX);
+        LEDHumanFloorButton.onTrue(new InstantCommand(() -> underglowSub.LEDHumanFloor = true))
+                .onFalse(new InstantCommand(() -> underglowSub.LEDHumanFloor = false));
+        shootIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home
         shootIntakeButton = new JoystickButton(driverController, LogitechExtreme3DConstants.Trigger);
         shootIntakeButton.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
 
         /******************** CLIMB ********************/
 
-//         prepareToClimbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller.  CHANGE button binding
-//         prepareToClimbButton.onTrue(prepareToClimbCmd);
+        // prepareToClimbButton = new JoystickButton(operatorController,
+        // XboxControllerConstants.ButtonX); // no button on mantis controller. CHANGE
+        // button binding
+        // prepareToClimbButton.onTrue(prepareToClimbCmd);
 
-//         climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); // no button on mantis controller.  CHANGE button binding
-//         climbButton.onTrue(climbCmd);
+        // climbButton = new JoystickButton(operatorController,
+        // XboxControllerConstants.ButtonX); // no button on mantis controller. CHANGE
+        // button binding
+        // climbButton.onTrue(climbCmd);
 
         /******************** MAX VELOCITY SWITCHER ********************/
     }
@@ -203,16 +220,16 @@ public class RobotContainer {
     private void configurePathPlannerLogging() {
 
         PathPlannerLogging.setLogActivePathCallback(
-            (activePath) -> {
-            Logger.recordOutput(
-                "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
-            });
+                (activePath) -> {
+                    Logger.recordOutput(
+                            "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+                });
         PathPlannerLogging.setLogTargetPoseCallback(
-            (targetPose) -> {
-            Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
-            });
+                (targetPose) -> {
+                    Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+                });
     }
-        
+
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
         // return new PathPlannerAuto("Score in Amp Speaker Speaker V1 (SASS)");

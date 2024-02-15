@@ -111,6 +111,8 @@ public class ShooterMount extends SubsystemBase {
 
         if (isAtBottom() && leftElevatorMotor.getVelocity().getValue() < 0) {
             stop();
+        } else if (getHeightInches() == ShooterMountConstants.MaxHeightInches && leftElevatorMotor.getVelocity().getValue() > 0) {
+            stop();
         }
     }
 

@@ -11,17 +11,22 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterMountConstants;
 import frc.robot.subsystems.ShooterMount;
 import frc.robot.subsystems.ShooterMount.ShooterMountState;
+import frc.robot.subsystems.Vision; 
+import frc.robot.subsystems.Vision.TargetToAlign;
 
 public class SetShooterMountPosition extends Command {
     
     private ShooterMount shooterMountSub;
     private ShooterMountState desiredState;
+    private Vision visionSub;
     private double desiredAngle;
     private double desiredHeight;
+    private TargetToAlign desiredTarget;
 
   public SetShooterMountPosition(ShooterMount shooterMountSub, ShooterMountState desiredState) {
         this.shooterMountSub = shooterMountSub;
         this.desiredState = desiredState;
+        this.visionSub = visionSub;
 
         addRequirements(shooterMountSub);
     }
@@ -35,14 +40,17 @@ public class SetShooterMountPosition extends Command {
             case Speaker:
                 desiredAngle = ShooterMountConstants.SpeakerAngle;
                 desiredHeight = ShooterMountConstants.SpeakerHeight;
+                desiredTarget = TargetToAlign.Speaker;
                 break;
             case Amp:
                 desiredAngle = ShooterMountConstants.AmpAngle;
                 desiredHeight = ShooterMountConstants.AmpHeight;
+                desiredTarget = TargetToAlign.Amp;
                 break;
             case SourceIntake:
                 desiredAngle = ShooterMountConstants.SourceIntakeAngle;
                 desiredHeight = ShooterMountConstants.SourceIntakeHeight;
+                desiredTarget = TargetToAlign.Source;
                 break;
             case FloorIntake:
                 desiredAngle = ShooterMountConstants.FloorIntakeAngle;
@@ -69,6 +77,7 @@ public class SetShooterMountPosition extends Command {
     public void execute() {
         shooterMountSub.setAngle(desiredAngle);
         shooterMountSub.setHeightInches(desiredHeight);
+        visionSub.alignTo(desiredTarget);
     }
 
     @Override

@@ -1,11 +1,6 @@
 {
   "HALProvider": {
     "Other Devices": {
-      "SPARK MAX [21]": {
-        "header": {
-          "open": true
-        }
-      },
       "SPARK MAX [51]": {
         "header": {
           "open": true
@@ -15,9 +10,6 @@
         "header": {
           "open": true
         }
-      },
-      "window": {
-        "visible": false
       }
     }
   },
@@ -30,14 +22,11 @@
       "/SmartDashboard/Elevator": "Subsystem",
       "/SmartDashboard/Example Auto": "Command",
       "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/FloorIntake": "Subsystem",
       "/SmartDashboard/On-the-fly path": "Command",
       "/SmartDashboard/Pathfind to Pickup Pos": "Command",
       "/SmartDashboard/Pathfind to Scoring Pos": "Command",
       "/SmartDashboard/Scheduler": "Scheduler",
-      "/SmartDashboard/Shooter": "Subsystem",
-      "/SmartDashboard/ShooterAngle": "Subsystem",
-      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
+      "/SmartDashboard/ShooterAngle": "Subsystem"
     },
     "windows": {
       "/SmartDashboard/Field": {
@@ -63,9 +52,6 @@
     }
   },
   "NetworkTables": {
-    "Retained Values": {
-      "open": false
-    },
     "retained": {
       "SmartDashboard": {
         "Auto Mode": {
@@ -76,29 +62,8 @@
     "transitory": {
       "AdvantageKit": {
         "RealOutputs": {
-          "Shooter": {
-            "Is": {
-              "open": true
-            }
-          },
-          "ShooterMount": {
-            "open": true
-          },
-          "ShooterPosition": {
-            "Amp": {
-              "open": true
-            },
-            "Speaker": {
-              "open": true
-            },
-            "Trap": {
-              "open": true
-            },
-            "open": true
-          },
           "open": true
-        },
-        "open": true
+        }
       },
       "Shuffleboard": {
         ".metadata": {
@@ -106,12 +71,10 @@
         }
       },
       "SmartDashboard": {
-        "Shooter": {
-          "open": true
-        },
         "ShooterPosition": {
           "open": true
-        }
+        },
+        "open": true
       },
       "floorIntake": {
         "open": true
@@ -122,14 +85,9 @@
     }
   },
   "NetworkTables Info": {
-    "Clients": {
-      "open": true
-    },
     "Connections": {
       "open": true
     },
-    "Server": {
-      "open": true
-    }
+    "visible": true
   }
 }

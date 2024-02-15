@@ -3,8 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.ElectronicsIDs;
+import frc.robot.Constants;
+
 
 import org.littletonrobotics.junction.Logger;
 
@@ -23,12 +23,7 @@ public class DriveRobot extends Command {
     int ControllerYSpeedID;
     int ControllerRotID;
     boolean FieldRelative;
-    public static double rawX;
-    public static double rawY;
-    public static double rawRot;
-    public static double SpeedX;
-    public static double SpeedY;
-    public static double SpeedRot;
+
     double DeadBand = 0.08;
     
     public DriveRobot(
@@ -55,32 +50,49 @@ public class DriveRobot extends Command {
 
     @Override
     public void execute() {
+
+        // double rawX = driverController.getRawAxis(this.ControllerXSpeedID);
+        // double rawY = driverController.getRawAxis(this.ControllerYSpeedID);
+
         // Since the coordinate systems differ from the controller (x is left right and y is fwd back) 
         // and the chassis (positive X is forward, Positive Y is left), we use the controller X input as the drive Y input
         // and the controller Y input as the drive X input.
-        
-        if(DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Extreme 3D")) {
+
+// wpk had to change signs for logitech controller. Not sure if radio master needs this
+        double rawX;
+        double rawY;
+        double rawRot;
+        if(DriverStation.getJoystickName(Constants.DriverControllerPort).equals("Logitech Extreme 3D")) {
             rawX = -driverController.getRawAxis(this.ControllerYSpeedID);  
             rawY = -driverController.getRawAxis(this.ControllerXSpeedID);
             rawRot = -driverController.getRawAxis(this.ControllerRotID); 
-        } else {
+        }
+        else {
             rawX = driverController.getRawAxis(this.ControllerYSpeedID);  
             rawY = -driverController.getRawAxis(this.ControllerXSpeedID);
             rawRot = -driverController.getRawAxis(this.ControllerRotID); 
+
         }
 
-        SpeedX = MathUtil.applyDeadband(rawX, DeadBand) * DriveConstants.MaxDriveableVelocity;
-        SpeedY = MathUtil.applyDeadband(rawY, DeadBand) * DriveConstants.MaxDriveableVelocity;
-        SpeedRot = MathUtil.applyDeadband(rawRot, 2*DeadBand) * DriveConstants.MaxDriveableVelocity;
+        double XSpeed = MathUtil.applyDeadband(rawX, DeadBand) * Constants.DriveConstants.MaxDriveableVelocity;
+        double YSpeed = MathUtil.applyDeadband(rawY, DeadBand) * Constants.DriveConstants.MaxDriveableVelocity;
+        double Rot = MathUtil.applyDeadband(rawRot, 2*DeadBand) * Constants.DriveConstants.MaxDriveableVelocity;
 
-        driveSub.drive(SpeedX, SpeedY, SpeedRot, FieldRelative);      
-        // driveSub.testDrive(()->driveSub.getX(), ()->driveSub.getY(), ()->driveSub.getRot(), true);
+        driveSub.drive(XSpeed, YSpeed, Rot, FieldRelative);
+
+        /* LOGGING */
+        Logger.recordOutput("Raw Yaw Input", rawRot);
+        Logger.recordOutput("Raw XSpeed", rawX);
+        Logger.recordOutput("Raw YSpeed", rawY);
+
+        Logger.recordOutput("Yaw Input", Rot);
+        Logger.recordOutput("XSpeed", YSpeed);
+        Logger.recordOutput("YSpeed", XSpeed);
     }
 
     @Override
     public void end(boolean interrupted) {
         driveSub.drive(0, 0, 0, true);
-        // driveSub.testDrive(()->0.0, ()->0.0, ()->0.0, true);
     }
 
     @Override

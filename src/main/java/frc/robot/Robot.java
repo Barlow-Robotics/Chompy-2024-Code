@@ -8,16 +8,12 @@ import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-//import org.xml.sax.ErrorHandler;
 
 import com.revrobotics.REVPhysicsSim;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.ElectronicsIDs;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.subsystems.ShooterMount.ShooterMountState;
-import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.subsystems.Shooter.ShooterVelState;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,12 +27,13 @@ public class Robot extends LoggedRobot {
     public void robotInit() {
         robotContainer = new RobotContainer();
 
-        Logger.recordMetadata("ProjectName", "2024-Robot-Code"); // Set a metadata value
+        // driveSub.resetEncoders();
+
+        Logger.recordMetadata("ProjectName", "WPI-Swerve-Prototype"); // Set a metadata value
 
         if (isReal()) {
             Logger.addDataReceiver(new WPILOGWriter("/media/sda2/")); // Log to a USB stick
             Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-            // CHANGE - leaks below
             /*PowerDistribution pdp =*/ new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
         } else {
             Logger.addDataReceiver(new WPILOGWriter(""));
@@ -45,12 +42,7 @@ public class Robot extends LoggedRobot {
 
         Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
 
-        robotContainer.shooterSub.stop();
-        robotContainer.floorIntakeSub.stop();
-
-        DriverStation.silenceJoystickConnectionWarning(true);
-
-        robotContainer.shooterMountSub.setHeightInches(Constants.ShooterMountConstants.FloorIntakeHeight);
+        robotContainer.shooterSub.shooterVelState = ShooterVelState.Stopped;
     }
 
     @Override
@@ -58,21 +50,14 @@ public class Robot extends LoggedRobot {
         SmartDashboard.putData(CommandScheduler.getInstance());
         SmartDashboard.putData(robotContainer.driveSub);
         SmartDashboard.putData(robotContainer.shooterSub);
-        // SmartDashboard.putData(robotContainer.shooterPositionSub);
+        SmartDashboard.putData(robotContainer.shooterPositionSub);
         SmartDashboard.putData(robotContainer.floorIntakeSub);
-        robotContainer.visionSub.periodic(); 
-        Logger.recordOutput("Controllers/Driver", DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort));
-        Logger.recordOutput("Controllers/Operator", DriverStation.getJoystickName(ElectronicsIDs.OperatorControllerPort));
+
         CommandScheduler.getInstance().run();
     }
 
     @Override
     public void disabledInit() {
-        robotContainer.driveSub.stop();
-        robotContainer.floorIntakeSub.stop();
-        robotContainer.shooterSub.stop();
-        robotContainer.shooterMountSub.stop();
-        //robotContainer.shooterPositionSub.stopMotors(); // CHANGE - create a function to safely stop everything in this sub when we disbale
     }
 
     @Override
@@ -121,16 +106,5 @@ public class Robot extends LoggedRobot {
     @Override
     public void simulationPeriodic() {
         REVPhysicsSim.getInstance().run();
-
-        var simPose = robotContainer.driveSub.getPoseWithoutVision();
-
-        robotContainer.visionSub.simulationPeriodic(simPose);
-
-        /*
-        frc::Field2d& debugField = vision.GetSimDebugField();
-        debugField.GetObject("EstimatedRobot")->SetPose(drivetrain.GetPose());
-        debugField.GetObject("EstimatedRobotModules")
-            ->SetPoses(drivetrain.GetModulePoses());
-            */
     }
 }

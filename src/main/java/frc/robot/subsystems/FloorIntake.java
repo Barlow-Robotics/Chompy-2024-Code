@@ -4,118 +4,135 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.sim.TalonFXSimState;
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 
-/*
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.sim.ChassisReference;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.sim.CANcoderSimState;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.system.plant.DCMotor;
-*/
-
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FloorIntakeConstants;
-import frc.robot.Constants.ShooterConstants;
-import frc.robot.sim.PhysicsSim;
-import frc.robot.Constants;
-import frc.robot.Constants.ElectronicsIDs;
-import org.littletonrobotics.junction.Logger;
+import frc.robot.Constants.ElectronicIDs;
+import com.revrobotics.REVPhysicsSim;
 
 public class FloorIntake extends SubsystemBase {
 
-    TalonFX intakeMotor;
-    private final TalonFXSimState intakeMotorSim;
-    private final DCMotorSim intakeMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1),
-            1, ShooterConstants.jKgMetersSquared);
-
-    private final VelocityVoltage voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0,
-            false, false, false);
-    private final NeutralOut brake = new NeutralOut();
-
+    // temp constants - move to constants file?
     boolean simulationInitialized = false;
+    private static final int simulationVelocity = 6800; // CHANGE
+    private static final double simulationTime = 0.5; // CHANGE
+
+    CANSparkMax upperMotor;
+    RelativeEncoder upperEncoder;
+    SparkPIDController upperPidController;
+
+    CANSparkMax lowerMotor;
+    RelativeEncoder lowerEncoder;
+    SparkPIDController lowerPidController;
 
     public FloorIntake() {
-        intakeMotor = new TalonFX(ElectronicsIDs.FloorMotorID);
-        configMotor(false); // CHANGE - These true/false values may need to be flipped
 
-        intakeMotorSim = intakeMotor.getSimState();
+        /* UPPER MOTOR CONFIG */
+        upperMotor = new CANSparkMax(ElectronicIDs.UpperFloorMotorID, MotorType.kBrushless);
+        upperEncoder = upperMotor.getEncoder();
+        motorAndEncoderConfig(upperMotor, upperEncoder, false); // CHANGE - These true/false values may need to be flipped
+        upperPidController = upperMotor.getPIDController();
+        setPIDControllerValues(
+                upperPidController,
+                FloorIntakeConstants.UpperKP,
+                FloorIntakeConstants.UpperKI,
+                FloorIntakeConstants.UpperKD,
+                FloorIntakeConstants.UpperIZone,
+                FloorIntakeConstants.UpperFF);
+
+        /* LOWER MOTOR CONFIG */
+        lowerMotor = new CANSparkMax(ElectronicIDs.LowerFloorMotorID, MotorType.kBrushless);
+        lowerEncoder = lowerMotor.getEncoder();
+        motorAndEncoderConfig(lowerMotor, lowerEncoder, true); // CHANGE - These true/false values may need to be flipped
+        lowerPidController = lowerMotor.getPIDController();
+        setPIDControllerValues(
+                lowerPidController,
+                FloorIntakeConstants.LowerKP,
+                FloorIntakeConstants.LowerKI,
+                FloorIntakeConstants.LowerKD,
+                FloorIntakeConstants.LowerIZone,
+                FloorIntakeConstants.LowerFF);
     }
 
     @Override
     public void periodic() {
-        logData();
     }
 
-    public void start() {
-        intakeMotor.setControl(voltageVelocity.withVelocity(FloorIntakeConstants.MotorRPM / 60));
+    public void startIntaking() {
+        upperPidController.setReference(FloorIntakeConstants.MotorVelocity, ControlType.kVelocity);
+        lowerPidController.setReference(FloorIntakeConstants.MotorVelocity, ControlType.kVelocity);
+        NetworkTableInstance.getDefault().getEntry("floorIntake/Desired Percent Output").setDouble(FloorIntakeConstants.MotorVelocity);
     }
 
-    public void stop() {
-        intakeMotor.setControl(brake);
+    public void stopIntaking() {
+        upperPidController.setReference(0, ControlType.kVelocity);
+        lowerPidController.setReference(0, ControlType.kVelocity);
+    }
+
+    public double getRPMUpper() {
+        return upperEncoder.getVelocity();
+    }
+
+    public double getRPMLower() {
+        return lowerEncoder.getVelocity();
     }
 
     public boolean isIntaking() {
-        return intakeMotor.getVelocity().getValue() >= Constants.LowerToleranceLimit * FloorIntakeConstants.MotorRPM / 60;
-    }
-
-    /* LOGGING */
-
-    private void logData() {
-        Logger.recordOutput("FloorIntake/ActualRPM", intakeMotor.getVelocity().getValue());
-        Logger.recordOutput("FloorIntake/IsIntaking", isIntaking());
-        Logger.recordOutput("FloorIntake/CurrentSupply", intakeMotor.getSupplyCurrent().getValue());
+        // if (((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMUpper()) && ((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMLower())) {
+        //     return true; 
+        // } else if ((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMUpper()) {
+        //     System.out.println("Upper motor isn't up to speed");
+        //     return false;
+        // } else {
+        //     System.out.println("Lower motor isn't up to speed");
+        //     return false;
+        // }
+        return ((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMUpper()) && 
+                ((0.95 * FloorIntakeConstants.MotorVelocity) <= getRPMLower());
     }
 
     /* CONFIG */
 
-    private void configMotor(boolean inverted) {
-        // set PID Values
-        TalonFXConfiguration motorConfigs = new TalonFXConfiguration();
-        motorConfigs.Slot0.kP = FloorIntakeConstants.KP;
-        motorConfigs.Slot0.kI = FloorIntakeConstants.KI;
-        motorConfigs.Slot0.kD = FloorIntakeConstants.KD;
+    private void motorAndEncoderConfig(CANSparkMax motor, RelativeEncoder encoder, boolean inverted) {
 
-        // set current limit
-        CurrentLimitsConfigs currentLimitConfigs = motorConfigs.CurrentLimits;
-        currentLimitConfigs.SupplyCurrentLimit = FloorIntakeConstants.SupplyCurrentLimit;
-        currentLimitConfigs.SupplyCurrentLimitEnable = true; // Start with stator limits off
+        motor.restoreFactoryDefaults();
+        motor.setIdleMode(IdleMode.kBrake);
+        motor.setInverted(inverted);
 
-        StatusCode status = StatusCode.StatusCodeNotInitialized;
-
-        // Try five times to apply the Intake motor config
-        //    Why five times?
-        for (int i = 0; i < 5; ++i) {
-            status = intakeMotor.getConfigurator().apply(motorConfigs, 0.05);
-            if (status.isOK())
-                break;
-        }
-        if (!status.isOK()) {
-            System.out.println(
-                    "Could not apply motor output configs to intake motor, with error code: " + status.toString());
-        }
+        encoder = motor.getEncoder();
+        // encoder.setVelocityConversionFactor(); // Probably don't need this :)
     }
 
-    /* SIMULATION */
+    private void setPIDControllerValues(SparkPIDController controller, double kP, double kI, double kD, double kIz, double kFF) {
+        controller.setP(kP);
+        controller.setI(kI);
+        controller.setD(kD);
+        controller.setIZone(kIz);
+        controller.setFF(kFF);
+        controller.setOutputRange(-1, 1);
+    }
 
-    private void simulationInit() {
-        PhysicsSim.getInstance().addTalonFX(intakeMotor, 0.001);
+    public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("Floor Intake Subsystem");
+        builder.addDoubleProperty("RPM Upper", this::getRPMUpper, null);
+        builder.addDoubleProperty("RPM Lower", this::getRPMLower, null);
+        builder.addBooleanProperty("Floor Intaking", this::isIntaking, null);
+    }
+
+    // Simulation Code
+    public void simulationInit() {
+        REVPhysicsSim.getInstance().addSparkMax(upperMotor, DCMotor.getNeo550(1));
+        REVPhysicsSim.getInstance().addSparkMax(lowerMotor, DCMotor.getNeo550(1));
     }
 
     @Override
@@ -124,13 +141,6 @@ public class FloorIntake extends SubsystemBase {
             simulationInit();
             simulationInitialized = true;
         }
-
-        intakeMotorSim.setSupplyVoltage(RobotController.getBatteryVoltage());
-        double voltage = intakeMotorSim.getMotorVoltage();
-        intakeMotorModel.setInputVoltage(voltage);
-        intakeMotorModel.update(0.02);
-        intakeMotorSim.setRotorVelocity(intakeMotorModel.getAngularVelocityRPM() / 60.0);
-        intakeMotorSim.setRawRotorPosition(intakeMotorModel.getAngularPositionRotations());
     }
 
 }

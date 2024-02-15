@@ -243,7 +243,7 @@ public class Constants {
         public static final double AmpAngle = 0; // CHANGE
         public static final double AmpHeight = 10; // CHANGE
 
-        public static final double SourceIntakeAngle = 60; // CHANGE
+        public static final double SourceIntakeAngle = 90; // CHANGE
         public static final double SourceIntakeHeight = 15; // CHANGE
 
         public static final double FloorIntakeAngle = 0; // Resting position
@@ -253,8 +253,10 @@ public class Constants {
         public static final double TrapHeight = 10; // CHANGE
 
         public static final double ClimbHeight = 10; // CHANGE
+        
         public static final double MinHeight = 0; // CHANGE
-
+        public static final double MaxHeightInches = 10; //CHANGE
+        public static final double MaxAngleDegrees = 90; // CHANGE
 
         public static final double AngleKP = 0.5;
         public static final double AngleKI = 0;

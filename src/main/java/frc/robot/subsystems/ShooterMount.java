@@ -162,13 +162,13 @@ public class ShooterMount extends SubsystemBase {
     }
 
     private boolean isWithinAngleTolerance(double desiredAngle) {
-        return (getAngleDegrees() >= Constants.LowerToleranceLimit * desiredAngle) &&
-                (getAngleDegrees() <= Constants.UpperToleranceLimit * desiredAngle);
+        return (getAngleDegrees() >= desiredAngle - ShooterMountConstants.AngleTolerance) &&
+                (getAngleDegrees() <= desiredAngle + ShooterMountConstants.AngleTolerance);
     }
 
     private boolean isWithinHeightTolerance(double desiredHeight) {
-        return (getHeightInches() >= Constants.LowerToleranceLimit * desiredHeight) &&
-                (getHeightInches() <= Constants.UpperToleranceLimit * desiredHeight);
+        return (getHeightInches() >= desiredHeight - ShooterMountConstants.HeightTolerance) &&
+                (getHeightInches() <= desiredHeight - ShooterMountConstants.HeightTolerance);
     }
 
     public boolean isWithinPositionTolerance(double desiredAngle, double desiredHeight) {

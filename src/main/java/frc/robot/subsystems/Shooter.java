@@ -118,10 +118,10 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isWithinVelocityTolerance(double desiredRPM) {
-        return (getRPM(lowerFlywheelMotor) >= Math.abs(Constants.LowerToleranceLimit * desiredRPM)) &&
-                (getRPM(lowerFlywheelMotor) <= Math.abs(Constants.UpperToleranceLimit * desiredRPM)) &&
-                (getRPM(upperFlywheelMotor) >= Math.abs(Constants.LowerToleranceLimit * desiredRPM)) &&
-                (getRPM(upperFlywheelMotor) <= Math.abs(Constants.UpperToleranceLimit * desiredRPM));
+        return (getRPM(lowerFlywheelMotor) >= desiredRPM - ShooterConstants.VelocityTolerance) &&
+                (getRPM(lowerFlywheelMotor) <= desiredRPM + ShooterConstants.VelocityTolerance) &&
+                (getRPM(upperFlywheelMotor) >= -(desiredRPM - ShooterConstants.VelocityTolerance)) && // Not sure if the negative here is right
+                (getRPM(upperFlywheelMotor) <= -(desiredRPM + ShooterConstants.VelocityTolerance));   // may need to CHANGE that
     }
 
     public boolean isNoteLoaded() {

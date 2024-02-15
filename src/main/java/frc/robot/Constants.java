@@ -36,9 +36,9 @@ public class Constants {
     public static final double TalonFXUnitsPerRotation = 2048;
     public static final double CANCoderUnitsPerRotation = 4096;
 
-    public static final double toleranceLimit = 0.05;
-    public static final double LowerToleranceLimit = 1 - toleranceLimit;
-    public static final double UpperToleranceLimit = 1 + toleranceLimit;
+    // public static final double toleranceLimit = 0.05;
+    // public static final double LowerToleranceLimit = 1 - toleranceLimit;
+    // public static final double UpperToleranceLimit = 1 + toleranceLimit;
 
     /***************************************************************************/
     /***************************************************************************/
@@ -202,6 +202,9 @@ public class Constants {
         public static final double FlywheelGearRatio = 1; // CHANGE
         public static final double IndexGearRatio = 1; // CHANGE
 
+        
+        public static final double VelocityTolerance = 0.05; // CHANGE
+
         public static final double SpeakerRPM = 4000; // CHANGE
         public static final double AmpRPM = 2000; // CHANGE
         public static final double IntakeRPM = -2000; // CHANGE
@@ -228,6 +231,9 @@ public class Constants {
     /***************************************************************************/
 
     public static final class ShooterMountConstants {
+
+        public static final double AngleTolerance = 5; // Degrees - CHANGE
+        public static final double HeightTolerance = 2; // Inches - CHANGE
 
         public static final double ElevatorGearRatio = 15;
         public static final double ShooterAngleGearRatio = 46.67; // From K's spreadsheet

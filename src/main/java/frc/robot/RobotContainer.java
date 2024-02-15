@@ -9,6 +9,8 @@ import org.littletonrobotics.junction.Logger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -19,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -186,6 +189,20 @@ public class RobotContainer {
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be
         // `Commands.none()`
         // SmartDashboard.putData("Auto Mode", autoChooser);
+        autoChooser.setDefaultOption("Right-Side Straight-Line Auto", new PathPlannerAuto("Right-Side Straight-Line Auto"));
+        Shuffleboard.getTab("Match").add("Path Name", autoChooser);
+
+        configureBindings();
+
+        driveSub.setDefaultCommand(
+        // The left stick controls translation of the robot.
+        // Turning is controlled by the X axis of the right stick.
+        new DriveRobot(
+                driveSub,
+                () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
+                () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
+                () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
+                true));
     }
 
     private void configureBindings() {
@@ -215,6 +232,7 @@ public class RobotContainer {
 
         moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button on
                                                                                                     // mantis controller
+        moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button on mantis controller
         moveToTrapButton.onTrue(setShooterPosTrapCmd);
 
         /******************** SHOOTER ********************/
@@ -266,6 +284,10 @@ public class RobotContainer {
 
     private void configurePathPlannerLogging() {
 
+        PathPlannerLogging.setLogCurrentPoseCallback(
+            (currentPose) -> {
+                Logger.recordOutput("Odometry/CurrentPose", currentPose);
+                });
         PathPlannerLogging.setLogActivePathCallback(
                 (activePath) -> {
                     Logger.recordOutput(

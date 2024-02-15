@@ -80,7 +80,8 @@ public class ShooterMount extends SubsystemBase {
 
         leftElevatorMotor = new TalonFX(ElectronicsIDs.LeftElevatorMotorID);
         leftElevatorMotorSim = leftElevatorMotor.getSimState();
-
+        leftElevatorMotor.setPosition(0);
+        
         rightElevatorMotor = new TalonFX(ElectronicsIDs.RightElevatorMotorID);
         rightElevatorMotorSim = rightElevatorMotor.getSimState();
         rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), true));
@@ -111,6 +112,8 @@ public class ShooterMount extends SubsystemBase {
 
         if (isAtBottom() && leftElevatorMotor.getVelocity().getValue() < 0) {
             stop();
+        } else if (getHeightInches() == ShooterMountConstants.MaxHeightInches && leftElevatorMotor.getVelocity().getValue() > 0) {
+            stop();
         }
     }
 
@@ -140,6 +143,10 @@ public class ShooterMount extends SubsystemBase {
 
     public double getHeightInches() {
         return leftElevatorMotor.getPosition().getValueAsDouble() / ShooterMountConstants.RotationsPerElevatorInch;
+    }
+
+    public void setBasePosition(double height) {
+        leftElevatorMotor.setPosition(height);
     }
 
     public void setShooterPosState(ShooterMountState newState) {
@@ -241,7 +248,6 @@ public class ShooterMount extends SubsystemBase {
 
         // configs.Voltage.PeakForwardVoltage =
         // ShooterConstants.PeakShooterForwardVoltage; // Peak output of 8 volts
-
         motorOutputConfigs.Inverted = inversion;
 
         StatusCode status = StatusCode.StatusCodeNotInitialized;
@@ -325,7 +331,7 @@ public class ShooterMount extends SubsystemBase {
         bottomHallEffectSim.setValue(isWithinHeightTolerance(0));
     }
 
-    public void stop() { // coast
+    public void stop() { 
         angleMotor.set(0);
         leftElevatorMotor.set(0);
         rightElevatorMotor.set(0);

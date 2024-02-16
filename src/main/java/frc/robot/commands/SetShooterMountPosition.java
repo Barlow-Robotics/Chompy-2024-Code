@@ -18,15 +18,15 @@ public class SetShooterMountPosition extends Command {
     
     private ShooterMount shooterMountSub;
     private ShooterMountState desiredState;
-  //  private Vision visionSub;
+    private Vision visionSub;
     private double desiredAngle;
     private double desiredHeight;
-   // private TargetToAlign desiredTarget;
+    private TargetToAlign desiredTarget;
 
   public SetShooterMountPosition(ShooterMount shooterMountSub, ShooterMountState desiredState) {
         this.shooterMountSub = shooterMountSub;
         this.desiredState = desiredState;
-    //    this.visionSub = visionSub;
+        this.visionSub = visionSub;
 
         addRequirements(shooterMountSub);
     }
@@ -40,17 +40,17 @@ public class SetShooterMountPosition extends Command {
             case Speaker:
                 desiredAngle = ShooterMountConstants.SpeakerAngle;
                 desiredHeight = ShooterMountConstants.SpeakerHeight;
-       //         desiredTarget = TargetToAlign.Speaker;
+                desiredTarget = TargetToAlign.Speaker;
                 break;
             case Amp:
                 desiredAngle = ShooterMountConstants.AmpAngle;
                 desiredHeight = ShooterMountConstants.AmpHeight;
-         //       desiredTarget = TargetToAlign.Amp;
+                desiredTarget = TargetToAlign.Amp;
                 break;
             case SourceIntake:
                 desiredAngle = ShooterMountConstants.SourceIntakeAngle;
                 desiredHeight = ShooterMountConstants.SourceIntakeHeight;
-           //     desiredTarget = TargetToAlign.Source;
+                desiredTarget = TargetToAlign.Source;
                 break;
             case FloorIntake:
                 desiredAngle = ShooterMountConstants.FloorIntakeAngle;
@@ -77,7 +77,7 @@ public class SetShooterMountPosition extends Command {
     public void execute() {
         shooterMountSub.setAngle(desiredAngle);
         shooterMountSub.setHeightInches(desiredHeight);
-       // visionSub.alignTo(desiredTarget);
+        visionSub.alignTo(desiredTarget);
     }
 
     @Override
@@ -90,10 +90,10 @@ public class SetShooterMountPosition extends Command {
             shooterMountSub.setShooterPosState(desiredState);
             return true;
         }
-        // if(shooterMountSub.isAtBottom() && desiredHeight != 0/*  hall effect is true */) {
-        //     shooterMountSub.stop();
-        //     shooterMountSub.setBasePosition(0);
-        // }
+        if(shooterMountSub.isAtBottom() && desiredHeight != 0/*  hall effect is true */) {
+            shooterMountSub.stop();
+            shooterMountSub.setBasePosition(0);
+        }
         return false;        
     }
 }

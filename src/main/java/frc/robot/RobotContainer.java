@@ -46,25 +46,25 @@ public class RobotContainer {
 
     /* SUBSYSTEMS */
 
-    public final Drive driveSub = new Drive();
+    public final Vision visionSub = new Vision();
+    public final Drive driveSub = new Drive(visionSub);
     public final Shooter shooterSub = new Shooter();
     public final ShooterMount shooterMountSub = new ShooterMount();
     public final FloorIntake floorIntakeSub = new FloorIntake();
     public final Underglow underglowSub = new Underglow();
-    public final Vision visionSub = new Vision();
 
     /* COMMANDS */
 
     private final SetShooterMountPosition setShooterPosSpeakerCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.Speaker);
+            ShooterMountState.Speaker, visionSub);
     private final SetShooterMountPosition setShooterPosAmpCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.Amp);
+            ShooterMountState.Amp, visionSub);
     private final SetShooterMountPosition setShooterPosSourceIntakeCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.SourceIntake);
+            ShooterMountState.SourceIntake, visionSub);
     public final SetShooterMountPosition setShooterPosFloorIntakeCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.FloorIntake);
+            ShooterMountState.FloorIntake, visionSub);
     private final SetShooterMountPosition setShooterPosTrapCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.Trap);
+            ShooterMountState.Trap, visionSub);
 
     private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub,
             shooterMountSub);
@@ -73,9 +73,9 @@ public class RobotContainer {
     // private final Climb climbCmd = new Climb(shooterPositionSub);
     // LT Climb
     private final SetShooterMountPosition prepareToClimbCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.PreClimb);
+            ShooterMountState.PreClimb, visionSub);
     private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.Climb);
+            ShooterMountState.Climb, visionSub);
 
 
     /* CONTROLLERS */

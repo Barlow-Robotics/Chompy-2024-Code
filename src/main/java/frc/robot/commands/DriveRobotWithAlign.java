@@ -47,7 +47,8 @@ public class DriveRobotWithAlign extends Command {
     double DeadBand = 0.08;
     double RotDeadBand = 0.01;
 
-    public PIDController pid;
+    public PIDController rotPid;
+    public PIDController latPid;
     
     public String selectedTarget = "None";
 
@@ -74,17 +75,23 @@ public class DriveRobotWithAlign extends Command {
 
     
 
-        pid = new PIDController(
-                DriveConstants.AutoAlignKP,
-                DriveConstants.AutoAlignKI,
-                DriveConstants.AutoAlignKD);
+        rotPid = new PIDController(
+                DriveConstants.AutoAlignRotKP,
+                DriveConstants.AutoAlignRotKI,
+                DriveConstants.AutoAlignRotKD);
+
+        latPid = new PIDController(
+            DriveConstants.AutoAlignLatKP,
+            DriveConstants.AutoAlignLatKI,
+            DriveConstants.AutoAlignLatKD);
         
          addRequirements(driveSub);
     }
 
     @Override
     public void initialize() {
-        pid.reset();
+        rotPid.reset();
+        latPid.reset();
         visionSub.chooseBestTarget();
     }
 
@@ -98,12 +105,17 @@ public class DriveRobotWithAlign extends Command {
         boolean autoAlignEnabled = autoAlignButton.getAsBoolean();
         //boolean toggleTarget = toggleTargetButton.getAsBoolean();
         var alignYawControl = 0.0;
+        var alignLatControl = 0.0;
 
         if (autoAlignEnabled) {
-            var OffSet = (visionSub.getTargetRotOffSet());
-            if (OffSet.isPresent()){
-                alignYawControl = pid.calculate(-OffSet.getAsDouble());
-                Logger.recordOutput("Align/Offset", OffSet.getAsDouble());
+            var rotOffset = visionSub.getTargetRotOffSet();
+            var latOffset = visionSub.getTargetLateralOffSet();
+            if (rotOffset.isPresent()){
+                alignYawControl = rotPid.calculate(-rotOffset.getAsDouble());
+            }
+            
+            if (latOffset.isPresent()){
+                alignLatControl = latPid.calculate(-latOffset.getAsDouble());
             }
         }
 
@@ -122,6 +134,17 @@ public class DriveRobotWithAlign extends Command {
         }
         if (autoAlignEnabled) {
             rawRot = alignYawControl;
+
+            // TODO: The way this mix happens needs to depend on which target we are
+            // aligning with.
+
+            var heading = Math.toRadians(driveSub.getHeading());
+
+            // TODO: check this math
+            // Heading of 0 means lateral offset is +y
+            rawY += Math.cos(-heading) * alignLatControl;
+            // Heading of pi/2 means lateral offset is -x
+            rawX += Math.sin(-heading) * alignLatControl;
         }
 
         double XSpeed = MathUtil.applyDeadband(rawX, DeadBand) * DriveConstants.MaxDriveableVelocity;
@@ -132,6 +155,8 @@ public class DriveRobotWithAlign extends Command {
 
         /* LOGGING */
 
+        Logger.recordOutput("Align/YawControl", alignYawControl);
+        Logger.recordOutput("Align/LatControl", alignLatControl);
 
         Logger.recordOutput("Align/RawYawInput", rawRot);
         Logger.recordOutput("Align/RawXSpeed", rawX);

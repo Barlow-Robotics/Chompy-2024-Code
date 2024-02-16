@@ -23,7 +23,7 @@ public class SetShooterMountPosition extends Command {
     private double desiredHeight;
     private TargetToAlign desiredTarget;
 
-  public SetShooterMountPosition(ShooterMount shooterMountSub, ShooterMountState desiredState) {
+  public SetShooterMountPosition(ShooterMount shooterMountSub, ShooterMountState desiredState, Vision visionSub) {
         this.shooterMountSub = shooterMountSub;
         this.desiredState = desiredState;
         this.visionSub = visionSub;

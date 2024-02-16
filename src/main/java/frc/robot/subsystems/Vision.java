@@ -8,7 +8,8 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.VisionConstants.kFallbackVisionStrategy;
 import static frc.robot.Constants.VisionConstants.kMultiTagStdDevs;
 import static frc.robot.Constants.VisionConstants.kPoseCameraName;
-import static frc.robot.Constants.VisionConstants.kRobotToCam;
+import static frc.robot.Constants.VisionConstants.kRobotToPoseCam;
+import static frc.robot.Constants.VisionConstants.kRobotToTargetCam;
 import static frc.robot.Constants.VisionConstants.kSingleTagStdDevs;
 import static frc.robot.Constants.VisionConstants.kFieldTagLayout;
 import static frc.robot.Constants.VisionConstants.kTargetCameraName;
@@ -61,12 +62,13 @@ public class Vision extends SubsystemBase {
     private double lastEstTimestamp = 0;
 
     private PhotonCameraSim poseCameraSim;
+    private PhotonCameraSim targetCameraSim;
     private VisionSystemSim visionSim;
     private Transform3d robotToCamera;
-    private PhotonTrackedTarget target;
-    public static List<PhotonTrackedTarget> allDetectedTargets;
+    private PhotonTrackedTarget currentBestTarget;
+    public List<PhotonTrackedTarget> allDetectedTargets;
     private HashSet<Integer> targetAlignSet;
-    public static OptionalInt activeAlignTarget;
+    public OptionalInt activeAlignTarget;
     private Alliance alliance;
 
     boolean aprilTagDetected = false;
@@ -79,7 +81,7 @@ public class Vision extends SubsystemBase {
         targetCamera = new PhotonCamera(kTargetCameraName);
         poseCamera = new PhotonCamera(kPoseCameraName);
 
-        photonEstimator = new PhotonPoseEstimator(kFieldTagLayout, kPrimaryVisionStrategy, poseCamera, kRobotToCam);
+        photonEstimator = new PhotonPoseEstimator(kFieldTagLayout, kPrimaryVisionStrategy, poseCamera, kRobotToPoseCam);
         photonEstimator.setMultiTagFallbackStrategy(kFallbackVisionStrategy);
 
         alliance = DriverStation.Alliance.Red;
@@ -113,8 +115,11 @@ public class Vision extends SubsystemBase {
             // with visible
             // targets.
             poseCameraSim = new PhotonCameraSim(poseCamera, cameraProp);
+            targetCameraSim = new PhotonCameraSim(targetCamera, cameraProp);
             // Add the simulated camera to view the targets on this simulated field.
-            visionSim.addCamera(poseCameraSim, kRobotToCam);
+
+            visionSim.addCamera(poseCameraSim, kRobotToPoseCam);
+            visionSim.addCamera(targetCameraSim, kRobotToTargetCam);
 
             poseCameraSim.enableDrawWireframe(true);
         }
@@ -184,14 +189,16 @@ public class Vision extends SubsystemBase {
          return poseCamera.getLatestResult();
     } 
 
-    public void periodic() {
-        var result = getLatestPoseResult();
+    public PhotonPipelineResult getLatestTrackingResult() {
+         return targetCamera.getLatestResult();
+    } 
 
+    public void periodic() {
+        // TODO: This whole section is redundant with the photon pose estimator
+        /*
+        var result = getLatestPoseResult();
         if ( result.hasTargets()) {
             var target = result.getBestTarget() ;   
-            
-         target = result.getBestTarget() ;   
-           allDetectedTargets  = result.getTargets();
             var toTarget = target.getBestCameraToTarget() ;
             var tagPose = kFieldTagLayout.getTagPose(target.getFiducialId()).orElse(new Pose3d()); 
             var transform3d = new Transform3d();
@@ -214,13 +221,20 @@ public class Vision extends SubsystemBase {
                             .setDouble(robotPose.getY());
             NetworkTableInstance.getDefault().getEntry("distanceFromZ")
                             .setDouble(robotPose.getZ());
-            
+        }
+        */
+
+        // TODO: feed this pose estimate back to the combined pose estimator in drive
+        var poseEstimate = getEstimatedGlobalPose() ;
+
+      
+        // Find all the results from the tracking camera
+        var tracking_result = getLatestTrackingResult();
+        if (tracking_result.hasTargets()) {
+            allDetectedTargets  = tracking_result.getTargets();
+            currentBestTarget = tracking_result.getBestTarget();
         }
 
-        var poseEstimate = getEstimatedGlobalPose() ;
-        if ( !poseEstimate.isEmpty()) {
-            int wpk = 1 ;
-        }
          advantageKitLogging();
     }
             // SmartDashboard.putData(getEstimatedGlobalPose());
@@ -354,9 +368,9 @@ public class Vision extends SubsystemBase {
         Logger.recordOutput("vision/zPosition", robotToCamera.getZ());
         }
 
-        if (target != null) {
-            Logger.recordOutput("vision/currentBestFiducial", target.getFiducialId());
-            Logger.recordOutput("vision/bestCameraToTarget", target.getBestCameraToTarget());
+        if (currentBestTarget != null) {
+            Logger.recordOutput("vision/currentBestFiducial", currentBestTarget.getFiducialId());
+            Logger.recordOutput("vision/bestCameraToTarget", currentBestTarget.getBestCameraToTarget());
         }
 
         Logger.recordOutput("vision/targetAlignSet", targetAlignSet.toString());

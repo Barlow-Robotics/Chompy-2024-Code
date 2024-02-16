@@ -69,9 +69,7 @@ public class Drive extends SubsystemBase {
 
     private SwerveModulePosition[] previousPositions = new SwerveModulePosition[4];
 
-    private Vision visionSub = new Vision();
-
-    public Drive() {
+    public Drive(Vision visionSub) {
 
         navX = new AHRS(Port.kMXP);
         new Thread(() -> {

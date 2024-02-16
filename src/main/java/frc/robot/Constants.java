@@ -103,17 +103,18 @@ public class Constants {
 
         public static final boolean GyroReversed = false;
 
-        public static final double TrackWidth = Units.inchesToMeters(27); // Distance between left and right wheels
-        public static final double WheelBase = Units.inchesToMeters(25); // Distance between front and back wheels
+        public static final double TrackWidth = Units.inchesToMeters(22); // Distance between left and right wheels
+        public static final double WheelBase = Units.inchesToMeters(20); // Distance between front and back wheels
         public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
                 new Translation2d(WheelBase / 2, TrackWidth / 2), // front left
                 new Translation2d(WheelBase / 2, -TrackWidth / 2), // front right
                 new Translation2d(-WheelBase / 2, TrackWidth / 2), // back left
                 new Translation2d(-WheelBase / 2, -TrackWidth / 2) // back right
         );
-
-        public static final double MaxAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
-        public static final double MaxDriveableVelocity = 3.6; // m/s? (CHANGE if this is the wrong unit)
+        public static final double MaxAcceleration = Units.feetToMeters(2); // m/sec^2 from Mr. K's spreadsheet
+        // public static final double MaxAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
+        public static final double MaxDriveableVelocity = 0.5; // m/s? (CHANGE if this is the wrong unit)
+       // public static final double MaxDriveableVelocity = 3.6; // m/s? (CHANGE if this is the wrong unit)
 
         public static final double PhysicalMaxSpeedMetersPerSecond = Units.feetToMeters(15.1); // 15.1 f/s from Mr. K's
                                                                                                // spreadsheet

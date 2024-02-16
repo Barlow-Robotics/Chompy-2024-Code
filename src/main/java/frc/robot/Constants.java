@@ -232,7 +232,7 @@ public class Constants {
 
     public static final class ShooterMountConstants {
 
-        public static final double AngleTolerance = 5; // Degrees - CHANGE
+        public static final double AngleTolerance = 1.5; // Degrees - CHANGE
         public static final double HeightTolerance = 2; // Inches - CHANGE
 
         public static final double ElevatorGearRatio = 15;
@@ -246,27 +246,25 @@ public class Constants {
         public static final double RotationsPerElevatorInch = ElevatorGearRatio / Units.metersToInches(ElevatorSprocketCircumference);
 
         public static final int IndexMotorCurrentLimit = 30; // CHANGE
+        public static final double MaxHeightInches = 10;
 
-        public static final double SpeakerAngle = 30; // CHANGE
+        public static final double SpeakerAngle = 110; // CHANGE
         public static final double SpeakerHeight = 0; // Resting position
 
-        public static final double AmpAngle = 0; // CHANGE
-        public static final double AmpHeight = 10; // CHANGE
+        public static final double AmpAngle = 10; // CHANGE
+        public static final double AmpHeight = 16; // CHANGE
 
-        public static final double SourceIntakeAngle = 90; // CHANGE
+        public static final double SourceIntakeAngle = 60; // CHANGE
         public static final double SourceIntakeHeight = 15; // CHANGE
 
         public static final double FloorIntakeAngle = 0; // Resting position
-        public static final double FloorIntakeHeight = 5; // CHANGE
+        public static final double FloorIntakeHeight = 0; // CHANGE
 
         public static final double TrapAngle = 90; // CHANGE
         public static final double TrapHeight = 10; // CHANGE
 
         public static final double ClimbHeight = 10; // CHANGE
-        
         public static final double MinHeight = 0; // CHANGE
-        public static final double MaxHeightInches = 10; //CHANGE
-        public static final double MaxAngleDegrees = 90; // CHANGE
 
         public static final double AngleKP = 0.5;
         public static final double AngleKI = 0;

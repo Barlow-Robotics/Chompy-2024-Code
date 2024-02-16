@@ -176,7 +176,8 @@ public class ShooterMount extends SubsystemBase {
     }
 
     public boolean isAtBottom() {
-        return !bottomHallEffect.get(); // might need to get rid of the ! depending on how the hall effect works
+        return bottomHallEffect.get(); // In sim, hall effect is always true when we use ! and always false when we don't. 
+                                       // Since we can't trigger hall effect in sim, remove !
     }
 
     private void logData() {

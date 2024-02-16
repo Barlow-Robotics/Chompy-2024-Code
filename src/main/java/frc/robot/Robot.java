@@ -19,6 +19,8 @@ import frc.robot.Constants.ElectronicsIDs;
 import frc.robot.Constants.LogitechExtreme3DConstants;
 //import frc.robot.Constants.RadioMasterConstants;
 import frc.robot.commands.DriveRobot;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -149,6 +151,29 @@ public class Robot extends LoggedRobot {
         var simPose = robotContainer.driveSub.getPoseWithoutVision();
 
         robotContainer.visionSub.simulationPeriodic(simPose);
+
+        double elevatorTop = robotContainer.shooterMountSub.getHeightInches()*0.0254 ;
+        double shooterPitchAngle = -robotContainer.shooterMountSub.getAngleDegrees()+65 ;
+
+        // Support for 3D rendering on AdvantageScope.
+        Pose3d[] elevatorPoses = {
+            // new Pose3d(0,0,0, new Rotation3d(0,0,0)),
+            //base stage
+            new Pose3d(0,0,0, new Rotation3d(0,0,0)),
+            // first stage
+            new Pose3d(0,0,elevatorTop/2.0, new Rotation3d(0,0,0)),
+            // second stage
+            new Pose3d(0,0,elevatorTop, new Rotation3d(0,0,0)),
+            // shooter
+            new Pose3d(8*0.0254,0,22*0.0254 + elevatorTop , new Rotation3d(0,Math.toRadians(shooterPitchAngle),0)),
+            // buympers
+            new Pose3d(0,0,0, new Rotation3d(0,0,0))
+        } ;
+
+        Logger.recordOutput("ShooterMount/poses", elevatorPoses);
+        Logger.recordOutput("ShooterMount/pitchAngle", shooterPitchAngle);
+        //wpk
+
 
         /*
         frc::Field2d& debugField = vision.GetSimDebugField();

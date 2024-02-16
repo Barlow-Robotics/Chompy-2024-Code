@@ -155,7 +155,7 @@ public class Constants {
         public static final double DriveIZone = 0.15;
         public static final double DriveFF = 1.0 / MaxVelocityPerSecond;
 
-        public static final double AutoAlignKP = 0.1; //CHANGE
+        public static final double AutoAlignKP = 0.01; //CHANGE
         public static final double AutoAlignKI = 0.0015;
         public static final double AutoAlignKD = 0;
 

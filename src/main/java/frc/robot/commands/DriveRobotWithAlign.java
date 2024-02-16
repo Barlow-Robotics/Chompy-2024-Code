@@ -100,7 +100,7 @@ public class DriveRobotWithAlign extends Command {
         var alignYawControl = 0.0;
 
         if (autoAlignEnabled) {
-            var OffSet = (visionSub.getTargetOffSet());
+            var OffSet = (visionSub.getTargetRotOffSet());
             if (OffSet.isPresent()){
                 alignYawControl = pid.calculate(-OffSet.getAsDouble());
                 Logger.recordOutput("Align/Offset", OffSet.getAsDouble());
@@ -126,7 +126,7 @@ public class DriveRobotWithAlign extends Command {
 
         double XSpeed = MathUtil.applyDeadband(rawX, DeadBand) * DriveConstants.MaxDriveableVelocity;
         double YSpeed = MathUtil.applyDeadband(rawY, DeadBand) * DriveConstants.MaxDriveableVelocity;
-        double Rot = MathUtil.applyDeadband(rawRot, RotDeadBand) * DriveConstants.MaxDriveableVelocity;
+        double Rot = MathUtil.applyDeadband(rawRot, RotDeadBand);
 
         driveSub.drive(XSpeed, YSpeed, Rot, FieldRelative);
 

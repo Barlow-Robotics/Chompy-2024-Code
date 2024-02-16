@@ -350,9 +350,61 @@ public class Vision extends SubsystemBase {
         } 
     }
 
-    public OptionalDouble getTargetOffSet() {
+    // Degrees
+    public OptionalDouble getTargetRotOffSet() {
         if (currentBestAlignTarget != null) {
-            return OptionalDouble.of(currentBestAlignTarget.getBestCameraToTarget().getY());
+            return OptionalDouble.of(currentBestAlignTarget.getYaw());
+        }
+        return OptionalDouble.empty();
+    }
+
+    // Meters
+    public OptionalDouble getTargetLateralOffSet() {
+        if (currentBestAlignTarget != null) {
+            // The pose of the april tag in the camera reference frame
+            var targetPose = currentBestAlignTarget.getBestCameraToTarget();
+
+            // targetYaw is the offset angle from camera-forward to the target
+            var targetYaw = currentBestAlignTarget.getYaw();
+
+            // Now find the "pointing angle of the target" in the reference frame
+            // of the robot.  If you drew a ray from the target in space this would be
+            // the "center line" the robot wants to reach laterally.
+
+            // Note: this rotation value is a bit counter-intuitive. A Z-axis rotation of 0
+            // actually means the April tag is pointed in the same direction as the camera
+            var targetPointing = targetPose.getRotation().getZ();
+            // We want an angle about 0 when the tag is facing us so shift by Pi
+            // and then unroll.
+            targetPointing += Math.PI;
+            if (targetPointing > Math.PI) {
+                targetPointing -= 2*Math.PI;
+            } else if (targetPointing < -Math.PI) {
+                targetPointing += 2*Math.PI;
+            }
+
+            // Now combine the 2 angles to get the total angle between the robot and
+            // this center-line.
+            var combinedAngle = Math.toRadians(targetYaw) - targetPointing;
+
+            var targetDist = targetPose.getTranslation().getNorm();
+
+            // Finally, the lateral distance can be found by trig:
+            // Sin(angle) = Lateral / Hypotenuse
+            // Lateral = Hypotenuse * Sin(combined angle)
+            var lateralDist = Math.sin(combinedAngle) * targetDist;
+
+            return OptionalDouble.of(lateralDist);
+        }
+        return OptionalDouble.empty();
+    }
+
+    public OptionalDouble getTargetDistance() {
+        if (currentBestAlignTarget != null) {
+            var targetPose = currentBestAlignTarget.getBestCameraToTarget();
+            var targetDist = targetPose.getTranslation().getNorm();
+
+            return OptionalDouble.of(targetDist);
         }
         return OptionalDouble.empty();
     }
@@ -370,8 +422,9 @@ public class Vision extends SubsystemBase {
         }
 
         if (currentBestAlignTarget != null) {
-            Logger.recordOutput("vision/targetY", currentBestAlignTarget.getBestCameraToTarget().getY());
-            Logger.recordOutput("vision/targetYaw", currentBestAlignTarget.getYaw());
+            Logger.recordOutput("vision/target/RotOffset", getTargetRotOffSet().getAsDouble());
+            Logger.recordOutput("vision/target/LateralOffset", getTargetLateralOffSet().getAsDouble());
+            Logger.recordOutput("vision/target/Distance", getTargetDistance().getAsDouble());
         }
 
         Logger.recordOutput("vision/targetAlignSet", targetAlignSet.toString());

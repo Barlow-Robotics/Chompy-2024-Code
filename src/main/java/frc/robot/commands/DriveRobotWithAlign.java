@@ -142,32 +142,6 @@ public class DriveRobotWithAlign extends Command {
         Logger.recordOutput("Align/YSpeed", XSpeed);
     }
      
-    public OptionalDouble getTargetOffSet() {
-        if (visionSub.allDetectedTargets != null) {
-            if (visionSub.activeAlignTarget.isPresent()) {
-                for (PhotonTrackedTarget target : visionSub.allDetectedTargets) {
-                    if (target.getFiducialId() == visionSub.activeAlignTarget.getAsInt()) {
-                        Logger.recordOutput("vision/targetY", target.getBestCameraToTarget().getY());
-                        Logger.recordOutput("vision/targetYaw", target.getYaw());
-                        return OptionalDouble.of(target.getBestCameraToTarget().getY());
-                    }
-                }
-
-            // getTargetTranslationOffSet getRotation???
-            }
-        }
-        return OptionalDouble.empty();
-        /*
-       if (target != null) {
-             return OptionalDouble.of(target.getBestCameraToTarget().getY());
-        }else{
-            return OptionalDouble.empty();
-            */
-        }
-       
-
-
-
     @Override
     public void end(boolean interrupted) {
         driveSub.drive(0, 0, 0, true);

@@ -66,9 +66,10 @@ public class Vision extends SubsystemBase {
     private VisionSystemSim visionSim;
     private Transform3d robotToCamera;
     private PhotonTrackedTarget currentBestTarget;
+    private PhotonTrackedTarget currentBestAlignTarget;
     public List<PhotonTrackedTarget> allDetectedTargets;
     private HashSet<Integer> targetAlignSet;
-    public OptionalInt activeAlignTarget;
+    public OptionalInt activeAlignTargetId;
     private Alliance alliance;
 
     boolean aprilTagDetected = false;
@@ -93,7 +94,7 @@ public class Vision extends SubsystemBase {
         }
 
         targetAlignSet = new HashSet<Integer>();
-        activeAlignTarget = OptionalInt.empty();
+        activeAlignTargetId = OptionalInt.empty();
 
         // ----- Simulation
         if (Robot.isSimulation()) {
@@ -230,9 +231,21 @@ public class Vision extends SubsystemBase {
       
         // Find all the results from the tracking camera
         var tracking_result = getLatestTrackingResult();
+
+        // Update the current bestAlignTarget based on the chosen target
+        currentBestAlignTarget = null;
         if (tracking_result.hasTargets()) {
             allDetectedTargets  = tracking_result.getTargets();
             currentBestTarget = tracking_result.getBestTarget();
+            if (activeAlignTargetId.isPresent())
+            {
+                for (PhotonTrackedTarget target : allDetectedTargets) {
+                    if (target.getFiducialId() == activeAlignTargetId.getAsInt()) {
+                        currentBestAlignTarget = target;
+                        break;
+                    }
+                }
+            }
         }
 
          advantageKitLogging();
@@ -326,11 +339,11 @@ public class Vision extends SubsystemBase {
     }
 
     public void chooseBestTarget() {
-        activeAlignTarget = OptionalInt.empty();
+        activeAlignTargetId = OptionalInt.empty();
         if (allDetectedTargets != null) {
             for (PhotonTrackedTarget target : allDetectedTargets) {
                 if (targetAlignSet.contains(target.getFiducialId())) {
-                    activeAlignTarget = OptionalInt.of(target.getFiducialId());
+                    activeAlignTargetId = OptionalInt.of(target.getFiducialId());
                     return;
                 }
             }
@@ -338,34 +351,17 @@ public class Vision extends SubsystemBase {
     }
 
     public OptionalDouble getTargetOffSet() {
-        if (allDetectedTargets != null) {
-            if (activeAlignTarget.isPresent()) {
-                for (PhotonTrackedTarget target : allDetectedTargets) {
-                    if (target.getFiducialId() == activeAlignTarget.getAsInt()) {
-                        Logger.recordOutput("vision/targetY", target.getBestCameraToTarget().getY());
-                        Logger.recordOutput("vision/targetYaw", target.getYaw());
-                        return OptionalDouble.of(target.getBestCameraToTarget().getY());
-                    }
-                }
-
-            // getTargetTranslationOffSet getRotation???
-            }
+        if (currentBestAlignTarget != null) {
+            return OptionalDouble.of(currentBestAlignTarget.getBestCameraToTarget().getY());
         }
         return OptionalDouble.empty();
-        /*
-       if (target != null) {
-             return OptionalDouble.of(target.getBestCameraToTarget().getY());
-        }else{
-            return OptionalDouble.empty();
-        }
-        */
     }
 
     private void advantageKitLogging() {
         if (robotToCamera != null) {
-        Logger.recordOutput("vision/xPosition", robotToCamera.getX());
-        Logger.recordOutput("vision/yPosition", robotToCamera.getY());
-        Logger.recordOutput("vision/zPosition", robotToCamera.getZ());
+            Logger.recordOutput("vision/xPosition", robotToCamera.getX());
+            Logger.recordOutput("vision/yPosition", robotToCamera.getY());
+            Logger.recordOutput("vision/zPosition", robotToCamera.getZ());
         }
 
         if (currentBestTarget != null) {
@@ -373,10 +369,15 @@ public class Vision extends SubsystemBase {
             Logger.recordOutput("vision/bestCameraToTarget", currentBestTarget.getBestCameraToTarget());
         }
 
+        if (currentBestAlignTarget != null) {
+            Logger.recordOutput("vision/targetY", currentBestAlignTarget.getBestCameraToTarget().getY());
+            Logger.recordOutput("vision/targetYaw", currentBestAlignTarget.getYaw());
+        }
+
         Logger.recordOutput("vision/targetAlignSet", targetAlignSet.toString());
-        Logger.recordOutput("vision/activeAlignTargetStr", activeAlignTarget.toString());
-        if (activeAlignTarget.isPresent()) {
-            Logger.recordOutput("vision/activeAlignTarget", activeAlignTarget.getAsInt());
+        Logger.recordOutput("vision/activeAlignTargetStr", activeAlignTargetId.toString());
+        if (activeAlignTargetId.isPresent()) {
+            Logger.recordOutput("vision/activeAlignTarget", activeAlignTargetId.getAsInt());
         }
     }
 

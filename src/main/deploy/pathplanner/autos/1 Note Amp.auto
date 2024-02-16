@@ -12,15 +12,22 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Move to Amp Position"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Score In Amp"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Move to Amp Position"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Score In Amp"
+                }
+              }
+            ]
           }
         },
         {
@@ -30,21 +37,28 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Stop Shooter"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Move to Intake Position"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Semi-Circle Around Note"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Stop Shooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Move to Intake Position"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Semi-Circle Around Note"
+                }
+              }
+            ]
           }
         }
       ]

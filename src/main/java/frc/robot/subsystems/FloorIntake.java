@@ -32,7 +32,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FloorIntakeConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.sim.PhysicsSim;
 import frc.robot.Constants;
 import frc.robot.Constants.ElectronicsIDs;
@@ -43,7 +42,7 @@ public class FloorIntake extends SubsystemBase {
     TalonFX intakeMotor;
     private final TalonFXSimState intakeMotorSim;
     private final DCMotorSim intakeMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1),
-            1, ShooterConstants.jKgMetersSquared);
+            1, Constants.jKgMetersSquared);
 
     private final VelocityVoltage voltageVelocity = new VelocityVoltage(0, 0, true, 0, 0,
             false, false, false);
@@ -72,7 +71,7 @@ public class FloorIntake extends SubsystemBase {
     }
 
     public boolean isIntaking() {
-        return intakeMotor.getVelocity().getValue() >= Constants.LowerToleranceLimit * FloorIntakeConstants.MotorRPM / 60;
+        return intakeMotor.getVelocity().getValue() >= FloorIntakeConstants.MotorRPM / 60 - FloorIntakeConstants.VelocityTolerance;
     }
 
     /* LOGGING */

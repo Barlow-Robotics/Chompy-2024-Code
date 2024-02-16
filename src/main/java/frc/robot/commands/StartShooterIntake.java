@@ -84,6 +84,10 @@ public class StartShooterIntake extends Command {
 
     @Override
     public boolean isFinished() {// Need to CHANGE this
-        return false;
+        if(!shooterSub.isNoteLoaded() && shooterSub.isWithinVelocityTolerance(desiredFlywheelRPM)) {
+            return true; // note is gone i think
+        } else {
+            return false;
+        }
     }
 }

@@ -44,17 +44,17 @@ public class ShooterMount extends SubsystemBase {
     TalonFX angleMotor;
     private final TalonFXSimState angleMotorSim;
     private final DCMotorSim angleMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1),
-            1, 0.0005);
+            1, Constants.jKgMetersSquared);
 
     TalonFX leftElevatorMotor;
     private final TalonFXSimState leftElevatorMotorSim;
     private final DCMotorSim leftElevatorMotorModel = new DCMotorSim(
-            edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, 0.0005);
+            edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, Constants.jKgMetersSquared);
 
     TalonFX rightElevatorMotor;
     private final TalonFXSimState rightElevatorMotorSim;
     private final DCMotorSim rightElevatorMotorModel = new DCMotorSim(
-            edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, 0.0005);
+            edu.wpi.first.math.system.plant.DCMotor.getFalcon500(1), 1, Constants.jKgMetersSquared);
 
     private final NeutralOut brake = new NeutralOut();
 
@@ -80,7 +80,8 @@ public class ShooterMount extends SubsystemBase {
 
         leftElevatorMotor = new TalonFX(ElectronicsIDs.LeftElevatorMotorID);
         leftElevatorMotorSim = leftElevatorMotor.getSimState();
-
+        leftElevatorMotor.setPosition(0);
+        
         rightElevatorMotor = new TalonFX(ElectronicsIDs.RightElevatorMotorID);
         rightElevatorMotorSim = rightElevatorMotor.getSimState();
         rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), true));
@@ -108,6 +109,12 @@ public class ShooterMount extends SubsystemBase {
     @Override
     public void periodic() {
         logData();
+
+        if (isAtBottom() && leftElevatorMotor.getVelocity().getValue() < 0) {
+            stop();
+        } else if (getHeightInches() == ShooterMountConstants.MaxHeightInches && leftElevatorMotor.getVelocity().getValue() > 0) {
+            stop();
+        }
     }
 
     /** @param desiredAngle Desired angle in degrees */
@@ -138,6 +145,10 @@ public class ShooterMount extends SubsystemBase {
         return leftElevatorMotor.getPosition().getValueAsDouble() / ShooterMountConstants.RotationsPerElevatorInch;
     }
 
+    public void setBasePosition(double height) {
+        leftElevatorMotor.setPosition(height);
+    }
+
     public void setShooterPosState(ShooterMountState newState) {
         shooterPosState = newState;
     }
@@ -151,13 +162,13 @@ public class ShooterMount extends SubsystemBase {
     }
 
     private boolean isWithinAngleTolerance(double desiredAngle) {
-        return (getAngleDegrees() >= Constants.LowerToleranceLimit * desiredAngle) &&
-                (getAngleDegrees() <= Constants.UpperToleranceLimit * desiredAngle);
+        return (getAngleDegrees() >= desiredAngle - ShooterMountConstants.AngleTolerance) &&
+                (getAngleDegrees() <= desiredAngle + ShooterMountConstants.AngleTolerance);
     }
 
     private boolean isWithinHeightTolerance(double desiredHeight) {
-        return (getHeightInches() >= Constants.LowerToleranceLimit * desiredHeight) &&
-                (getHeightInches() <= Constants.UpperToleranceLimit * desiredHeight);
+        return (getHeightInches() >= desiredHeight - ShooterMountConstants.HeightTolerance) &&
+                (getHeightInches() <= desiredHeight - ShooterMountConstants.HeightTolerance);
     }
 
     public boolean isWithinPositionTolerance(double desiredAngle, double desiredHeight) {
@@ -165,7 +176,8 @@ public class ShooterMount extends SubsystemBase {
     }
 
     public boolean isAtBottom() {
-        return !bottomHallEffect.get(); // might need to get rid of the ! depending on how the hall effect works
+        return bottomHallEffect.get(); // In sim, hall effect is always true when we use ! and always false when we don't. 
+                                       // Since we can't trigger hall effect in sim, remove !
     }
 
     private void logData() {
@@ -237,7 +249,6 @@ public class ShooterMount extends SubsystemBase {
 
         // configs.Voltage.PeakForwardVoltage =
         // ShooterConstants.PeakShooterForwardVoltage; // Peak output of 8 volts
-
         motorOutputConfigs.Inverted = inversion;
 
         StatusCode status = StatusCode.StatusCodeNotInitialized;
@@ -321,7 +332,7 @@ public class ShooterMount extends SubsystemBase {
         bottomHallEffectSim.setValue(isWithinHeightTolerance(0));
     }
 
-    public void stop() { // coast
+    public void stop() { 
         angleMotor.set(0);
         leftElevatorMotor.set(0);
         rightElevatorMotor.set(0);

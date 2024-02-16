@@ -31,17 +31,17 @@ public class Shooter extends SubsystemBase {
     private final TalonFX lowerFlywheelMotor;
     private final TalonFXSimState lowerFlywheelMotorSim;
     private final DCMotorSim lowerMotorModel = 
-        new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1), 1, ShooterConstants.jKgMetersSquared);
+        new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1), 1, Constants.jKgMetersSquared);
     
     private final TalonFX upperFlywheelMotor;
     private final TalonFXSimState upperFlywheelMotorSim;
     private final DCMotorSim upperMotorModel = 
-        new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1), 1, ShooterConstants.jKgMetersSquared);
+        new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1), 1, Constants.jKgMetersSquared);
 
     private final TalonFX indexMotor;
     private final TalonFXSimState indexMotorSim;
     private final DCMotorSim indexMotorModel = 
-        new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1), 1, ShooterConstants.jKgMetersSquared);
+        new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1), 1, Constants.jKgMetersSquared);
 
     private final VelocityVoltage voltageVelocity = 
         new VelocityVoltage(0, 0, true, 0, 0, 
@@ -118,10 +118,10 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isWithinVelocityTolerance(double desiredRPM) {
-        return (getRPM(lowerFlywheelMotor) >= Math.abs(Constants.LowerToleranceLimit * desiredRPM)) &&
-                (getRPM(lowerFlywheelMotor) <= Math.abs(Constants.UpperToleranceLimit * desiredRPM)) &&
-                (getRPM(upperFlywheelMotor) >= Math.abs(Constants.LowerToleranceLimit * desiredRPM)) &&
-                (getRPM(upperFlywheelMotor) <= Math.abs(Constants.UpperToleranceLimit * desiredRPM));
+        return (getRPM(lowerFlywheelMotor) >= desiredRPM - ShooterConstants.VelocityTolerance) &&
+                (getRPM(lowerFlywheelMotor) <= desiredRPM + ShooterConstants.VelocityTolerance) &&
+                (getRPM(upperFlywheelMotor) >= -(desiredRPM - ShooterConstants.VelocityTolerance)) && // Not sure if the negative here is right
+                (getRPM(upperFlywheelMotor) <= -(desiredRPM + ShooterConstants.VelocityTolerance));   // may need to CHANGE that
     }
 
     public boolean isNoteLoaded() {

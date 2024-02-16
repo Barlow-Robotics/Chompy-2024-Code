@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 public class Constants {
 
     public static final double SecondsPerMinute = 60;
-
+    public static final double jKgMetersSquared = 0.0005;
     public static final double Neo550MaxRPM = 11000;
     public static final double NeoMaxRPM = 5676;
     public static final double Falcon500MaxRPM = 6300;
@@ -36,9 +36,9 @@ public class Constants {
     public static final double TalonFXUnitsPerRotation = 2048;
     public static final double CANCoderUnitsPerRotation = 4096;
 
-    public static final double toleranceLimit = 0.05;
-    public static final double LowerToleranceLimit = 1 - toleranceLimit;
-    public static final double UpperToleranceLimit = 1 + toleranceLimit;
+    // public static final double toleranceLimit = 0.05;
+    // public static final double LowerToleranceLimit = 1 - toleranceLimit;
+    // public static final double UpperToleranceLimit = 1 + toleranceLimit;
 
     /***************************************************************************/
     /***************************************************************************/
@@ -103,17 +103,18 @@ public class Constants {
 
         public static final boolean GyroReversed = false;
 
-        public static final double TrackWidth = Units.inchesToMeters(27); // Distance between left and right wheels
-        public static final double WheelBase = Units.inchesToMeters(25); // Distance between front and back wheels
+        public static final double TrackWidth = Units.inchesToMeters(22); // Distance between left and right wheels
+        public static final double WheelBase = Units.inchesToMeters(20); // Distance between front and back wheels
         public static final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
                 new Translation2d(WheelBase / 2, TrackWidth / 2), // front left
                 new Translation2d(WheelBase / 2, -TrackWidth / 2), // front right
                 new Translation2d(-WheelBase / 2, TrackWidth / 2), // back left
                 new Translation2d(-WheelBase / 2, -TrackWidth / 2) // back right
         );
-
-        public static final double MaxAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
-        public static final double MaxDriveableVelocity = 3.6; // m/s? (CHANGE if this is the wrong unit)
+        public static final double MaxAcceleration = Units.feetToMeters(2); // m/sec^2 from Mr. K's spreadsheet
+        // public static final double MaxAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
+        public static final double MaxDriveableVelocity = 0.5; // m/s? (CHANGE if this is the wrong unit)
+       // public static final double MaxDriveableVelocity = 3.6; // m/s? (CHANGE if this is the wrong unit)
 
         public static final double PhysicalMaxSpeedMetersPerSecond = Units.feetToMeters(15.1); // 15.1 f/s from Mr. K's
                                                                                                // spreadsheet
@@ -155,6 +156,10 @@ public class Constants {
         public static final double DriveIZone = 0.15;
         public static final double DriveFF = 1.0 / MaxVelocityPerSecond;
 
+        public static final double AutoAlignKP = 0.1; //CHANGE
+        public static final double AutoAlignKI = 0.0015;
+        public static final double AutoAlignKD = 0;
+
         /* TURN ENCODER */
         public static final int CANCoderResolution = 4096;
         public static final double PositionConversionFactor = WheelCircumference / GearRatio;
@@ -195,10 +200,11 @@ public class Constants {
     }
 
     public static final class ShooterConstants {
-        public static final double FlywheelGearRatio = 1; // CHANGE
-        public static final double IndexGearRatio = 1; // CHANGE
+        public static final double FlywheelGearRatio = 1.5; // 36 gears on motor, 24 on rollers --> 1.5:1 (as of 2/15)
+        public static final double IndexGearRatio = 1; // 1:1 ratio on Index per WK as of 2/15
 
-        public static final double jKgMetersSquared = 0.0005;
+        
+        public static final double VelocityTolerance = 0.05; // CHANGE
 
         public static final double SpeakerRPM = 4000; // CHANGE
         public static final double AmpRPM = 2000; // CHANGE
@@ -227,6 +233,9 @@ public class Constants {
 
     public static final class ShooterMountConstants {
 
+        public static final double AngleTolerance = 1.5; // Degrees - CHANGE
+        public static final double HeightTolerance = 2; // Inches - CHANGE
+
         public static final double ElevatorGearRatio = 15;
         public static final double ShooterAngleGearRatio = 46.67; // From K's spreadsheet
         public static final double ElevatorSprocketDiameter = Units.inchesToMeters(2.36);
@@ -238,25 +247,25 @@ public class Constants {
         public static final double RotationsPerElevatorInch = ElevatorGearRatio / Units.metersToInches(ElevatorSprocketCircumference);
 
         public static final int IndexMotorCurrentLimit = 30; // CHANGE
+        public static final double MaxHeightInches = 10;
 
-        public static final double SpeakerAngle = 30; // CHANGE
+        public static final double SpeakerAngle = 110; // CHANGE
         public static final double SpeakerHeight = 0; // Resting position
 
-        public static final double AmpAngle = 0; // CHANGE
-        public static final double AmpHeight = 10; // CHANGE
+        public static final double AmpAngle = 10; // CHANGE
+        public static final double AmpHeight = 16; // CHANGE
 
         public static final double SourceIntakeAngle = 60; // CHANGE
         public static final double SourceIntakeHeight = 15; // CHANGE
 
         public static final double FloorIntakeAngle = 0; // Resting position
-        public static final double FloorIntakeHeight = 5; // CHANGE
+        public static final double FloorIntakeHeight = 0; // CHANGE
 
         public static final double TrapAngle = 90; // CHANGE
         public static final double TrapHeight = 10; // CHANGE
 
         public static final double ClimbHeight = 10; // CHANGE
         public static final double MinHeight = 0; // CHANGE
-
 
         public static final double AngleKP = 0.5;
         public static final double AngleKI = 0;
@@ -296,6 +305,7 @@ public class Constants {
         public static final int SupplyCurrentLimit = 20;
 		
         public static final int MotorRPM = 1000;
+        public static final double VelocityTolerance = 0.05; // CHANGE
     }
 
     /***************************************************************************/
@@ -306,10 +316,13 @@ public class Constants {
         public static final int CameraLightID = 0; // Need to change
         public static final String kPoseCameraName = "Global_Shutter_Camera";
         public static final String kTargetCameraName = "Arducam_OV9281_USB_Camera";
+
         public static final PoseStrategy kPrimaryVisionStrategy = PoseStrategy.CLOSEST_TO_REFERENCE_POSE;
         public static final PoseStrategy kFallbackVisionStrategy = PoseStrategy.LOWEST_AMBIGUITY;
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
-        public static final Transform3d kRobotToCam =
+        public static final Transform3d kRobotToPoseCam =
+                new Transform3d(new Translation3d(0.0, 0.0, 1.0), new Rotation3d(0, 0, 0));
+        public static final Transform3d kRobotToTargetCam =
                 new Transform3d(new Translation3d(0.0, 0.0, 1.0), new Rotation3d(0, 0, 0));
 
         // // The layout of the AprilTags on the field

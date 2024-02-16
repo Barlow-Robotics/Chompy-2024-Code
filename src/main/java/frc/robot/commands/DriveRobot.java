@@ -4,47 +4,42 @@
 
 package frc.robot.commands;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.ElectronicsIDs;
+
+import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drive;
 
 public class DriveRobot extends Command {
 
     Drive driveSub;
-    Joystick driverController;
 
-    int ControllerXSpeedID;
-    int ControllerYSpeedID;
-    int ControllerRotID;
     boolean FieldRelative;
-    public static double rawX;
-    public static double rawY;
-    public static double rawRot;
-    private double SpeedX;
-    private double SpeedY;
-    private double SpeedRot;
     
     double DeadBand = 0.08;
     
+    private double maxVelocityMultiplier = 1;
+
+    Supplier<Double> xInput;
+    Supplier<Double> yInput;
+    Supplier<Double> rotInput;
+    Supplier<Double> multiplierInput;
+        
     public DriveRobot(
-        Drive driveSub, 
-        Joystick driverController, 
-        int ControllerXSpeedID, 
-        int ControllerYSpeedID, 
-        int ControllerRotID,
+        Drive driveSub,
+        Supplier<Double> x, 
+        Supplier<Double> y, 
+        Supplier<Double> rot, 
+        Supplier<Double> multiplier,
         boolean FieldRelative) {
 
         this.driveSub = driveSub;
-        this.driverController = driverController;
-        this.ControllerXSpeedID = ControllerXSpeedID;
-        this.ControllerYSpeedID = ControllerYSpeedID;
-        this.ControllerRotID = ControllerRotID;
+        this.xInput = x;
+        this.yInput = y;
+        this.rotInput = rot;
+        this.multiplierInput = multiplier;
         this.FieldRelative = FieldRelative;
 
         addRequirements(driveSub);
@@ -58,31 +53,21 @@ public class DriveRobot extends Command {
     public void execute() {
         // Since the coordinate systems differ from the controller (x is left right and y is fwd back) 
         // and the chassis (positive X is forward, Positive Y is left), we use the controller X input as the drive Y input
-        // and the controller Y input as the drive X input.
-        
-        // if (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech Extreme 3D")) {
-            rawX = -driverController.getRawAxis(this.ControllerYSpeedID);  
-            rawY = -driverController.getRawAxis(this.ControllerXSpeedID);
-            rawRot = -driverController.getRawAxis(this.ControllerRotID); 
-        // } else {
-        //     rawX = driverController.getRawAxis(this.ControllerYSpeedID);  
-        //     rawY = -driverController.getRawAxis(this.ControllerXSpeedID);
-        //     rawRot = -driverController.getRawAxis(this.ControllerRotID); 
-        // }
+        // and the controller Y input as the drive X input. 
 
-        SpeedX = MathUtil.applyDeadband(rawX, DeadBand) * DriveConstants.MaxDriveableVelocity;
-        SpeedY = MathUtil.applyDeadband(rawY, DeadBand) * DriveConstants.MaxDriveableVelocity;
-        SpeedRot = MathUtil.applyDeadband(rawRot, 2*DeadBand) * DriveConstants.MaxDriveableVelocity;
+        // Converts from old range (1 to -1) to desired range (1 to 0.5)
+        maxVelocityMultiplier = (((multiplierInput.get() + 1) * 0.5) / 2) + 0.5;
 
-        driveSub.drive(SpeedX, SpeedY, SpeedRot, FieldRelative);      
-        // driveSub.testDrive(()->driveSub.getX(), ()->driveSub.getY(), ()->driveSub.getRot(), true);
+        double speedX = MathUtil.applyDeadband(yInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
+        double speedY = MathUtil.applyDeadband(xInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
+        double speedRot = MathUtil.applyDeadband(rotInput.get(), 2*DeadBand) * DriveConstants.MaxDriveableVelocity;
 
-        Logger.recordOutput("Drive/RawYawInput", rawRot);
-        Logger.recordOutput("Drive/RawXSpeed", rawX);
-        Logger.recordOutput("Drive/RawYSpeed", rawY);
-        Logger.recordOutput("Drive/YawInput", SpeedRot);
-        Logger.recordOutput("Drive/XSpeed", SpeedY);
-        Logger.recordOutput("Drive/YSpeed", SpeedX);
+        driveSub.drive(speedX, speedY, speedRot, FieldRelative);   
+
+        Logger.recordOutput("Drive/YawInput", speedRot);
+        Logger.recordOutput("Drive/XSpeed", speedY);
+        Logger.recordOutput("Drive/YSpeed", speedX);
+        Logger.recordOutput("Drive/Multipler", maxVelocityMultiplier);
     }
 
     // rride

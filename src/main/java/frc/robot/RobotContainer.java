@@ -22,6 +22,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElectronicsIDs;
@@ -103,8 +106,8 @@ public class RobotContainer {
 
     public RobotContainer() {
         AutoBuilder.configureHolonomic(
-                // driveSub::getPoseWithoutVision, // Robot pose supplier
-                driveSub::getPoseWithVision, // Robot pose supplier
+                driveSub::getPoseWithoutVision, // Robot pose supplier
+                // driveSub::getPoseWithVision, // Robot pose supplier
                 driveSub::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
                 driveSub::getSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 driveSub::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
@@ -132,21 +135,28 @@ public class RobotContainer {
         // NamedCommands.registerCommand(
         // "Shoot Amp",
         // setShooterAmpAngleCmd
-        // );
+        // );  
 
-        NamedCommands.registerCommand("Shoot Speaker",
-                Commands.print("***********************************Shoot into Speaker"));
-        // NamedCommands.registerCommand("Shoot Speaker",
-        // Commands.runOnce(moveShooterToAmpCommand));
-        NamedCommands.registerCommand("Shoot Amp", Commands.print("*******************************Shoot into Amp"));
-        NamedCommands.registerCommand("Floor Intake",
-                Commands.print("*******************************Activate Floor Intake"));
-        NamedCommands.registerCommand("Go to Amp Position",
-                Commands.print("*******************************Go to Amp Position for the Elevator"));
-        NamedCommands.registerCommand("Spin Up Intake Flywheel",
-                Commands.print("*******************************Go to Spin Up Intake Flywheel"));
-        NamedCommands.registerCommand("Go to Speaker Position",
-                Commands.print("*******************************Go to Speaker Position for the Elevator"));
+      
+
+        // NamedCommands.registerCommand("Shoot Speaker", Commands.print("***********************************Shoot into Speaker"));                
+        // NamedCommands.registerCommand("Shoot Amp", Commands.print("*******************************Shoot into Amp"));
+
+        var shootWithTimeout = new StartShooterIntake(shooterSub, floorIntakeSub, shooterMountSub).withTimeout(0.75);
+
+        NamedCommands.registerCommand("Start Shooter", shootWithTimeout);
+        NamedCommands.registerCommand("Stop Shooter", stopShooterIntakeCmd);
+        
+        NamedCommands.registerCommand("Move to Amp Position", setShooterPosAmpCmd);
+        NamedCommands.registerCommand("Move to Speaker Position", setShooterPosSpeakerCmd); 
+        NamedCommands.registerCommand("Move to Intake Position", setShooterPosFloorIntakeCmd);
+
+        //NamedCommands.registerCommand("Floor Intake", Commands.print("*******************************Activate Floor Intake"));
+        // NamedCommands.registerCommand("Floor Intake", setShooterPosFloorIntakeCmd);
+
+        //NamedCommands.registerCommand("Go to Amp Position", Commands.print("*******************************Go to Amp Position for the Elevator"));
+        //NamedCommands.registerCommand("Spin Up Intake Flywheel", Commands.print("*******************************Go to Spin Up Intake Flywheel"));
+        //  NamedCommands.registerCommand("Spin Up Intake Flywheel", Commands.print("*******************************Go to Spin Up Intake Flywheel"));
 
         autoChooser = AutoBuilder.buildAutoChooser();
         autoChooser.setDefaultOption("Right-Side Straight-Line Auto",

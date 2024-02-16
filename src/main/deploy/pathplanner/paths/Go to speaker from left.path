@@ -12,20 +12,20 @@
         "y": 6.822938273922623
       },
       "isLocked": false,
-      "linkedName": "left-back"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.121946006115528,
-        "y": 6.100004050997624
+        "x": 2.12,
+        "y": 6.1
       },
       "prevControl": {
-        "x": 1.7041909418510344,
-        "y": 6.3633386710894495
+        "x": 1.6923338780156267,
+        "y": 6.346913150650961
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "shoot-speaker-right"
     }
   ],
   "rotationTargets": [

@@ -9,7 +9,6 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drive;
 
@@ -20,22 +19,27 @@ public class DriveRobot extends Command {
     boolean FieldRelative;
     
     double DeadBand = 0.08;
+    
+    private double maxVelocityMultiplier = 1;
 
     Supplier<Double> xInput;
     Supplier<Double> yInput;
     Supplier<Double> rotInput;
+    Supplier<Double> multiplierInput;
         
     public DriveRobot(
         Drive driveSub,
         Supplier<Double> x, 
         Supplier<Double> y, 
         Supplier<Double> rot, 
+        Supplier<Double> multiplier,
         boolean FieldRelative) {
 
         this.driveSub = driveSub;
         this.xInput = x;
         this.yInput = y;
         this.rotInput = rot;
+        this.multiplierInput = multiplier;
         this.FieldRelative = FieldRelative;
 
         addRequirements(driveSub);
@@ -51,8 +55,11 @@ public class DriveRobot extends Command {
         // and the chassis (positive X is forward, Positive Y is left), we use the controller X input as the drive Y input
         // and the controller Y input as the drive X input. 
 
-        double speedX = MathUtil.applyDeadband(yInput.get(), DeadBand) * DriveConstants.MaxDriveableVelocity;
-        double speedY = MathUtil.applyDeadband(xInput.get(), DeadBand) * DriveConstants.MaxDriveableVelocity;
+        // Converts from old range (1 to -1) to desired range (1 to 0.5)
+        maxVelocityMultiplier = (((multiplierInput.get() + 1) * 0.5) / 2) + 0.5;
+
+        double speedX = MathUtil.applyDeadband(yInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
+        double speedY = MathUtil.applyDeadband(xInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
         double speedRot = MathUtil.applyDeadband(rotInput.get(), 2*DeadBand) * DriveConstants.MaxDriveableVelocity;
 
         driveSub.drive(speedX, speedY, speedRot, FieldRelative);   
@@ -60,6 +67,7 @@ public class DriveRobot extends Command {
         Logger.recordOutput("Drive/YawInput", speedRot);
         Logger.recordOutput("Drive/XSpeed", speedY);
         Logger.recordOutput("Drive/YSpeed", speedX);
+        Logger.recordOutput("Drive/Multipler", maxVelocityMultiplier);
     }
 
     // rride

@@ -57,7 +57,7 @@ public class Underglow extends SubsystemBase {
             desiredMode += Constants.UnderGlowConstants.RobotFloorSource;
         }
         boolean check = (byte) (desiredMode & byte2) == byte2;
-        System.out.println("************************************************Current Check for arduino: " + check +  desiredMode);
+        // System.out.println("************************************************Current Check for arduino: " + check +  desiredMode);
         if (currentMode != desiredMode && port != null) {
             try {
                 port.write(new byte[] { (byte) desiredMode }, 1);

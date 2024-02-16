@@ -199,8 +199,8 @@ public class Constants {
     }
 
     public static final class ShooterConstants {
-        public static final double FlywheelGearRatio = 1; // CHANGE
-        public static final double IndexGearRatio = 1; // CHANGE
+        public static final double FlywheelGearRatio = 1.5; // 36 gears on motor, 24 on rollers --> 1.5:1 (as of 2/15)
+        public static final double IndexGearRatio = 1; // 1:1 ratio on Index per WK as of 2/15
 
         
         public static final double VelocityTolerance = 0.05; // CHANGE

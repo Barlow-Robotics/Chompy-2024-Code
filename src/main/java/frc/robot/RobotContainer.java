@@ -80,8 +80,8 @@ public class RobotContainer {
 
     /* CONTROLLERS */
 
-    Joystick driverController;
-    Joystick operatorController;
+    public static Joystick driverController;
+    public static Joystick operatorController;
 
     /* BUTTONS */
     private Trigger moveToSpeakerButton;
@@ -190,11 +190,13 @@ public class RobotContainer {
 
         DriveRobotWithAlign driveRobotWithAlignCmd = new DriveRobotWithAlign(
                 driveSub,
-                driverController,
-                LogitechExtreme3DConstants.AxisX, LogitechExtreme3DConstants.AxisY, LogitechExtreme3DConstants.AxisZRotate,
+                () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
+                () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
+                () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
+                () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
                 true,
                 visionSub,
-                autoAlignButton);
+                () -> autoAlignButton.getAsBoolean());
 
         autoAlignButton.whileTrue(driveRobotWithAlignCmd);
 
@@ -214,6 +216,7 @@ public class RobotContainer {
                 () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
                 () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
                 () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
+                () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
                 true));
     }
 

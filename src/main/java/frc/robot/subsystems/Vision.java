@@ -1,4 +1,3 @@
-
 // // Copyright (c) FIRST and other WPILib contributors.
 // // Open Source Software; you can modify and/or share it under the terms of
 // // the WPILib BSD license file in the root directory of this project.
@@ -8,22 +7,15 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.VisionConstants.kFallbackVisionStrategy;
 import static frc.robot.Constants.VisionConstants.kMultiTagStdDevs;
 import static frc.robot.Constants.VisionConstants.kPoseCameraName;
-import static frc.robot.Constants.VisionConstants.kRobotToPoseCam;
-import static frc.robot.Constants.VisionConstants.kRobotToTargetCam;
+import static frc.robot.Constants.VisionConstants.kRobotToCam;
 import static frc.robot.Constants.VisionConstants.kSingleTagStdDevs;
 import static frc.robot.Constants.VisionConstants.kFieldTagLayout;
 import static frc.robot.Constants.VisionConstants.kTargetCameraName;
 import static frc.robot.Constants.VisionConstants.kPrimaryVisionStrategy;
 
 //import java.io.IOException;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
 
-import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -36,8 +28,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -48,7 +38,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 //import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.DriverStation;
 //import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -62,38 +51,17 @@ public class Vision extends SubsystemBase {
     private double lastEstTimestamp = 0;
 
     private PhotonCameraSim poseCameraSim;
-    private PhotonCameraSim targetCameraSim;
     private VisionSystemSim visionSim;
     private Transform3d robotToCamera;
-    private PhotonTrackedTarget currentBestTarget;
-    public List<PhotonTrackedTarget> allDetectedTargets;
-    private HashSet<Integer> targetAlignSet;
-    public OptionalInt activeAlignTarget;
-    private Alliance alliance;
 
     boolean aprilTagDetected = false;
-
-    public enum TargetToAlign {
-        Speaker, Amp, Source, Stage
-    }
 
     public Vision() /* throws IOException */ {
         targetCamera = new PhotonCamera(kTargetCameraName);
         poseCamera = new PhotonCamera(kPoseCameraName);
 
-        photonEstimator = new PhotonPoseEstimator(kFieldTagLayout, kPrimaryVisionStrategy, poseCamera, kRobotToPoseCam);
+        photonEstimator = new PhotonPoseEstimator(kFieldTagLayout, kPrimaryVisionStrategy, poseCamera, kRobotToCam);
         photonEstimator.setMultiTagFallbackStrategy(kFallbackVisionStrategy);
-
-        alliance = DriverStation.Alliance.Red;
-        if (DriverStation.isEnabled()) {
-            var a = DriverStation.getAlliance();
-            if (a.isPresent()) {
-                alliance = a.get();
-            }
-        }
-
-        targetAlignSet = new HashSet<Integer>();
-        activeAlignTarget = OptionalInt.empty();
 
         // ----- Simulation
         if (Robot.isSimulation()) {
@@ -115,11 +83,8 @@ public class Vision extends SubsystemBase {
             // with visible
             // targets.
             poseCameraSim = new PhotonCameraSim(poseCamera, cameraProp);
-            targetCameraSim = new PhotonCameraSim(targetCamera, cameraProp);
             // Add the simulated camera to view the targets on this simulated field.
-
-            visionSim.addCamera(poseCameraSim, kRobotToPoseCam);
-            visionSim.addCamera(targetCameraSim, kRobotToTargetCam);
+            visionSim.addCamera(poseCameraSim, kRobotToCam);
 
             poseCameraSim.enableDrawWireframe(true);
         }
@@ -133,53 +98,6 @@ public class Vision extends SubsystemBase {
         // fieldTags.getTagPose(target.getFiducialId()), robotToCamera);
     }
 
-    public void alignTo(TargetToAlign target) {
-        targetAlignSet.clear();
-
-        if (alliance == DriverStation.Alliance.Blue) {
-            switch (target) {
-                case Speaker:
-                    targetAlignSet.add(7);
-                    targetAlignSet.add(8);
-                    break;
-                case Source:
-                    targetAlignSet.add(2);
-                    targetAlignSet.add(1);
-                    break;
-                case Amp:
-                    targetAlignSet.add(6);
-                    break;
-                case Stage:
-                    targetAlignSet.add(15);
-                    targetAlignSet.add(14);
-                    targetAlignSet.add(16);
-                    break;
-                    
-
-                
-            }
-        } else {
-            switch (target) {
-                case Speaker:
-                    targetAlignSet.add(3);
-                    targetAlignSet.add(4);
-                    break;
-                case Source:
-                    targetAlignSet.add(9);
-                    targetAlignSet.add(10);
-                    break;
-                case Amp:
-                    targetAlignSet.add(5);
-                    break;
-                case Stage:
-                    targetAlignSet.add(11);
-                    targetAlignSet.add(12);
-                    targetAlignSet.add(13);
-                    break;
-                }
-        }
-    }
-
     public void initSendable(SendableBuilder builder) {
         // builder.addDoubleProperty("Estimated Global Pose",
         // this::getEstimatedGlobalPose, null);
@@ -189,16 +107,12 @@ public class Vision extends SubsystemBase {
          return poseCamera.getLatestResult();
     } 
 
-    public PhotonPipelineResult getLatestTrackingResult() {
-         return targetCamera.getLatestResult();
-    } 
-
     public void periodic() {
-        // TODO: This whole section is redundant with the photon pose estimator
-        /*
         var result = getLatestPoseResult();
+
         if ( result.hasTargets()) {
             var target = result.getBestTarget() ;   
+            
             var toTarget = target.getBestCameraToTarget() ;
             var tagPose = kFieldTagLayout.getTagPose(target.getFiducialId()).orElse(new Pose3d()); 
             var transform3d = new Transform3d();
@@ -222,20 +136,11 @@ public class Vision extends SubsystemBase {
             NetworkTableInstance.getDefault().getEntry("distanceFromZ")
                             .setDouble(robotPose.getZ());
         }
-        */
 
-        // TODO: feed this pose estimate back to the combined pose estimator in drive
         var poseEstimate = getEstimatedGlobalPose() ;
-
-      
-        // Find all the results from the tracking camera
-        var tracking_result = getLatestTrackingResult();
-        if (tracking_result.hasTargets()) {
-            allDetectedTargets  = tracking_result.getTargets();
-            currentBestTarget = tracking_result.getBestTarget();
+        if ( !poseEstimate.isEmpty()) {
+            int wpk = 1 ;
         }
-
-         advantageKitLogging();
     }
             // SmartDashboard.putData(getEstimatedGlobalPose());
         
@@ -319,65 +224,6 @@ public class Vision extends SubsystemBase {
 
     public boolean getAprilTagDetected() {
         return getLatestPoseResult().hasTargets();
-    }
-
-    public boolean aprilTagIsVisible() {
-        return this.aprilTagDetected;
-    }
-
-    public void chooseBestTarget() {
-        activeAlignTarget = OptionalInt.empty();
-        if (allDetectedTargets != null) {
-            for (PhotonTrackedTarget target : allDetectedTargets) {
-                if (targetAlignSet.contains(target.getFiducialId())) {
-                    activeAlignTarget = OptionalInt.of(target.getFiducialId());
-                    return;
-                }
-            }
-        } 
-    }
-
-    public OptionalDouble getTargetOffSet() {
-        if (allDetectedTargets != null) {
-            if (activeAlignTarget.isPresent()) {
-                for (PhotonTrackedTarget target : allDetectedTargets) {
-                    if (target.getFiducialId() == activeAlignTarget.getAsInt()) {
-                        Logger.recordOutput("vision/targetY", target.getBestCameraToTarget().getY());
-                        Logger.recordOutput("vision/targetYaw", target.getYaw());
-                        return OptionalDouble.of(target.getBestCameraToTarget().getY());
-                    }
-                }
-
-            // getTargetTranslationOffSet getRotation???
-            }
-        }
-        return OptionalDouble.empty();
-        /*
-       if (target != null) {
-             return OptionalDouble.of(target.getBestCameraToTarget().getY());
-        }else{
-            return OptionalDouble.empty();
-        }
-        */
-    }
-
-    private void advantageKitLogging() {
-        if (robotToCamera != null) {
-        Logger.recordOutput("vision/xPosition", robotToCamera.getX());
-        Logger.recordOutput("vision/yPosition", robotToCamera.getY());
-        Logger.recordOutput("vision/zPosition", robotToCamera.getZ());
-        }
-
-        if (currentBestTarget != null) {
-            Logger.recordOutput("vision/currentBestFiducial", currentBestTarget.getFiducialId());
-            Logger.recordOutput("vision/bestCameraToTarget", currentBestTarget.getBestCameraToTarget());
-        }
-
-        Logger.recordOutput("vision/targetAlignSet", targetAlignSet.toString());
-        Logger.recordOutput("vision/activeAlignTargetStr", activeAlignTarget.toString());
-        if (activeAlignTarget.isPresent()) {
-            Logger.recordOutput("vision/activeAlignTarget", activeAlignTarget.getAsInt());
-        }
     }
 
     // private void addNetworkTableEntries() {

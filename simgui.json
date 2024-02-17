@@ -25,7 +25,6 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/Shuffleboard/Auto/Path Name": "String Chooser",
-      "/Shuffleboard/Match/Path Name": "String Chooser",
       "/SmartDashboard/Auto Mode": "String Chooser",
       "/SmartDashboard/Drive": "Subsystem",
       "/SmartDashboard/Elevator": "Subsystem",
@@ -38,7 +37,6 @@
       "/SmartDashboard/Scheduler": "Scheduler",
       "/SmartDashboard/Shooter": "Subsystem",
       "/SmartDashboard/ShooterAngle": "Subsystem",
-      "/SmartDashboard/ShooterMountMech": "Mechanism2d",
       "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
     },
     "windows": {
@@ -78,9 +76,6 @@
     "transitory": {
       "AdvantageKit": {
         "RealOutputs": {
-          "Drive": {
-            "open": true
-          },
           "Shooter": {
             "Is": {
               "open": true

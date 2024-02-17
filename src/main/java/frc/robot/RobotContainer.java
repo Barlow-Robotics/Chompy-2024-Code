@@ -156,8 +156,8 @@ public class RobotContainer {
         //  NamedCommands.registerCommand("Spin Up Intake Flywheel", Commands.print("*******************************Go to Spin Up Intake Flywheel"));
 
         autoChooser = AutoBuilder.buildAutoChooser();
-        autoChooser.setDefaultOption("Right-Side Straight-Line Auto",
-                new PathPlannerAuto("Right-Side Straight-Line Auto"));
+        autoChooser.setDefaultOption("Right; Straight",
+                new PathPlannerAuto("Right; Straight"));
         Shuffleboard.getTab("Auto").add("Path Name", autoChooser);
 
         configureBindings();
@@ -210,8 +210,8 @@ public class RobotContainer {
         // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be
         // `Commands.none()`
         // SmartDashboard.putData("Auto Mode", autoChooser);
-        autoChooser.setDefaultOption("Right-Side Straight-Line Auto", new PathPlannerAuto("Right-Side Straight-Line Auto"));
-        Shuffleboard.getTab("Match").add("Path Name", autoChooser);
+        // autoChooser.setDefaultOption("Right-Side Straight-Line Auto", new PathPlannerAuto("Right-Side Straight-Line Auto"));
+        // Shuffleboard.getTab("Match").add("Path Name", autoChooser);
 
         configureBindings();
 

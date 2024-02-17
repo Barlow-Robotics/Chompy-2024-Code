@@ -16,18 +16,24 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "setShooterPosSpeaker"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "Go to speaker from left"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "setShooterPosSpeaker"
+                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setShooterPosSpeaker"
           }
         },
         {

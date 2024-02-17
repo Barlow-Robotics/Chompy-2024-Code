@@ -111,21 +111,13 @@ public class Constants {
                 new Translation2d(-WheelBase / 2, TrackWidth / 2), // back left
                 new Translation2d(-WheelBase / 2, -TrackWidth / 2) // back right
         );
-        public static final double WheelRadius = Units.inchesToMeters(2.0);
-        public static final double WheelCircumference = 2.0 * WheelRadius * Math.PI;
-        public static final double GearRatio = 6.75;
-        public static final double VelocityConversionFactor = WheelCircumference / Constants.SecondsPerMinute / GearRatio;
-
-
-        /* UNUSED */ public static final double MaxAcceleration = Units.feetToMeters(2); // m/sec^2 from Mr. K's spreadsheet
-        // /* UNUSED */  public static final double MaxAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
+        public static final double MaxAcceleration = Units.feetToMeters(2); // m/sec^2 from Mr. K's spreadsheet
+        // public static final double MaxAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
         public static final double MaxDriveableVelocity = 0.5; // m/s? (CHANGE if this is the wrong unit)
        // public static final double MaxDriveableVelocity = 3.6; // m/s? (CHANGE if this is the wrong unit)
-        public static final double MaxModuleSpeed = 4.5; // M/S
-        public static final double MaxRPM = 5820;
-        public static final double MaxVelocityPerSecond = MaxRPM * VelocityConversionFactor;
 
-        public static final double PhysicalMaxSpeedMetersPerSecond = Units.feetToMeters(15.1); // 15.1 f/s from Mr. K's spreadsheet
+        public static final double PhysicalMaxSpeedMetersPerSecond = Units.feetToMeters(15.1); // 15.1 f/s from Mr. K's
+                                                                                               // spreadsheet
         public static final double PhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI; // CHANGE
 
         public static final double FrontLeftMagnetOffsetInRadians = 1.5171039327979088;
@@ -139,18 +131,23 @@ public class Constants {
         public static final Translation2d blModuleOffset = new Translation2d(-0.4, 0.4);
         public static final Translation2d brModuleOffset = new Translation2d(-0.4, -0.4);
 
-
+        public static final double maxModuleSpeed = 4.5; // M/S
 
         public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
                 new PIDConstants(5.0, 0, 0), // Translation constants
                 new PIDConstants(5.0, 0, 0), // Rotation constants
-                MaxModuleSpeed,
+                maxModuleSpeed,
                 flModuleOffset.getNorm(), // Drive base radius (distance from center to furthest module)
                 new ReplanningConfig());
 
-        /* SWERVE TURN MOTOR */
-        public static final double TurnFFks = 0; // CHANGE
-        public static final double TurnFFkv = 0.4; // CHNAGE
+        public static final double WheelRadius = Units.inchesToMeters(2.0);
+        public static final double WheelCircumference = 2.0 * WheelRadius * Math.PI;
+        public static final double GearRatio = 6.75;
+        public static final double VelocityConversionFactor = WheelCircumference / Constants.SecondsPerMinute
+                / GearRatio;
+
+        public static final double MaxRPM = 5820;
+        public static final double MaxVelocityPerSecond = MaxRPM * VelocityConversionFactor;
 
         /* DRIVE ENCODER */
         public static final double DriveKP = 0.04; // REQUIRES TUNING
@@ -320,8 +317,7 @@ public class Constants {
         public static final String kPoseCameraName = "Global_Shutter_Camera";
         public static final String kTargetCameraName = "Arducam_OV9281_USB_Camera";
 
-        // Do we need to set a reference pose? (with setReferencePose() on a PhotonPoseEstimator object)
-        public static final PoseStrategy kPrimaryVisionStrategy = PoseStrategy.CLOSEST_TO_REFERENCE_POSE; 
+        public static final PoseStrategy kPrimaryVisionStrategy = PoseStrategy.CLOSEST_TO_REFERENCE_POSE;
         public static final PoseStrategy kFallbackVisionStrategy = PoseStrategy.LOWEST_AMBIGUITY;
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kRobotToPoseCam =
@@ -397,7 +393,7 @@ public class Constants {
         public static final int SliderC = 6;
         public static final int ButtonD = 2;
         public static final int ButtonA = 1;
-        public static final double ForwardAxisAttenuation = 1.0;
+        public static final double FowardAxisAttenuation = 1.0;
         public static final double LateralAxisAttenuation = 1.0;
         public static final double YawAxisAttenuation = 0.6;
     }
@@ -405,23 +401,24 @@ public class Constants {
     public final class XboxControllerConstants {
         public static final int LeftStickX = 0;
         public static final int LeftStickY = 1;
-        public static final int LeftTrigger = 2; // Auto Align
+        public static final int LeftTrigger = 2;
         public static final int RightTrigger = 4;
         public static final int RightStickX = 4;
         public static final int RightStickY = 5;
         // Angle Trap?
 
-        public static final int ButtonA = 1; // Shoot or Intake
-        public static final int ButtonB = 2; // Move to Trap
-        public static final int ButtonX = 3;
-        public static final int ButtonY = 4; // Move to Source + LED H Source
+        // need to CHANGE these comments b/c they're not right
+        public static final int ButtonA = 1; // Shoot Trap
+        public static final int ButtonB = 2; // Climb
+        public static final int ButtonX = 3; // Auto Align
+        public static final int ButtonY = 4; // Angle Speaker
         public static final int LeftBumper = 5; // Move to Amp
-        public static final int RightBumper = 6; // Move to Speaker
+        public static final int RightBumper = 6; // Shoot Speaker
         // public static final int BackButton = 7;
-        public static final int StartButton = 8;
-        public static final int LeftStick = 9;
-        public static final int RightStick = 10; // Move to Floor + LED H Floor
-        public static final int WindowButton = 7;
+        public static final int StartButton = 8; // Angle Amp
+        public static final int LeftStick = 9; // Angle Source
+        public static final int RightStick = 10; // Source Intake
+        public static final int WindowButton = 7; // Angle Floor
 
         public static final double ForwardAxisAttenuation = -0.5;
         public static final double LateralAxisAttenuation = 0.5;

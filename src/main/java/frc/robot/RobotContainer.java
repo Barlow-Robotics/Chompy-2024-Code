@@ -141,12 +141,12 @@ public class RobotContainer {
         // NamedCommands.registerCommand("Shoot Speaker", Commands.print("***********************************Shoot into Speaker"));                
         // NamedCommands.registerCommand("Shoot Amp", Commands.print("*******************************Shoot into Amp"));
 
-        NamedCommands.registerCommand("Start Shooter", startShooterIntakeCmd);
-        NamedCommands.registerCommand("Stop Shooter", stopShooterIntakeCmd);
+        NamedCommands.registerCommand("startShooterIntake", startShooterIntakeCmd);
+        NamedCommands.registerCommand("stopShooterIntake", stopShooterIntakeCmd);
         
-        NamedCommands.registerCommand("Move to Amp Position", setShooterPosAmpCmd);
-        NamedCommands.registerCommand("Move to Speaker Position", setShooterPosSpeakerCmd); 
-        NamedCommands.registerCommand("Move to Intake Position", setShooterPosFloorIntakeCmd);
+        NamedCommands.registerCommand("setShooterPosAmp", setShooterPosAmpCmd);
+        NamedCommands.registerCommand("setShooterPosSpeaker", setShooterPosSpeakerCmd); 
+        NamedCommands.registerCommand("setShooterPosFloorIntake", setShooterPosFloorIntakeCmd);
 
         //NamedCommands.registerCommand("Floor Intake", Commands.print("*******************************Activate Floor Intake"));
         // NamedCommands.registerCommand("Floor Intake", setShooterPosFloorIntakeCmd);

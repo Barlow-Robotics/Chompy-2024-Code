@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5167946076632897,
-      "y": 7.615215100800572
+      "x": 0.490784250087019,
+      "y": 7.039008480794739
     },
-    "rotation": 90.0
+    "rotation": -179.3435760470127
   },
   "command": {
     "type": "sequential",
@@ -18,13 +18,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Move to Amp Position"
+                  "name": "setShooterPosSpeaker"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Score In Amp"
+                  "pathName": "Go to speaker from left"
                 }
               }
             ]
@@ -37,7 +37,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Start Shooter"
+                  "name": "startShooterIntake"
                 }
               },
               {
@@ -56,19 +56,19 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Stop Shooter"
+                  "name": "stopShooterIntake"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Move to Intake Position"
+                  "name": "setShooterPosFloorIntake"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Semi-Circle Around Note"
+                  "pathName": "Speaker to side-midpoint (SSM)"
                 }
               }
             ]

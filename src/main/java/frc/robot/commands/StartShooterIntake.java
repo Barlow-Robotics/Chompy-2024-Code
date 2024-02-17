@@ -46,7 +46,9 @@ public class StartShooterIntake extends Command {
     @Override
     public void execute() {
 
-        // Check to make sure you don't accidentally try to intake a second note
+        // First time through, this checks to make sure you don't accidentally try to intake a second note
+        // In subsequent passes, this checks to see if you got the note you intended to intake
+
         if ((shooterMountSub.getShooterPosState() == ShooterMountState.SourceIntake ||
                 shooterMountSub.getShooterPosState() == ShooterMountState.FloorIntake)
                 && shooterSub.isNoteLoaded()) {
@@ -58,18 +60,18 @@ public class StartShooterIntake extends Command {
         shooterSub.startFlywheels(desiredFlywheelRPM);
         if (shooterMountSub.getShooterPosState() == ShooterMountState.FloorIntake) {
             floorIntakeSub.start();
-            if (shooterSub.isNoteLoaded()) { // did we get the note we wanted
-                shooterSub.stop();
-                floorIntakeSub.stop();
-            }
+            // if (shooterSub.isNoteLoaded()) { // did we get the note we wanted
+            //     shooterSub.stop();           // don't need these 3 lines b/c the above will catch it
+            //     floorIntakeSub.stop();
+            // }
         } else if (shooterMountSub.getShooterPosState() == ShooterMountState.SourceIntake) {
             if (shooterSub.isNoteLoaded()) { // did we get the note we wanted
                 shooterSub.stop();
             }
         } else {
-            floorIntakeSub.stop();
+            floorIntakeSub.stop();  // why is this needed?
         }
-        shooterSub.startIndex(desiredIndexRPM);
+        shooterSub.startIndex(desiredIndexRPM);  // does this restart things when it shouldnt?  e.g. after you've decided to stop it above 
     }
 
     @Override

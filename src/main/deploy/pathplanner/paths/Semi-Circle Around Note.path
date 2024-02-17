@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.12,
-        "y": 6.1
+        "x": 1.84,
+        "y": 7.57
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.828093984891674,
-        "y": 6.349080776865257
-      },
-      "isLocked": false,
-      "linkedName": "shoot-speaker-right"
-    },
-    {
-      "anchor": {
-        "x": 5.328474250698502,
-        "y": 6.760317778448057
-      },
-      "prevControl": {
-        "x": 5.3335492999111,
-        "y": 6.419907488252477
-      },
-      "nextControl": {
-        "x": 5.309883080486076,
-        "y": 8.007325518073033
+        "x": 1.5137395459976106,
+        "y": 6.168730420794175
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.5931294038514,
-        "y": 7.4330238290106205
+        "x": 3.644273071852065,
+        "y": 6.396085105766703
       },
       "prevControl": {
-        "x": 8.546764866967234,
-        "y": 7.244466559245619
+        "x": 3.205956977627284,
+        "y": 6.146017489890731
+      },
+      "nextControl": {
+        "x": 4.240744548048036,
+        "y": 6.736383356174674
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.644273071852065,
+        "y": 7.445701211989047
+      },
+      "prevControl": {
+        "x": 3.8151885898070046,
+        "y": 7.122431778443601
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,18 +46,18 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.5,
-      "rotationDegrees": 0,
-      "rotateFast": true
+      "waypointRelativePos": 0.0,
+      "rotationDegrees": 90.03868964052788,
+      "rotateFast": false
     },
     {
       "waypointRelativePos": 0.4,
-      "rotationDegrees": -165.0347575993066,
-      "rotateFast": true
+      "rotationDegrees": 166.7384849081507,
+      "rotateFast": false
     },
     {
-      "waypointRelativePos": 0,
-      "rotationDegrees": -155.45956596905495,
+      "waypointRelativePos": 1.2,
+      "rotationDegrees": -158.56137429196343,
       "rotateFast": false
     }
   ],
@@ -71,11 +71,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -158.76382201932793,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Speaker",
+  "folder": "Amp",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

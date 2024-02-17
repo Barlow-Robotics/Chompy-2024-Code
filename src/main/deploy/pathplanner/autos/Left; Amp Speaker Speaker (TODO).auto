@@ -12,15 +12,41 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Score In Amp"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "setShooterPosAmp"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Score In Amp"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "Shoot Amp"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "startShooterIntake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.75
+                }
+              }
+            ]
           }
         },
         {

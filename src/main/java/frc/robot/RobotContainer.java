@@ -146,7 +146,7 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("Move to Amp Position", setShooterPosAmpCmd);
         NamedCommands.registerCommand("Move to Speaker Position", setShooterPosSpeakerCmd); 
-        // NamedCommands.registerCommand("Move to Intake Position", setShooterPosFloorIntakeCmd);
+        NamedCommands.registerCommand("Move to Intake Position", setShooterPosFloorIntakeCmd);
 
         //NamedCommands.registerCommand("Floor Intake", Commands.print("*******************************Activate Floor Intake"));
         // NamedCommands.registerCommand("Floor Intake", setShooterPosFloorIntakeCmd);

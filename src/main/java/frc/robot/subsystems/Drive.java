@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -22,6 +23,7 @@ import frc.robot.Constants.VisionConstants;
 import org.littletonrobotics.junction.Logger;
 import java.lang.Math;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -111,7 +113,12 @@ public class Drive extends SubsystemBase {
                         frontRight.getPosition(),
                         backLeft.getPosition(),
                         backRight.getPosition()
-                });
+        });
+
+        // Not sure if this right (for Kinahan's note in the 2-11 Code Review:
+        // "The position estimation with vision is never updated. This probably needs
+        // to be done in periodic. Need to look at an example from photonvision.")
+        poseEstimator.addVisionMeasurement(getPoseWithVision(), Timer.getFPGATimestamp());
 
         Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
         SwerveModuleState[] swerveModuleActualStates = new SwerveModuleState[] { frontLeft.getState(),
@@ -154,20 +161,22 @@ public class Drive extends SubsystemBase {
                 pose);
     }
 
-    // public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    //     var swerveModuleDesiredStates = DriveConstants.kinematics.toSwerveModuleStates(
-    //             fieldRelative
-    //                     ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
-    //                             navX.getRotation2d())
-    //                     : new ChassisSpeeds(xSpeed, ySpeed, rot));
-    //     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleDesiredStates,
-    //             DriveConstants.MaxDriveableVelocity);
-    //     frontLeft.setDesiredState(swerveModuleDesiredStates[0]);
-    //     frontRight.setDesiredState(swerveModuleDesiredStates[1]);
-    //     backLeft.setDesiredState(swerveModuleDesiredStates[2]);
-    //     backRight.setDesiredState(swerveModuleDesiredStates[3]);
+    // public void drive(double xSpeed, double ySpeed, double rot, boolean
+    // fieldRelative) {
+    // var swerveModuleDesiredStates =
+    // DriveConstants.kinematics.toSwerveModuleStates(
+    // fieldRelative
+    // ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
+    // navX.getRotation2d())
+    // : new ChassisSpeeds(xSpeed, ySpeed, rot));
+    // SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleDesiredStates,
+    // DriveConstants.MaxDriveableVelocity);
+    // frontLeft.setDesiredState(swerveModuleDesiredStates[0]);
+    // frontRight.setDesiredState(swerveModuleDesiredStates[1]);
+    // backLeft.setDesiredState(swerveModuleDesiredStates[2]);
+    // backRight.setDesiredState(swerveModuleDesiredStates[3]);
 
-    //     Logger.recordOutput("Drive/StatesDesired", swerveModuleDesiredStates);
+    // Logger.recordOutput("Drive/StatesDesired", swerveModuleDesiredStates);
 
     // }
 

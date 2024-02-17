@@ -54,7 +54,7 @@ public class SwerveModule {
     private final CANSparkMax turnMotor;
     private final CANcoder turnEncoder;
     public final ProfiledPIDController turnPIDController;
-    private final SimpleMotorFeedforward TurnFF = new SimpleMotorFeedforward(0, 0.4); // Need to change these #'s
+    private final SimpleMotorFeedforward TurnFF = new SimpleMotorFeedforward(DriveConstants.TurnFFks, DriveConstants.TurnFFkv);
 
     private String swerveName;
 

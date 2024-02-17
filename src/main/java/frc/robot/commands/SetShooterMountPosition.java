@@ -90,10 +90,6 @@ public class SetShooterMountPosition extends Command {
             shooterMountSub.setShooterPosState(desiredState);
             return true;
         }
-        if(shooterMountSub.isAtBottom() && desiredHeight != 0/*  hall effect is true */) {
-            shooterMountSub.stop();
-            shooterMountSub.setBasePosition(0);
-        }
         return false;        
     }
 }

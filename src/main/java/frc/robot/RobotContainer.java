@@ -255,8 +255,7 @@ public class RobotContainer {
         moveToFloorButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // station
         moveToFloorButton.onTrue(setShooterPosFloorIntakeCmd);
 
-        moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button on
-                                                                                                    // mantis controller
+        moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button on mantis controller
         moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button on mantis controller
         moveToTrapButton.onTrue(setShooterPosTrapCmd);
 
@@ -278,14 +277,14 @@ public class RobotContainer {
         // climbButton.onTrue(climbCmd);
 
         /********************* LED BINDINGS ************************************* */
-
-        LEDHumanSourceButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper);
+        LEDHumanSourceButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY);
         LEDHumanSourceButton.onTrue(new InstantCommand(() -> underglowSub.LEDHumanSource = true))
                 .onFalse(new InstantCommand(() -> underglowSub.LEDHumanSource = false));
 
-        LEDHumanFloorButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX);
+        LEDHumanFloorButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick);
         LEDHumanFloorButton.onTrue(new InstantCommand(() -> underglowSub.LEDHumanFloor = true))
                 .onFalse(new InstantCommand(() -> underglowSub.LEDHumanFloor = false));
+        
         shootIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home
         shootIntakeButton = new JoystickButton(driverController, LogitechExtreme3DConstants.Trigger);
         shootIntakeButton.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);

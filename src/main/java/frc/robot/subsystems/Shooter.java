@@ -125,7 +125,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isNoteLoaded() {
-        return breakBeam.get();
+        return !breakBeam.get();
     }
 
     /* LOGGING */

@@ -15,10 +15,6 @@ import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.ElectronicsIDs;
-//import frc.robot.Constants.LogitechDAConstants;
-import frc.robot.Constants.LogitechExtreme3DConstants;
-//import frc.robot.Constants.RadioMasterConstants;
-import frc.robot.commands.DriveRobot;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -51,8 +47,7 @@ public class Robot extends LoggedRobot {
             Logger.addDataReceiver(new NT4Publisher());
             // Publish data to NetworkTables
             // CHANGE - leaks below
-            /* PowerDistribution pdp = */ new PowerDistribution(1, ModuleType.kRev); // Enables power distribution
-                                                                                     // logging
+            new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
         } else {
             Logger.addDataReceiver(new WPILOGWriter(""));
             Logger.addDataReceiver(new NT4Publisher());

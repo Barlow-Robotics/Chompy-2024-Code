@@ -18,12 +18,10 @@ import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElectronicsIDs;
-import frc.robot.Constants.LogitechExtreme3DConstants;
 import frc.robot.Constants.VisionConstants;
 import org.littletonrobotics.junction.Logger;
 import java.lang.Math;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 
 import com.kauailabs.navx.frc.AHRS;
 

@@ -168,12 +168,8 @@ public class ShooterMount extends SubsystemBase {
     }
 
     private boolean isWithinHeightTolerance(double desiredHeight) {
-        boolean aboveLowerLimit = getHeightInches() >= desiredHeight - ShooterMountConstants.HeightTolerance ;
-        boolean belowUpperLimit = getHeightInches() <= desiredHeight + ShooterMountConstants.HeightTolerance ;
-        return (aboveLowerLimit && belowUpperLimit) ;
-
-        // return (getHeightInches() >= desiredHeight - ShooterMountConstants.HeightTolerance) &&
-        //         (getHeightInches() <= desiredHeight - ShooterMountConstants.HeightTolerance);
+        return (getHeightInches() >= desiredHeight - ShooterMountConstants.HeightTolerance) &&
+                (getHeightInches() <= desiredHeight - ShooterMountConstants.HeightTolerance);
     }
 
     public boolean isWithinPositionTolerance(double desiredAngle, double desiredHeight) {

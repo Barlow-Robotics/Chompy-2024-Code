@@ -137,15 +137,19 @@ public class RobotContainer {
         // setShooterAmpAngleCmd
         // );  
 
+      
+
         // NamedCommands.registerCommand("Shoot Speaker", Commands.print("***********************************Shoot into Speaker"));                
         // NamedCommands.registerCommand("Shoot Amp", Commands.print("*******************************Shoot into Amp"));
 
-        NamedCommands.registerCommand("startShooterIntake", startShooterIntakeCmd);
-        NamedCommands.registerCommand("stopShooterIntake", stopShooterIntakeCmd);
+        var shootWithTimeout = new StartShooterIntake(shooterSub, floorIntakeSub, shooterMountSub).withTimeout(0.75);
+
+        NamedCommands.registerCommand("Start Shooter", shootWithTimeout);
+        NamedCommands.registerCommand("Stop Shooter", stopShooterIntakeCmd);
         
-        NamedCommands.registerCommand("setShooterPosAmp", setShooterPosAmpCmd);
-        NamedCommands.registerCommand("setShooterPosSpeaker", setShooterPosSpeakerCmd); 
-        NamedCommands.registerCommand("setShooterPosFloorIntake", setShooterPosFloorIntakeCmd);
+        NamedCommands.registerCommand("Move to Amp Position", setShooterPosAmpCmd);
+        NamedCommands.registerCommand("Move to Speaker Position", setShooterPosSpeakerCmd); 
+        NamedCommands.registerCommand("Move to Intake Position", setShooterPosFloorIntakeCmd);
 
         //NamedCommands.registerCommand("Floor Intake", Commands.print("*******************************Activate Floor Intake"));
         // NamedCommands.registerCommand("Floor Intake", setShooterPosFloorIntakeCmd);

@@ -77,9 +77,7 @@ public class SetShooterMountPosition extends Command {
     public void execute() {
         shooterMountSub.setAngle(desiredAngle);
         shooterMountSub.setHeightInches(desiredHeight);
-        if (desiredTarget != null) {
-            visionSub.alignTo(desiredTarget);
-        }
+        visionSub.alignTo(desiredTarget);
     }
 
     @Override

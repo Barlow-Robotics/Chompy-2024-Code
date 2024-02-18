@@ -60,7 +60,7 @@ public class DriveRobot extends Command {
 
         double speedX = MathUtil.applyDeadband(yInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
         double speedY = MathUtil.applyDeadband(xInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
-        double speedRot = MathUtil.applyDeadband(rotInput.get(), 2*DeadBand) * DriveConstants.MaxDriveableVelocity;
+        double speedRot = MathUtil.applyDeadband(rotInput.get(), 2*DeadBand) * DriveConstants.MaxAngularRadiansPerSecond;
 
         driveSub.drive(speedX, speedY, speedRot, FieldRelative);   
 

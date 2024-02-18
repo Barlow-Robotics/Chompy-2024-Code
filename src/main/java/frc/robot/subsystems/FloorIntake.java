@@ -8,25 +8,11 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-
-/*
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.sim.CANcoderSimState;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.hardware.CANcoder;
-import edu.wpi.first.math.system.plant.DCMotor;
-*/
 
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -52,7 +38,7 @@ public class FloorIntake extends SubsystemBase {
 
     public FloorIntake() {
         intakeMotor = new TalonFX(ElectronicsIDs.FloorMotorID);
-        configMotor(false); // CHANGE - These true/false values may need to be flipped
+        applyMotorConfigs(InvertedValue.Clockwise_Positive);
 
         intakeMotorSim = intakeMotor.getSimState();
     }
@@ -84,12 +70,15 @@ public class FloorIntake extends SubsystemBase {
 
     /* CONFIG */
 
-    private void configMotor(boolean inverted) {
+    private void applyMotorConfigs(InvertedValue inverted) {
         // set PID Values
         TalonFXConfiguration motorConfigs = new TalonFXConfiguration();
         motorConfigs.Slot0.kP = FloorIntakeConstants.KP;
         motorConfigs.Slot0.kI = FloorIntakeConstants.KI;
         motorConfigs.Slot0.kD = FloorIntakeConstants.KD;
+
+        MotorOutputConfigs invertConfigs = new MotorOutputConfigs();
+        invertConfigs.Inverted = inverted;
 
         // set current limit
         CurrentLimitsConfigs currentLimitConfigs = motorConfigs.CurrentLimits;

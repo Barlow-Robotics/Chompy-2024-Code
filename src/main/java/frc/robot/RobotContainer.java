@@ -83,8 +83,8 @@ public class RobotContainer {
 
     /* CONTROLLERS */
 
-    public static Joystick driverController;
-    public static Joystick operatorController;
+    private static Joystick driverController;
+    private static Joystick operatorController;
 
     /* BUTTONS */
     private Trigger moveToSpeakerButton;
@@ -93,7 +93,7 @@ public class RobotContainer {
     private Trigger moveToFloorButton;
     private Trigger moveToTrapButton;
     private Trigger prepareToClimbButton; // LT added. CHANGE if not its own buttun
-    public Trigger shootButton;
+    private Trigger shootButton;
     private Trigger climbButton;
     private Trigger LEDHumanSourceButton;
     private Trigger LEDHumanFloorButton;
@@ -136,8 +136,6 @@ public class RobotContainer {
         // "Shoot Amp",
         // setShooterAmpAngleCmd
         // );  
-
-      
 
         // NamedCommands.registerCommand("Shoot Speaker", Commands.print("***********************************Shoot into Speaker"));                
         // NamedCommands.registerCommand("Shoot Amp", Commands.print("*******************************Shoot into Amp"));
@@ -263,13 +261,8 @@ public class RobotContainer {
         /******************** SHOOTER ********************/
 
         shootIntakeButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home
+        shootIntakeButton = new JoystickButton(driverController, LogitechExtreme3DConstants.Trigger);
         shootIntakeButton.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
-
-        /***************** FLOOR INTAKE *****************/
-
-        // toggleFloorIntakeButton = new JoystickButton(operatorController,
-        // XboxControllerConstants.ButtonX); // floor
-        // toggleFloorIntakeButton.onTrue(startIntakeCmd).onFalse(stopIntakeCmd);
 
         /******************** CLIMB ********************/
 
@@ -301,10 +294,6 @@ public class RobotContainer {
         // XboxControllerConstants.ButtonX); // no button on mantis controller. CHANGE
         // button binding
         // climbButton.onTrue(climbCmd);
-
-        /******************** MAX VELOCITY SWITCHER ********************/
-        /***************** AUTO ALIGN ******************/
-        autoAlignButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX);
     }
 
     private void configurePathPlannerLogging() {

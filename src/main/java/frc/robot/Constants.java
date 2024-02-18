@@ -29,7 +29,7 @@ public class Constants {
     public static final double SecondsPerMinute = 60;
     public static final double jKgMetersSquared = 0.0005;
     public static final double Neo550MaxRPM = 11000;
-    public static final double NeoMaxRPM = 5676;
+    public static final double NeoMaxRPM = 5820;
     public static final double Falcon500MaxRPM = 6300;
     public static final double KrakenX60MaxRPM = 6000;
 
@@ -98,8 +98,6 @@ public class Constants {
     /***************************************************************************/
 
     public static final class DriveConstants {
-        /** radians */
-        public static final double MaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
         public static final boolean GyroReversed = false;
 
@@ -111,15 +109,20 @@ public class Constants {
                 new Translation2d(-WheelBase / 2, TrackWidth / 2), // back left
                 new Translation2d(-WheelBase / 2, -TrackWidth / 2) // back right
         );
-        public static final double MaxAcceleration = Units.feetToMeters(2); // m/sec^2 from Mr. K's spreadsheet
-        // public static final double MaxAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
-        public static final double MaxDriveableVelocity = 0.5; // m/s? (CHANGE if this is the wrong unit)
-       // public static final double MaxDriveableVelocity = 3.6; // m/s? (CHANGE if this is the wrong unit)
 
-        public static final double PhysicalMaxSpeedMetersPerSecond = Units.feetToMeters(15.1); // 15.1 f/s from Mr. K's
-                                                                                               // spreadsheet
+        public static final double WheelRadius = Units.inchesToMeters(2.0);
+        public static final double WheelCircumference = 2.0 * WheelRadius * Math.PI;
+        public static final double GearRatio = 6.12;
+
+        public static final double VelocityConversionFactor = WheelCircumference / Constants.SecondsPerMinute / GearRatio;
+
+        public static final double MaxAngularRadiansPerSecond = Math.PI; // 1/2 rotation per second
         public static final double PhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI; // CHANGE
 
+        public static final double MaxAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
+        public static final double MaxDriveableVelocity = 3.6; // m/s
+        public static final double MaxModuleSpeed = NeoMaxRPM * VelocityConversionFactor;
+ 
         public static final double FrontLeftMagnetOffsetInRadians = 1.5171039327979088;
         public static final double FrontRightMagnetOffsetInRadians = 1.7456666082143784;
         public static final double BackLeftMagnetOffsetInRadians = -2.7626938149333;
@@ -131,30 +134,19 @@ public class Constants {
         public static final Translation2d blModuleOffset = new Translation2d(-0.4, 0.4);
         public static final Translation2d brModuleOffset = new Translation2d(-0.4, -0.4);
 
-        public static final double maxModuleSpeed = 4.5; // M/S
-
         public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
                 new PIDConstants(5.0, 0, 0), // Translation constants
                 new PIDConstants(5.0, 0, 0), // Rotation constants
-                maxModuleSpeed,
+                MaxModuleSpeed,
                 flModuleOffset.getNorm(), // Drive base radius (distance from center to furthest module)
                 new ReplanningConfig());
-
-        public static final double WheelRadius = Units.inchesToMeters(2.0);
-        public static final double WheelCircumference = 2.0 * WheelRadius * Math.PI;
-        public static final double GearRatio = 6.75;
-        public static final double VelocityConversionFactor = WheelCircumference / Constants.SecondsPerMinute
-                / GearRatio;
-
-        public static final double MaxRPM = 5820;
-        public static final double MaxVelocityPerSecond = MaxRPM * VelocityConversionFactor;
 
         /* DRIVE ENCODER */
         public static final double DriveKP = 0.04; // REQUIRES TUNING
         public static final double DriveKI = 0.0015;
         public static final double DriveKD = 0;
         public static final double DriveIZone = 0.15;
-        public static final double DriveFF = 1.0 / MaxVelocityPerSecond;
+        public static final double DriveFF = 1.0 / MaxModuleSpeed;
 
         public static final double AutoAlignKP = 0.1; //CHANGE
         public static final double AutoAlignKI = 0.0015;
@@ -176,7 +168,7 @@ public class Constants {
     }
 
     public static final class AutoConstants {
-        public static final double MaxSpeedMetersPerSecond = DriveConstants.PhysicalMaxSpeedMetersPerSecond / 4; // CHANGE
+        public static final double MaxSpeedMetersPerSecond = DriveConstants.MaxModuleSpeed / 4; // CHANGE
         public static final double MaxAngularSpeedRadiansPerSecond = DriveConstants.PhysicalMaxAngularSpeedRadiansPerSecond
                 / 10; // Default is 540 degress
         // public static final double MaxAccelerationMetersPerSecondSquared = 3;
@@ -293,18 +285,16 @@ public class Constants {
     /***************************************************************************/
 
     public static final class FloorIntakeConstants {
-        // upper = 1_ | lower = 2_
-
         /* PID CONTROLLER */
         public static final double KP = 0.5; // CHANGE
         public static final double KI = 0.1; // CHANGE
         public static final double KD = 0.1; // CHANGE
         public static final double IZone = 0.1; // CHANGE
-        public static final double FF = 1; // CHANGE
+        public static final double FF = 0.12; // CHANGE
 
         public static final int SupplyCurrentLimit = 20;
 		
-        public static final int MotorRPM = 1000;
+        public static final double MotorRPM = KrakenX60MaxRPM * 0.4;
         public static final double VelocityTolerance = 0.05; // CHANGE
     }
 

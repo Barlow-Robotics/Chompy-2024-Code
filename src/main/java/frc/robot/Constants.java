@@ -207,14 +207,14 @@ public class Constants {
         public static final double IntakeRPM = -2000; // CHANGE
         public static final double TrapRPM = 2000; // CHANGE
 
-        public static final double ShooterKP = 0.5; // An error of 1 rotation/sec results in 2V output
+        public static final double ShooterKP = 0.0; // An error of 1 rotation/sec results in 2V output
         public static final double ShooterKI = 0; 
         public static final double ShooterKD = 0; // CHANGE ?
         public static final double ShooterFF = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
 
         public static final double IndexRPM = 180; // CHANGE
 
-        public static final double IndexKP = 0.5; // CHANGE
+        public static final double IndexKP = 0.0; // CHANGE
         public static final double IndexKI = 0; // CHANGE
         public static final double IndexKD = 0; // CHANGE
         public static final double IndexIZone = 0; // CHANGE
@@ -263,24 +263,24 @@ public class Constants {
         public static final double ClimbHeight = 10; // CHANGE
         public static final double MinHeight = 0; // CHANGE
 
-        public static final double AngleKP = 0.5;
+        public static final double AngleKP = 0.0;
         public static final double AngleKI = 0;
-        public static final double AngleKD = 0.4;
+        public static final double AngleKD = 0.0;
         public static final double AngleIZone = 0;
         public static final double AngleFF = 0.11;
 
-        public static final double AngleMMCruiseVel = .25; //1.5; // CHANGE - Target cruise velocity of 1.5 rps
-        public static final double AngleMMAcceleration = 1;//3; // CHANGE - Target acceleration of 3 rps/s (0.5 seconds)
+        public static final double AngleMMCruiseVel = .1; //1.5; // CHANGE - Target cruise velocity of 1.5 rps
+        public static final double AngleMMAcceleration = .1;//3; // CHANGE - Target acceleration of 3 rps/s (0.5 seconds)
         public static final double AngleMMJerk = 10; //30; // CHANGE - Target jerk of 30 rps/s/s (0.1 seconds)
 
-        public static final double ElevatorKP = 0.5;
+        public static final double ElevatorKP = 0.0;
         public static final double ElevatorKI = 0;
-        public static final double ElevatorKD = 0.4;
+        public static final double ElevatorKD = 0.0;
         public static final double ElevatorIZone = 0;
         public static final double ElevatorFF = 0.12;
 
-        public static final double ElevatorMMCruiseVel = 40; // CHANGE - Target cruise velocity of 80 rps
-        public static final double ElevatorMMAcceleration = 80; // CHANGE - Target acceleration of 160 rps/s (0.5 seconds)
+        public static final double ElevatorMMCruiseVel = 10; // CHANGE - Target cruise velocity of 80 rps
+        public static final double ElevatorMMAcceleration = 10; // CHANGE - Target acceleration of 160 rps/s (0.5 seconds)
         public static final double ElevatorMMJerk = 800; // CHANGE - Target jerk of 1600 rps/s/s (0.1 seconds)
     }
 

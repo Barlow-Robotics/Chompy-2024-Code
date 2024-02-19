@@ -33,19 +33,6 @@ import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveModule {
-    /*********************************************************************/
-    /***************************** CONSTANTS *****************************/
-
-    private static final double WheelRadius = Units.inchesToMeters(2.0);
-    private static final double WheelCircumference = 2.0 * WheelRadius * Math.PI;
-    private static final double GearRatio = 6.75;
-    private static final double VelocityConversionFactor = WheelCircumference / Constants.SecondsPerMinute / GearRatio;
-
-    private static final double MaxRPM = 5820;
-    public static final double MaxVelocityPerSecond = MaxRPM * VelocityConversionFactor; // 4.586818358467871
-
-    /**********************************************************************/
-    /**********************************************************************/
 
     private final CANSparkMax driveMotor;
     private final RelativeEncoder driveEncoder;
@@ -120,18 +107,23 @@ public class SwerveModule {
         turnPIDController = new ProfiledPIDController(1, 0, 0, new TrapezoidProfile.Constraints(
                 DriveConstants.ModuleMaxAngularVelocity, DriveConstants.ModuleMaxAngularAcceleration));
         turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
+
+        // wpk test - current limits result in slow module rotation. need to investigate further
+        // driveMotor.setSmartCurrentLimit(DriveConstants.StallLimit, DriveConstants.FreeLimit);
+        // turnMotor.setSmartCurrentLimit(DriveConstants.StallLimit, DriveConstants.FreeLimit);
+
     }
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(
                 driveEncoder.getVelocity(),
-                new Rotation2d(turnEncoder.getAbsolutePosition().getValueAsDouble() * Math.PI));
+                new Rotation2d(turnEncoder.getAbsolutePosition().getValueAsDouble() * 2.0* Math.PI));
     }
 
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(
                 driveEncoder.getPosition(),
-                new Rotation2d(turnEncoder.getAbsolutePosition().getValueAsDouble() * Math.PI));
+                new Rotation2d(turnEncoder.getAbsolutePosition().getValueAsDouble() * 2.0 * Math.PI));
     }
 
     public double getTurnCurrent() {
@@ -147,7 +139,7 @@ public class SwerveModule {
         // Optimize the reference state to avoid spinning further than 90 degrees
 
         SwerveModuleState state = SwerveModuleState.optimize(desiredState,
-                new Rotation2d(turnEncoder.getAbsolutePosition().getValueAsDouble()));
+                new Rotation2d(turnEncoder.getAbsolutePosition().getValueAsDouble()* 2.0 * Math.PI));
 
         Logger.recordOutput(swerveName + " Drive velocity", driveMotor.getEncoder().getVelocity());
 
@@ -158,9 +150,6 @@ public class SwerveModule {
                 state.angle.getRadians());
         final double turnFF = TurnFF.calculate(turnPIDController.getSetpoint().velocity);
         turnMotor.setVoltage(turnOutput + turnFF);
-
-        driveMotor.setSmartCurrentLimit(DriveConstants.StallLimit, DriveConstants.FreeLimit);
-        turnMotor.setSmartCurrentLimit(DriveConstants.StallLimit, DriveConstants.FreeLimit);
 
         if (RobotBase.isSimulation()) {
             CANcoderSimState encoderSim = turnEncoder.getSimState();

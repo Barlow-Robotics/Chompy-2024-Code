@@ -58,6 +58,8 @@ public class StartShooterIntake extends Command {
         }
 
         shooterSub.startFlywheels(desiredFlywheelRPM);
+        shooterSub.startIndex(desiredIndexRPM); 
+
         if (shooterMountSub.getShooterPosState() == ShooterMountState.FloorIntake) {
             floorIntakeSub.start();
             // if (shooterSub.isNoteLoaded()) { // did we get the note we wanted
@@ -71,7 +73,6 @@ public class StartShooterIntake extends Command {
         } else {
             floorIntakeSub.stop();  // why is this needed?
         }
-        shooterSub.startIndex(desiredIndexRPM);  // does this restart things when it shouldnt?  e.g. after you've decided to stop it above 
     }
 
     @Override
@@ -83,11 +84,7 @@ public class StartShooterIntake extends Command {
     }
 
     @Override
-    public boolean isFinished() {// Need to CHANGE this
-        if(!shooterSub.isNoteLoaded() && shooterSub.isWithinVelocityTolerance(desiredFlywheelRPM)) {
-            return true; // note is gone i think
-        } else {
-            return false;
-        }
+    public boolean isFinished() {
+        return false;
     }
 }

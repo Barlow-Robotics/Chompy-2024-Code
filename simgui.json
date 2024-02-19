@@ -78,16 +78,13 @@
     "transitory": {
       "AdvantageKit": {
         "RealOutputs": {
-          "Drive": {
+          "FloorIntake": {
             "open": true
           },
           "Shooter": {
             "Is": {
               "open": true
             }
-          },
-          "ShooterMount": {
-            "open": true
           },
           "ShooterPosition": {
             "Amp": {

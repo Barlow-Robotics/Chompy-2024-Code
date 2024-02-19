@@ -178,6 +178,7 @@ public class Constants {
     /***************************************************************************/
     /***************************************************************************/
     /***************************************************************************/
+
     public static final class UnderGlowConstants {
         public static final SerialPort.Port Port = SerialPort.Port.kUSB1;
         public static final int BlueAlliance = 0; // 0b00000000
@@ -191,11 +192,14 @@ public class Constants {
         public static final int RobotSource = 128; // 0b10000000
     }
 
+    /***************************************************************************/
+    /***************************************************************************/
+    /***************************************************************************/
+
     public static final class ShooterConstants {
         public static final double FlywheelGearRatio = 1.5; // 36 gears on motor, 24 on rollers --> 1.5:1 (as of 2/15)
         public static final double IndexGearRatio = 1; // 1:1 ratio on Index per WK as of 2/15
 
-        
         public static final double VelocityTolerance = 0.05; // CHANGE
 
         public static final double SpeakerRPM = 4000; // CHANGE
@@ -286,15 +290,17 @@ public class Constants {
 
     public static final class FloorIntakeConstants {
         /* PID CONTROLLER */
-        public static final double KP = 0.5; // CHANGE
-        public static final double KI = 0.1; // CHANGE
-        public static final double KD = 0.1; // CHANGE
-        public static final double IZone = 0.1; // CHANGE
-        public static final double FF = 0.12; // CHANGE
+        public static final double KP = 0.2; 
+        public static final double KI = 0; 
+        public static final double KD = 0.01; 
+        public static final double IZone = 0; 
+        // public static final double FF = 1 / KrakenX60MaxRPM / 60; 
+        public static final double FF = 0.13; // KV
 
         public static final int SupplyCurrentLimit = 20;
 		
-        public static final double MotorRPM = KrakenX60MaxRPM * 0.4;
+        // public static final double MotorRPM = KrakenX60MaxRPM * 0.4;
+        public static final double MotorRPM = 2500;
         public static final double VelocityTolerance = 0.05; // CHANGE
     }
 

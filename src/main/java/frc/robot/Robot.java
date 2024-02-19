@@ -192,7 +192,7 @@ public class Robot extends LoggedRobot {
 
         var simPose = robotContainer.driveSub.getPoseWithoutVision();
 
-        robotContainer.visionSub.simulationPeriodic(simPose);
+        // robotContainer.visionSub.simulationPeriodic(simPose);
 
         double elevatorTop = robotContainer.shooterMountSub.getHeightInches()*0.0254 ;
         double shooterPitchAngle = -robotContainer.shooterMountSub.getAngleDegrees()+65 ;

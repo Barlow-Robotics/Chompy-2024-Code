@@ -49,6 +49,7 @@ public class FloorIntake extends SubsystemBase {
     }
 
     public void start() {
+        Logger.recordOutput("FloorIntake/RPMDesired", FloorIntakeConstants.MotorRPM);
         intakeMotor.setControl(voltageVelocity.withVelocity(FloorIntakeConstants.MotorRPM / 60));
     }
 
@@ -63,7 +64,7 @@ public class FloorIntake extends SubsystemBase {
     /* LOGGING */
 
     private void logData() {
-        Logger.recordOutput("FloorIntake/ActualRPM", intakeMotor.getVelocity().getValue());
+        Logger.recordOutput("FloorIntake/RPMActual", intakeMotor.getVelocity().getValue() * 60);
         Logger.recordOutput("FloorIntake/IsIntaking", isIntaking());
         Logger.recordOutput("FloorIntake/CurrentSupply", intakeMotor.getSupplyCurrent().getValue());
     }
@@ -73,6 +74,7 @@ public class FloorIntake extends SubsystemBase {
     private void applyMotorConfigs(InvertedValue inverted) {
         // set PID Values
         TalonFXConfiguration motorConfigs = new TalonFXConfiguration();
+        motorConfigs.Slot0.kV = FloorIntakeConstants.FF;
         motorConfigs.Slot0.kP = FloorIntakeConstants.KP;
         motorConfigs.Slot0.kI = FloorIntakeConstants.KI;
         motorConfigs.Slot0.kD = FloorIntakeConstants.KD;
@@ -88,7 +90,6 @@ public class FloorIntake extends SubsystemBase {
         StatusCode status = StatusCode.StatusCodeNotInitialized;
 
         // Try five times to apply the Intake motor config
-        //    Why five times?
         for (int i = 0; i < 5; ++i) {
             status = intakeMotor.getConfigurator().apply(motorConfigs, 0.05);
             if (status.isOK())
@@ -97,6 +98,28 @@ public class FloorIntake extends SubsystemBase {
         if (!status.isOK()) {
             System.out.println(
                     "Could not apply motor output configs to intake motor, with error code: " + status.toString());
+        }
+
+        // Try five times to apply the Intake motor invert config
+        for (int i = 0; i < 5; ++i) {
+            status = intakeMotor.getConfigurator().apply(invertConfigs, 0.05);
+            if (status.isOK())
+                break;
+        }
+        if (!status.isOK()) {
+            System.out.println(
+                    "Could not apply invert configs to intake motor, with error code: " + status.toString());
+        }
+
+        // Try five times to apply the Intake motor current config
+        for (int i = 0; i < 5; ++i) {
+            status = intakeMotor.getConfigurator().apply(currentLimitConfigs, 0.05);
+            if (status.isOK())
+                break;
+        }
+        if (!status.isOK()) {
+            System.out.println(
+                    "Could not apply current limit configs to intake motor, with error code: " + status.toString());
         }
     }
 

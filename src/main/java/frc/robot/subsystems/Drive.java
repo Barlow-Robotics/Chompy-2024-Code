@@ -63,11 +63,11 @@ public class Drive extends SubsystemBase {
 
     private final SwerveDriveOdometry odometry;
 
-    // private final SwerveDrivePoseEstimator poseEstimator;
+    private final SwerveDrivePoseEstimator poseEstimator;
 
     private SwerveModulePosition[] previousPositions = new SwerveModulePosition[4];
 
-    public Drive(/*Vision visionSub*/) {
+    public Drive(Vision visionSub) {
 
         navX = new AHRS(Port.kMXP);
         new Thread(() -> {
@@ -88,18 +88,18 @@ public class Drive extends SubsystemBase {
                         backRight.getPosition()
                 });
 
-        // poseEstimator = new SwerveDrivePoseEstimator(
-        //         DriveConstants.kinematics,
-        //         navX.getRotation2d(),
-        //         new SwerveModulePosition[] {
-        //                 frontLeft.getPosition(),
-        //                 frontRight.getPosition(),
-        //                 backLeft.getPosition(),
-        //                 backRight.getPosition() },
-        //         getPoseWithoutVision(),
-        //         visionSub.getEstimationStdDevs(getPoseWithoutVision()), // not sure if these last two arguments are
-        //                                                                 // correct, might need to CHANGE! -Ang
-        //         VisionConstants.kMultiTagStdDevs);
+        poseEstimator = new SwerveDrivePoseEstimator(
+                DriveConstants.kinematics,
+                navX.getRotation2d(),
+                new SwerveModulePosition[] {
+                        frontLeft.getPosition(),
+                        frontRight.getPosition(),
+                        backLeft.getPosition(),
+                        backRight.getPosition() },
+                getPoseWithoutVision(),
+                visionSub.getEstimationStdDevs(getPoseWithoutVision()), // not sure if these last two arguments are
+                                                                        // correct, might need to CHANGE! -Ang
+                VisionConstants.kMultiTagStdDevs);
     }
 
     @Override

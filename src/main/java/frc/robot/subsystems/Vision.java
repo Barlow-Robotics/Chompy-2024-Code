@@ -183,8 +183,12 @@ public class Vision extends SubsystemBase {
          return poseCamera.getLatestResult();
     } 
 
-    public PhotonPipelineResult getLatestTrackingResult() {
-         return targetCamera.getLatestResult();
+    public Optional<PhotonPipelineResult> getLatestTrackingResult() {
+        if ( targetCamera.isConnected()) {
+         return Optional.of(targetCamera.getLatestResult());
+        } else {
+            return Optional.empty() ;
+        }
     } 
 
     public void periodic() {
@@ -221,12 +225,14 @@ public class Vision extends SubsystemBase {
         // TODO: feed this pose estimate back to the combined pose estimator in drive
         var poseEstimate = getEstimatedGlobalPose() ;
 
-      
         // Find all the results from the tracking camera
         var tracking_result = getLatestTrackingResult();
-        if (tracking_result.hasTargets()) {
-            allDetectedTargets  = tracking_result.getTargets();
-            currentBestTarget = tracking_result.getBestTarget();
+        if (tracking_result.isPresent()) {
+            if ( tracking_result.get().hasTargets()) {
+
+                allDetectedTargets = tracking_result.get().getTargets();
+                currentBestTarget = tracking_result.get().getBestTarget();
+            }
         }
 
          advantageKitLogging();
@@ -243,22 +249,26 @@ public class Vision extends SubsystemBase {
      *         used for estimation.
      */
     public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-        var visionEst = photonEstimator.update();
-        double latestTimestamp = poseCamera.getLatestResult().getTimestampSeconds();
-        boolean newResult = Math.abs(latestTimestamp - lastEstTimestamp) > 1e-5;
-        if (Robot.isSimulation()) {
-            visionEst.ifPresentOrElse(
-                    est -> getSimDebugField()
-                            .getObject("VisionEstimation")
-                            .setPose(est.estimatedPose.toPose2d()),
-                    () -> {
-                        if (newResult)
-                            getSimDebugField().getObject("VisionEstimation").setPoses();
-                    });
+        if (poseCamera.isConnected()) {
+            var visionEst = photonEstimator.update();
+            double latestTimestamp = poseCamera.getLatestResult().getTimestampSeconds();
+            boolean newResult = Math.abs(latestTimestamp - lastEstTimestamp) > 1e-5;
+            if (Robot.isSimulation()) {
+                visionEst.ifPresentOrElse(
+                        est -> getSimDebugField()
+                                .getObject("VisionEstimation")
+                                .setPose(est.estimatedPose.toPose2d()),
+                        () -> {
+                            if (newResult)
+                                getSimDebugField().getObject("VisionEstimation").setPoses();
+                        });
+            }
+            if (newResult)
+                lastEstTimestamp = latestTimestamp;
+            return visionEst;
+        } else {
+            return Optional.empty() ;
         }
-        if (newResult)
-            lastEstTimestamp = latestTimestamp;
-        return visionEst;
     }
 
     public Matrix<N3, N1> getEstimationStdDevs(Pose2d estimatedPose) {

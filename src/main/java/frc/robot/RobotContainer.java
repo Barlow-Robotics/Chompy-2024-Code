@@ -39,14 +39,14 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterMount;
 import frc.robot.subsystems.ShooterMount.ShooterMountState;
 import frc.robot.subsystems.Underglow;
-// import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Vision;
 
 public class RobotContainer {
 
     /* SUBSYSTEMS */
 
-    // public final Vision visionSub = new Vision();
-    public final Drive driveSub = new Drive(/* visionSub */);
+    public final Vision visionSub = new Vision();
+    public final Drive driveSub = new Drive(visionSub);
     public final Shooter shooterSub = new Shooter();
     public final ShooterMount shooterMountSub = new ShooterMount();
     public final FloorIntake floorIntakeSub = new FloorIntake();
@@ -55,15 +55,15 @@ public class RobotContainer {
     /* COMMANDS */
 
     private final SetShooterMountPosition setShooterPosSpeakerCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.Speaker);
+            ShooterMountState.Speaker, visionSub);
     private final SetShooterMountPosition setShooterPosAmpCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.Amp);
+            ShooterMountState.Amp, visionSub);
     private final SetShooterMountPosition setShooterPosSourceIntakeCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.SourceIntake);
+            ShooterMountState.SourceIntake, visionSub);
     public final SetShooterMountPosition setShooterPosFloorIntakeCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.FloorIntake);
+            ShooterMountState.FloorIntake, visionSub);
     private final SetShooterMountPosition setShooterPosTrapCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.Trap);
+            ShooterMountState.Trap, visionSub);
 
     private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub,
             shooterMountSub);

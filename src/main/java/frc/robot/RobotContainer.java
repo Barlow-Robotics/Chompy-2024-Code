@@ -13,20 +13,18 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElectronicsIDs;
 import frc.robot.Constants.LogitechExtreme3DConstants;
-//import frc.robot.Constants.LogitechDAConstants;
-//import frc.robot.Constants.RadioMasterConstants;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.DriveRobot;
 // import frc.robot.commands.DriveRobotWithAlign;
@@ -71,10 +69,12 @@ public class RobotContainer {
 
     // private final Climb climbCmd = new Climb(shooterPositionSub);
     // LT Climb
-    // private final SetShooterMountPosition prepareToClimbCmd = new SetShooterMountPosition(shooterMountSub,
-    //         ShooterMountState.PreClimb);
-    // private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterMountSub,
-    //         ShooterMountState.Climb);
+    // private final SetShooterMountPosition prepareToClimbCmd = new
+    // SetShooterMountPosition(shooterMountSub,
+    // ShooterMountState.PreClimb);
+    // private final SetShooterMountPosition climbCmd = new
+    // SetShooterMountPosition(shooterMountSub,
+    // ShooterMountState.Climb);
 
     /* CONTROLLERS */
 
@@ -82,12 +82,13 @@ public class RobotContainer {
     private static Joystick operatorController;
 
     /* BUTTONS */
+
     private Trigger moveToSpeakerButton;
     private Trigger moveToAmpButton;
     private Trigger moveToSourceButton;
     private Trigger moveToFloorButton;
     private Trigger moveToTrapButton;
-    // private Trigger prepareToClimbButton; // LT added. CHANGE if not its own buttun
+    // private Trigger prepareToClimbButton; // LT added. CHANGE if not its own button
     // private Trigger climbButton;
     private Trigger LEDHumanSourceButton;
     private Trigger LEDHumanFloorButton;
@@ -97,134 +98,17 @@ public class RobotContainer {
 
     /* AUTO */
 
-    private final SendableChooser<Command> autoChooser;
+    private SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        AutoBuilder.configureHolonomic(
-                driveSub::getPoseWithoutVision, // Robot pose supplier
-                // driveSub::getPoseWithVision, // Robot pose supplier
-                driveSub::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-                driveSub::getSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                driveSub::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-                new HolonomicPathFollowerConfig(
-                        new PIDConstants(5, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(5, 0.0, 0.0), // Rotation PID constants
-                        4.59, // Max module speed, in m/s
-                        0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-                        new ReplanningConfig() // Default path replanning config. See the API for the options here
-                ),
-                () -> {
-                    var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
-                    }
-                    return false;
-                },
-                driveSub);
-        configurePathPlannerLogging();
-        // NamedCommands.registerCommand(
-        // "Shoot Speaker",
-        // setShooterSpeakerAngleCmd
-        // );
+        configurePathPlanner();
+       
 
-        // NamedCommands.registerCommand(
-        // "Shoot Amp",
-        // setShooterAmpAngleCmd
-        // );
+        configureButtonBindings();
 
-        // NamedCommands.registerCommand("Shoot Speaker",
-        // Commands.print("***********************************Shoot into Speaker"));
-        // NamedCommands.registerCommand("Shoot Amp",
-        // Commands.print("*******************************Shoot into Amp"));
+       
 
-        var shootWithTimeout = new StartShooterIntake(shooterSub, floorIntakeSub, shooterMountSub).withTimeout(0.75);
-
-        NamedCommands.registerCommand("Start Shooter", shootWithTimeout);
-        NamedCommands.registerCommand("Stop Shooter", stopShooterIntakeCmd);
-
-        NamedCommands.registerCommand("Move to Amp Position", setShooterPosAmpCmd);
-        NamedCommands.registerCommand("Move to Speaker Position", setShooterPosSpeakerCmd);
-        NamedCommands.registerCommand("Move to Intake Position", setShooterPosFloorIntakeCmd);
-
-        // NamedCommands.registerCommand("Floor Intake",
-        // Commands.print("*******************************Activate Floor Intake"));
-        // NamedCommands.registerCommand("Floor Intake", setShooterPosFloorIntakeCmd);
-
-        // NamedCommands.registerCommand("Go to Amp Position",
-        // Commands.print("*******************************Go to Amp Position for the
-        // Elevator"));
-        // NamedCommands.registerCommand("Spin Up Intake Flywheel",
-        // Commands.print("*******************************Go to Spin Up Intake
-        // Flywheel"));
-        // NamedCommands.registerCommand("Spin Up Intake Flywheel",
-        // Commands.print("*******************************Go to Spin Up Intake
-        // Flywheel"));
-
-        autoChooser = AutoBuilder.buildAutoChooser();
-        autoChooser.setDefaultOption("Right-Side Straight-Line Auto",
-                new PathPlannerAuto("Right-Side Straight-Line Auto"));
-        Shuffleboard.getTab("Auto").add("Path Name", autoChooser);
-
-        configureBindings();
-
-        // if
-        // (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech
-        // Extreme 3D")) {
-        // driveSub.setDefaultCommand(
-        // // The left stick controls translation of the robot.
-        // // Turning is controlled by the X axis of the right stick.
-        // new DriveRobot(
-        // driveSub,
-        // driverController,
-        // LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY,
-        // LogitechDAConstants.RightStickX,
-        // true));
-        // driveRobotWithAlignCmd = new DriveRobotWithAlign(
-        // driveSub,
-        // driverController,
-        // LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY,
-        // LogitechDAConstants.RightStickX,
-        // true,
-        // visionSub,
-        // autoAlignButton);
-        // } else {
-        // driveSub.setDefaultCommand(
-        // new DriveRobot(
-        // driveSub,
-        // driverController,
-        // RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY,
-        // RadioMasterConstants.RightGimbalX,
-        // true));
-        // driveRobotWithAlignCmd = new DriveRobotWithAlign(
-        // driveSub,
-        // driverController,
-        // RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY,
-        // RadioMasterConstants.RightGimbalX,
-        // true,
-        // visionSub,
-        // autoAlignButton);
-        // }
-
-        // DriveRobotWithAlign driveRobotWithAlignCmd = new DriveRobotWithAlign(
-        // driveSub,
-        // () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
-        // () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
-        // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
-        // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
-        // true,
-        // visionSub,
-        // () -> autoAlignButton.getAsBoolean());
-
-        // autoAlignButton.whileTrue(driveRobotWithAlignCmd);
-
-        // autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be
-        // `Commands.none()`
-        // SmartDashboard.putData("Auto Mode", autoChooser);
-        autoChooser.setDefaultOption("Right-Side Straight-Line Auto",
-                new PathPlannerAuto("Right-Side Straight-Line Auto"));
-        Shuffleboard.getTab("Match").add("Path Name", autoChooser);
-
-        configureBindings();
+        configureButtonBindings();
 
         driveSub.setDefaultCommand(
                 // The left stick controls translation of the robot.
@@ -236,9 +120,19 @@ public class RobotContainer {
                         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
                         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
                         true));
+
+        // DriveRobotWithAlign driveRobotWithAlignCmd = new DriveRobotWithAlign(
+        // driveSub,
+        // () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
+        // () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
+        // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
+        // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
+        // true,
+        // visionSub,
+        // () -> autoAlignButton.getAsBoolean());
     }
 
-    private void configureBindings() {
+    private void configureButtonBindings() {
 
         driverController = new Joystick(ElectronicsIDs.DriverControllerPort);
         operatorController = new Joystick(ElectronicsIDs.OperatorControllerPort);
@@ -309,7 +203,49 @@ public class RobotContainer {
         // climbButton.onTrue(climbCmd);
     }
 
-    private void configurePathPlannerLogging() {
+    private void configurePathPlanner() {
+        /* PATHPLANNER INIT */
+
+         AutoBuilder.configureHolonomic(
+                driveSub::getPoseWithoutVision, // Robot pose supplier
+                // driveSub::getPoseWithVision, // Robot pose supplier
+                driveSub::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+                driveSub::getSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                driveSub::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+                new HolonomicPathFollowerConfig(
+                        new PIDConstants(5, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(5, 0.0, 0.0), // Rotation PID constants
+                        4.59, // Max module speed, in m/s
+                        0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+                        new ReplanningConfig() // Default path replanning config. See the API for the options here
+                ),
+                () -> {
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                },
+                driveSub);
+
+        var shootWithTimeout = new StartShooterIntake(shooterSub, floorIntakeSub, shooterMountSub).withTimeout(0.75);
+
+        NamedCommands.registerCommand("Start Shooter", shootWithTimeout);
+        NamedCommands.registerCommand("Stop Shooter", stopShooterIntakeCmd);
+
+        NamedCommands.registerCommand("Move to Amp Position", setShooterPosAmpCmd);
+        NamedCommands.registerCommand("Move to Speaker Position", setShooterPosSpeakerCmd);
+        NamedCommands.registerCommand("Move to Intake Position", setShooterPosFloorIntakeCmd);
+
+        /* SMARTDASHBOARD */
+
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Selected Auto", autoChooser);
+        autoChooser.setDefaultOption("Right-Side Straight-Line Auto",
+                new PathPlannerAuto("Right-Side Straight-Line Auto"));
+        Shuffleboard.getTab("Match").add("Path Name", autoChooser);
+
+        /* LOGGING */
 
         PathPlannerLogging.setLogCurrentPoseCallback(
                 (currentPose) -> {
@@ -328,6 +264,5 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
-        // return new PathPlannerAuto("Score in Amp Speaker Speaker V1 (SASS)");
     }
 }

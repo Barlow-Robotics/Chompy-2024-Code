@@ -43,8 +43,11 @@ public class Shooter extends SubsystemBase {
     private final DCMotorSim indexMotorModel = 
         new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1), 1, Constants.jKgMetersSquared);
 
-    private final VelocityVoltage voltageVelocity = 
+    private final VelocityVoltage voltageVelocityFlywheel = 
         new VelocityVoltage(0, 0, true, 0, 0, 
+                            false, false, false);
+    private final VelocityVoltage voltageVelocityIndex = 
+        new VelocityVoltage(0, 0, true, 0, 1, 
                             false, false, false);
     private final NeutralOut brake = new NeutralOut();
 
@@ -61,16 +64,16 @@ public class Shooter extends SubsystemBase {
         upperFlywheelMotor = new TalonFX(ElectronicsIDs.UpperShooterMotorID); 
         indexMotor = new TalonFX(ElectronicsIDs.IndexMotorID); 
         
-        TalonFXConfiguration talonConfigs = new TalonFXConfiguration();
+        TalonFXConfiguration PIDConfigs = new TalonFXConfiguration();
         MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
 
-        setTalonConfigs(talonConfigs);
-        applyMotorConfigs(
-            lowerFlywheelMotor, "lowerShooterMotor", 
-            talonConfigs, motorOutputConfigs, InvertedValue.CounterClockwise_Positive);
-        applyMotorConfigs(
-            upperFlywheelMotor, "upperShooterMotor", 
-            talonConfigs, motorOutputConfigs, InvertedValue.Clockwise_Positive);
+        setPIDConfigs(PIDConfigs);
+        applyMotorConfig( // check inversion
+            lowerFlywheelMotor, "lowerFlywheelMotor", PIDConfigs, motorOutputConfigs, InvertedValue.CounterClockwise_Positive);
+        applyMotorConfig( // check inversion
+            upperFlywheelMotor, "upperFlywheelMotor", PIDConfigs, motorOutputConfigs, InvertedValue.Clockwise_Positive);
+        applyMotorConfig( // check inversion
+            indexMotor, "upperFlywheelMotor", PIDConfigs, motorOutputConfigs, InvertedValue.Clockwise_Positive);
 
         lowerFlywheelMotorSim = lowerFlywheelMotor.getSimState();
         upperFlywheelMotorSim = upperFlywheelMotor.getSimState();
@@ -86,17 +89,15 @@ public class Shooter extends SubsystemBase {
     }
 
     public void startFlywheels(double shooterRPM) {
-        // if (shuffleBoardSpeed.getDouble(-1.0) <= Constants.Falcon500MaxRPM / 60) { // max rps: 105
-        //         shooterRPM = shuffleBoardSpeed.getDouble(-1.0);
-        // }
-        Logger.recordOutput("Shooter/DesiredShooterRPM", shooterRPM);
+        Logger.recordOutput("Shooter/DesiredFlywheelRPM", shooterRPM);
+        Logger.recordOutput("Shooter/DesiredFlywheelRPMWithGearRatio", shooterRPM * ShooterConstants.FlywheelGearRatio);
 
         double shooterRPS = shooterRPM / 60;
 
-        lowerFlywheelMotor.setControl(voltageVelocity.withVelocity(shooterRPS));
-        upperFlywheelMotor.setControl(voltageVelocity.withVelocity(shooterRPS));
+        lowerFlywheelMotor.setControl(voltageVelocityFlywheel.withVelocity(shooterRPS));
+        upperFlywheelMotor.setControl(voltageVelocityFlywheel.withVelocity(shooterRPS));
 
-        Logger.recordOutput("Shooter/WithinToleranceFlywheels", isWithinVelocityTolerance(shooterRPS));
+        Logger.recordOutput("Shooter/WithinToleranceFlywheels", isWithinFlywheelVelocityTolerance(shooterRPS));
     }
 
     public void startIndex(double indexRPM) {
@@ -104,7 +105,7 @@ public class Shooter extends SubsystemBase {
 
         double indexRPS = indexRPM / 60;
 
-        indexMotor.setControl(voltageVelocity.withVelocity(indexRPS));
+        indexMotor.setControl(voltageVelocityIndex.withVelocity(indexRPS));
     }
 
     public void stop() {
@@ -117,11 +118,11 @@ public class Shooter extends SubsystemBase {
         return motor.getVelocity().getValue()*Constants.SecondsPerMinute;
     }
 
-    public boolean isWithinVelocityTolerance(double desiredRPM) {
+    public boolean isWithinFlywheelVelocityTolerance(double desiredRPM) {
         return (getRPM(lowerFlywheelMotor) >= desiredRPM - ShooterConstants.VelocityTolerance) &&
                 (getRPM(lowerFlywheelMotor) <= desiredRPM + ShooterConstants.VelocityTolerance) &&
-                (getRPM(upperFlywheelMotor) >= -(desiredRPM - ShooterConstants.VelocityTolerance)) && // Not sure if the negative here is right
-                (getRPM(upperFlywheelMotor) <= -(desiredRPM + ShooterConstants.VelocityTolerance));   // may need to CHANGE that
+                (getRPM(upperFlywheelMotor) >= desiredRPM - ShooterConstants.VelocityTolerance) && 
+                (getRPM(upperFlywheelMotor) <= desiredRPM + ShooterConstants.VelocityTolerance);   
     }
 
     public boolean isNoteLoaded() {
@@ -134,48 +135,51 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Shooter/ActualRPMLower", getRPM(lowerFlywheelMotor));
         Logger.recordOutput("Shooter/ActualRPMUpper", getRPM(upperFlywheelMotor));
         Logger.recordOutput("Shooter/ActualRPMIndex", getRPM(indexMotor));
-        // Logger.recordOutput("Shooter/Is/Indexing", isWithinVelocityTolerance(ShooterConstants.IndexRPM));
         Logger.recordOutput("Shooter/ClosedLoopErrorLower", lowerFlywheelMotor.getClosedLoopError().getValue());
         Logger.recordOutput("Shooter/ClosedLoopErrorUpper", upperFlywheelMotor.getClosedLoopError().getValue());
-        Logger.recordOutput("Shooter/Is/NoteLoaded", isNoteLoaded());
-        Logger.recordOutput("Shooter/Is/ShootingAmp", isWithinVelocityTolerance(ShooterConstants.AmpRPM));
-        Logger.recordOutput("Shooter/Is/ShootingSpeaker", isWithinVelocityTolerance(ShooterConstants.SpeakerRPM));
-        Logger.recordOutput("Shooter/Is/ShootingTrap", isWithinVelocityTolerance(ShooterConstants.TrapRPM));
-        Logger.recordOutput("Shooter/Is/Intaking", isWithinVelocityTolerance(ShooterConstants.IntakeRPM));
-        Logger.recordOutput("Shooter/CurrentSupply/FlywheelLower", lowerFlywheelMotor.getSupplyCurrent().getValue());
-        Logger.recordOutput("Shooter/CurrentSupply/FlywheelUpper", upperFlywheelMotor.getSupplyCurrent().getValue());
-        Logger.recordOutput("Shooter/CurrentSupply/Index", indexMotor.getSupplyCurrent().getValue());
+        Logger.recordOutput("Shooter/IsNoteLoaded", isNoteLoaded());
+        Logger.recordOutput("Shooter/IsShooting/Amp", isWithinFlywheelVelocityTolerance(ShooterConstants.AmpRPM));
+        Logger.recordOutput("Shooter/IsShooting/Speaker", isWithinFlywheelVelocityTolerance(ShooterConstants.SpeakerRPM));
+        Logger.recordOutput("Shooter/IsShooting/Trap", isWithinFlywheelVelocityTolerance(ShooterConstants.TrapRPM));
+        Logger.recordOutput("Shooter/IsIntaking", isWithinFlywheelVelocityTolerance(ShooterConstants.IntakeRPM));
+        Logger.recordOutput("Shooter/SupplyCurrent/FlywheelLower", lowerFlywheelMotor.getSupplyCurrent().getValue());
+        Logger.recordOutput("Shooter/SupplyCurrent/FlywheelUpper", upperFlywheelMotor.getSupplyCurrent().getValue());
+        Logger.recordOutput("Shooter/SupplyCurrent/Index", indexMotor.getSupplyCurrent().getValue());
     }
 
     /* CONFIG */
 
-    private void setTalonConfigs(TalonFXConfiguration configs) {
-        configs.Slot0.kP = ShooterConstants.ShooterKP;
-        configs.Slot0.kI = ShooterConstants.ShooterKI;
-        configs.Slot0.kD = ShooterConstants.ShooterKD;
-        configs.Slot0.kV = ShooterConstants.ShooterFF;
+    private void setPIDConfigs(TalonFXConfiguration talonConfigs) {
+        talonConfigs.Slot0.kP = ShooterConstants.FlywheelKP;
+        talonConfigs.Slot0.kI = ShooterConstants.FlywheelKI;
+        talonConfigs.Slot0.kD = ShooterConstants.FlywheelKD;
+        talonConfigs.Slot0.kV = ShooterConstants.FlywheelFF;
+
+        talonConfigs.Slot1.kP = ShooterConstants.IndexKP;
+        talonConfigs.Slot1.kI = ShooterConstants.IndexKI;
+        talonConfigs.Slot1.kD = ShooterConstants.IndexKD;
+        talonConfigs.Slot1.kV = ShooterConstants.IndexFF;
     }
 
-    private void applyMotorConfigs(TalonFX motor, String motorName, 
+    private void applyMotorConfig(TalonFX motor, String motorName, 
         TalonFXConfiguration talonConfigs, MotorOutputConfigs motorOutputConfigs, InvertedValue inversion) {
         
-        motorOutputConfigs.Inverted = inversion;
-
-        // set current limit
-        CurrentLimitsConfigs currentLimitConfigs = talonConfigs.CurrentLimits;
-        currentLimitConfigs.SupplyCurrentLimit = ShooterConstants.SupplyCurrentLimit;
-        currentLimitConfigs.SupplyCurrentLimitEnable = true;
-        
         StatusCode status = StatusCode.StatusCodeNotInitialized;
-        // attempt setting configs up to 5 times
+
+        /* APPLY PID */
+
         for (int i = 0; i < 5; ++i) {
             status = motor.getConfigurator().apply(talonConfigs, 0.05);
             if (status.isOK())
                 break;
         }
         if (!status.isOK()) {
-            System.out.println("Could not apply talon configs to " + motorName + " error code: " + status.toString());
+            System.out.println("Could not apply PID configs to " + motorName + ", error code: " + status.toString());
         }
+
+        /* SET & APPLY INVERSION */
+
+        motorOutputConfigs.Inverted = inversion;
 
         for (int i = 0; i < 5; ++i) {
             status = motor.getConfigurator().apply(motorOutputConfigs, 0.05);
@@ -183,9 +187,25 @@ public class Shooter extends SubsystemBase {
                 break;
         }
         if (!status.isOK()) {
-            System.out.println("Could not apply motor output configs to " + motorName + " error code: " + status.toString());
+            System.out.println("Could not apply inversion configs to " + motorName + ", error code: " + status.toString());
+        }
+
+        /* SET & APPLY CURRENT LIMIT */
+
+        CurrentLimitsConfigs currentLimitConfigs = talonConfigs.CurrentLimits;
+        currentLimitConfigs.SupplyCurrentLimit = ShooterConstants.SupplyCurrentLimit;
+        currentLimitConfigs.SupplyCurrentLimitEnable = true;
+
+        for (int i = 0; i < 5; ++i) {
+            status = motor.getConfigurator().apply(currentLimitConfigs, 0.05);
+            if (status.isOK())
+                break;
+        }
+        if (!status.isOK()) {
+            System.out.println("Could not apply current limit configs to " + motorName + ", error code: " + status.toString());
         }
     }
+    
     /* SIMULATION */
 
     public void simulationInit() {
@@ -227,5 +247,4 @@ public class Shooter extends SubsystemBase {
         indexMotorSim.setRotorVelocity(indexMotorModel.getAngularVelocityRPM() / 60.0);
         indexMotorSim.setRawRotorPosition(indexMotorModel.getAngularPositionRotations());
     }
-
 }

@@ -33,12 +33,8 @@ public class Constants {
     public static final double Falcon500MaxRPM = 6300;
     public static final double KrakenX60MaxRPM = 6000;
 
-    public static final double TalonFXUnitsPerRotation = 2048;
-    public static final double CANCoderUnitsPerRotation = 4096;
-
-    // public static final double toleranceLimit = 0.05;
-    // public static final double LowerToleranceLimit = 1 - toleranceLimit;
-    // public static final double UpperToleranceLimit = 1 + toleranceLimit;
+    public static final double TalonFXResolution = 2048;
+    public static final double CANCoderResolution = 4096;
 
     /***************************************************************************/
     /***************************************************************************/
@@ -51,7 +47,7 @@ public class Constants {
 
         /***************************** DRIVE *****************************/
 
-        // Encoder = 1{locationOnBot}
+        // CANCoder = 1{locationOnBot}
         public static final int FrontLeftTurnEncoderID = 11;
         public static final int FrontRightTurnEncoderID = 12;
         public static final int BackLeftTurnEncoderID = 13;
@@ -121,7 +117,7 @@ public class Constants {
 
         public static final double MaxAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
         public static final double MaxDriveableVelocity = 3.6; // m/s
-        public static final double MaxModuleSpeed = NeoMaxRPM * VelocityConversionFactor;
+        public static final double PhysicalMaxVelocity = 4.5; // m/s
  
         public static final double FrontLeftMagnetOffsetInRadians = 1.5171039327979088;
         public static final double FrontRightMagnetOffsetInRadians = 1.7456666082143784;
@@ -134,19 +130,12 @@ public class Constants {
         public static final Translation2d blModuleOffset = new Translation2d(-0.4, 0.4);
         public static final Translation2d brModuleOffset = new Translation2d(-0.4, -0.4);
 
-        public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
-                new PIDConstants(5.0, 0, 0), // Translation constants
-                new PIDConstants(5.0, 0, 0), // Rotation constants
-                MaxModuleSpeed,
-                flModuleOffset.getNorm(), // Drive base radius (distance from center to furthest module)
-                new ReplanningConfig());
-
         /* DRIVE ENCODER */
         public static final double DriveKP = 0.04; // REQUIRES TUNING
         public static final double DriveKI = 0.0015;
         public static final double DriveKD = 0;
         public static final double DriveIZone = 0.15;
-        public static final double DriveFF = 1.0 / MaxModuleSpeed;
+        public static final double DriveFF = 1.0 / PhysicalMaxVelocity;
 
         public static final double AutoAlignKP = 0.1; //CHANGE
         public static final double AutoAlignKI = 0.0015;
@@ -159,12 +148,19 @@ public class Constants {
         public static final double TurnKI = 0;
         public static final double TurnKD = 0;
 
-        public static final double ModuleMaxAngularVelocity = 3.0 * 2.0 * Math.PI; // #revolutions * radians per
-                                                                                   // revolution (rad/sec)
+        public static final double ModuleMaxAngularVelocity = 3.0 * 2.0 * Math.PI; // #revolutions * radians per revolution (rad/sec)
         public static final double ModuleMaxAngularAcceleration = 12 * Math.PI; // radians per second squared
+        public static final double MaxModuleSpeed = NeoMaxRPM * VelocityConversionFactor;
 
         public static final int StallLimit = 40;
         public static final int FreeLimit = 40;
+
+        public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
+            new PIDConstants(5.0, 0, 0), // Translation constants
+            new PIDConstants(5.0, 0, 0), // Rotation constants
+            MaxModuleSpeed,
+            flModuleOffset.getNorm(), // Drive base radius (distance from center to furthest module)
+            new ReplanningConfig());
     }
 
     public static final class AutoConstants {
@@ -179,48 +175,35 @@ public class Constants {
     /***************************************************************************/
     /***************************************************************************/
 
-    public static final class UnderGlowConstants {
-        public static final SerialPort.Port Port = SerialPort.Port.kUSB1;
-        public static final int BlueAlliance = 0; // 0b00000000
-        public static final int RedAlliance = 1; // 0b00000001
-        public static final int Enabled = 2; // 0b00000010
-        public static final int NoteLoaded = 4; // 0b00000100
-        public static final int Shooting = 8; // 0b00001000
-        public static final int Auto = 16; // 0b00010000
-        public static final int RobotFloorSource = 32; // 0b00100000
-        public static final int Climbing = 64; // 0b01000000
-        public static final int RobotSource = 128; // 0b10000000
-    }
-
-    /***************************************************************************/
-    /***************************************************************************/
-    /***************************************************************************/
-
     public static final class ShooterConstants {
-        public static final double FlywheelGearRatio = 1.5; // 36 gears on motor, 24 on rollers --> 1.5:1 (as of 2/15)
-        public static final double IndexGearRatio = 1; // 1:1 ratio on Index per WK as of 2/15
-
         public static final double VelocityTolerance = 0.05; // CHANGE
+       
+        public static final double SupplyCurrentLimit = 30;
+
+        /* FLYWHEELS */
+
+        public static final double FlywheelGearRatio = 1.5; // 36 gears on motor, 24 on rollers --> 1.5:1 (as of 2/15)
 
         public static final double SpeakerRPM = 4000; // CHANGE
         public static final double AmpRPM = 2000; // CHANGE
         public static final double IntakeRPM = -2000; // CHANGE
         public static final double TrapRPM = 2000; // CHANGE
 
-        public static final double ShooterKP = 0.0; // An error of 1 rotation/sec results in 2V output
-        public static final double ShooterKI = 0; 
-        public static final double ShooterKD = 0; // CHANGE ?
-        public static final double ShooterFF = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
+        public static final double FlywheelKP = 0.0; 
+        public static final double FlywheelKI = 0; 
+        public static final double FlywheelKD = 0; 
+        public static final double FlywheelFF = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
+
+        /* INDEX */
+
+        public static final double IndexGearRatio = 1; // 1:1 ratio on Index per WK as of 2/15
 
         public static final double IndexRPM = 180; // CHANGE
 
         public static final double IndexKP = 0.0; // CHANGE
         public static final double IndexKI = 0; // CHANGE
         public static final double IndexKD = 0; // CHANGE
-        public static final double IndexIZone = 0; // CHANGE
         public static final double IndexFF = 0.12; // CHANGE
-
-        public static final double SupplyCurrentLimit = 30;
     }
 
     /***************************************************************************/
@@ -233,13 +216,13 @@ public class Constants {
         public static final double HeightTolerance = 2; // Inches - CHANGE
 
         public static final double ElevatorGearRatio = 15;
-        public static final double ShooterAngleGearRatio = 46.67; // From K's spreadsheet
+        public static final double AngleGearRatio = 46.67; // From K's spreadsheet
         public static final double ElevatorSprocketDiameter = Units.inchesToMeters(2.36);
         public static final double ElevatorSprocketCircumference = ElevatorSprocketDiameter * Math.PI;
 
-        public static final double ShooterAngleMaxSpeed = (Falcon500MaxRPM / 60 * 360) / ElevatorGearRatio; // deg/sec
-        public static final double ElevatorMaxSpeed = (Falcon500MaxRPM / 60 / ElevatorGearRatio)
-                * ElevatorSprocketCircumference; // m/s
+        public static final double ShooterAngleMaxDegreesPerSecond = (Falcon500MaxRPM / 60 * 360) / ElevatorGearRatio;
+        public static final double ElevatorMaxMetersPerSecond = 
+            (Falcon500MaxRPM / 60 / ElevatorGearRatio) * ElevatorSprocketCircumference;
         public static final double RotationsPerElevatorInch = ElevatorGearRatio / Units.metersToInches(ElevatorSprocketCircumference);
 
         public static final int IndexMotorCurrentLimit = 30; // CHANGE
@@ -335,23 +318,40 @@ public class Constants {
     /***************************************************************************/
     /***************************************************************************/
 
+     public static final class UnderGlowConstants {
+        public static final SerialPort.Port Port = SerialPort.Port.kUSB1;
+        public static final int BlueAlliance = 0; // 0b00000000
+        public static final int RedAlliance = 1; // 0b00000001
+        public static final int Enabled = 2; // 0b00000010
+        public static final int NoteLoaded = 4; // 0b00000100
+        public static final int Shooting = 8; // 0b00001000
+        public static final int Auto = 16; // 0b00010000
+        public static final int RobotFloorSource = 32; // 0b00100000
+        public static final int Climbing = 64; // 0b01000000
+        public static final int RobotSource = 128; // 0b10000000
+    }
+
+    /***************************************************************************/
+    /***************************************************************************/
+    /***************************************************************************/
+
     public final class LogitechDAConstants {
-        public static final int LeftStickX = 0; // LDA = Logitech Dual Action
+        public static final int LeftStickX = 0; 
         public static final int LeftStickY = 1;
         public static final int RightStickX = 2;
         public static final int RightStickY = 3;
-        public static final int LeftTrigger = 7; // Speaker
-        public static final int RightTrigger = 8; // Amp
-        public static final int ButtonA = 2; // Move Source
-        public static final int ButtonB = 3; // Trapdoor
-        public static final int ButtonX = 1; // Move Floor
-        public static final int ButtonY = 4; // Move Trap
-        public static final int LeftBumper = 5; // Floor Intake
-        public static final int RightBumper = 6; // Source Intake
-        public static final int BackButton = 9; // Climb
+        public static final int LeftTrigger = 7; 
+        public static final int RightTrigger = 8; 
+        public static final int ButtonA = 2; 
+        public static final int ButtonB = 3; 
+        public static final int ButtonX = 1; 
+        public static final int ButtonY = 4; 
+        public static final int LeftBumper = 5; 
+        public static final int RightBumper = 6; 
+        public static final int BackButton = 9; 
         public static final int StartButton = 10;
-        public static final int LeftStick = 11; // Move Speaker
-        public static final int RightStick = 12; // Move Amp
+        public static final int LeftStick = 11;
+        public static final int RightStick = 12; 
         public static final double ForwardAxisAttenuation = -0.5;
         public static final double LateralAxisAttenuation = 0.5;
         public static final double YawAxisAttenuation = 0.5;
@@ -401,21 +401,17 @@ public class Constants {
         public static final int RightTrigger = 4;
         public static final int RightStickX = 4;
         public static final int RightStickY = 5;
-        // Angle Trap?
-
-        // need to CHANGE these comments b/c they're not right
-        public static final int ButtonA = 1; // Shoot Trap
-        public static final int ButtonB = 2; // Climb
-        public static final int ButtonX = 3; // Auto Align
-        public static final int ButtonY = 4; // Angle Speaker
-        public static final int LeftBumper = 5; // Move to Amp
-        public static final int RightBumper = 6; // Shoot Speaker
+        public static final int ButtonA = 1; 
+        public static final int ButtonB = 2; 
+        public static final int ButtonX = 3; 
+        public static final int ButtonY = 4; 
+        public static final int LeftBumper = 5;
+        public static final int RightBumper = 6; 
         // public static final int BackButton = 7;
-        public static final int StartButton = 8; // Angle Amp
-        public static final int LeftStick = 9; // Angle Source
-        public static final int RightStick = 10; // Source Intake
-        public static final int WindowButton = 7; // Angle Floor
-
+        public static final int StartButton = 8; 
+        public static final int LeftStick = 9; 
+        public static final int RightStick = 10; 
+        public static final int WindowButton = 7;
         public static final double ForwardAxisAttenuation = -0.5;
         public static final double LateralAxisAttenuation = 0.5;
         public static final double YawAxisAttenuation = 0.5;

@@ -36,6 +36,7 @@
       "/SmartDashboard/Pathfind to Pickup Pos": "Command",
       "/SmartDashboard/Pathfind to Scoring Pos": "Command",
       "/SmartDashboard/Scheduler": "Scheduler",
+      "/SmartDashboard/Selected Auto": "String Chooser",
       "/SmartDashboard/Shooter": "Subsystem",
       "/SmartDashboard/ShooterAngle": "Subsystem",
       "/SmartDashboard/ShooterMountMech": "Mechanism2d",
@@ -58,6 +59,11 @@
         "right": 1088,
         "top": 36,
         "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Selected Auto": {
         "window": {
           "visible": true
         }

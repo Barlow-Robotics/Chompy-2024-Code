@@ -67,13 +67,12 @@ public class DriveRobot extends Command {
         Logger.recordOutput("Drive/YawInput", speedRot);
         Logger.recordOutput("Drive/XSpeed", speedY);
         Logger.recordOutput("Drive/YSpeed", speedX);
-        Logger.recordOutput("Drive/Multipler", maxVelocityMultiplier);
+        Logger.recordOutput("Drive/Multipier", maxVelocityMultiplier);
     }
 
     // rride
     public void end(boolean interrupted) {
         driveSub.drive(0, 0, 0, true);
-        // driveSub.testDrive(()->0.0, ()->0.0, ()->0.0, true);
     }
 
     @Override

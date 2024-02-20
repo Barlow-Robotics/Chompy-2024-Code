@@ -2,54 +2,195 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.514538001298225,
-      "y": 7.098630396334866
+      "x": 1.4127312870010371,
+      "y": 7.567945135890272
     },
-    "rotation": 90.02657842746835
+    "rotation": 90.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Side-To-Amp"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetShooterMountPositionAmp"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Shift to Amp"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.75
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StartShooterIntake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "StartShooterIntake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.75
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot Amp"
+            "name": "StopShooterIntake"
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "amp to first note"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Score amp from first note"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "amp to first note"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "SetShooterMountPositionFloor"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "StartShooterIntake"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot Amp"
+            "name": "StopShooterIntake"
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Amp to side-midpoint (ASM)"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Score In Amp"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "SetShooterMountPositionAmp"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "StartShooterIntake"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopShooterIntake"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Amp to side-midpoint (ASM)"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "SetShooterMountPositionFloor"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "StartShooterIntake"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopShooterIntake"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Amp Only",
   "choreoAuto": false
 }

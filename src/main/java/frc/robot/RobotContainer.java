@@ -58,13 +58,12 @@ public class RobotContainer {
             ShooterMountState.Amp, visionSub);
     private final SetShooterMountPosition setShooterPosSourceIntakeCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.SourceIntake, visionSub);
-    public final SetShooterMountPosition setShooterPosFloorIntakeCmd = new SetShooterMountPosition(shooterMountSub,
+    public final SetShooterMountPosition setShooterPosFloorCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.FloorIntake, visionSub);
     private final SetShooterMountPosition setShooterPosTrapCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.Trap, visionSub);
 
-    private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub,
-            shooterMountSub);
+    private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub, shooterMountSub);
     private final StopShooterIntake stopShooterIntakeCmd = new StopShooterIntake(shooterSub, floorIntakeSub);
 
     // private final Climb climbCmd = new Climb(shooterPositionSub);
@@ -101,15 +100,8 @@ public class RobotContainer {
     private SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        configurePathPlanner();
-       
-
+        configurePathPlanner();   
         configureButtonBindings();
-
-       
-
-        configureButtonBindings();
-
         driveSub.setDefaultCommand(
                 // The left stick controls translation of the robot.
                 // Turning is controlled by the X axis of the right stick.
@@ -157,7 +149,7 @@ public class RobotContainer {
         moveToSourceButton.onTrue(setShooterPosSourceIntakeCmd);
 
         moveToFloorButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // station
-        moveToFloorButton.onTrue(setShooterPosFloorIntakeCmd);
+        moveToFloorButton.onTrue(setShooterPosFloorCmd);
 
         moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button on
                                                                                                     // mantis controller
@@ -228,21 +220,17 @@ public class RobotContainer {
                 },
                 driveSub);
 
-        var shootWithTimeout = new StartShooterIntake(shooterSub, floorIntakeSub, shooterMountSub).withTimeout(0.75);
-
-        NamedCommands.registerCommand("Start Shooter", shootWithTimeout);
-        NamedCommands.registerCommand("Stop Shooter", stopShooterIntakeCmd);
-
-        NamedCommands.registerCommand("Move to Amp Position", setShooterPosAmpCmd);
-        NamedCommands.registerCommand("Move to Speaker Position", setShooterPosSpeakerCmd);
-        NamedCommands.registerCommand("Move to Intake Position", setShooterPosFloorIntakeCmd);
+        NamedCommands.registerCommand("StartShooterIntake", startShooterIntakeCmd);
+        NamedCommands.registerCommand("StopShooterIntake", stopShooterIntakeCmd);
+        NamedCommands.registerCommand("SetShooterMountPositionAmp", setShooterPosAmpCmd);
+        NamedCommands.registerCommand("SetShooterMountPositionSpeaker", setShooterPosSpeakerCmd);
+        NamedCommands.registerCommand("SetShooterMountPositionFloor", setShooterPosFloorCmd);
 
         /* SMARTDASHBOARD */
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Selected Auto", autoChooser);
-        autoChooser.setDefaultOption("Right-Side Straight-Line Auto",
-                new PathPlannerAuto("Right-Side Straight-Line Auto"));
+        autoChooser.setDefaultOption("BASIC Right", new PathPlannerAuto("BASIC Right"));
         Shuffleboard.getTab("Match").add("Path Name", autoChooser);
 
         /* LOGGING */

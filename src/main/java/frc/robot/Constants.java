@@ -68,10 +68,9 @@ public class Constants {
         /***************************** SHOOTER *****************************/
 
         // ShooterMotorID = 4{locationOnBot}
-        public static final int LowerShooterMotorID = 41;
-        public static final int UpperShooterMotorID = 42;
-        public static final int AngleMotorID = 43;
-        public static final int IndexMotorID = 44;
+        public static final int LeftShooterMotorID = 41;
+        public static final int RightShooterMotorID = 42;
+        public static final int IndexMotorID = 43;
         public static final int BreakBeamID = 4;
 
         /***************************** FLOOR INTAKE *****************************/
@@ -83,7 +82,8 @@ public class Constants {
 
         public static final int LeftElevatorMotorID = 61;
         public static final int RightElevatorMotorID = 62;
-        public static final int AngleEncoderID = 63;
+        public static final int AngleMotorID = 63;
+        public static final int AngleEncoderID = 64;
 
         public static final int BottomHallEffectID = 6;
         // public static final int TopHallEffectID = 7;
@@ -117,7 +117,7 @@ public class Constants {
 
         public static final double MaxAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
         public static final double MaxDriveableVelocity = 3.6; // m/s
-        public static final double PhysicalMaxVelocity = 4.5; // m/s
+        public static final double PhysicalMaxMetersPerSecond =  NeoMaxRPM * VelocityConversionFactor;
  
         public static final double FrontLeftMagnetOffsetInRadians = 1.5171039327979088;
         public static final double FrontRightMagnetOffsetInRadians = 1.7456666082143784;
@@ -135,7 +135,7 @@ public class Constants {
         public static final double DriveKI = 0.0015;
         public static final double DriveKD = 0;
         public static final double DriveIZone = 0.15;
-        public static final double DriveFF = 1.0 / PhysicalMaxVelocity;
+        public static final double DriveFF = 1.0 / PhysicalMaxMetersPerSecond;
 
         public static final double AutoAlignKP = 0.1; //CHANGE
         public static final double AutoAlignKI = 0.0015;
@@ -150,7 +150,7 @@ public class Constants {
 
         public static final double ModuleMaxAngularVelocity = 3.0 * 2.0 * Math.PI; // #revolutions * radians per revolution (rad/sec)
         public static final double ModuleMaxAngularAcceleration = 12 * Math.PI; // radians per second squared
-        public static final double MaxModuleSpeed = NeoMaxRPM * VelocityConversionFactor;
+        public static final double MaxModuleMetersPerSecond = 4.5;
 
         public static final int StallLimit = 40;
         public static final int FreeLimit = 40;
@@ -158,13 +158,13 @@ public class Constants {
         public static final HolonomicPathFollowerConfig pathFollowerConfig = new HolonomicPathFollowerConfig(
             new PIDConstants(5.0, 0, 0), // Translation constants
             new PIDConstants(5.0, 0, 0), // Rotation constants
-            MaxModuleSpeed,
+            MaxModuleMetersPerSecond,
             flModuleOffset.getNorm(), // Drive base radius (distance from center to furthest module)
             new ReplanningConfig());
     }
 
     public static final class AutoConstants {
-        public static final double MaxSpeedMetersPerSecond = DriveConstants.MaxModuleSpeed / 4; // CHANGE
+        public static final double MaxSpeedMetersPerSecond = DriveConstants.MaxModuleMetersPerSecond / 4; // CHANGE
         public static final double MaxAngularSpeedRadiansPerSecond = DriveConstants.PhysicalMaxAngularSpeedRadiansPerSecond
                 / 10; // Default is 540 degress
         // public static final double MaxAccelerationMetersPerSecondSquared = 3;
@@ -293,25 +293,25 @@ public class Constants {
 
     public static final class VisionConstants {
         public static final int CameraLightID = 0; // Need to change
-        public static final String kPoseCameraName = "Global_Shutter_Camera";
-        public static final String kTargetCameraName = "Arducam_OV9281_USB_Camera";
+        public static final String PoseCameraName = "Global_Shutter_Camera";
+        public static final String TargetCameraName = "Arducam_OV9281_USB_Camera";
 
-        public static final PoseStrategy kPrimaryVisionStrategy = PoseStrategy.CLOSEST_TO_REFERENCE_POSE;
-        public static final PoseStrategy kFallbackVisionStrategy = PoseStrategy.LOWEST_AMBIGUITY;
+        public static final PoseStrategy PrimaryVisionStrategy = PoseStrategy.CLOSEST_TO_REFERENCE_POSE;
+        public static final PoseStrategy FallbackVisionStrategy = PoseStrategy.LOWEST_AMBIGUITY;
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
-        public static final Transform3d kRobotToPoseCam =
+        public static final Transform3d RobotToPoseCam =
                 new Transform3d(new Translation3d(0.0, 0.0, 1.0), new Rotation3d(0, 0, 0));
-        public static final Transform3d kRobotToTargetCam =
+        public static final Transform3d RobotToTargetCam =
                 new Transform3d(new Translation3d(0.0, 0.0, 1.0), new Rotation3d(0, 0, 0));
 
         // // The layout of the AprilTags on the field
-        public static final AprilTagFieldLayout kFieldTagLayout =
+        public static final AprilTagFieldLayout FieldTagLayout =
                 AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
         // The standard deviations of our vision estimated poses, which affect correction rate
         // (Fake values. Experiment and determine estimation noise on an actual robot.)
-        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
-        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+        public static final Matrix<N3, N1> SingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+        public static final Matrix<N3, N1> MultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
 
     /***************************************************************************/

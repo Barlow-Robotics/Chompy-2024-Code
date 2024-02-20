@@ -20,7 +20,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot Amp"
+            "name": null
           }
         },
         {
@@ -32,19 +32,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot Speaker"
+            "name": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Amp to speaker (picked up top piece)"
+            "pathName": "Pick up note behind speaker"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot Speaker"
+            "name": null
           }
         }
       ]

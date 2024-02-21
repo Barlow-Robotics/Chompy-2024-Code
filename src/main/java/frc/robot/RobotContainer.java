@@ -253,10 +253,6 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("Start Shooter", shootWithTimeout);
         NamedCommands.registerCommand("Stop Shooter", stopShooterIntakeCmd);
-
-        NamedCommands.registerCommand("Move to Amp Position", setShooterPosAmpCmd);
-        NamedCommands.registerCommand("Move to Speaker Position", setShooterPosSpeakerCmd);
-        NamedCommands.registerCommand("Move to Intake Position", setShooterPosFloorIntakeCmd);
         NamedCommands.registerCommand("StartShooterIntake", startShooterIntakeCmd);
         NamedCommands.registerCommand("StopShooterIntake", stopShooterIntakeCmd);
         NamedCommands.registerCommand("SetShooterMountPositionAmp", setShooterPosAmpCmd);

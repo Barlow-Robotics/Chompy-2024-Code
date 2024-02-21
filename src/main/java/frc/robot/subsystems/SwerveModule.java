@@ -153,7 +153,7 @@ public class SwerveModule {
 
         if (RobotBase.isSimulation()) {
             CANcoderSimState encoderSim = turnEncoder.getSimState();
-            encoderSim.setRawPosition(state.angle.getDegrees() / 360.0);
+            encoderSim.setRawPosition(state.angle.getDegrees() / 180.0);
             Logger.recordOutput("CANCoder " + swerveName,
                     turnEncoder.getAbsolutePosition().getValueAsDouble());
         }

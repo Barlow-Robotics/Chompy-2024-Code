@@ -27,8 +27,7 @@ import frc.robot.Constants.ElectronicsIDs;
 import frc.robot.Constants.LogitechExtreme3DConstants;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.DriveRobot;
-import frc.robot.commands.DriveRobotWithAlign;
-
+// import frc.robot.commands.DriveRobotWithAlign;
 import frc.robot.commands.SetShooterMountPosition;
 import frc.robot.commands.StartShooterIntake;
 import frc.robot.commands.StopShooterIntake;
@@ -51,55 +50,13 @@ public class RobotContainer {
     public final FloorIntake floorIntakeSub = new FloorIntake();
     public final Underglow underglowSub = new Underglow();
 
-    /* CONTROLLERS */
-
-    private static Joystick driverController;
-    private static Joystick operatorController;
-
-    /* BUTTONS */
-
-    private Trigger moveToSpeakerButton;
-    private Trigger moveToAmpButton;
-    private Trigger moveToSourceButton;
-    private Trigger moveToFloorButton;
-    private Trigger moveToTrapButton;
-    // private Trigger prepareToClimbButton; // LT added. CHANGE if not its own
-    // button
-    // private Trigger climbButton;
-    private Trigger LEDHumanSourceButton;
-    private Trigger LEDHumanFloorButton;
-    private Trigger shootIntakeButtonDriver;
-    private Trigger shootIntakeButtonOperator;
-    private Trigger autoAlignButtonOperator;
-    private Trigger autoAlignButtonDriver;
-
     /* COMMANDS */
-
-    private final DriveRobot driveRobotCmd = new DriveRobot(
-            driveSub,
-            () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
-            () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
-            () -> -driverController
-                    .getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
-            () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
-            true);
-
-    private final DriveRobotWithAlign driveRobotWithAutoAlignCmd = new DriveRobotWithAlign(
-            driveSub,
-            () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
-            () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
-            () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
-            () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
-            true,
-            visionSub,
-            () -> autoAlignButtonDriver.getAsBoolean());
 
     private final SetShooterMountPosition setShooterPosSpeakerCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.Speaker, visionSub);
     private final SetShooterMountPosition setShooterPosAmpCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.Amp, visionSub);
-    private final SetShooterMountPosition setShooterPosSourceIntakeCmd = new SetShooterMountPosition(
-            shooterMountSub,
+    private final SetShooterMountPosition setShooterPosSourceIntakeCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.SourceIntake, visionSub);
     public final SetShooterMountPosition setShooterPosFloorCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.FloorIntake, visionSub);
@@ -118,18 +75,31 @@ public class RobotContainer {
     // SetShooterMountPosition(shooterMountSub,
     // ShooterMountState.Climb);
 
+    /* CONTROLLERS */
+
+    private static Joystick driverController;
+    private static Joystick operatorController;
+
+    /* BUTTONS */
+
+    private Trigger moveToSpeakerButton;
+    private Trigger moveToAmpButton;
+    private Trigger moveToSourceButton;
+    private Trigger moveToFloorButton;
+    private Trigger moveToTrapButton;
+    // private Trigger prepareToClimbButton; // LT added. CHANGE if not its own button
+    // private Trigger climbButton;
+    private Trigger LEDHumanSourceButton;
+    private Trigger LEDHumanFloorButton;
+    private Trigger shootIntakeButtonDriver;
+    private Trigger shootIntakeButtonOperator;
+    // private Trigger autoAlignButton;
+
     /* AUTO */
 
     private SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        configurePathPlanner();
-
-        configureButtonBindings();
-
-        configureButtonBindings();
-
-        driveSub.setDefaultCommand(driveRobotCmd);
         configurePathPlanner();   
         configureButtonBindings();
         driveSub.setDefaultCommand(
@@ -137,8 +107,8 @@ public class RobotContainer {
                 // Turning is controlled by the X axis of the right stick.
                 new DriveRobot(
                         driveSub,
+                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
                         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
-                        () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
                         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
                         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
                         true));
@@ -159,6 +129,14 @@ public class RobotContainer {
         driverController = new Joystick(ElectronicsIDs.DriverControllerPort);
         operatorController = new Joystick(ElectronicsIDs.OperatorControllerPort);
 
+        /***************** AUTO ALIGN *****************/
+
+        // autoAlignButtonOperator = new JoystickButton(operatorController, XboxControllerConstants.LeftTrigger);
+        // autoAlignButtonOperator.onTrue(autoAlignCmd).onFalse();
+
+        // autoAlignButtonDriver = new JoystickButton(driverController, LogitechExtreme3DConstants.ButtonStick);
+        // autoAlignButtonDriver.onTrue(autoAlignCmd).onFalse();
+
         /******************** SET SHOOTER POSITION ********************/
 
         moveToSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle
@@ -173,10 +151,8 @@ public class RobotContainer {
         moveToFloorButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // station
         moveToFloorButton.onTrue(setShooterPosFloorCmd);
 
-        moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button
-                                                                                                    // on
-                                                                                                    // mantis
-                                                                                                    // controller
+        moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button on
+                                                                                                    // mantis controller
         moveToTrapButton.onTrue(setShooterPosTrapCmd);
 
         /******************** SHOOTER ********************/
@@ -222,22 +198,18 @@ public class RobotContainer {
     private void configurePathPlanner() {
         /* PATHPLANNER INIT */
 
-        AutoBuilder.configureHolonomic(
+         AutoBuilder.configureHolonomic(
                 driveSub::getPoseWithoutVision, // Robot pose supplier
                 // driveSub::getPoseWithVision, // Robot pose supplier
-                driveSub::resetOdometry, // Method to reset odometry (will be called if your auto has a
-                                         // starting pose)
+                driveSub::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
                 driveSub::getSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                driveSub::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE
-                                              // ChassisSpeeds
+                driveSub::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig(
                         new PIDConstants(5, 0.0, 0.0), // Translation PID constants
                         new PIDConstants(5, 0.0, 0.0), // Rotation PID constants
                         4.59, // Max module speed, in m/s
-                        0.4, // Drive base radius in meters. Distance from robot center to
-                             // furthest module.
-                        new ReplanningConfig() // Default path replanning config. See the API
-                                               // for the options here
+                        0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+                        new ReplanningConfig() // Default path replanning config. See the API for the options here
                 ),
                 () -> {
                     var alliance = DriverStation.getAlliance();
@@ -248,11 +220,6 @@ public class RobotContainer {
                 },
                 driveSub);
 
-        var shootWithTimeout = new StartShooterIntake(shooterSub, floorIntakeSub, shooterMountSub)
-                .withTimeout(0.75);
-
-        NamedCommands.registerCommand("Start Shooter", shootWithTimeout);
-        NamedCommands.registerCommand("Stop Shooter", stopShooterIntakeCmd);
         NamedCommands.registerCommand("StartShooterIntake", startShooterIntakeCmd);
         NamedCommands.registerCommand("StopShooterIntake", stopShooterIntakeCmd);
         NamedCommands.registerCommand("SetShooterMountPositionAmp", setShooterPosAmpCmd);
@@ -275,8 +242,7 @@ public class RobotContainer {
         PathPlannerLogging.setLogActivePathCallback(
                 (activePath) -> {
                     Logger.recordOutput(
-                            "Odometry/Trajectory",
-                            activePath.toArray(new Pose2d[activePath.size()]));
+                            "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
                 });
         PathPlannerLogging.setLogTargetPoseCallback(
                 (targetPose) -> {

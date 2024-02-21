@@ -184,19 +184,27 @@ public class Constants {
 
         public static final double FlywheelGearRatio = 1.5; // 36 gears on motor, 24 on rollers --> 1.5:1 (as of 2/15)
 
-        // public static final double SpeakerRPM = 4000; // CHANGE
-        // public static final double AmpRPM = 2000; // CHANGE
-        // public static final double IntakeRPM = -2000; // CHANGE
-        // public static final double TrapRPM = 2000; // CHANGE
-        public static final double SpeakerRPM = 3000;
-        public static final double AmpRPM = 1000; 
-        public static final double IntakeRPM = -1000;
-        public static final double TrapRPM = 250;
+        public static final double LeftSpeakerRPM = 3000;
+        public static final double RightSpeakerRPM = 3000;
 
-        public static final double FlywheelKP = 0.25; 
-        public static final double FlywheelKI = 0; 
-        public static final double FlywheelKD = 0; 
-        public static final double FlywheelFF = 0.13; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
+        public static final double LeftAmpRPM = 1000; 
+        public static final double RightAmpRPM = 1000; 
+
+        public static final double LeftIntakeRPM = -1000;
+        public static final double RightIntakeRPM = -1000;
+
+        public static final double LeftTrapRPM = 250;
+        public static final double RightTrapRPM = 250;
+
+        public static final double FlywheelLeftKP = 0.25; 
+        public static final double FlywheelLeftKI = 0; 
+        public static final double FlywheelLeftKD = 0; 
+        public static final double FlywheelLeftFF = 0.13; 
+
+        public static final double FlywheelRightKP = 0.25; 
+        public static final double FlywheelRightKI = 0; 
+        public static final double FlywheelRightKD = 0; 
+        public static final double FlywheelRightFF = 0.13; 
 
         /* INDEX */
 
@@ -269,6 +277,10 @@ public class Constants {
         public static final double ElevatorMMCruiseVel = 10; // CHANGE - Target cruise velocity of 80 rps
         public static final double ElevatorMMAcceleration = 10; // CHANGE - Target acceleration of 160 rps/s (0.5 seconds)
         public static final double ElevatorMMJerk = 800; // CHANGE - Target jerk of 1600 rps/s/s (0.1 seconds)
+        
+        public static final double SupplyCurrentLimit = 40;
+
+        public static final double AngleCANCoderMagnetOffset = -0.475;
     }
 
     /***************************************************************************/

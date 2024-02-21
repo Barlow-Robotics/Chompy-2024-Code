@@ -88,21 +88,12 @@ public class ShooterMount extends SubsystemBase {
 
         absoluteAngleEncoder = new CANcoder(ElectronicsIDs.AngleEncoderID, "rio");
         absoluteAngleEncoderSim = absoluteAngleEncoder.getSimState();
-        TalonFXConfiguration configs = new TalonFXConfiguration();
-        MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
 
-        // set current limit for all 3 motors
-        CurrentLimitsConfigs currentLimitConfigs = configs.CurrentLimits;
-        currentLimitConfigs.SupplyCurrentLimit = ShooterConstants.SupplyCurrentLimit;
-        currentLimitConfigs.SupplyCurrentLimitEnable = true;
+        applyAngleMotorConfigs(InvertedValue.Clockwise_Positive); // counterclockwise positive
+        applyAngleEncoderConfigs();
+        applyElevatorMotorConfigs(leftElevatorMotor, "leftElevatorMotor", InvertedValue.Clockwise_Positive); // CHANGE
+        applyElevatorMotorConfigs(rightElevatorMotor, "rightElevatorMotor", InvertedValue.CounterClockwise_Positive); // CHANGE
 
-        applyMotorConfigs(angleMotor, configs, motorOutputConfigs, InvertedValue.Clockwise_Positive); // CHANGE
-        applyMotorConfigs(leftElevatorMotor, configs, motorOutputConfigs,
-                InvertedValue.Clockwise_Positive); // CHANGE
-        applyMotorConfigs(rightElevatorMotor, configs, motorOutputConfigs,
-                InvertedValue.CounterClockwise_Positive); // CHANGE
-
-        applyAngleEncoderConfigs(configs);
         stop();
     }
 
@@ -222,46 +213,56 @@ public class ShooterMount extends SubsystemBase {
 
     /* CONFIG */
 
-    private void applyMotorConfigs(TalonFX motor, TalonFXConfiguration configs,
-            MotorOutputConfigs motorOutputConfigs, InvertedValue inversion) {
+    private void applyAngleMotorConfigs(InvertedValue inversion) {
+        TalonFXConfiguration PIDConfigs = new TalonFXConfiguration();
+        PIDConfigs.Slot0.kP = ShooterMountConstants.AngleKP;
+        PIDConfigs.Slot0.kI = ShooterMountConstants.AngleKI;
+        PIDConfigs.Slot0.kD = ShooterMountConstants.AngleKD;
+        PIDConfigs.Slot0.kV = ShooterMountConstants.AngleFF;
 
-        if (motor == angleMotor) {
-            configs.Slot0.kP = ShooterMountConstants.AngleKP;
-            configs.Slot0.kI = ShooterMountConstants.AngleKI;
-            configs.Slot0.kD = ShooterMountConstants.AngleKD;
-            configs.Slot0.kV = ShooterMountConstants.AngleFF;
+        var motionMagicConfigs = PIDConfigs.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = ShooterMountConstants.AngleMMCruiseVel;
+        motionMagicConfigs.MotionMagicAcceleration = ShooterMountConstants.AngleMMAcceleration;
+        motionMagicConfigs.MotionMagicJerk = ShooterMountConstants.AngleMMJerk;
 
-            var motionMagicConfigs = configs.MotionMagic;
-            motionMagicConfigs.MotionMagicCruiseVelocity = ShooterMountConstants.AngleMMCruiseVel;
-            motionMagicConfigs.MotionMagicAcceleration = ShooterMountConstants.AngleMMAcceleration;
-            motionMagicConfigs.MotionMagicJerk = ShooterMountConstants.AngleMMJerk;
-        } else {
-            configs.Slot0.kP = ShooterMountConstants.ElevatorKP;
-            configs.Slot0.kI = ShooterMountConstants.ElevatorKI;
-            configs.Slot0.kD = ShooterMountConstants.ElevatorKD;
-            configs.Slot0.kV = ShooterMountConstants.ElevatorFF;
+        applyMotorConfigs(angleMotor, "angleMotor", PIDConfigs, inversion);
+    }
 
-            var motionMagicConfigs = configs.MotionMagic;
-            motionMagicConfigs.MotionMagicCruiseVelocity = ShooterMountConstants.ElevatorMMCruiseVel;
-            motionMagicConfigs.MotionMagicAcceleration = ShooterMountConstants.ElevatorMMAcceleration;
-            motionMagicConfigs.MotionMagicJerk = ShooterMountConstants.ElevatorMMJerk;
-        }
+    private void applyElevatorMotorConfigs(TalonFX motor, String motorName, InvertedValue inversion) {
+        TalonFXConfiguration PIDConfigs = new TalonFXConfiguration();
+        PIDConfigs.Slot0.kP = ShooterMountConstants.ElevatorKP;
+        PIDConfigs.Slot0.kI = ShooterMountConstants.ElevatorKI;
+        PIDConfigs.Slot0.kD = ShooterMountConstants.ElevatorKD;
+        PIDConfigs.Slot0.kV = ShooterMountConstants.ElevatorFF;
 
-        // configs.Voltage.PeakForwardVoltage =
-        // ShooterConstants.PeakShooterForwardVoltage; // Peak output of 8 volts
-        motorOutputConfigs.Inverted = inversion;
+        var motionMagicConfigs = PIDConfigs.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = ShooterMountConstants.ElevatorMMCruiseVel;
+        motionMagicConfigs.MotionMagicAcceleration = ShooterMountConstants.ElevatorMMAcceleration;
+        motionMagicConfigs.MotionMagicJerk = ShooterMountConstants.ElevatorMMJerk;
 
+        applyMotorConfigs(motor, motorName, PIDConfigs, inversion);
+    }
+
+    private void applyMotorConfigs(TalonFX motor, String motorName, TalonFXConfiguration configs, InvertedValue inversion) {
+        
         StatusCode status = StatusCode.StatusCodeNotInitialized;
+        
+        /* APPLY PID CONFIGS */
 
-        // attempt setting configs up to 5 times
         for (int i = 0; i < 5; ++i) {
             status = motor.getConfigurator().apply(configs, 0.05);
             if (status.isOK())
                 break;
         }
         if (!status.isOK()) {
-            System.out.println("Could not apply talon configs to " + motor + " error code: " + status.toString());
+            System.out.println("Could not apply talon configs to " + motorName + " error code: " + status.toString());
         }
+
+        /* SET & APPLY INVERSION CONFIGS */
+        
+        MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+       
+        motorOutputConfigs.Inverted = inversion;
 
         for (int i = 0; i < 5; ++i) {
             status = motor.getConfigurator().apply(motorOutputConfigs, 0.05);
@@ -272,14 +273,21 @@ public class ShooterMount extends SubsystemBase {
             System.out.println(
                     "Could not apply motor output configs to " + motor + " error code: " + status.toString());
         }
+
+        /* SET & APPLY CURRENT LIMIT CONFIGS */
+
+        CurrentLimitsConfigs currentLimitConfigs = configs.CurrentLimits;
+        currentLimitConfigs.SupplyCurrentLimit = ShooterMountConstants.SupplyCurrentLimit;
+        currentLimitConfigs.SupplyCurrentLimitEnable = true;
     }
 
-    private void applyAngleEncoderConfigs(TalonFXConfiguration configs) {
+    private void applyAngleEncoderConfigs() {
+        TalonFXConfiguration talonConfigs = new TalonFXConfiguration();
         MagnetSensorConfigs magnetConfig = new MagnetSensorConfigs();
         var canCoderConfiguration = new CANcoderConfiguration();
         magnetConfig.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
         if (!Robot.isSimulation()) {
-            magnetConfig.MagnetOffset = 0.0;
+            magnetConfig.MagnetOffset = ShooterMountConstants.AngleCANCoderMagnetOffset;
         } else {
             magnetConfig.MagnetOffset = 0.0; // CHANGE
         }
@@ -287,8 +295,8 @@ public class ShooterMount extends SubsystemBase {
 
         canCoderConfiguration.MagnetSensor = magnetConfig;
 
-        configs.Feedback.FeedbackRemoteSensorID = absoluteAngleEncoder.getDeviceID();
-        configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+        talonConfigs.Feedback.FeedbackRemoteSensorID = absoluteAngleEncoder.getDeviceID();
+        talonConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
         absoluteAngleEncoder.getConfigurator().apply(canCoderConfiguration);
     }
 

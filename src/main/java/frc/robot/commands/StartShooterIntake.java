@@ -16,7 +16,8 @@ public class StartShooterIntake extends Command {
     Shooter shooterSub;
     FloorIntake floorIntakeSub;
     ShooterMount shooterMountSub;
-    double desiredFlywheelRPM = ShooterConstants.IntakeRPM;
+    double desiredLeftFlywheelMotorRPM = ShooterConstants.LeftIntakeRPM;
+    double desiredRightFlywheelMotorRPM = ShooterConstants.RightIntakeRPM;
     double desiredIndexRPM = ShooterConstants.IndexRPM;
 
     public StartShooterIntake(Shooter shooterSub, FloorIntake floorIntakeSub, ShooterMount shooterMountSub) {
@@ -31,13 +32,16 @@ public class StartShooterIntake extends Command {
         if (shooterMountSub.getShooterPosState() == ShooterMountState.SourceIntake ||
                 shooterMountSub.getShooterPosState() == ShooterMountState.FloorIntake) {
             desiredIndexRPM = -ShooterConstants.IndexRPM;
-            desiredFlywheelRPM = ShooterConstants.IntakeRPM;
+            desiredLeftFlywheelMotorRPM = ShooterConstants.LeftIntakeRPM;
+            desiredRightFlywheelMotorRPM = ShooterConstants.RightIntakeRPM;
         } else {
             desiredIndexRPM = ShooterConstants.IndexRPM;
             if (shooterMountSub.getShooterPosState() == ShooterMountState.Amp) {
-                desiredFlywheelRPM = ShooterConstants.AmpRPM;
+                desiredLeftFlywheelMotorRPM = ShooterConstants.LeftAmpRPM;
+                desiredRightFlywheelMotorRPM = ShooterConstants.RightAmpRPM;
             } else {
-                desiredFlywheelRPM = ShooterConstants.SpeakerRPM;
+                desiredLeftFlywheelMotorRPM = ShooterConstants.LeftSpeakerRPM;
+                desiredRightFlywheelMotorRPM = ShooterConstants.RightSpeakerRPM;
             }
         }
     }
@@ -58,8 +62,8 @@ public class StartShooterIntake extends Command {
             return;
         }
 
-        shooterSub.startFlywheels(desiredFlywheelRPM);
-        if (shooterSub.isWithinFlywheelVelocityTolerance(desiredFlywheelRPM)) {
+        shooterSub.startFlywheels(desiredLeftFlywheelMotorRPM, desiredRightFlywheelMotorRPM);
+        if (shooterSub.isWithinFlywheelVelocityTolerance(desiredLeftFlywheelMotorRPM, desiredRightFlywheelMotorRPM)) {
             shooterSub.startIndex(desiredIndexRPM);
         }
 

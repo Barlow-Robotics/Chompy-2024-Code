@@ -101,9 +101,9 @@ public class Shooter extends SubsystemBase {
     }
 
     public void stop() {
-        leftFlywheelMotor.setControl(brake);
-        rightFlywheelMotor.setControl(brake);
-        indexMotor.setControl(brake);
+        leftFlywheelMotor.setControl(voltageVelocity.withVelocity(0));
+        rightFlywheelMotor.setControl(voltageVelocity.withVelocity(0));
+        indexMotor.setControl(voltageVelocity.withVelocity(0));
     }
 
     private double getRPM(TalonFX motor) {
@@ -170,6 +170,9 @@ public class Shooter extends SubsystemBase {
     }
 
     private void applyMotorConfig(TalonFX motor, String motorName, TalonFXConfiguration PIDConfigs, InvertedValue inversion) {
+
+        /* SET TO COAST MODE */
+        motor.setControl(brake);
 
         StatusCode status = StatusCode.StatusCodeNotInitialized;
 

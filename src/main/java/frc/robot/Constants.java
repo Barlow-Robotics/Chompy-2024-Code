@@ -237,36 +237,38 @@ public class Constants {
             (Falcon500MaxRPM / 60 / ElevatorGearRatio) * ElevatorSprocketCircumference;
         public static final double RotationsPerElevatorInch = ElevatorGearRatio / Units.metersToInches(ElevatorSprocketCircumference);
 
-        public static final int IndexMotorCurrentLimit = 30; // CHANGE
+        public static final double MaxAngleDegrees = 45;
+        public static final double MinAngleDegrees = -58;
         public static final double MaxHeightInches = 10;
+        public static final double MinHeight = 0;
 
-        public static final double SpeakerAngle = 110; // CHANGE
+        public static final double SpeakerAngle = 102 + MinAngleDegrees; // CHANGE
         public static final double SpeakerHeight = 0; // Resting position
 
-        public static final double AmpAngle = 10; // CHANGE
+        public static final double AmpAngle = 10 + MinAngleDegrees; // CHANGE
         public static final double AmpHeight = 16; // CHANGE
 
-        public static final double SourceIntakeAngle = 60; // CHANGE
+        public static final double SourceIntakeAngle = 60 + MinAngleDegrees; // CHANGE
         public static final double SourceIntakeHeight = 15; // CHANGE
 
-        public static final double FloorIntakeAngle = 0; // Resting position
+        public static final double FloorIntakeAngle = 0 + MinAngleDegrees; // Resting position
         public static final double FloorIntakeHeight = 0; // CHANGE
 
-        public static final double TrapAngle = 90; // CHANGE
+        public static final double TrapAngle = 58 + MinAngleDegrees; // CHANGE
         public static final double TrapHeight = 10; // CHANGE
 
         public static final double ClimbHeight = 10; // CHANGE
-        public static final double MinHeight = 0; // CHANGE
 
-        public static final double AngleKP = 0.0;
+        public static final double AngleKP = 26;
         public static final double AngleKI = 0;
         public static final double AngleKD = 0.0;
         public static final double AngleIZone = 0;
         public static final double AngleFF = 0.11;
+        public static final double AngleKG = 0.29;
 
-        public static final double AngleMMCruiseVel = .1; //1.5; // CHANGE - Target cruise velocity of 1.5 rps
+        public static final double AngleMMCruiseVel = .05; //1.5; // CHANGE - Target cruise velocity of 1.5 rps
         public static final double AngleMMAcceleration = .1;//3; // CHANGE - Target acceleration of 3 rps/s (0.5 seconds)
-        public static final double AngleMMJerk = 10; //30; // CHANGE - Target jerk of 30 rps/s/s (0.1 seconds)
+        public static final double AngleMMJerk = 1; //30; // CHANGE - Target jerk of 30 rps/s/s (0.1 seconds)
 
         public static final double ElevatorKP = 0.0;
         public static final double ElevatorKI = 0;
@@ -280,7 +282,7 @@ public class Constants {
         
         public static final double SupplyCurrentLimit = 40;
 
-        public static final double AngleCANCoderMagnetOffset = -0.475;
+        public static final double AngleCANCoderMagnetOffset = 0.312744140625;
     }
 
     /***************************************************************************/

@@ -73,14 +73,13 @@ public class Shooter extends SubsystemBase {
         applyMotorConfig( // check inversion
             upperFlywheelMotor, "upperFlywheelMotor", PIDConfigs, motorOutputConfigs, InvertedValue.Clockwise_Positive);
         applyMotorConfig( // check inversion
-            indexMotor, "upperFlywheelMotor", PIDConfigs, motorOutputConfigs, InvertedValue.Clockwise_Positive);
+            indexMotor, "indexMotor", PIDConfigs, motorOutputConfigs, InvertedValue.Clockwise_Positive);
 
         lowerFlywheelMotorSim = lowerFlywheelMotor.getSimState();
         upperFlywheelMotorSim = upperFlywheelMotor.getSimState();
         indexMotorSim = indexMotor.getSimState();
 
         breakBeam = new DigitalInput(ElectronicsIDs.BreakBeamID);
-        
     }
 
     @Override

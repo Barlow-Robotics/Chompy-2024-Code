@@ -73,20 +73,20 @@ public class Constants {
         public static final int IndexMotorID = 43;
         public static final int BreakBeamID = 4;
 
+        /***************************** ELEVATOR *****************************/
+
+        public static final int LeftElevatorMotorID = 51;
+        public static final int RightElevatorMotorID = 52;
+        public static final int AngleMotorID = 53;
+        public static final int AngleEncoderID = 54;
+
+        public static final int BottomHallEffectID = 5;
+        // public static final int TopHallEffectID = 6;
+
         /***************************** FLOOR INTAKE *****************************/
 
         // FloorMotorID = 5{locationOnBot}
-        public static final int FloorMotorID = 51;
-
-        /***************************** ELEVATOR *****************************/
-
-        public static final int LeftElevatorMotorID = 61;
-        public static final int RightElevatorMotorID = 62;
-        public static final int AngleMotorID = 63;
-        public static final int AngleEncoderID = 64;
-
-        public static final int BottomHallEffectID = 6;
-        // public static final int TopHallEffectID = 7;
+        public static final int FloorMotorID = 61;
     }
 
     /***************************************************************************/

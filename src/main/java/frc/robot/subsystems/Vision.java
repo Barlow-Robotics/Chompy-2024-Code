@@ -5,15 +5,15 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.VisionConstants.kFallbackVisionStrategy;
-import static frc.robot.Constants.VisionConstants.kMultiTagStdDevs;
-import static frc.robot.Constants.VisionConstants.kPoseCameraName;
-import static frc.robot.Constants.VisionConstants.kRobotToPoseCam;
-import static frc.robot.Constants.VisionConstants.kRobotToTargetCam;
-import static frc.robot.Constants.VisionConstants.kSingleTagStdDevs;
-import static frc.robot.Constants.VisionConstants.kFieldTagLayout;
-import static frc.robot.Constants.VisionConstants.kTargetCameraName;
-import static frc.robot.Constants.VisionConstants.kPrimaryVisionStrategy;
+import static frc.robot.Constants.VisionConstants.FallbackVisionStrategy;
+import static frc.robot.Constants.VisionConstants.MultiTagStdDevs;
+import static frc.robot.Constants.VisionConstants.PoseCameraName;
+import static frc.robot.Constants.VisionConstants.RobotToPoseCam;
+import static frc.robot.Constants.VisionConstants.RobotToTargetCam;
+import static frc.robot.Constants.VisionConstants.SingleTagStdDevs;
+import static frc.robot.Constants.VisionConstants.FieldTagLayout;
+import static frc.robot.Constants.VisionConstants.TargetCameraName;
+import static frc.robot.Constants.VisionConstants.PrimaryVisionStrategy;
 
 //import java.io.IOException;
 import java.util.HashSet;
@@ -72,11 +72,11 @@ public class Vision extends SubsystemBase {
     }
 
     public Vision() /* throws IOException */ {
-        targetCamera = new PhotonCamera(kTargetCameraName);
-        poseCamera = new PhotonCamera(kPoseCameraName);
+        targetCamera = new PhotonCamera(TargetCameraName);
+        poseCamera = new PhotonCamera(PoseCameraName);
 
-        photonEstimator = new PhotonPoseEstimator(kFieldTagLayout, kPrimaryVisionStrategy, poseCamera, kRobotToPoseCam);
-        photonEstimator.setMultiTagFallbackStrategy(kFallbackVisionStrategy);
+        photonEstimator = new PhotonPoseEstimator(FieldTagLayout, PrimaryVisionStrategy, poseCamera, RobotToPoseCam);
+        photonEstimator.setMultiTagFallbackStrategy(FallbackVisionStrategy);
 
         alliance = DriverStation.Alliance.Red;
         if (DriverStation.isEnabled()) {
@@ -96,7 +96,7 @@ public class Vision extends SubsystemBase {
             visionSim = new VisionSystemSim("main");
             // Add all the AprilTags inside the tag layout as visible targets to this
             // simulated field.
-            visionSim.addAprilTags(kFieldTagLayout);
+            visionSim.addAprilTags(FieldTagLayout);
             // Create simulated camera properties. These can be set to mimic your actual
             // camera.
             var cameraProp = new SimCameraProperties();
@@ -112,8 +112,8 @@ public class Vision extends SubsystemBase {
             targetCameraSim = new PhotonCameraSim(targetCamera, cameraProp);
             // Add the simulated camera to view the targets on this simulated field.
 
-            visionSim.addCamera(poseCameraSim, kRobotToPoseCam);
-            visionSim.addCamera(targetCameraSim, kRobotToTargetCam);
+            visionSim.addCamera(poseCameraSim, RobotToPoseCam);
+            visionSim.addCamera(targetCameraSim, RobotToTargetCam);
 
             poseCameraSim.enableDrawWireframe(true);
         }
@@ -272,7 +272,7 @@ public class Vision extends SubsystemBase {
     }
 
     public Matrix<N3, N1> getEstimationStdDevs(Pose2d estimatedPose) {
-        var estStdDevs = kSingleTagStdDevs;
+        var estStdDevs = SingleTagStdDevs;
         var targets = getLatestPoseResult().getTargets();
         int numTags = 0;
         double avgDist = 0;
@@ -288,7 +288,7 @@ public class Vision extends SubsystemBase {
         avgDist /= numTags;
         // Decrease stnd devs if multiple targets are visible
         if (numTags > 1)
-            estStdDevs = kMultiTagStdDevs;
+            estStdDevs = MultiTagStdDevs;
         // Increase stnd devs based on (average) distance
         if (numTags == 1 && avgDist > 4)
             estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);

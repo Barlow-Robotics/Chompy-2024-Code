@@ -101,13 +101,12 @@ public class RobotContainer {
     private final SetShooterMountPosition setShooterPosSourceIntakeCmd = new SetShooterMountPosition(
             shooterMountSub,
             ShooterMountState.SourceIntake, visionSub);
-    public final SetShooterMountPosition setShooterPosFloorIntakeCmd = new SetShooterMountPosition(shooterMountSub,
+    public final SetShooterMountPosition setShooterPosFloorCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.FloorIntake, visionSub);
     private final SetShooterMountPosition setShooterPosTrapCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.Trap, visionSub);
 
-    private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub,
-            shooterMountSub);
+    private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub, shooterMountSub);
     private final StopShooterIntake stopShooterIntakeCmd = new StopShooterIntake(shooterSub, floorIntakeSub);
 
     // private final Climb climbCmd = new Climb(shooterPositionSub);
@@ -131,6 +130,28 @@ public class RobotContainer {
         configureButtonBindings();
 
         driveSub.setDefaultCommand(driveRobotCmd);
+        configurePathPlanner();   
+        configureButtonBindings();
+        driveSub.setDefaultCommand(
+                // The left stick controls translation of the robot.
+                // Turning is controlled by the X axis of the right stick.
+                new DriveRobot(
+                        driveSub,
+                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
+                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
+                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
+                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
+                        true));
+
+        // DriveRobotWithAlign driveRobotWithAlignCmd = new DriveRobotWithAlign(
+        // driveSub,
+        // () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
+        // () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
+        // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
+        // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
+        // true,
+        // visionSub,
+        // () -> autoAlignButton.getAsBoolean());
     }
 
     private void configureButtonBindings() {
@@ -150,7 +171,7 @@ public class RobotContainer {
         moveToSourceButton.onTrue(setShooterPosSourceIntakeCmd);
 
         moveToFloorButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // station
-        moveToFloorButton.onTrue(setShooterPosFloorIntakeCmd);
+        moveToFloorButton.onTrue(setShooterPosFloorCmd);
 
         moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button
                                                                                                     // on
@@ -236,13 +257,17 @@ public class RobotContainer {
         NamedCommands.registerCommand("Move to Amp Position", setShooterPosAmpCmd);
         NamedCommands.registerCommand("Move to Speaker Position", setShooterPosSpeakerCmd);
         NamedCommands.registerCommand("Move to Intake Position", setShooterPosFloorIntakeCmd);
+        NamedCommands.registerCommand("StartShooterIntake", startShooterIntakeCmd);
+        NamedCommands.registerCommand("StopShooterIntake", stopShooterIntakeCmd);
+        NamedCommands.registerCommand("SetShooterMountPositionAmp", setShooterPosAmpCmd);
+        NamedCommands.registerCommand("SetShooterMountPositionSpeaker", setShooterPosSpeakerCmd);
+        NamedCommands.registerCommand("SetShooterMountPositionFloor", setShooterPosFloorCmd);
 
         /* SMARTDASHBOARD */
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Selected Auto", autoChooser);
-        autoChooser.setDefaultOption("Right-Side Straight-Line Auto",
-                new PathPlannerAuto("Right-Side Straight-Line Auto"));
+        autoChooser.setDefaultOption("BASIC Right", new PathPlannerAuto("BASIC Right"));
         Shuffleboard.getTab("Match").add("Path Name", autoChooser);
 
         /* LOGGING */

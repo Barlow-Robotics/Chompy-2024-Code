@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 3.2198544994104914,
-        "y": 6.976035336399031
+        "x": 2.4487602821359506,
+        "y": 7.005529395674177
       },
       "prevControl": {
-        "x": 2.459566057191816,
-        "y": 6.964500585717589
+        "x": 2.113284226568455,
+        "y": 7.232469080322777
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "amp to first note"
     }
   ],
   "rotationTargets": [

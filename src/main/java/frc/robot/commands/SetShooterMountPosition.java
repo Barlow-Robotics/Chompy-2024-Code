@@ -27,7 +27,6 @@ public class SetShooterMountPosition extends Command {
         this.shooterMountSub = shooterMountSub;
         this.desiredState = desiredState;
         this.visionSub = visionSub;
-
         addRequirements(shooterMountSub);
     }
 
@@ -77,7 +76,9 @@ public class SetShooterMountPosition extends Command {
     public void execute() {
         shooterMountSub.setAngle(desiredAngle);
         shooterMountSub.setHeightInches(desiredHeight);
-        visionSub.alignTo(desiredTarget);
+        if ( desiredTarget != null ) {
+            visionSub.alignTo(desiredTarget);  
+        }
     }
 
     @Override
@@ -90,10 +91,10 @@ public class SetShooterMountPosition extends Command {
             shooterMountSub.setShooterPosState(desiredState);
             return true;
         }
-        if(shooterMountSub.isAtBottom() && desiredHeight != 0/*  hall effect is true */) {
-            shooterMountSub.stop();
-            shooterMountSub.setBasePosition(0);
-        }
+        // if(shooterMountSub.isAtBottom() && desiredHeight != 0/*  hall effect is true */) {
+        //     shooterMountSub.stop();
+        //     shooterMountSub.setBasePosition(0);
+        // }
         return false;        
     }
 }

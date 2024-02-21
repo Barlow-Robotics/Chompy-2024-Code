@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.490784250087019,
-      "y": 7.039008480794739
+      "x": 1.4127312870010371,
+      "y": 7.567945135890272
     },
-    "rotation": 90.05134382948182
+    "rotation": 90.0
   },
   "command": {
     "type": "sequential",
@@ -14,42 +14,30 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Side-To-Amp"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": null
+            "pathName": "Shift to Amp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Turn at amp"
+            "pathName": "amp to first note"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Amp-to-midpiece"
+            "pathName": "Score In Amp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "midpeice-to-speaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": null
+            "pathName": "Amp to side-midpoint (ASM)"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Amp Only",
   "choreoAuto": false
 }

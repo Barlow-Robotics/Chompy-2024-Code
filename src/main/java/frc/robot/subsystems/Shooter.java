@@ -60,8 +60,8 @@ public class Shooter extends SubsystemBase {
     // private GenericEntry shuffleBoardSpeed = tab.add("ShuffleBoard Speed", 1).getEntry();
 
     public Shooter() {
-        lowerFlywheelMotor = new TalonFX(ElectronicsIDs.LowerShooterMotorID); 
-        upperFlywheelMotor = new TalonFX(ElectronicsIDs.UpperShooterMotorID); 
+        lowerFlywheelMotor = new TalonFX(ElectronicsIDs.LeftShooterMotorID); 
+        upperFlywheelMotor = new TalonFX(ElectronicsIDs.RightShooterMotorID); 
         indexMotor = new TalonFX(ElectronicsIDs.IndexMotorID); 
         
         TalonFXConfiguration PIDConfigs = new TalonFXConfiguration();

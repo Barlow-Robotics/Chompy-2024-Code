@@ -77,40 +77,6 @@ public class Robot extends LoggedRobot {
         Logger.recordOutput("Controllers/Driver", currentDriverController);
         Logger.recordOutput("Controllers/Operator", currentOperatorController);
 
-        // if (currentDriverController.equals("Logitech Extreme 3D")) {
-        // robotContainer.driveSub.setDefaultCommand(
-        //         // The left stick controls translation of the robot.
-        //         // Turning is controlled by the X axis of the right stick.
-        //         new DriveRobot(
-        //                 robotContainer.driveSub,
-        //                 () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
-        //                 () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
-        //                 () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
-        //                 true));
-        // } else if
-        // (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Radiomaster
-        // TX12 Joystick")){
-        // robotContainer.driveSub.setDefaultCommand(
-        // new DriveRobot(
-        // robotContainer.driveSub,
-        // robotContainer.driverController,
-        // RadioMasterConstants.LeftGimbalX, RadioMasterConstants.LeftGimbalY,
-        // RadioMasterConstants.RightGimbalX,
-        // true));
-        // } else if
-        // (DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort).equals("Logitech
-        // Dual Action")){
-        // robotContainer.driveSub.setDefaultCommand(
-        // new DriveRobot(
-        // robotContainer.driveSub,
-        // robotContainer.driverController,
-        // LogitechDAConstants.LeftStickX, LogitechDAConstants.LeftStickY,
-        // LogitechDAConstants.RightStickX,
-        // true));
-        // } else {
-        // System.out.println("Unknown controller");
-        // }
-
         CommandScheduler.getInstance().run();
 
         elevator.setLength(2.0+robotContainer.shooterMountSub.getHeightInches()) ;

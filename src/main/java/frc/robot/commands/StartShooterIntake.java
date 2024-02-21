@@ -16,7 +16,6 @@ public class StartShooterIntake extends Command {
     Shooter shooterSub;
     FloorIntake floorIntakeSub;
     ShooterMount shooterMountSub;
-
     double desiredFlywheelRPM = ShooterConstants.IntakeRPM;
     double desiredIndexRPM = ShooterConstants.IndexRPM;
 
@@ -24,7 +23,7 @@ public class StartShooterIntake extends Command {
         this.shooterSub = shooterSub;
         this.floorIntakeSub = floorIntakeSub;
         this.shooterMountSub = shooterMountSub;
-        addRequirements(shooterSub, floorIntakeSub, shooterMountSub);
+        addRequirements(shooterSub, floorIntakeSub);
     }
 
     @Override

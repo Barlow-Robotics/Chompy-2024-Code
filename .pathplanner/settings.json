@@ -8,7 +8,10 @@
     "Speaker"
   ],
   "autoFolders": [
-    "Simple Autos"
+    "Amp Only",
+    "Speaker and Amp",
+    "Simple Autos",
+    "Speaker Only"
   ],
   "defaultMaxVel": 4.59,
   "defaultMaxAccel": 3.0,

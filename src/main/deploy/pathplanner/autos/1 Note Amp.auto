@@ -18,7 +18,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Move to Amp Position"
+                  "name": "SetShooterMountPositionAmp"
                 }
               },
               {
@@ -37,7 +37,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Start Shooter"
+                  "name": "StartShooterIntake"
                 }
               },
               {
@@ -56,13 +56,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Stop Shooter"
+                  "name": "StopShooterIntake"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Move to Intake Position"
+                  "name": "SetShooterMountPositionFloor"
                 }
               },
               {

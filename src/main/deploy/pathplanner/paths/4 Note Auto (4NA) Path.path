@@ -152,7 +152,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Shoot Speaker"
+                "name": null
               }
             }
           ]
@@ -169,7 +169,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Shoot Speaker"
+                "name": null
               }
             }
           ]
@@ -186,7 +186,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Shoot Speaker"
+                "name": null
               }
             }
           ]

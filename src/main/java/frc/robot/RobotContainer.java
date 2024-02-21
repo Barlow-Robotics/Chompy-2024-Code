@@ -137,8 +137,8 @@ public class RobotContainer {
                 // Turning is controlled by the X axis of the right stick.
                 new DriveRobot(
                         driveSub,
-                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
                         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
+                        () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
                         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
                         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
                         true));

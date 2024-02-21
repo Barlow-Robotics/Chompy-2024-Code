@@ -18,7 +18,7 @@ public class DriveRobot extends Command {
 
     boolean FieldRelative;
     
-    double DeadBand = 0.08;
+    double DeadBand = 0.1;
     
     private double maxVelocityMultiplier = 1;
 

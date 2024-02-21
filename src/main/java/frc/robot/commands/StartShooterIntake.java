@@ -45,8 +45,10 @@ public class StartShooterIntake extends Command {
     @Override
     public void execute() {
 
-        // First time through, this checks to make sure you don't accidentally try to intake a second note
-        // In subsequent passes, this checks to see if you got the note you intended to intake
+        // First time through, this checks to make sure you don't accidentally try to
+        // intake a second note
+        // In subsequent passes, this checks to see if you got the note you intended to
+        // intake
 
         if ((shooterMountSub.getShooterPosState() == ShooterMountState.SourceIntake ||
                 shooterMountSub.getShooterPosState() == ShooterMountState.FloorIntake)
@@ -57,20 +59,22 @@ public class StartShooterIntake extends Command {
         }
 
         shooterSub.startFlywheels(desiredFlywheelRPM);
-        shooterSub.startIndex(desiredIndexRPM); 
+        if (shooterSub.isWithinFlywheelVelocityTolerance(desiredFlywheelRPM)) {
+            shooterSub.startIndex(desiredIndexRPM);
+        }
 
         if (shooterMountSub.getShooterPosState() == ShooterMountState.FloorIntake) {
             floorIntakeSub.start();
             // if (shooterSub.isNoteLoaded()) { // did we get the note we wanted
-            //     shooterSub.stop();           // don't need these 3 lines b/c the above will catch it
-            //     floorIntakeSub.stop();
+            // shooterSub.stop(); // don't need these 3 lines b/c the above will catch it
+            // floorIntakeSub.stop();
             // }
         } else if (shooterMountSub.getShooterPosState() == ShooterMountState.SourceIntake) {
             if (shooterSub.isNoteLoaded()) { // did we get the note we wanted
                 shooterSub.stop();
             }
         } else {
-            floorIntakeSub.stop();  // why is this needed?
+            floorIntakeSub.stop(); // why is this needed?
         }
     }
 

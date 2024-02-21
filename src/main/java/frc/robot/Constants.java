@@ -184,21 +184,25 @@ public class Constants {
 
         public static final double FlywheelGearRatio = 1.5; // 36 gears on motor, 24 on rollers --> 1.5:1 (as of 2/15)
 
-        public static final double SpeakerRPM = 4000; // CHANGE
-        public static final double AmpRPM = 2000; // CHANGE
-        public static final double IntakeRPM = -2000; // CHANGE
-        public static final double TrapRPM = 2000; // CHANGE
+        // public static final double SpeakerRPM = 4000; // CHANGE
+        // public static final double AmpRPM = 2000; // CHANGE
+        // public static final double IntakeRPM = -2000; // CHANGE
+        // public static final double TrapRPM = 2000; // CHANGE
+        public static final double SpeakerRPM = 3000;
+        public static final double AmpRPM = 1000; 
+        public static final double IntakeRPM = -1000;
+        public static final double TrapRPM = 250;
 
-        public static final double FlywheelKP = 0.0; 
+        public static final double FlywheelKP = 0.25; 
         public static final double FlywheelKI = 0; 
         public static final double FlywheelKD = 0; 
-        public static final double FlywheelFF = 0.12; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
+        public static final double FlywheelFF = 0.13; // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V, 1/8.33 = 0.12 volts / Rotation per second
 
         /* INDEX */
 
         public static final double IndexGearRatio = 1; // 1:1 ratio on Index per WK as of 2/15
 
-        public static final double IndexRPM = 180; // CHANGE
+        public static final double IndexRPM = 500; // CHANGE
 
         public static final double IndexKP = 0.0; // CHANGE
         public static final double IndexKI = 0; // CHANGE
@@ -282,7 +286,6 @@ public class Constants {
 
         public static final int SupplyCurrentLimit = 20;
 		
-        // public static final double MotorRPM = KrakenX60MaxRPM * 0.4;
         public static final double MotorRPM = 2500;
         public static final double VelocityTolerance = 0.05; // CHANGE
     }

@@ -235,7 +235,7 @@ public class ShooterMount extends SubsystemBase {
             motionMagicConfigs.MotionMagicCruiseVelocity = ShooterMountConstants.AngleMMCruiseVel;
             motionMagicConfigs.MotionMagicAcceleration = ShooterMountConstants.AngleMMAcceleration;
             motionMagicConfigs.MotionMagicJerk = ShooterMountConstants.AngleMMJerk;
-        } else if (motor == leftElevatorMotor || motor == rightElevatorMotor) {
+        } else {
             configs.Slot0.kP = ShooterMountConstants.ElevatorKP;
             configs.Slot0.kI = ShooterMountConstants.ElevatorKI;
             configs.Slot0.kD = ShooterMountConstants.ElevatorKD;

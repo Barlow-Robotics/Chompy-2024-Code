@@ -52,10 +52,6 @@ public class Shooter extends SubsystemBase {
 
     private boolean simulationInitialized = false;
 
-    // private ShuffleboardTab tab = Shuffleboard.getTab("Shooter");
-    // private GenericEntry shuffleBoardSpeed = tab.add("ShuffleBoard Speed",
-    // 1).getEntry();
-
     public Shooter() {
         leftFlywheelMotor = new TalonFX(ElectronicsIDs.LeftShooterMotorID);
         rightFlywheelMotor = new TalonFX(ElectronicsIDs.RightShooterMotorID);

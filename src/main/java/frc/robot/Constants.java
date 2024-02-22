@@ -235,24 +235,25 @@ public class Constants {
         public static final double ShooterAngleMaxDegreesPerSecond = (Falcon500MaxRPM / 60 * 360) / ElevatorGearRatio;
         public static final double ElevatorMaxMetersPerSecond = 
             (Falcon500MaxRPM / 60 / ElevatorGearRatio) * ElevatorSprocketCircumference;
-        public static final double RotationsPerElevatorInch = ElevatorGearRatio / Units.metersToInches(ElevatorSprocketCircumference);
+        public static final double RotationsPerElevatorInch = 
+            ElevatorGearRatio / Units.metersToInches(ElevatorSprocketCircumference) / 2;
 
         public static final double MaxAngleDegrees = 45;
         public static final double MinAngleDegrees = -58;
-        public static final double MaxHeightInches = 10;
+        public static final double MaxHeightInches = 10; // is this correct?
         public static final double MinHeight = 0;
 
-        public static final double SpeakerAngle = 102 + MinAngleDegrees; // CHANGE
+        public static final double SpeakerAngle = 95 + MinAngleDegrees; // CHANGE
         public static final double SpeakerHeight = 0; // Resting position
 
         public static final double AmpAngle = 10 + MinAngleDegrees; // CHANGE
-        public static final double AmpHeight = 16; // CHANGE
+        public static final double AmpHeight = 6; // CHANGE
 
         public static final double SourceIntakeAngle = 60 + MinAngleDegrees; // CHANGE
         public static final double SourceIntakeHeight = 15; // CHANGE
 
         public static final double FloorIntakeAngle = 0 + MinAngleDegrees; // Resting position
-        public static final double FloorIntakeHeight = 0; // CHANGE
+        public static final double FloorIntakeHeight = 0; // might have to be 0.5
 
         public static final double TrapAngle = 58 + MinAngleDegrees; // CHANGE
         public static final double TrapHeight = 10; // CHANGE
@@ -263,26 +264,27 @@ public class Constants {
         public static final double AngleKI = 0;
         public static final double AngleKD = 0.0;
         public static final double AngleIZone = 0;
-        public static final double AngleFF = 0.11;
+        public static final double AngleFF = 0.0;
         public static final double AngleKG = 0.29;
 
-        public static final double AngleMMCruiseVel = .05; //1.5; // CHANGE - Target cruise velocity of 1.5 rps
-        public static final double AngleMMAcceleration = .1;//3; // CHANGE - Target acceleration of 3 rps/s (0.5 seconds)
-        public static final double AngleMMJerk = 1; //30; // CHANGE - Target jerk of 30 rps/s/s (0.1 seconds)
+        public static final double AngleMMCruiseVel = 1.5; 
+        public static final double AngleMMAcceleration = 3;
+        public static final double AngleMMJerk = 20; //30; 
 
-        public static final double ElevatorKP = 0.0;
+        public static final double AngleCANCoderMagnetOffset = 0.312744140625;
+
+        public static final double ElevatorKP = 26;
         public static final double ElevatorKI = 0;
         public static final double ElevatorKD = 0.0;
         public static final double ElevatorIZone = 0;
-        public static final double ElevatorFF = 0.12;
+        public static final double ElevatorFF = 0.0;
+        public static final double ElevatorKG = 2.5;
 
-        public static final double ElevatorMMCruiseVel = 10; // CHANGE - Target cruise velocity of 80 rps
-        public static final double ElevatorMMAcceleration = 10; // CHANGE - Target acceleration of 160 rps/s (0.5 seconds)
+        public static final double ElevatorMMCruiseInchesPerSecond = 1; // CHANGE - Target cruise velocity of 80 rps
+        public static final double ElevatorMMInchesPerSecondPerSecond = 10; // CHANGE - Target acceleration of 160 rps/s (0.5 seconds)
         public static final double ElevatorMMJerk = 800; // CHANGE - Target jerk of 1600 rps/s/s (0.1 seconds)
         
         public static final double SupplyCurrentLimit = 40;
-
-        public static final double AngleCANCoderMagnetOffset = 0.312744140625;
     }
 
     /***************************************************************************/

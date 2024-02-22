@@ -29,14 +29,14 @@ public class StartShooterIntake extends Command {
 
     @Override
     public void initialize() {
-        if (shooterMountSub.getShooterPosState() == ShooterMountState.SourceIntake ||
-                shooterMountSub.getShooterPosState() == ShooterMountState.FloorIntake) {
+        if (shooterMountSub.getShooterMountState() == ShooterMountState.SourceIntake ||
+                shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake) {
             desiredIndexRPM = -ShooterConstants.IndexRPM;
             desiredLeftFlywheelMotorRPM = ShooterConstants.LeftIntakeRPM;
             desiredRightFlywheelMotorRPM = ShooterConstants.RightIntakeRPM;
         } else {
             desiredIndexRPM = ShooterConstants.IndexRPM;
-            if (shooterMountSub.getShooterPosState() == ShooterMountState.Amp) {
+            if (shooterMountSub.getShooterMountState() == ShooterMountState.Amp) {
                 desiredLeftFlywheelMotorRPM = ShooterConstants.LeftAmpRPM;
                 desiredRightFlywheelMotorRPM = ShooterConstants.RightAmpRPM;
             } else {
@@ -54,8 +54,8 @@ public class StartShooterIntake extends Command {
         // In subsequent passes, this checks to see if you got the note you intended to
         // intake
 
-        if ((shooterMountSub.getShooterPosState() == ShooterMountState.SourceIntake ||
-                shooterMountSub.getShooterPosState() == ShooterMountState.FloorIntake)
+        if ((shooterMountSub.getShooterMountState() == ShooterMountState.SourceIntake ||
+                shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake)
                 && shooterSub.isNoteLoaded()) {
             shooterSub.stop();
             floorIntakeSub.stop();
@@ -67,13 +67,13 @@ public class StartShooterIntake extends Command {
             shooterSub.startIndex(desiredIndexRPM);
         }
 
-        if (shooterMountSub.getShooterPosState() == ShooterMountState.FloorIntake) {
+        if (shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake) {
             floorIntakeSub.start();
             // if (shooterSub.isNoteLoaded()) { // did we get the note we wanted
             // shooterSub.stop(); // don't need these 3 lines b/c the above will catch it
             // floorIntakeSub.stop();
             // }
-        } else if (shooterMountSub.getShooterPosState() == ShooterMountState.SourceIntake) {
+        } else if (shooterMountSub.getShooterMountState() == ShooterMountState.SourceIntake) {
             if (shooterSub.isNoteLoaded()) { // did we get the note we wanted
                 shooterSub.stop();
             }

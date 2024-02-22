@@ -80,7 +80,7 @@ public class Robot extends LoggedRobot {
         CommandScheduler.getInstance().run();
 
         elevator.setLength(2.0+robotContainer.shooterMountSub.getHeightInches()) ;
-        wrist.setAngle(robotContainer.shooterMountSub.getAngleDegrees()-135);
+        wrist.setAngle(robotContainer.shooterMountSub.getAngleCANCoderDegrees()-135);
         SmartDashboard.putData("ShooterMountMech", shooterMountMechanism);
 
         // Support for 3D rendering on AdvantageScope.
@@ -107,7 +107,7 @@ public class Robot extends LoggedRobot {
         robotContainer.driveSub.stop();
         robotContainer.floorIntakeSub.stop();
         robotContainer.shooterSub.stop();
-        robotContainer.shooterMountSub.stop();
+        robotContainer.shooterMountSub.stopElevator();
     }
 
     @Override
@@ -161,7 +161,7 @@ public class Robot extends LoggedRobot {
         // robotContainer.visionSub.simulationPeriodic(simPose);
 
         double elevatorTop = robotContainer.shooterMountSub.getHeightInches()*0.0254 ;
-        double shooterPitchAngle = -robotContainer.shooterMountSub.getAngleDegrees()+65 ;
+        double shooterPitchAngle = -robotContainer.shooterMountSub.getAngleCANCoderDegrees()+65 ;
 
         // Support for 3D rendering on AdvantageScope.
         Pose3d[] elevatorPoses = {

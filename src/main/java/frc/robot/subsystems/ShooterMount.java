@@ -299,6 +299,16 @@ public class ShooterMount extends SubsystemBase {
         CurrentLimitsConfigs currentLimitConfigs = configs.CurrentLimits;
         currentLimitConfigs.SupplyCurrentLimit = ShooterMountConstants.SupplyCurrentLimit;
         currentLimitConfigs.SupplyCurrentLimitEnable = true;
+
+        for (int i = 0; i < 5; ++i) {
+            status = motor.getConfigurator().apply(currentLimitConfigs, 0.05);
+            if (status.isOK())
+                break;
+        }
+        if (!status.isOK()) {
+            System.out.println(
+                    "Could not apply current limit configs to " + motor + " error code: " + status.toString());
+        }
     }
 
     private void applyAngleEncoderConfigs() {

@@ -60,8 +60,8 @@ public class RobotContainer {
             ShooterMountState.SourceIntake, visionSub);
     public final SetShooterMountPosition setShooterPosFloorCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.FloorIntake, visionSub);
-    private final SetShooterMountPosition setShooterPosTrapCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.Trap, visionSub);
+
+    private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.Climb, visionSub);
 
     private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub, shooterMountSub);
     private final StopShooterIntake stopShooterIntakeCmd = new StopShooterIntake(shooterSub, floorIntakeSub);
@@ -86,9 +86,7 @@ public class RobotContainer {
     private Trigger moveToAmpButton;
     private Trigger moveToSourceButton;
     private Trigger moveToFloorButton;
-    private Trigger moveToTrapButton;
-    // private Trigger prepareToClimbButton; // LT added. CHANGE if not its own button
-    // private Trigger climbButton;
+    private Trigger climbButton;
     private Trigger LEDHumanSourceButton;
     private Trigger LEDHumanFloorButton;
     private Trigger shootIntakeButtonDriver;
@@ -151,9 +149,9 @@ public class RobotContainer {
         moveToFloorButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // station
         moveToFloorButton.onTrue(setShooterPosFloorCmd);
 
-        moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button on
-                                                                                                    // mantis controller
-        moveToTrapButton.onTrue(setShooterPosTrapCmd);
+        // moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button on
+        //                                                                                             // mantis controller
+        // moveToTrapButton.onTrue(setShooterPosTrapCmd);
 
         /******************** SHOOTER ********************/
 
@@ -165,9 +163,8 @@ public class RobotContainer {
 
         /******************** CLIMB ********************/
 
-        // climbButton = new JoystickButton(operatorController,
-        // XboxControllerConstants.ButtonX); // no button on mantis controller
-        // climbButton.onTrue(climbCmd);
+        climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX);
+        climbButton.onTrue(climbCmd);
 
         /********************* LED BINDINGS ************************************* */
 

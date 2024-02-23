@@ -258,8 +258,6 @@ public class Constants {
         public static final double TrapAngle = 58 + MinAngleDegrees; // CHANGE
         public static final double TrapHeight = 10; // CHANGE
 
-        public static final double ClimbHeight = 10; // CHANGE
-
         public static final double AngleKP = 26;
         public static final double AngleKI = 0;
         public static final double AngleKD = 0.0;

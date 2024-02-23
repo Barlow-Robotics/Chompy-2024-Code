@@ -63,7 +63,7 @@ public class ShooterMount extends SubsystemBase {
     private final CANcoderSimState absoluteAngleEncoderSim; // CHANGE needed? never used
 
     public enum ShooterMountState {
-        Speaker, Amp, SourceIntake, FloorIntake, PreClimb, Climb, PreTrap, Trap, MovingToPosition
+        Speaker, Amp, SourceIntake, FloorIntake, Climb, MovingToPosition
     }
 
     private ShooterMountState shooterPosState = ShooterMountState.FloorIntake;
@@ -210,7 +210,7 @@ public class ShooterMount extends SubsystemBase {
         // LT & EH CHANGE - copied logging for new climb functions / consts -
         // ClimbHeight & MinHeight
         Logger.recordOutput("ShooterMount/Climb/IsAtClimbHeight",
-                isWithinHeightTolerance(ShooterMountConstants.ClimbHeight));
+                isWithinHeightTolerance(ShooterMountConstants.MaxHeightInches));
         Logger.recordOutput("ShooterMount/Climb/IsAtMinHeight",
                 isWithinHeightTolerance(ShooterMountConstants.MinHeight));
     }

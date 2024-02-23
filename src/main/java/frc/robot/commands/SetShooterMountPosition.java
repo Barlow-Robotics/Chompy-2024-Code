@@ -55,18 +55,12 @@ public class SetShooterMountPosition extends Command {
                 desiredAngle = ShooterMountConstants.FloorIntakeAngle;
                 desiredHeight = ShooterMountConstants.FloorIntakeHeight;
                 break;
-                // LT and EH added code for climb - see comments in ShooterMount
-            case PreClimb:  
+            case Climb:
                 desiredAngle = ShooterMountConstants.TrapAngle;
-                // no break b/c wants to go to PreTrap also - Ed
-            case PreTrap:    
-                desiredHeight = ShooterMountConstants.TrapHeight;
-                break;
-            case Climb:  // pull-up
-                desiredHeight = ShooterMountConstants.MinHeight;
-                break;
-            case Trap:
-                break;
+                desiredHeight = ShooterMountConstants.MaxHeightInches;
+                if(shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
+                    desiredHeight = ShooterMountConstants.MinHeight;
+                }
         }
         Logger.recordOutput("ShooterMount/DesiredAngle", desiredAngle);
         Logger.recordOutput("ShooterMount/DesiredHeight", desiredHeight);
@@ -74,9 +68,9 @@ public class SetShooterMountPosition extends Command {
 
     @Override
     public void execute() {
-        // shooterMountSub.setAngle(desiredAngle);
+        shooterMountSub.setAngle(desiredAngle);
         shooterMountSub.setHeightInches(desiredHeight);
-        // shooterMountSub.setShooterPosState(desiredState);
+        shooterMountSub.setShooterPosState(desiredState);
         if ( desiredTarget != null ) {
             visionSub.alignTo(desiredTarget);  
         }

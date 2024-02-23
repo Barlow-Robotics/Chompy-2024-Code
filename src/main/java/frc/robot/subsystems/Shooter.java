@@ -71,6 +71,8 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         logData();
+
+        // if (isNoteLoaded() && getRPM(indexMotor) < 0) stop();
     }
 
     public void startFlywheels(double shooterLeftRPM, double shooterRightRPM) {
@@ -127,6 +129,7 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Shooter/ActualRPMIndex", getRPM(indexMotor));
         Logger.recordOutput("Shooter/ClosedLoopError/Lower", leftFlywheelMotor.getClosedLoopError().getValue());
         Logger.recordOutput("Shooter/ClosedLoopError/Upper", rightFlywheelMotor.getClosedLoopError().getValue());
+        Logger.recordOutput("Shooter/ClosedLoopError/Index", indexMotor.getClosedLoopError().getValue());
         Logger.recordOutput("Shooter/IsNoteLoaded", isNoteLoaded());
         Logger.recordOutput("Shooter/SupplyCurrent/FlywheelLower", leftFlywheelMotor.getSupplyCurrent().getValue());
         Logger.recordOutput("Shooter/SupplyCurrent/FlywheelUpper", rightFlywheelMotor.getSupplyCurrent().getValue());

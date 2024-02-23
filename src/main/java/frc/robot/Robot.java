@@ -107,7 +107,7 @@ public class Robot extends LoggedRobot {
         robotContainer.driveSub.stop();
         robotContainer.floorIntakeSub.stop();
         robotContainer.shooterSub.stop();
-        robotContainer.shooterMountSub.stopElevator();
+        robotContainer.shooterMountSub.stopElevatorMotor();
     }
 
     @Override

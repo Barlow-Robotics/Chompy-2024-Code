@@ -94,8 +94,8 @@ public class ShooterMount extends SubsystemBase {
         rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), true));
         setNeutralMode(NeutralModeValue.Brake, NeutralModeValue.Brake);
 
-        stopElevator();
-        stopAngle();
+        stopElevatorMotor();
+        stopAngleMotor();
     }
 
     @Override
@@ -105,14 +105,14 @@ public class ShooterMount extends SubsystemBase {
         if ((isAtBottom() && leftElevatorMotor.getVelocity().getValue() < 0) ||
                 (getHeightInches() == ShooterMountConstants.MaxHeightInches
                         && leftElevatorMotor.getVelocity().getValue() > 0)) {
-            stopElevator();
+            stopElevatorMotor();
         }
 
         if ((getAngleCANCoderDegrees() == ShooterMountConstants.MinAngleDegrees
                 && angleMotor.getVelocity().getValue() < 0) ||
                 (getHeightInches() == ShooterMountConstants.MaxAngleDegrees
                         && angleMotor.getVelocity().getValue() > 0)) {
-            stopAngle();
+            stopAngleMotor();
         }
     }
 
@@ -120,7 +120,11 @@ public class ShooterMount extends SubsystemBase {
 
     public void setAngle(double desiredDegrees) {
         final MotionMagicVoltage request = new MotionMagicVoltage(Units.degreesToRotations(desiredDegrees));
-        angleMotor.setControl(request/* * .withFeedForward(ShooterPositionConstants.AngleFF) */);
+        angleMotor.setControl(request);
+    }
+
+    public void stopAngleMotor() {
+        angleMotor.set(0);
     }
 
     public void setAngleWithVision(double desiredDegrees) {
@@ -137,25 +141,23 @@ public class ShooterMount extends SubsystemBase {
 
     /* ELEVATOR */
 
-    public void setHeightInches(double desiredHeight) {
-        MotionMagicVoltage request = new MotionMagicVoltage(
-                (desiredHeight - ShooterMountConstants.SpeakerHeight) * ShooterMountConstants.RotationsPerElevatorInch
-                        / 2);
+    public void setHeightInches(double desiredInches) {
+        double rotations = ((desiredInches - ShooterMountConstants.StartingHeight) / 2)
+                * ShooterMountConstants.RotationsPerElevatorInch;
+        MotionMagicVoltage request = new MotionMagicVoltage(rotations);
         leftElevatorMotor.setControl(request/* .withFeedForward(ShooterPositionConstants.ElevatorFF) */);
     }
 
     public double getHeightInches() {
-        return (leftElevatorMotor.getPosition().getValue() + ShooterMountConstants.SpeakerHeight)
-                / ShooterMountConstants.RotationsPerElevatorInch * 2;
+        double elevatorHeight = ((leftElevatorMotor.getPosition().getValue()
+                / ShooterMountConstants.RotationsPerElevatorInch) * 2)
+                + ShooterMountConstants.StartingHeight;
+        return elevatorHeight;
     }
 
-    public void stopElevator() {
+    public void stopElevatorMotor() {
         leftElevatorMotor.set(0);
         rightElevatorMotor.set(0);
-    }
-
-    public void stopAngle() {
-        angleMotor.set(0);
     }
 
     public void setBasePosition(double height) {
@@ -211,6 +213,7 @@ public class ShooterMount extends SubsystemBase {
                 leftElevatorMotor.getClosedLoopError().getValue());
         Logger.recordOutput("ShooterMount/ClosedLoopError/ElevatorRightMotor",
                 rightElevatorMotor.getClosedLoopError().getValue());
+        Logger.recordOutput("Shooter/TempC/LeftElevatorMotor", leftElevatorMotor.getDeviceTemp().getValue());
         Logger.recordOutput("ShooterMount/ActualHeight", getHeightInches());
         Logger.recordOutput("ShooterMount/IsAtBottom", isAtBottom());
         Logger.recordOutput("ShooterMount/CurrentSupply/ElevatorLeft", leftElevatorMotor.getSupplyCurrent().getValue());
@@ -239,7 +242,7 @@ public class ShooterMount extends SubsystemBase {
         talonConfigs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
         var motionMagicConfigs = talonConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = ShooterMountConstants.AngleMMCruiseVel;
+        motionMagicConfigs.MotionMagicCruiseVelocity = ShooterMountConstants.AngleMMCruiseDegPerSec;
         motionMagicConfigs.MotionMagicAcceleration = ShooterMountConstants.AngleMMAcceleration;
         motionMagicConfigs.MotionMagicJerk = ShooterMountConstants.AngleMMJerk;
 
@@ -260,11 +263,11 @@ public class ShooterMount extends SubsystemBase {
 
         var motionMagicConfigs = talonConfigs.MotionMagic;
 
-        double rotationsPerSecond = ShooterMountConstants.ElevatorMMCruiseInchesPerSecond
+        double rotationsPerSecond = ShooterMountConstants.ElevatorMMCruiseInchesPerSec
                 * ShooterMountConstants.RotationsPerElevatorInch;
         motionMagicConfigs.MotionMagicCruiseVelocity = rotationsPerSecond;
 
-        double rotationsPerSecondPerSecond = (ShooterMountConstants.ElevatorMMInchesPerSecondPerSecond
+        double rotationsPerSecondPerSecond = (ShooterMountConstants.ElevatorMMInchesPerSecPerSec
                 * ShooterMountConstants.RotationsPerElevatorInch) / 0.25;
         motionMagicConfigs.MotionMagicAcceleration = rotationsPerSecondPerSecond;
 

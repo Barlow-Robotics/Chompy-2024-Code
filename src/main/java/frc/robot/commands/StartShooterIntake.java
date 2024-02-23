@@ -72,13 +72,6 @@ public class StartShooterIntake extends Command {
             // if (shooterSub.isNoteLoaded()) { // did we get the note we wanted
             // shooterSub.stop(); // don't need these 3 lines b/c the above will catch it
             // floorIntakeSub.stop();
-            // }
-        } else if (shooterMountSub.getShooterMountState() == ShooterMountState.SourceIntake) {
-            if (shooterSub.isNoteLoaded()) { // did we get the note we wanted
-                shooterSub.stop();
-            }
-        } else {
-            floorIntakeSub.stop(); // why is this needed?
         }
     }
 

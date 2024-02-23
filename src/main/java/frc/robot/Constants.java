@@ -187,8 +187,8 @@ public class Constants {
         public static final double LeftSpeakerRPM = 3000;
         public static final double RightSpeakerRPM = 3000;
 
-        public static final double LeftAmpRPM = 1000; 
-        public static final double RightAmpRPM = 1000; 
+        public static final double LeftAmpRPM = 750; 
+        public static final double RightAmpRPM = 750; 
 
         public static final double LeftIntakeRPM = -1000;
         public static final double RightIntakeRPM = -1000;
@@ -210,12 +210,12 @@ public class Constants {
 
         public static final double IndexGearRatio = 1; // 1:1 ratio on Index per WK as of 2/15
 
-        public static final double IndexRPM = 500; // CHANGE
+        public static final double IndexRPM = 500;
 
-        public static final double IndexKP = 0.0; // CHANGE
-        public static final double IndexKI = 0; // CHANGE
-        public static final double IndexKD = 0; // CHANGE
-        public static final double IndexFF = 0.12; // CHANGE
+        public static final double IndexKP = 0.25; 
+        public static final double IndexKI = 0; 
+        public static final double IndexKD = 0; 
+        public static final double IndexFF = 0.12;
     }
 
     /***************************************************************************/
@@ -224,19 +224,12 @@ public class Constants {
 
     public static final class ShooterMountConstants {
 
+        public static final double SupplyCurrentLimit = 40;       
+       
+        /* HEIGHT / ANGLE PAIRS */
+
         public static final double AngleTolerance = 1.5; // Degrees - CHANGE
         public static final double HeightTolerance = 0.25; // Inches - CHANGE
-
-        public static final double ElevatorGearRatio = 15;
-        public static final double AngleGearRatio = 46.67; // From K's spreadsheet
-        public static final double ElevatorSprocketDiameter = Units.inchesToMeters(2.36);
-        public static final double ElevatorSprocketCircumference = ElevatorSprocketDiameter * Math.PI;
-
-        public static final double ShooterAngleMaxDegreesPerSecond = (Falcon500MaxRPM / 60 * 360) / ElevatorGearRatio;
-        public static final double ElevatorMaxMetersPerSecond = 
-            (Falcon500MaxRPM / 60 / ElevatorGearRatio) * ElevatorSprocketCircumference;
-        public static final double RotationsPerElevatorInch = 
-            ElevatorGearRatio / Units.metersToInches(ElevatorSprocketCircumference) / 2;
 
         public static final double MaxAngleDegrees = 45;
         public static final double MinAngleDegrees = -58;
@@ -246,11 +239,11 @@ public class Constants {
         public static final double SpeakerAngle = 37; // CHANGE
         public static final double SpeakerHeight = 0; // Resting position
 
-        public static final double AmpAngle = -48; // CHANGE
-        public static final double AmpHeight = 40 - StartingHeight;
+        public static final double AmpAngle = -45; // CHANGE
+        public static final double AmpHeight = 40;
 
         public static final double SourceIntakeAngle = 32; // CHANGE
-        public static final double SourceIntakeHeight = 8; // CHANGE
+        public static final double SourceIntakeHeight = 27; // CHANGE
 
         public static final double FloorIntakeAngle = MinAngleDegrees; // Resting position
         public static final double FloorIntakeHeight = StartingHeight; // might have to be 0.5 // 19.75 in off ground
@@ -258,31 +251,44 @@ public class Constants {
         public static final double TrapAngle = 0; // CHANGE
         public static final double TrapHeight = 10; // CHANGE
 
+        /* ANGLE */
+
         public static final double AngleKP = 26;
         public static final double AngleKI = 0;
         public static final double AngleKD = 0.0;
-        public static final double AngleIZone = 0;
+        // public static final double AngleIZone = 0; // motor already does this
         public static final double AngleFF = 0.0;
         public static final double AngleKG = 0.29;
 
-        public static final double AngleMMCruiseVel = 1.5; 
+        public static final double AngleCANCoderMagnetOffset = 0.312744140625;
+
+        public static final double AngleGearRatio = 46.67; // From K's spreadsheet
+        public static final double ShooterAngleMaxDegreesPerSecond = (Falcon500MaxRPM / SecondsPerMinute * 360) / AngleGearRatio;
+        public static final double AngleMMCruiseDegPerSec = 1.5; 
         public static final double AngleMMAcceleration = 3;
         public static final double AngleMMJerk = 20; //30; 
 
-        public static final double AngleCANCoderMagnetOffset = 0.312744140625;
+        /* ELEVATOR */
 
         public static final double ElevatorKP = 32;
         public static final double ElevatorKI = 0.001;
         public static final double ElevatorKD = 0.0;
-        // public static final double ElevatorIZone = 0.1;
+        // public static final double ElevatorIZone = 0.1; // motor already does this
         public static final double ElevatorFF = 0.0;
         public static final double ElevatorKG = 2.7;
 
-        public static final double ElevatorMMCruiseInchesPerSecond = 10; // CHANGE - Target cruise velocity of 80 rps
-        public static final double ElevatorMMInchesPerSecondPerSecond = 10; // CHANGE - Target acceleration of 160 rps/s (0.5 seconds)
+        public static final double ElevatorGearRatio = 15;
+        public static final double ElevatorSprocketDiameter = 2.36;  // inches
+        public static final double ElevatorSprocketCircumference = ElevatorSprocketDiameter * Math.PI;
+        public static final double RotationsPerElevatorInch = 1 / ElevatorSprocketCircumference * ElevatorGearRatio;
+        // public static final double RotationsPerElevatorInch = 
+        // ElevatorGearRatio / Units.metersToInches(ElevatorSprocketCircumference) / 2;
+
+        public static final double ElevatorMaxInchesPerSec = 
+                Falcon500MaxRPM / SecondsPerMinute / ElevatorGearRatio * ElevatorSprocketCircumference;
+        public static final double ElevatorMMCruiseInchesPerSec = 10; 
+        public static final double ElevatorMMInchesPerSecPerSec = 10; 
         public static final double ElevatorMMJerk = 800; // CHANGE - Target jerk of 1600 rps/s/s (0.1 seconds)
-        
-        public static final double SupplyCurrentLimit = 40;
     }
 
     /***************************************************************************/

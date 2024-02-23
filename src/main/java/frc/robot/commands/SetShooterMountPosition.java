@@ -57,22 +57,10 @@ public class SetShooterMountPosition extends Command {
                 break;
             case Climb:
                 desiredAngle = ShooterMountConstants.TrapAngle;
-<<<<<<< Updated upstream
                 desiredHeight = ShooterMountConstants.MaxHeightInches;
                 if(shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
-                    desiredHeight = ShooterMountConstants.MinHeight;
+                    desiredHeight = ShooterMountConstants.StartingHeight;
                 }
-=======
-                // no break b/c wants to go to PreTrap also - Ed
-            case PreTrap:    
-                desiredHeight = ShooterMountConstants.TrapHeight;
-                break;
-            case Climb:  // pull-up
-                desiredHeight = ShooterMountConstants.StartingHeight;
-                break;
-            case Trap:
-                break;
->>>>>>> Stashed changes
         }
         Logger.recordOutput("ShooterMount/Angle/DesiredAngle", desiredAngle);
         Logger.recordOutput("ShooterMount/Height/DesiredHeightInches", desiredHeight);
@@ -82,11 +70,7 @@ public class SetShooterMountPosition extends Command {
     public void execute() {
         shooterMountSub.setAngle(desiredAngle);
         shooterMountSub.setHeightInches(desiredHeight);
-<<<<<<< Updated upstream
-        shooterMountSub.setShooterPosState(desiredState);
-=======
->>>>>>> Stashed changes
-        if ( desiredTarget != null ) {
+        if (desiredTarget != null) {
             visionSub.alignTo(desiredTarget);  
         }
     }
@@ -97,7 +81,7 @@ public class SetShooterMountPosition extends Command {
 
     @Override
     public boolean isFinished() {
-        if(shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
+        if (shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
             shooterMountSub.setShooterPosState(desiredState);
             return true;
         }

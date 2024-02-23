@@ -217,17 +217,6 @@ public class ShooterMount extends SubsystemBase {
         Logger.recordOutput("ShooterMount/CurrentSupply/ElevatorRight",
                 rightElevatorMotor.getSupplyCurrent().getValue());
         Logger.recordOutput("ShooterMount/CurrentSupply/Angle", angleMotor.getSupplyCurrent().getValue());
-<<<<<<< Updated upstream
-        // log number of rotations and the angle being reported back by cancoder
-        // Encoder offset where the thing is 0
-
-        // LT & EH CHANGE - copied logging for new climb functions / consts -
-        // ClimbHeight & MinHeight
-        Logger.recordOutput("ShooterMount/Climb/IsAtClimbHeight",
-                isWithinHeightTolerance(ShooterMountConstants.MaxHeightInches));
-        Logger.recordOutput("ShooterMount/Climb/IsAtMinHeight",
-                isWithinHeightTolerance(ShooterMountConstants.MinHeight));
-=======
         Logger.recordOutput("ShooterMount/Height/RawElevatorLeftMotorRotations",
                 leftElevatorMotor.getPosition().getValueAsDouble());
         Logger.recordOutput("ShooterMount/Height/RawElevatorRightMotorRotations",
@@ -236,7 +225,6 @@ public class ShooterMount extends SubsystemBase {
                 leftElevatorMotor.getClosedLoopReference().getValue());
         Logger.recordOutput("ShooterMount/Height/SetpointElevatorRightRotations",
                 rightElevatorMotor.getClosedLoopReference().getValue());
->>>>>>> Stashed changes
     }
 
     /* CONFIG */

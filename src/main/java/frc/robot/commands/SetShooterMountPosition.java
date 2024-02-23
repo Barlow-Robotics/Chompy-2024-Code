@@ -57,20 +57,35 @@ public class SetShooterMountPosition extends Command {
                 break;
             case Climb:
                 desiredAngle = ShooterMountConstants.TrapAngle;
+<<<<<<< Updated upstream
                 desiredHeight = ShooterMountConstants.MaxHeightInches;
                 if(shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
                     desiredHeight = ShooterMountConstants.MinHeight;
                 }
+=======
+                // no break b/c wants to go to PreTrap also - Ed
+            case PreTrap:    
+                desiredHeight = ShooterMountConstants.TrapHeight;
+                break;
+            case Climb:  // pull-up
+                desiredHeight = ShooterMountConstants.StartingHeight;
+                break;
+            case Trap:
+                break;
+>>>>>>> Stashed changes
         }
-        Logger.recordOutput("ShooterMount/DesiredAngle", desiredAngle);
-        Logger.recordOutput("ShooterMount/DesiredHeight", desiredHeight);
+        Logger.recordOutput("ShooterMount/Angle/DesiredAngle", desiredAngle);
+        Logger.recordOutput("ShooterMount/Height/DesiredHeightInches", desiredHeight);
     }
 
     @Override
     public void execute() {
         shooterMountSub.setAngle(desiredAngle);
         shooterMountSub.setHeightInches(desiredHeight);
+<<<<<<< Updated upstream
         shooterMountSub.setShooterPosState(desiredState);
+=======
+>>>>>>> Stashed changes
         if ( desiredTarget != null ) {
             visionSub.alignTo(desiredTarget);  
         }
@@ -86,10 +101,6 @@ public class SetShooterMountPosition extends Command {
             shooterMountSub.setShooterPosState(desiredState);
             return true;
         }
-        // if(shooterMountSub.isAtBottom() && desiredHeight != 0/*  hall effect is true */) {
-        //     shooterMountSub.stop();
-        //     shooterMountSub.setBasePosition(0);
-        // }
         return false;        
     }
 }

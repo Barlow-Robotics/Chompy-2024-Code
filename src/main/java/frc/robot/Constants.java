@@ -225,7 +225,7 @@ public class Constants {
     public static final class ShooterMountConstants {
 
         public static final double AngleTolerance = 1.5; // Degrees - CHANGE
-        public static final double HeightTolerance = 2; // Inches - CHANGE
+        public static final double HeightTolerance = 0.25; // Inches - CHANGE
 
         public static final double ElevatorGearRatio = 15;
         public static final double AngleGearRatio = 46.67; // From K's spreadsheet
@@ -241,21 +241,21 @@ public class Constants {
         public static final double MaxAngleDegrees = 45;
         public static final double MinAngleDegrees = -58;
         public static final double MaxHeightInches = 10; // is this correct?
-        public static final double MinHeight = 0;
+        public static final double StartingHeight = 19.75; // height between shooter pivot and ground 
 
-        public static final double SpeakerAngle = 95 + MinAngleDegrees; // CHANGE
+        public static final double SpeakerAngle = 37; // CHANGE
         public static final double SpeakerHeight = 0; // Resting position
 
-        public static final double AmpAngle = 10 + MinAngleDegrees; // CHANGE
-        public static final double AmpHeight = 6; // CHANGE
+        public static final double AmpAngle = -48; // CHANGE
+        public static final double AmpHeight = 40 - StartingHeight;
 
-        public static final double SourceIntakeAngle = 60 + MinAngleDegrees; // CHANGE
-        public static final double SourceIntakeHeight = 15; // CHANGE
+        public static final double SourceIntakeAngle = 32; // CHANGE
+        public static final double SourceIntakeHeight = 8; // CHANGE
 
-        public static final double FloorIntakeAngle = 0 + MinAngleDegrees; // Resting position
-        public static final double FloorIntakeHeight = 0; // might have to be 0.5
+        public static final double FloorIntakeAngle = MinAngleDegrees; // Resting position
+        public static final double FloorIntakeHeight = StartingHeight; // might have to be 0.5 // 19.75 in off ground
 
-        public static final double TrapAngle = 58 + MinAngleDegrees; // CHANGE
+        public static final double TrapAngle = 0; // CHANGE
         public static final double TrapHeight = 10; // CHANGE
 
         public static final double AngleKP = 26;
@@ -271,14 +271,14 @@ public class Constants {
 
         public static final double AngleCANCoderMagnetOffset = 0.312744140625;
 
-        public static final double ElevatorKP = 26;
-        public static final double ElevatorKI = 0;
+        public static final double ElevatorKP = 32;
+        public static final double ElevatorKI = 0.001;
         public static final double ElevatorKD = 0.0;
-        public static final double ElevatorIZone = 0;
+        // public static final double ElevatorIZone = 0.1;
         public static final double ElevatorFF = 0.0;
-        public static final double ElevatorKG = 2.5;
+        public static final double ElevatorKG = 2.7;
 
-        public static final double ElevatorMMCruiseInchesPerSecond = 1; // CHANGE - Target cruise velocity of 80 rps
+        public static final double ElevatorMMCruiseInchesPerSecond = 10; // CHANGE - Target cruise velocity of 80 rps
         public static final double ElevatorMMInchesPerSecondPerSecond = 10; // CHANGE - Target acceleration of 160 rps/s (0.5 seconds)
         public static final double ElevatorMMJerk = 800; // CHANGE - Target jerk of 1600 rps/s/s (0.1 seconds)
         

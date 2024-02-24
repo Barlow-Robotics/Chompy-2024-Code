@@ -61,13 +61,12 @@ public class Robot extends LoggedRobot {
 
         DriverStation.silenceJoystickConnectionWarning(true);
 
-        robotContainer.shooterMountSub.setHeightInches(Constants.ShooterMountConstants.FloorIntakeHeight);
+        robotContainer.shooterMountSub.resetElevatorEncoders();
 
         MechanismRoot2d root =  shooterMountMechanism.getRoot("ShooterMount", 0, 0) ;
         elevator = root.append(new MechanismLigament2d("elevator", 2, 90, 6, new Color8Bit(Color.kWhite)));
         wrist = elevator.append(
             new MechanismLigament2d("wrist", 6, 0, 6, new Color8Bit(Color.kPurple)));
-
     }
 
     @Override
@@ -108,6 +107,7 @@ public class Robot extends LoggedRobot {
         robotContainer.floorIntakeSub.stop();
         robotContainer.shooterSub.stop();
         robotContainer.shooterMountSub.stopElevatorMotor();
+        robotContainer.shooterMountSub.stopAngleMotor();
     }
 
     @Override

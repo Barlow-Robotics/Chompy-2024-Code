@@ -15,6 +15,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.MusicTone;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
@@ -89,13 +90,10 @@ public class ShooterMount extends SubsystemBase {
         applyAngleMotorConfigs(InvertedValue.Clockwise_Positive);
         applyAngleEncoderConfigs();
         applyElevatorMotorConfigs(leftElevatorMotor, "leftElevatorMotor", InvertedValue.CounterClockwise_Positive);
-        // applyElevatorMotorConfigs(rightElevatorMotor, "rightElevatorMotor",
-        // InvertedValue.Clockwise_Positive);
-        rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), true));
+        applyElevatorMotorConfigs(rightElevatorMotor, "rightElevatorMotor", InvertedValue.Clockwise_Positive); // don't need to do this for right since follower, just doing it for the current limit 
         setNeutralMode(NeutralModeValue.Brake, NeutralModeValue.Brake);
 
-        stopElevatorMotor();
-        stopAngleMotor();
+        rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), true));
     }
 
     @Override
@@ -127,7 +125,7 @@ public class ShooterMount extends SubsystemBase {
         angleMotor.set(0);
     }
 
-    public void setAngleWithVision(double desiredDegrees) {
+    public void setAngleWithVision() {
         // Need to make this
     }
 
@@ -145,7 +143,7 @@ public class ShooterMount extends SubsystemBase {
         double rotations = ((desiredInches - ShooterMountConstants.StartingHeight) / 2)
                 * ShooterMountConstants.RotationsPerElevatorInch;
         MotionMagicVoltage request = new MotionMagicVoltage(rotations);
-        leftElevatorMotor.setControl(request/* .withFeedForward(ShooterPositionConstants.ElevatorFF) */);
+        leftElevatorMotor.setControl(request);
     }
 
     public double getHeightInches() {
@@ -157,7 +155,6 @@ public class ShooterMount extends SubsystemBase {
 
     public void stopElevatorMotor() {
         leftElevatorMotor.set(0);
-        rightElevatorMotor.set(0);
     }
 
     public void setBasePosition(double height) {
@@ -166,6 +163,11 @@ public class ShooterMount extends SubsystemBase {
 
     public boolean isAtBottom() {
         return !bottomHallEffect.get();
+    }
+
+    public void resetElevatorEncoders() {
+        leftElevatorMotor.setPosition(0);
+        rightElevatorMotor.setPosition(0); // don't need to do this but a nice verification
     }
 
     /* SHOOTER MOUNT STATES */
@@ -213,13 +215,16 @@ public class ShooterMount extends SubsystemBase {
                 leftElevatorMotor.getClosedLoopError().getValue());
         Logger.recordOutput("ShooterMount/ClosedLoopError/ElevatorRightMotor",
                 rightElevatorMotor.getClosedLoopError().getValue());
-        Logger.recordOutput("Shooter/TempC/LeftElevatorMotor", leftElevatorMotor.getDeviceTemp().getValue());
+        Logger.recordOutput("ShooterMount/TempC/LeftElevatorMotor", leftElevatorMotor.getDeviceTemp().getValue());
+        Logger.recordOutput("ShooterMount/TempC/RightElevatorMotor", rightElevatorMotor.getDeviceTemp().getValue());
         Logger.recordOutput("ShooterMount/ActualHeight", getHeightInches());
         Logger.recordOutput("ShooterMount/IsAtBottom", isAtBottom());
         Logger.recordOutput("ShooterMount/CurrentSupply/ElevatorLeft", leftElevatorMotor.getSupplyCurrent().getValue());
         Logger.recordOutput("ShooterMount/CurrentSupply/ElevatorRight",
                 rightElevatorMotor.getSupplyCurrent().getValue());
         Logger.recordOutput("ShooterMount/CurrentSupply/Angle", angleMotor.getSupplyCurrent().getValue());
+        Logger.recordOutput("ShooterMount/ControlMode/ElevatorLeft",
+                leftElevatorMotor.getControlMode().getValue());
         Logger.recordOutput("ShooterMount/Height/RawElevatorLeftMotorRotations",
                 leftElevatorMotor.getPosition().getValueAsDouble());
         Logger.recordOutput("ShooterMount/Height/RawElevatorRightMotorRotations",

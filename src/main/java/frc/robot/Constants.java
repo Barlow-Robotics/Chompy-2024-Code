@@ -228,25 +228,25 @@ public class Constants {
        
         /* HEIGHT / ANGLE PAIRS */
 
-        public static final double AngleTolerance = 1.5; // Degrees - CHANGE
-        public static final double HeightTolerance = 0.25; // Inches - CHANGE
+        public static final double AngleTolerance = 1.5; 
+        public static final double HeightTolerance = 0.25;
 
         public static final double MaxAngleDegrees = 45;
         public static final double MinAngleDegrees = -58;
-        public static final double MaxHeightInches = 10; // is this correct?
-        public static final double StartingHeight = 19.75; // height between shooter pivot and ground 
+        public static final double MaxHeightInches = 47.5;
+        public static final double StartingHeight = 19.75;  
 
-        public static final double SpeakerAngle = 37; // CHANGE
-        public static final double SpeakerHeight = 0; // Resting position
+        public static final double SpeakerAngle = 37; 
+        public static final double SpeakerHeight = StartingHeight; 
 
-        public static final double AmpAngle = -45; // CHANGE
-        public static final double AmpHeight = 40;
+        public static final double AmpAngle = -45;
+        public static final double AmpHeight = 43;
 
-        public static final double SourceIntakeAngle = 32; // CHANGE
-        public static final double SourceIntakeHeight = 27; // CHANGE
+        public static final double SourceIntakeAngle = 32; 
+        public static final double SourceIntakeHeight = 27; 
 
-        public static final double FloorIntakeAngle = MinAngleDegrees; // Resting position
-        public static final double FloorIntakeHeight = StartingHeight; // might have to be 0.5 // 19.75 in off ground
+        public static final double FloorIntakeAngle = MinAngleDegrees; 
+        public static final double FloorIntakeHeight = StartingHeight; 
 
         public static final double TrapAngle = 0; // CHANGE
         public static final double TrapHeight = 10; // CHANGE
@@ -276,6 +276,7 @@ public class Constants {
         // public static final double ElevatorIZone = 0.1; // motor already does this
         public static final double ElevatorFF = 0.0;
         public static final double ElevatorKG = 2.7;
+        public static final double ElevatorKS = 0; // use error sign instead of velocity sign? as part of initial config 
 
         public static final double ElevatorGearRatio = 15;
         public static final double ElevatorSprocketDiameter = 2.36;  // inches

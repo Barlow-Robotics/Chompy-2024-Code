@@ -72,7 +72,7 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         logData();
 
-        // if (isNoteLoaded() && getRPM(indexMotor) < 0) stop();
+        if (isNoteLoaded() && getRPM(indexMotor) < 0) stop();
     }
 
     public void startFlywheels(double shooterLeftRPM, double shooterRightRPM) {
@@ -109,8 +109,8 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isWithinFlywheelVelocityTolerance(double desiredLeftRPM, double desiredRightRPM) {
-        return (getRPM(leftFlywheelMotor) >= desiredLeftRPM - ShooterConstants.VelocityTolerance) &&
-                (getRPM(rightFlywheelMotor) >= desiredRightRPM - ShooterConstants.VelocityTolerance);
+        return (getRPM(leftFlywheelMotor) >= desiredLeftRPM - ShooterConstants.VelocityTolerance) && // is this the intended 
+                (getRPM(rightFlywheelMotor) >= desiredRightRPM - ShooterConstants.VelocityTolerance);// function?
     }
 
     public boolean isNoteLoaded() {

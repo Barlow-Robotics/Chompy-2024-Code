@@ -108,6 +108,10 @@ public class Shooter extends SubsystemBase {
         return motor.getVelocity().getValue() * Constants.SecondsPerMinute;
     }
 
+    public boolean isShooting() {
+        return leftFlywheelMotor.getVelocity().getValue() > 0;
+    }
+
     public boolean isWithinFlywheelVelocityTolerance(double desiredLeftRPM, double desiredRightRPM) {
         return (getRPM(leftFlywheelMotor) >= desiredLeftRPM - ShooterConstants.VelocityTolerance) &&
                 (getRPM(rightFlywheelMotor) >= desiredRightRPM - ShooterConstants.VelocityTolerance);

@@ -9,6 +9,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 //import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterMountConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.ShooterMount;
 import frc.robot.subsystems.ShooterMount.ShooterMountState;
 import frc.robot.subsystems.Vision; 
@@ -82,9 +83,29 @@ public class SetShooterMountPosition extends Command {
     @Override
     public boolean isFinished() {
         if (shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
-            shooterMountSub.setShooterPosState(desiredState);
+            shooterMountSub.setShooterPosState(desiredState);  // LMT CHANGE?  See comment below
             return true;
         }
-        return false;        
+        return false; // LMT - CHANGE this to true, or based on another condition?
+        // As you drive toward the speaker, you want to keep calculating and setting new
+        // angles until they shoot
+        // or maybe until they let go of the (speaker or action) button. Desired
+        // behavior TBD
     }
+
+    public double getSpeakerShooterAngle() {
+
+        double apriltagPitch = visionSub.getSpeakerAprilTagPitch();
+        if (apriltagPitch == VisionConstants.InvalidAngle)
+            return VisionConstants.InvalidAngle;
+
+        // Angle to speaker = Arctan((SpkrHt - (ElevHtUnext)) / ((ATHt-CamHt) / tan(ATpitch)) )
+
+        // LMT - CHANGE?  This should be properly considering 0 angle, but double check.  Also
+        // see if we need to check for div by 0 error
+        return (Math.atan((ShooterMountConstants.MidSpeakerHeight - ShooterMountConstants.ElevatorHeightUnextended)
+                / ((ShooterMountConstants.SpeakerAprilTagHeight - ShooterMountConstants.CameraMountHeight) /
+                        Math.atan(apriltagPitch))));
+    }
+
 }

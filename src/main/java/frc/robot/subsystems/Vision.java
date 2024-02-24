@@ -46,6 +46,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 //import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.VisionConstants;
 //import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
@@ -389,4 +390,35 @@ public class Vision extends SubsystemBase {
     //     NetworkTableInstance.getDefault().getEntry("vision/yPosition").setDouble(0.0); // CHANGE
     //     NetworkTableInstance.getDefault().getEntry("vision/zPosition").setDouble(0.0); // CHANGE
     // }
+
+    public double getSpeakerAprilTagPitch() {
+        // returns InvalidAngle constant if not facing speaker
+
+        var poseResult = getLatestPoseResult();
+        if (!poseResult.hasTargets())
+            return (VisionConstants.InvalidAngle);
+
+        var target = poseResult.getBestTarget();
+        int targetAprilTagID = target.getFiducialId();
+
+        // check that target is the Speaker's center AprilTag
+        if (targetAprilTagID == VisionConstants.NullAprilTagID) {
+            // Vision has no target acquired
+            return (VisionConstants.InvalidAngle);
+        }
+        // If the primary target is not a speaker center AprilTag...
+        else if (targetAprilTagID != VisionConstants.RedSpeakerCenterAprilTagID
+                && targetAprilTagID != VisionConstants.BlueSpeakerCenterAprilTagID) {
+            // Walk the list of found AprilTags aside from the primary
+            // to see if desired speaker center AprilTag is in the list
+            List<PhotonTrackedTarget> targets = poseResult.getTargets();
+            for (var tempTarget : targets) {
+                if ((tempTarget.getFiducialId() == VisionConstants.RedSpeakerCenterAprilTagID) ||
+                        tempTarget.getFiducialId() == VisionConstants.BlueSpeakerCenterAprilTagID)
+                    target = tempTarget;
+            }
+        }
+        return target.getPitch();
+    }
+
 }

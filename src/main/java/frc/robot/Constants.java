@@ -290,6 +290,17 @@ public class Constants {
         public static final double ElevatorMMCruiseInchesPerSec = 10; 
         public static final double ElevatorMMInchesPerSecPerSec = 10; 
         public static final double ElevatorMMJerk = 800; // CHANGE - Target jerk of 1600 rps/s/s (0.1 seconds)
+    
+        // LMT added constants to enable changing shooter angle while driving to speaker
+        public static final double CameraMountHeight = 24; // inches - possibly CHANGE
+        public static final double CameraMountAngle = 3; // degrees - possibly CHANGE
+        public static final double SpeakerAprilTagHeight = 52; /*inches - possibly CHANGE - is this the bottom of the
+                                                            * AT? Might need to change to midpoint for the calc to
+                                                            * work, originally did that from bottoms of speaker and
+                                                            * AT */
+        public static final double MidSpeakerHeight = 80.4; // inches to middle of speaker hole - possibly CHANGE
+        public static final double ElevatorHeightUnextended = 26; // inches - possibly CHANGE - height of elevator at rest
+
     }
 
     /***************************************************************************/
@@ -336,6 +347,13 @@ public class Constants {
         // (Fake values. Experiment and determine estimation noise on an actual robot.)
         public static final Matrix<N3, N1> SingleTagStdDevs = VecBuilder.fill(4, 4, 8);
         public static final Matrix<N3, N1> MultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+
+        // constants for vision-calculated speaker shooting - LMT
+        public static final int RedSpeakerCenterAprilTagID = 4;
+        public static final int BlueSpeakerCenterAprilTagID = 7;
+        public static final int NullAprilTagID = -1;
+        public static final double InvalidAngle = -361; 
+
     }
 
     /***************************************************************************/

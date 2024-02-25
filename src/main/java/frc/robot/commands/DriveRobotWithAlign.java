@@ -118,6 +118,9 @@ public class DriveRobotWithAlign extends Command {
 
     public OptionalDouble getTargetOffSet() {
         if (visionSub.allDetectedTargets != null) {
+            if (visionSub.isAligningWithNote()) {
+                return OptionalDouble.of(visionSub.getNoteDistanceFromCenter());
+            }
             if (visionSub.activeAlignTarget.isPresent()) {
                 for (PhotonTrackedTarget target : visionSub.allDetectedTargets) {
                     if (target.getFiducialId() == visionSub.activeAlignTarget.getAsInt()) {

@@ -15,9 +15,14 @@ import static frc.robot.Constants.VisionConstants.FieldTagLayout;
 import static frc.robot.Constants.VisionConstants.TargetCameraName;
 import static frc.robot.Constants.VisionConstants.PrimaryVisionStrategy;
 
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
+import java.util.HashMap;
 //import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
@@ -32,6 +37,9 @@ import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -41,6 +49,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTableInstance;
 //import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
 //import edu.wpi.first.networktables.NetworkTableInstance;
@@ -66,10 +75,21 @@ public class Vision extends SubsystemBase {
     public OptionalInt activeAlignTarget;
     private Alliance alliance;
 
+    boolean noteDetected;
+    double noteDistanceFromCenter;
+    double noteHeight;
+    double noteWidth;
+
+    String sourceIP = "Nothing Received" ;
+    private DatagramChannel visionChannel = null;
+    ByteBuffer buffer = ByteBuffer.allocate(1024);
+
+
     boolean aprilTagDetected = false;
+    public static boolean aligningWithNote = false;
 
     public enum TargetToAlign {
-        Speaker, Amp, Source, Stage
+        Speaker, Amp, Source, Stage, Note
     }
 
     public Vision() /* throws IOException */ {
@@ -89,6 +109,18 @@ public class Vision extends SubsystemBase {
 
         targetAlignSet = new HashSet<Integer>();
         activeAlignTarget = OptionalInt.empty();
+
+
+        // Setup Jetson COmmunication
+        try {
+            visionChannel = DatagramChannel.open();
+            InetSocketAddress sAddr = new InetSocketAddress(5800);
+            visionChannel.bind(sAddr);
+            visionChannel.configureBlocking(false);
+        } catch (Exception ex) {
+            int wpk = 1;
+        }
+
 
         // ----- Simulation
         if (Robot.isSimulation()) {
@@ -130,8 +162,10 @@ public class Vision extends SubsystemBase {
 
     public void alignTo(TargetToAlign target) {
         targetAlignSet.clear();
-
-        if (alliance == DriverStation.Alliance.Blue) {
+        aligningWithNote = false;
+        if (target == TargetToAlign.Note) { // Not sure that this works 
+            aligningWithNote = true;
+        } else if (alliance == DriverStation.Alliance.Blue) {
             switch (target) {
                 case Speaker:
                     targetAlignSet.add(7);
@@ -149,8 +183,6 @@ public class Vision extends SubsystemBase {
                     targetAlignSet.add(14);
                     targetAlignSet.add(16);
                     break;
-                    
-
                 
             }
         } else {
@@ -193,6 +225,50 @@ public class Vision extends SubsystemBase {
     } 
 
     public void periodic() {
+
+        
+        // Jetson Communication Stuff
+        try {
+            boolean done = false;
+            String message = "";
+            while (!done) {
+                InetSocketAddress sender = (InetSocketAddress) visionChannel.receive(buffer);
+                buffer.flip();
+                int limits = buffer.limit();
+                if (limits > 0) {
+                    byte bytes[] = new byte[limits];
+                    buffer.get(bytes, 0, limits);
+                    message = new String(bytes);
+                    sourceIP = sender.getAddress().toString();
+                } else {
+                    done = true;
+                }
+                buffer.clear();
+            }
+
+            if (message.length() > 0) {
+                Map<String, String> myMap = new HashMap<String, String>();
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                myMap = objectMapper.readValue(message, new TypeReference<HashMap<String, String>>() {
+                });
+                this.noteDetected = Boolean.parseBoolean(myMap.get("detected"));
+                this.noteDistanceFromCenter = Double.parseDouble(myMap.get("distance_from_center"));
+                this.noteHeight = Double.parseDouble(myMap.get("bb_height"));
+                this.noteWidth = Double.parseDouble(myMap.get("bb_width"));
+            }
+
+            // var Vision_Info = new JSONObject(received);
+
+            // double aprilTagDistanceFromCenter =
+            // Vision_Info.get(april_tag_distance_from_center);
+        } catch (Exception ex) {
+            System.out.println("Exception reading data");
+        }
+
+
+
+
         // TODO: This whole section is redundant with the photon pose estimator
         /*
         var result = getLatestPoseResult();
@@ -421,4 +497,24 @@ public class Vision extends SubsystemBase {
         return target.getPitch();
     }
 
+    public boolean noteIsVisible() {
+        return this.noteDetected;
+    }
+
+    public boolean isAligningWithNote() {
+        return aligningWithNote;
+    }
+
+    public double getNoteDistanceFromCenter() {
+        // tell how many pixels the note is from the center of the screen.
+        return this.noteDistanceFromCenter;
+    }
+
+    public double getNoteHeight() {
+        return this.noteHeight;
+    }
+
+    public double getNoteWidth() {
+        return this.noteWidth;
+    }
 }

@@ -20,6 +20,31 @@
                 "data": {
                   "pathName": "Start to Amp"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetShooterMountPositionAmp"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "StartShooterIntake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.75
+                }
               }
             ]
           }
@@ -38,6 +63,12 @@
                 "type": "path",
                 "data": {
                   "pathName": "amp to first note"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetShooterMountPositionFloor"
                 }
               }
             ]
@@ -58,11 +89,24 @@
                 "data": {
                   "pathName": "Score In Amp"
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
               {
                 "type": "named",
                 "data": {
                   "name": "StartShooterIntake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.75
                 }
               }
             ]
@@ -72,6 +116,12 @@
           "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopShooterIntake"
+                }
+              },
               {
                 "type": "path",
                 "data": {

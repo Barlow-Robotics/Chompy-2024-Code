@@ -55,7 +55,7 @@
   "eventMarkers": [
     {
       "name": "Floor Intake Align",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0.05,
       "command": {
         "type": "parallel",
         "data": {
@@ -64,6 +64,23 @@
               "type": "named",
               "data": {
                 "name": "SetShooterMountPositionFloor"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Speaker Align",
+      "waypointRelativePos": 1.4,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SetShooterMountPositionSpeaker"
               }
             }
           ]

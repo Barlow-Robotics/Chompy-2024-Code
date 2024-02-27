@@ -12,39 +12,73 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Score In Amp"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Start to Amp"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": null
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopShooterIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "amp to first note"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Amp to Piece to Speaker"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetShooterMountPositionAmp"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Score In Amp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StartShooterIntake"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": null
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Pick up note behind speaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": null
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Pick up note behind speaker"
+                }
+              }
+            ]
           }
         }
       ]

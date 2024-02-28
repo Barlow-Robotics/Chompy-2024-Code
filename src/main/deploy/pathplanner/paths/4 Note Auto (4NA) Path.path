@@ -143,8 +143,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Shoot Speaker",
-      "waypointRelativePos": 0,
+      "name": "Set Floor Position",
+      "waypointRelativePos": 0.05,
       "command": {
         "type": "parallel",
         "data": {
@@ -152,7 +152,7 @@
             {
               "type": "named",
               "data": {
-                "name": null
+                "name": "SetShooterMountPositionFloor"
               }
             }
           ]
@@ -160,8 +160,8 @@
       }
     },
     {
-      "name": "Shoot Speaker",
-      "waypointRelativePos": 2.0,
+      "name": "Set Amp Position",
+      "waypointRelativePos": 1.0999999999999999,
       "command": {
         "type": "parallel",
         "data": {
@@ -169,7 +169,7 @@
             {
               "type": "named",
               "data": {
-                "name": null
+                "name": "SetShooterMountPositionSpeaker"
               }
             }
           ]
@@ -177,8 +177,31 @@
       }
     },
     {
-      "name": "New Event Marker",
-      "waypointRelativePos": 4.0,
+      "name": "Start Shooter",
+      "waypointRelativePos": 2.05,
+      "command": {
+        "type": "race",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartShooterIntake"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.75
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Set Floor Position & Stop Shooter",
+      "waypointRelativePos": 2.0999999999999996,
       "command": {
         "type": "parallel",
         "data": {
@@ -186,7 +209,70 @@
             {
               "type": "named",
               "data": {
-                "name": null
+                "name": "StopShooterIntake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Set Speaker Position",
+      "waypointRelativePos": 3.1500000000000004,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SetShooterMountPositionSpeaker"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Start Shooter",
+      "waypointRelativePos": 3.95,
+      "command": {
+        "type": "race",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartShooterIntake"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.75
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Set Floor Position & Stop Shooter",
+      "waypointRelativePos": 4.15,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StopShooterIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "SetShooterMountPositionFloor"
               }
             }
           ]

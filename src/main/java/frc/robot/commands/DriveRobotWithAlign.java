@@ -44,7 +44,8 @@ public class DriveRobotWithAlign extends Command {
     double DeadBand = 0.08;
     double RotDeadBand = 0.01;
 
-    public PIDController pid;
+    public PIDController rotPid;
+    public PIDController latPid;
 
     public String selectedTarget = "None";
 
@@ -60,17 +61,22 @@ public class DriveRobotWithAlign extends Command {
         this.visionSub = visionSub;
         this.runAutoAlign = runAutoAlign;
 
-        pid = new PIDController(
-                DriveConstants.AutoAlignKP,
-                DriveConstants.AutoAlignKI,
-                DriveConstants.AutoAlignKD);
+        rotPid = new PIDController(
+                DriveConstants.AutoAlignRotKP,
+                DriveConstants.AutoAlignRotKI,
+                DriveConstants.AutoAlignRotKD);
 
+        latPid = new PIDController(
+            DriveConstants.AutoAlignLatKP,
+            DriveConstants.AutoAlignLatKI,
+            DriveConstants.AutoAlignLatKD);
         addRequirements(driveSub);
     }
 
     @Override
     public void initialize() {
-        pid.reset();
+        rotPid.reset();
+        latPid.reset();
         visionSub.chooseBestTarget();
     }
 
@@ -82,28 +88,48 @@ public class DriveRobotWithAlign extends Command {
         // y is fwd back) and the chassis (positive X is forward, Positive Y is left), we use the
         // controller X input as the drive Y input and the controller Y input as the drive X input.
 
+        double speedX;
+        double speedY;
+        double speedRot;
+
         boolean autoAlignEnabled = runAutoAlign.get();
 
         var alignYawControl = 0.0;
+        var alignLatControl = 0.0;
+
+        
+    
 
         // Converts from old range (1 to -1) to desired range (1 to 0.5)
         maxVelocityMultiplier = (((multiplierInput.get() + 1) * 0.5) / 2) + 0.5;
 
         if (autoAlignEnabled) {
-            var OffSet = (visionSub.getTargetOffSet());
-            if (OffSet.isPresent()) {
-                alignYawControl = pid.calculate(-OffSet.getAsDouble());
-                Logger.recordOutput("Align/Offset", OffSet.getAsDouble());
+            var rotOffset = visionSub.getTargetRotOffSet();
+            var latOffset = visionSub.getTargetLateralOffSet();
+            if (rotOffset.isPresent()){
+                alignYawControl = rotPid.calculate(-rotOffset.getAsDouble());
             }
+
+            if (latOffset.isPresent()){
+                alignLatControl = latPid.calculate(-latOffset.getAsDouble());
+                
         }
+       
 
-        // if (autoAlignEnabled) {
-        //     rawRot = alignYawControl;
-        // }
+            
+            var heading = Math.toRadians(driveSub.getHeading());
 
-        double speedX = MathUtil.applyDeadband(yInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
-        double speedY = MathUtil.applyDeadband(xInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
-        double speedRot = MathUtil.applyDeadband(rotInput.get(), 2 * DeadBand) * DriveConstants.MaxDriveableVelocity;
+            // TODO: check this math
+            // Heading of 0 means lateral offset is +y
+            speedY = (yInput.get() + Math.cos(-heading)) * alignLatControl;
+            // Heading of pi/2 means lateral offset is -x
+            speedX = (xInput.get() + Math.sin(-heading)) * alignLatControl;
+    }
+       
+
+        speedX = MathUtil.applyDeadband(yInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
+        speedY = MathUtil.applyDeadband(xInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
+        speedRot = MathUtil.applyDeadband(rotInput.get(), 2 * DeadBand) * DriveConstants.MaxDriveableVelocity;
 
         driveSub.drive(speedX, speedY, speedRot, FieldRelative);
 
@@ -112,35 +138,40 @@ public class DriveRobotWithAlign extends Command {
         Logger.recordOutput("Align/YawInput", speedRot);
         Logger.recordOutput("Align/XSpeed", speedX);
         Logger.recordOutput("Align/YSpeed", speedY);
+        Logger.recordOutput("Align/YawControl", alignYawControl);
+        Logger.recordOutput("Align/LatControl", alignLatControl);
+        Logger.recordOutput("Align/XInput", xInput.get());
+        Logger.recordOutput("Align/yInput", yInput.get());
+        Logger.recordOutput("Align/rotInput", rotInput.get());
 
         Logger.recordOutput("Drive/Multipler", maxVelocityMultiplier);
     }
 
-    public OptionalDouble getTargetOffSet() {
-        if (visionSub.allDetectedTargets != null) {
-            if (visionSub.isAligningWithNote()) {
-                return OptionalDouble.of(visionSub.getNoteDistanceFromCenter());
-            }
-            if (visionSub.activeAlignTarget.isPresent()) {
-                for (PhotonTrackedTarget target : visionSub.allDetectedTargets) {
-                    if (target.getFiducialId() == visionSub.activeAlignTarget.getAsInt()) {
-                        Logger.recordOutput("vision/targetY", target.getBestCameraToTarget().getY());
-                        Logger.recordOutput("vision/targetYaw", target.getYaw());
-                        return OptionalDouble.of(target.getBestCameraToTarget().getY());
-                    }
-                }
+    // public OptionalDouble getTargetOffSet() {
+    //     if (visionSub.allDetectedTargets != null) {
+    //         if (visionSub.isAligningWithNote()) {
+    //             return OptionalDouble.of(visionSub.getNoteDistanceFromCenter());
+    //         }
+    //         if (visionSub.activeAlignTarget.isPresent()) {
+    //             for (PhotonTrackedTarget target : visionSub.allDetectedTargets) {
+    //                 if (target.getFiducialId() == visionSub.activeAlignTarget.getAsInt()) {
+    //                     Logger.recordOutput("vision/targetY", target.getBestCameraToTarget().getY());
+    //                     Logger.recordOutput("vision/targetYaw", target.getYaw());
+    //                     return OptionalDouble.of(target.getBestCameraToTarget().getY());
+    //                 }
+    //             }
 
-                // getTargetTranslationOffSet getRotation???
-            }
-        }
-        return OptionalDouble.empty();
-        /*
-         * if (target != null) {
-         * return OptionalDouble.of(target.getBestCameraToTarget().getY());
-         * }else{
-         * return OptionalDouble.empty();
-         */
-    }
+    //             // getTargetTranslationOffSet getRotation???
+    //         }
+    //     }
+    //     return OptionalDouble.empty();
+    //     /*
+    //      * if (target != null) {
+    //      * return OptionalDouble.of(target.getBestCameraToTarget().getY());
+    //      * }else{
+    //      * return OptionalDouble.empty();
+    //      */
+    // }
 
     @Override
     public void end(boolean interrupted) {

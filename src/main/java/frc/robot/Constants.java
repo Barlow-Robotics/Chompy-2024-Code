@@ -137,9 +137,13 @@ public class Constants {
         public static final double DriveIZone = 0.15;
         public static final double DriveFF = 1.0 / PhysicalMaxMetersPerSecond;
 
-        public static final double AutoAlignKP = 0.1; //CHANGE
-        public static final double AutoAlignKI = 0.0015;
-        public static final double AutoAlignKD = 0;
+        public static final double AutoAlignRotKP = 0.01; //CHANGE
+        public static final double AutoAlignRotKI = 0.0015;
+        public static final double AutoAlignRotKD = 0;
+
+        public static final double AutoAlignLatKP = 0.5; //CHANGE
+        public static final double AutoAlignLatKI = 0.0015;
+        public static final double AutoAlignLatKD = 0;
 
         /* TURN ENCODER */
         public static final int CANCoderResolution = 4096;

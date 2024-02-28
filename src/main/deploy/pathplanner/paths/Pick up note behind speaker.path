@@ -3,29 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4981808389542706,
-        "y": 5.54
+        "x": 1.841541312712255,
+        "y": 7.53421480917036
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4761568076839862,
-        "y": 5.51508657183981
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.2318748294904,
-        "y": 6.210893329194067
-      },
-      "prevControl": {
-        "x": 1.4056892951394944,
-        "y": 6.086829342977245
-      },
-      "nextControl": {
-        "x": 2.706552796810826,
-        "y": 6.282173251616502
+        "x": 1.8231321555235707,
+        "y": 6.98277147480221
       },
       "isLocked": false,
       "linkedName": null
@@ -36,24 +20,24 @@
         "y": 5.54
       },
       "prevControl": {
-        "x": 2.5916847759621446,
-        "y": 6.004116924900516
+        "x": 2.0907181629178075,
+        "y": 5.597749626054808
       },
       "nextControl": {
-        "x": 3.232204677372318,
-        "y": 5.075883075099484
+        "x": 3.337382634407404,
+        "y": 5.510082701697614
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.7294829913733902,
+        "x": 1.615999444961853,
         "y": 5.54
       },
       "prevControl": {
-        "x": 2.6165668303558833,
-        "y": 5.298663569271583
+        "x": 1.7622037836668267,
+        "y": 5.06269638002239
       },
       "nextControl": null,
       "isLocked": false,
@@ -62,8 +46,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": -45.0,
+      "waypointRelativePos": 0.45,
+      "rotationDegrees": -60.0,
       "rotateFast": false
     }
   ],
@@ -71,7 +55,7 @@
   "eventMarkers": [
     {
       "name": "Floor Intake Align",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0.05,
       "command": {
         "type": "parallel",
         "data": {
@@ -80,6 +64,23 @@
               "type": "named",
               "data": {
                 "name": "SetShooterMountPositionFloor"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Speaker Align",
+      "waypointRelativePos": 1.4,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SetShooterMountPositionSpeaker"
               }
             }
           ]
@@ -95,7 +96,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -178.4071449510319,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,

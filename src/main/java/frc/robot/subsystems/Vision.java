@@ -8,7 +8,7 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.VisionConstants.FallbackVisionStrategy;
 import static frc.robot.Constants.VisionConstants.MultiTagStdDevs;
 import static frc.robot.Constants.VisionConstants.PoseCameraName;
-import static frc.robot.Constants.VisionConstants.RobotToPoseCam;
+import static frc.robot.Constants.VisionConstants.PoseCameraToRobot;
 import static frc.robot.Constants.VisionConstants.RobotToTargetCam;
 import static frc.robot.Constants.VisionConstants.SingleTagStdDevs;
 import static frc.robot.Constants.VisionConstants.FieldTagLayout;
@@ -96,7 +96,7 @@ public class Vision extends SubsystemBase {
         targetCamera = new PhotonCamera(TargetCameraName);
         poseCamera = new PhotonCamera(PoseCameraName);
 
-        photonEstimator = new PhotonPoseEstimator(FieldTagLayout, PrimaryVisionStrategy, poseCamera, RobotToPoseCam);
+        photonEstimator = new PhotonPoseEstimator(FieldTagLayout, PrimaryVisionStrategy, poseCamera, PoseCameraToRobot);
         photonEstimator.setMultiTagFallbackStrategy(FallbackVisionStrategy);
 
         alliance = DriverStation.Alliance.Red;
@@ -143,7 +143,7 @@ public class Vision extends SubsystemBase {
             targetCameraSim = new PhotonCameraSim(targetCamera, cameraProp);
             // Add the simulated camera to view the targets on this simulated field.
 
-            visionSim.addCamera(poseCameraSim, RobotToPoseCam);
+            visionSim.addCamera(poseCameraSim, PoseCameraToRobot);
             visionSim.addCamera(targetCameraSim, RobotToTargetCam);
 
             poseCameraSim.enableDrawWireframe(true);

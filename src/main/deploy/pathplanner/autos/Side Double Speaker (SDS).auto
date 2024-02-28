@@ -12,142 +12,45 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SetShooterMountPositionSpeaker"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Go to speaker from left"
-                }
-              }
-            ]
+            "pathName": "Go to speaker from left"
           }
         },
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StartShooterIntake"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.75
-                }
-              }
-            ]
+            "name": null
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopShooterIntake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Turn in place"
-                }
-              }
-            ]
+            "pathName": "Turn in place"
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SetShooterMountPositionFloor"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Get First Speaker piece"
-                }
-              }
-            ]
+            "pathName": "Get First Speaker piece"
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SetShooterMountPositionSpeaker"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Go to speaker from left"
-                }
-              }
-            ]
+            "pathName": "Go to speaker from left"
           }
         },
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StartShooterIntake"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.75
-                }
-              }
-            ]
+            "name": null
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Speaker to side-midpoint (SSM)"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopShooterIntake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SetShooterMountPositionFloor"
-                }
-              }
-            ]
+            "pathName": "Speaker to side-midpoint (SSM)"
           }
         }
       ]

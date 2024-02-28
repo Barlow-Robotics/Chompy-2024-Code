@@ -12,123 +12,39 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Start to Amp"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SetShooterMountPositionAmp"
-                }
-              }
-            ]
+            "pathName": "Score In Amp"
           }
         },
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StartShooterIntake"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.75
-                }
-              }
-            ]
+            "name": null
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopShooterIntake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "amp to first note"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SetShooterMountPositionFloor"
-                }
-              }
-            ]
+            "pathName": "Amp to Piece to Speaker"
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "SetShooterMountPositionAmp"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Score In Amp"
-                }
-              }
-            ]
+            "name": null
           }
         },
         {
-          "type": "race",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StartShooterIntake"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.75
-                }
-              }
-            ]
+            "pathName": "Pick up note behind speaker"
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopShooterIntake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Pick up note behind speaker"
-                }
-              }
-            ]
+            "name": null
           }
         }
       ]

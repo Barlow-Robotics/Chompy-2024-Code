@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.514538001298225,
-      "y": 7.098630396334866
+      "x": 1.3832720674700612,
+      "y": 5.578152781305563
     },
-    "rotation": 90.60929231736114
+    "rotation": -179.69373435872632
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Side-To-Amp"
+            "pathName": "Mid-To-Speaker"
           }
         },
         {
@@ -26,13 +26,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "amp to first note"
+            "pathName": "Front-Turn-180"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Score amp from first note"
+            "pathName": "Speaker-shoot-to-piece"
           }
         },
         {
@@ -44,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Amp to sidemid-midpoint (ASMM)"
+            "pathName": "Move to note"
           }
         }
       ]

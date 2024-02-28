@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.514538001298225,
-      "y": 7.098630396334866
+      "x": 0.490784250087019,
+      "y": 7.039008480794739
     },
-    "rotation": 90.60929231736114
+    "rotation": 90.05134382948182
   },
   "command": {
     "type": "sequential",
@@ -26,25 +26,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "amp to first note"
+            "pathName": "Turn at amp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Score amp from first note"
+            "pathName": "Amp-to-midpiece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "midpeice-to-speaker"
           }
         },
         {
           "type": "named",
           "data": {
             "name": null
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Amp to sidemid-midpoint (ASMM)"
           }
         }
       ]

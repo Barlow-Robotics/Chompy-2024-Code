@@ -4,23 +4,36 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElectronicsIDs;
 import frc.robot.Constants.VisionConstants;
 import org.littletonrobotics.junction.Logger;
+
+import java.io.IOException;
 import java.lang.Math;
+import java.util.Optional;
+
 import frc.robot.Constants;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -67,6 +80,12 @@ public class Drive extends SubsystemBase {
 
     private SwerveModulePosition[] previousPositions = new SwerveModulePosition[4];
 
+    private final Vision visionSub ;
+
+
+  private final AprilTagFieldLayout aprilTagFieldLayout;
+
+
     public Drive(Vision visionSub) {
 
         navX = new AHRS(Port.kMXP);
@@ -78,6 +97,8 @@ public class Drive extends SubsystemBase {
             }
         }).start();
 
+        this.visionSub = visionSub ;
+
         odometry = new SwerveDriveOdometry(
                 DriveConstants.kinematics,
                 navX.getRotation2d(),
@@ -88,6 +109,8 @@ public class Drive extends SubsystemBase {
                         backRight.getPosition()
                 });
 
+        // wpk The pose estimator functionality was addapted from the SwerveDrivePoseEstimator example provided
+        // with WPILib
         poseEstimator = new SwerveDrivePoseEstimator(
                 DriveConstants.kinematics,
                 navX.getRotation2d(),
@@ -97,9 +120,33 @@ public class Drive extends SubsystemBase {
                         backLeft.getPosition(),
                         backRight.getPosition() },
                 getPoseWithoutVision(),
-                visionSub.getEstimationStdDevs(getPoseWithoutVision()), // not sure if these last two arguments are
-                                                                        // correct, might need to CHANGE! -Ang
-                VisionConstants.MultiTagStdDevs);
+                VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+                VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
+
+        // visionSub.getEstimationStdDevs(getPoseWithoutVision()), // not sure if these
+        // last two arguments are
+        // // correct, might need to CHANGE! -Ang
+        // VisionConstants.MultiTagStdDevs);
+
+        AprilTagFieldLayout layout;
+        try {
+            layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+                layout.setOrigin(
+                        DriverStation.getAlliance().get() == Alliance.Blue ? OriginPosition.kBlueAllianceWallRightSide
+                                : OriginPosition.kRedAllianceWallRightSide);
+            } else {
+                // default this for now
+                layout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
+            }
+
+        } catch (IOException e) {
+            DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
+            layout = null;
+        }
+        this.aprilTagFieldLayout = layout;
+
     }
 
     @Override
@@ -113,7 +160,44 @@ public class Drive extends SubsystemBase {
                         backRight.getPosition()
                 });
 
+
+        poseEstimator.update(
+                navX.getRotation2d(),
+                new SwerveModulePosition[] {
+                        frontLeft.getPosition(),
+                        frontRight.getPosition(),
+                        backLeft.getPosition(),
+                        backRight.getPosition()
+                });
+
+
+
+        // wpk adapted from code in https://github.com/STMARobotics/frc-7028-2023/blob/5916bb426b97f10e17d9dfd5ec6c3b6fda49a7ce/src/main/java/frc/robot/subsystems/DrivetrainSubsystem.java
+        // Not sure I like all the vision specifics here. Consider moving to visionSub later if we have time.
+        var poseResult = visionSub.getLatestPoseResult();
+        if (poseResult.hasTargets()) {
+            var target = poseResult.getBestTarget();
+            var imageCaptureTime = poseResult.getTimestampSeconds();
+            var camToTargetTrans = poseResult.getBestTarget().getBestCameraToTarget();
+            var fiducialId = target.getFiducialId();
+
+            // Get the tag pose from field layout - consider that the layout will be null if
+            // it failed to load
+            Optional<Pose3d> tagPose = aprilTagFieldLayout == null ? Optional.empty()
+                    : aprilTagFieldLayout.getTagPose(fiducialId);
+            if (target.getPoseAmbiguity() <= .2 && fiducialId >= 0 && tagPose.isPresent()) {
+                var targetPose = tagPose.get();
+                Transform3d camToTarget = target.getBestCameraToTarget();
+                Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
+
+                var visionMeasurement = camPose.transformBy(Constants.VisionConstants.PoseCameraToRobot);
+                poseEstimator.addVisionMeasurement(visionMeasurement.toPose2d(), imageCaptureTime);
+            }
+        }
+
         Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
+        Logger.recordOutput("Drive/PoseEstimate", poseEstimator.getEstimatedPosition());
+
         SwerveModuleState[] swerveModuleActualStates = new SwerveModuleState[] { frontLeft.getState(),
                 frontRight.getState(), backLeft.getState(), backRight.getState() };
         logData(swerveModuleActualStates);
@@ -134,9 +218,15 @@ public class Drive extends SubsystemBase {
         Logger.recordOutput("Drive/CurrentSupply/BackRightTurn", backRight.getTurnCurrent());
     }
 
+    // wpk consider deleting after pose estimation is tested.
     public Pose2d getPoseWithoutVision() {
         return odometry.getPoseMeters();
     }
+
+    public Pose2d getPose() {
+        return poseEstimator.getEstimatedPosition() ;
+    }
+
 
     // public Pose2d getPoseWithVision() {
     //     return poseEstimator.getEstimatedPosition();
@@ -144,6 +234,16 @@ public class Drive extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose) {
         odometry.resetPosition(
+                navX.getRotation2d(),
+                new SwerveModulePosition[] {
+                        frontLeft.getPosition(),
+                        frontRight.getPosition(),
+                        backLeft.getPosition(),
+                        backRight.getPosition()
+                },
+                pose);
+
+        poseEstimator.resetPosition(
                 navX.getRotation2d(),
                 new SwerveModulePosition[] {
                         frontLeft.getPosition(),

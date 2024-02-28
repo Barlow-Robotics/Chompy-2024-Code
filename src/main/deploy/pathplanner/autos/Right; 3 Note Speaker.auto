@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.514538001298225,
-      "y": 7.098630396334866
+      "x": 0.5464867966772973,
+      "y": 4.094493480653629
     },
-    "rotation": 90.43225195707642
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
@@ -16,60 +16,16 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "Start to Amp"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SetShooterMountPositionAmp"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StartShooterIntake"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.75
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopShooterIntake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Amp to Piece to Speaker"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "SetShooterMountPositionSpeaker"
                 }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right To Speaker"
+                }
               }
             ]
           }
@@ -101,12 +57,6 @@
                 "type": "named",
                 "data": {
                   "name": "StopShooterIntake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Speaker to note"
                 }
               },
               {
@@ -114,6 +64,31 @@
                 "data": {
                   "name": "SetShooterMountPositionFloor"
                 }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Speaker to Right Note"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetShooterMountPositionSpeaker"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right Note to Speaker"
+                }
               }
             ]
           }
@@ -148,34 +123,15 @@
                 }
               },
               {
+                "type": "named",
+                "data": {
+                  "name": "SetShooterMountPositionFloor"
+                }
+              },
+              {
                 "type": "path",
                 "data": {
-                  "pathName": "Return to Speaker"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SetShooterMountPositionSpeaker"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StartShooterIntake"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.75
+                  "pathName": "Speaker to Mid-Right"
                 }
               }
             ]

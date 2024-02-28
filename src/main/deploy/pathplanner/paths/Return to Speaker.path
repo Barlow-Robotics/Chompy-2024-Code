@@ -3,47 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.48,
-        "y": 6.916795430813084
+        "x": 4.080807439399148,
+        "y": 5.175942388919181
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.990435187537042,
-        "y": 6.823146266662905
+        "x": 2.3366882567098473,
+        "y": 5.22249974129578
       },
       "isLocked": false,
-      "linkedName": "amp to first note"
+      "linkedName": "Speaker-Waiting-Spot"
     },
     {
       "anchor": {
-        "x": 1.84,
-        "y": 7.57
+        "x": 1.3859470013335953,
+        "y": 5.528120596816158
       },
       "prevControl": {
-        "x": 1.7087605245580861,
-        "y": 6.9557279936782095
+        "x": 0.8432331705355633,
+        "y": 5.51363080857732
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Speaker-Return"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.59,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 90.0,
+    "velocity": 0,
+    "rotation": -176.75139686524278,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Amp",
-  "previewStartingState": null,
-  "useDefaultConstraints": false
+  "previewStartingState": {
+    "rotation": 90.16542216353812,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
 }

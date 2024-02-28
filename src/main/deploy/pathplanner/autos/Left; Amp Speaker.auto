@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.514538001298225,
-      "y": 7.098630396334866
+      "x": 0.490784250087019,
+      "y": 7.039008480794739
     },
-    "rotation": 90.43225195707642
+    "rotation": 90.05134382948182
   },
   "command": {
     "type": "sequential",
@@ -16,59 +16,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "Start to Amp"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "SetShooterMountPositionAmp"
                 }
-              }
-            ]
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StartShooterIntake"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.75
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopShooterIntake"
-                }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Amp to Piece to Speaker"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SetShooterMountPositionSpeaker"
+                  "pathName": "Side-To-Amp"
                 }
               }
             ]
@@ -98,15 +54,9 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "StopShooterIntake"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
-                  "pathName": "Speaker to note"
+                  "pathName": "Turn at amp"
                 }
               },
               {
@@ -119,6 +69,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Amp-to-midpiece"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
@@ -138,28 +94,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopShooterIntake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Return to Speaker"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SetShooterMountPositionSpeaker"
-                }
-              }
-            ]
+            "pathName": "midpeice-to-speaker"
           }
         },
         {

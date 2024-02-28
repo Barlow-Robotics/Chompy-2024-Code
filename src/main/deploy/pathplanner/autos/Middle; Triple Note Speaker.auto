@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.514538001298225,
-      "y": 7.098630396334866
+      "x": 1.3832720674700612,
+      "y": 5.578152781305563
     },
-    "rotation": 90.43225195707642
+    "rotation": -179.69373435872632
   },
   "command": {
     "type": "sequential",
@@ -16,60 +16,16 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "Start to Amp"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SetShooterMountPositionAmp"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StartShooterIntake"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.75
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopShooterIntake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Amp to Piece to Speaker"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "SetShooterMountPositionSpeaker"
                 }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Mid-To-Speaker"
+                }
               }
             ]
           }
@@ -106,7 +62,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Speaker to note"
+                  "pathName": "Semi-Circle MidNote"
                 }
               },
               {
@@ -119,6 +75,25 @@
           }
         },
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Midnote-To-Score"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetShooterMountPositionSpeaker"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
@@ -142,40 +117,21 @@
           "data": {
             "commands": [
               {
+                "type": "path",
+                "data": {
+                  "pathName": "Move to note"
+                }
+              },
+              {
                 "type": "named",
                 "data": {
                   "name": "StopShooterIntake"
                 }
               },
               {
-                "type": "path",
-                "data": {
-                  "pathName": "Return to Speaker"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
-                  "name": "SetShooterMountPositionSpeaker"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StartShooterIntake"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.75
+                  "name": "SetShooterMountPositionFloor"
                 }
               }
             ]

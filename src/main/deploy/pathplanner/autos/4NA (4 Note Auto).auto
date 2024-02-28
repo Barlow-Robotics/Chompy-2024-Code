@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.74,
-      "y": 6.8
+      "x": 0.7362792688548342,
+      "y": 6.799630052963809
     },
     "rotation": -120.0
   },
@@ -37,22 +37,15 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopShooterIntake"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "4 Note Auto (4NA) Path"
-                }
-              }
-            ]
+            "name": "StopShooterIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4 Note Auto (4NA) Path"
           }
         }
       ]

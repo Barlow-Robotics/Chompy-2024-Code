@@ -160,7 +160,7 @@
       }
     },
     {
-      "name": "Set Shooter Position",
+      "name": "Set Amp Position",
       "waypointRelativePos": 1.0999999999999999,
       "command": {
         "type": "parallel",
@@ -180,26 +180,19 @@
       "name": "Start Shooter",
       "waypointRelativePos": 2.05,
       "command": {
-        "type": "parallel",
+        "type": "race",
         "data": {
           "commands": [
             {
-              "type": "race",
+              "type": "named",
               "data": {
-                "commands": [
-                  {
-                    "type": "named",
-                    "data": {
-                      "name": "StartShooterIntake"
-                    }
-                  },
-                  {
-                    "type": "wait",
-                    "data": {
-                      "waitTime": 0.75
-                    }
-                  }
-                ]
+                "name": "StartShooterIntake"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.75
               }
             }
           ]
@@ -207,8 +200,8 @@
       }
     },
     {
-      "name": "Set Floor Position and Stop Shooter",
-      "waypointRelativePos": 2.15,
+      "name": "Set Floor Position & Stop Shooter",
+      "waypointRelativePos": 2.0999999999999996,
       "command": {
         "type": "parallel",
         "data": {
@@ -216,13 +209,24 @@
             {
               "type": "named",
               "data": {
-                "name": "SetShooterMountPositionFloor"
+                "name": "StopShooterIntake"
               }
-            },
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Set Speaker Position",
+      "waypointRelativePos": 3.1500000000000004,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
             {
               "type": "named",
               "data": {
-                "name": "StopShooterIntake"
+                "name": "SetShooterMountPositionSpeaker"
               }
             }
           ]
@@ -253,25 +257,8 @@
       }
     },
     {
-      "name": "Set Speaker Position",
-      "waypointRelativePos": 3.05,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "SetShooterMountPositionSpeaker"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Stop Shooter and Set Floor Position",
-      "waypointRelativePos": 4.199999999999999,
+      "name": "Set Floor Position & Stop Shooter",
+      "waypointRelativePos": 4.15,
       "command": {
         "type": "parallel",
         "data": {

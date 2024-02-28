@@ -134,7 +134,6 @@ public class DriveRobotWithAlign extends Command {
         driveSub.drive(speedX, speedY, speedRot, FieldRelative);
 
         /* LOGGING */
-
         Logger.recordOutput("Align/YawInput", speedRot);
         Logger.recordOutput("Align/XSpeed", speedX);
         Logger.recordOutput("Align/YSpeed", speedY);
@@ -145,7 +144,10 @@ public class DriveRobotWithAlign extends Command {
         Logger.recordOutput("Align/rotInput", rotInput.get());
 
         Logger.recordOutput("Drive/Multipler", maxVelocityMultiplier);
+
+
     }
+
 
     // public OptionalDouble getTargetOffSet() {
     //     if (visionSub.allDetectedTargets != null) {

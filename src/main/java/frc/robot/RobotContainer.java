@@ -27,7 +27,7 @@ import frc.robot.Constants.ElectronicsIDs;
 import frc.robot.Constants.LogitechExtreme3DConstants;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.DriveRobot;
-// import frc.robot.commands.DriveRobotWithAlign;
+import frc.robot.commands.DriveRobotWithAlign;
 import frc.robot.commands.SetShooterMountPosition;
 import frc.robot.commands.StartShooterIntake;
 import frc.robot.commands.StopShooterIntake;
@@ -221,6 +221,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("SetShooterMountPositionAmp", setShooterPosAmpCmd);
         NamedCommands.registerCommand("SetShooterMountPositionSpeaker", setShooterPosSpeakerCmd);
         NamedCommands.registerCommand("SetShooterMountPositionFloor", setShooterPosFloorCmd);
+
 
         /* SMARTDASHBOARD */
 

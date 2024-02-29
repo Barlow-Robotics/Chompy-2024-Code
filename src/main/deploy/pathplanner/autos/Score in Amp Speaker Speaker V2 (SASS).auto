@@ -62,7 +62,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "amp to first note"
+                  "pathName": "Amp to Left Note"
                 }
               },
               {
@@ -87,7 +87,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Score In Amp"
+                  "pathName": "Left Note to Amp"
                 }
               }
             ]
@@ -125,7 +125,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pick up note behind speaker"
+                  "pathName": "Amp to Middle Note to Speaker"
                 }
               }
             ]
@@ -134,6 +134,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Triple Note",
   "choreoAuto": false
 }

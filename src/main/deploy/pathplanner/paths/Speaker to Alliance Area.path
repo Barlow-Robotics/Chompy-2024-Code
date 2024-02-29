@@ -3,36 +3,36 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.84,
-        "y": 7.57
+        "x": 1.3832720674700612,
+        "y": 5.578152781305563
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.10840229889415,
-        "y": 7.094254565374802
+        "x": 1.8231719196928489,
+        "y": 5.578152781305563
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "center-back"
     },
     {
       "anchor": {
-        "x": 2.4823581360125684,
-        "y": 6.916795430813084
+        "x": 2.1105525451791647,
+        "y": 5.578152781305563
       },
       "prevControl": {
-        "x": 2.1468820804450726,
-        "y": 7.143735115461684
+        "x": 1.7340495938917408,
+        "y": 5.578152781305563
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "amp to first note"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.6,
-      "rotationDegrees": 0.0,
-      "rotateFast": true
+      "waypointRelativePos": 0,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
     }
   ],
   "constraintZones": [],
@@ -45,11 +45,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 179.86217536666442,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Amp",
+  "folder": "Target - Speaker",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

@@ -24,7 +24,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Shift to Amp"
+                  "pathName": "Align Amp from Side"
                 }
               }
             ]
@@ -81,7 +81,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "amp to first note"
+                  "pathName": "Amp to Left Note"
                 }
               },
               {
@@ -119,7 +119,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Score In Amp"
+                  "pathName": "Left Note to Amp"
                 }
               },
               {
@@ -157,7 +157,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Amp to side-midpoint (ASM)"
+                  "pathName": "Amp to Center Left Down"
                 }
               },
               {
@@ -191,6 +191,6 @@
       ]
     }
   },
-  "folder": "Amp Only",
+  "folder": "Double Note",
   "choreoAuto": false
 }

@@ -72,6 +72,9 @@ public class SetShooterMountPosition extends Command {
                 if (shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
                     desiredHeight = ShooterMountConstants.StartingHeight;
                 }
+            case ClimbAbort:
+                shooterMountSub.stopElevatorMotor();
+                shooterMountSub.stopAngleMotor();
         }
         Logger.recordOutput("ShooterMount/Angle/DesiredAngle", desiredAngle);
         Logger.recordOutput("ShooterMount/Height/DesiredHeightInches", desiredHeight);
@@ -79,10 +82,12 @@ public class SetShooterMountPosition extends Command {
 
     @Override
     public void execute() {
-        shooterMountSub.setAngle(desiredAngle);
-        shooterMountSub.setHeightInches(desiredHeight);
-        if (desiredTarget != null) {
-            visionSub.alignTo(desiredTarget);
+        if(shooterMountSub.getShooterMountStateAsString() != "ClimbAbort") {
+            shooterMountSub.setAngle(desiredAngle);
+            shooterMountSub.setHeightInches(desiredHeight);
+            if (desiredTarget != null) {
+                visionSub.alignTo(desiredTarget);
+            }
         }
     }
 
@@ -92,11 +97,15 @@ public class SetShooterMountPosition extends Command {
 
     @Override
     public boolean isFinished() {
-        if (shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
-            shooterMountSub.setShooterPosState(desiredState); // LMT CHANGE? See comment below
+        if(shooterMountSub.getShooterMountStateAsString() != "ClimbAbort") {
+            if (shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
+                shooterMountSub.setShooterPosState(desiredState); // LMT CHANGE? See comment below
+                return true;
+            }
+            return false;
+        } else {
             return true;
-        }
-        return false; // LMT - CHANGE this to true, or based on another condition?
+        }// LMT - CHANGE this to true, or based on another condition?
         // As you drive toward the speaker, you want to keep calculating and setting new
         // angles until they shoot
         // or maybe until they let go of the (speaker or action) button. Desired

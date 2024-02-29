@@ -24,7 +24,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right To Speaker"
+                  "pathName": "Right Start To Speaker"
                 }
               }
             ]
@@ -131,7 +131,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Speaker to Mid-Right"
+                  "pathName": "Speaker to Center Right"
                 }
               }
             ]
@@ -140,6 +140,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Triple Note",
   "choreoAuto": false
 }

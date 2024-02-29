@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.11,
-        "y": 5.58
+        "x": 2.12,
+        "y": 6.1
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6530288384650844,
-        "y": 5.572511265392902
+        "x": 2.506584687500224,
+        "y": 6.401085169661932
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.383278535075589,
-        "y": 5.58
+        "x": 2.37,
+        "y": 6.21
       },
       "prevControl": {
-        "x": 3.184367979708182,
-        "y": 5.57673678286014
+        "x": 2.3524108093035743,
+        "y": 6.202223916380313
       },
       "nextControl": {
-        "x": 3.582189090442996,
-        "y": 5.58326321713986
+        "x": 2.387589190696426,
+        "y": 6.217776083619687
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.11,
-        "y": 5.579037699672622
+        "x": 2.37,
+        "y": 6.21
       },
       "prevControl": {
-        "x": 1.6006601896537132,
-        "y": 5.583960300073378
+        "x": 2.404362575523754,
+        "y": 6.21608370174249
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,13 +46,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.05,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    },
-    {
-      "waypointRelativePos": 0.35,
-      "rotationDegrees": 0.0,
+      "waypointRelativePos": 0,
+      "rotationDegrees": -155.38817386822413,
       "rotateFast": false
     }
   ],
@@ -66,11 +61,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -179.55792105443166,
+    "rotation": 55.39443120417802,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Speaker",
+  "folder": "Target - Speaker",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

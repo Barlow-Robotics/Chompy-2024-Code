@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.689099829106003,
+        "x": 2.1105525451791647,
         "y": 5.578152781305563
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6187601053449843,
-        "y": 5.577963863631655
+        "x": 2.133241683401796,
+        "y": 6.666662510062181
       },
       "isLocked": false,
-      "linkedName": "Following-Mid-Semi-Circle"
+      "linkedName": "End-Midpoint-Speaker"
     },
     {
       "anchor": {
-        "x": 2.3767517210261007,
+        "x": 3.689099829106003,
         "y": 5.578152781305563
       },
       "prevControl": {
-        "x": 2.7015447988599903,
-        "y": 5.566483481909562
+        "x": 3.6956392870489667,
+        "y": 6.563242193704931
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Following-Mid-Semi-Circle"
     }
   ],
   "rotationTargets": [],
@@ -39,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.68489088239147,
+    "rotation": -179.94418694895563,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Speaker",
+  "folder": "Intake - Midnote",
   "previewStartingState": {
-    "rotation": -179.58145110715668,
+    "rotation": -179.62625737380645,
     "velocity": 0
   },
   "useDefaultConstraints": true

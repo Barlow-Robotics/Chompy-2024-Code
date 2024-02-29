@@ -64,7 +64,7 @@ public class ShooterMount extends SubsystemBase {
     private final CANcoderSimState absoluteAngleEncoderSim; // CHANGE needed? never used
 
     public enum ShooterMountState {
-        Speaker, Amp, SourceIntake, FloorIntake, Climb, MovingToPosition
+        Speaker, Amp, SourceIntake, FloorIntake, Climb, MovingToPosition, ClimbAbort
     }
 
     private ShooterMountState shooterPosState = ShooterMountState.FloorIntake;

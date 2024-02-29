@@ -3,15 +3,16 @@
   "robotLength": 0.89,
   "holonomicMode": true,
   "pathFolders": [
-    "Amp",
-    "Simple Paths",
-    "Speaker"
+    "Intake - Midnote",
+    "Intake - Midpoint",
+    "Target - Amp",
+    "Target - Speaker"
   ],
   "autoFolders": [
-    "Amp Only",
-    "Speaker and Amp",
-    "Simple Autos",
-    "Speaker Only"
+    "Double Note",
+    "Triple Note",
+    "BASIC",
+    "Single Note"
   ],
   "defaultMaxVel": 4.59,
   "defaultMaxAccel": 3.0,

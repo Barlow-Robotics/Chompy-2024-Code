@@ -24,7 +24,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Score In Amp"
+                  "pathName": "Left Note to Amp"
                 }
               }
             ]
@@ -68,7 +68,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Semi-Circle Around Note"
+                  "pathName": "Amp around Left Note"
                 }
               }
             ]
@@ -77,6 +77,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Single Note",
   "choreoAuto": false
 }

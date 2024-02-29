@@ -18,7 +18,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Side-To-Amp"
+                  "pathName": "Alliance Zone to Amp"
                 }
               },
               {
@@ -56,7 +56,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "amp to first note"
+                  "pathName": "Amp to Left Note"
                 }
               },
               {
@@ -87,7 +87,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Score amp from first note"
+                  "pathName": "Left Note into Amp"
                 }
               }
             ]
@@ -119,7 +119,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Amp to side-midpoint (ASM)"
+                  "pathName": "Amp to Center Left Down"
                 }
               },
               {
@@ -140,6 +140,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Double Note",
   "choreoAuto": false
 }

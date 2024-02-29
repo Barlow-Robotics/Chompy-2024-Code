@@ -148,6 +148,7 @@ public class Shooter extends SubsystemBase {
         PIDConfigs.Slot0.kI = ShooterConstants.IndexKI;
         PIDConfigs.Slot0.kD = ShooterConstants.IndexKD;
         PIDConfigs.Slot0.kV = ShooterConstants.IndexFF;
+        PIDConfigs.Slot0.kS = ShooterConstants.IndexKS;
 
         applyMotorConfig(indexMotor, "indexMotor", PIDConfigs, inversion);
     }

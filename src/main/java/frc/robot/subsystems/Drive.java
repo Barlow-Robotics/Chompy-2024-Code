@@ -89,13 +89,13 @@ public class Drive extends SubsystemBase {
     public Drive(Vision visionSub) {
 
         navX = new AHRS(Port.kMXP);
-        new Thread(() -> {
-            try {
-                Thread.sleep(1000);
-                zeroHeading();
-            } catch (Exception e) {
-            }
-        }).start();
+        // new Thread(() -> {
+        //     try {
+        //         Thread.sleep(1000);
+        //         zeroHeading();
+        //     } catch (Exception e) {
+        //     }
+        // }).start();
 
         this.visionSub = visionSub ;
 
@@ -175,6 +175,7 @@ public class Drive extends SubsystemBase {
         // wpk adapted from code in https://github.com/STMARobotics/frc-7028-2023/blob/5916bb426b97f10e17d9dfd5ec6c3b6fda49a7ce/src/main/java/frc/robot/subsystems/DrivetrainSubsystem.java
         // Not sure I like all the vision specifics here. Consider moving to visionSub later if we have time.
         var poseResult = visionSub.getLatestPoseResult();
+        
         if (poseResult.hasTargets()) {
             var target = poseResult.getBestTarget();
             var imageCaptureTime = poseResult.getTimestampSeconds();
@@ -192,6 +193,7 @@ public class Drive extends SubsystemBase {
 
                 var visionMeasurement = camPose.transformBy(Constants.VisionConstants.PoseCameraToRobot);
                 poseEstimator.addVisionMeasurement(visionMeasurement.toPose2d(), imageCaptureTime);
+                Logger.recordOutput("Drive/PhotonVisionPoseEstimate", visionMeasurement.toPose2d());
             }
         }
 

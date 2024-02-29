@@ -7,29 +7,17 @@ package frc.robot.commands;
 import frc.robot.Constants.DriveConstants;
 
 import java.util.OptionalDouble;
-import java.util.OptionalInt;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
-import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Vision;
-
-import java.io.IOException;
-import java.util.Optional;
-
 
 public class DriveRobotWithAlign extends Command {
     Drive driveSub;
@@ -51,9 +39,7 @@ public class DriveRobotWithAlign extends Command {
 
     // private double error;
 
-    // Trigger autoAlignButton;
-
-    boolean autoAlignActive = false ;
+    Trigger autoAlignButton;
 
     double DeadBand = 0.08;
     double RotDeadBand = 0.01;
@@ -62,10 +48,6 @@ public class DriveRobotWithAlign extends Command {
     public PIDController latPid;
 
     public String selectedTarget = "None";
-
-    OptionalInt currentTrackedTarget = OptionalInt.of(0) ;
-
-    AprilTagFieldLayout aprilTagFieldLayout ;
 
     public DriveRobotWithAlign(Drive driveSub, Supplier<Double> x, Supplier<Double> y, Supplier<Double> rot,
             Supplier<Double> multiplier, boolean FieldRelative, Vision visionSub, Supplier<Boolean> runAutoAlign) {
@@ -88,28 +70,6 @@ public class DriveRobotWithAlign extends Command {
             DriveConstants.AutoAlignLatKP,
             DriveConstants.AutoAlignLatKI,
             DriveConstants.AutoAlignLatKD);
-
-
-        AprilTagFieldLayout layout;
-        try {
-            layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-                layout.setOrigin(
-                        DriverStation.getAlliance().get() == Alliance.Blue ? OriginPosition.kBlueAllianceWallRightSide
-                                : OriginPosition.kRedAllianceWallRightSide);
-            } else {
-                // default this for now
-                layout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
-            }
-
-        } catch (IOException e) {
-            DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
-            layout = null;
-        }
-        this.aprilTagFieldLayout = layout;
-
-
         addRequirements(driveSub);
     }
 
@@ -117,32 +77,24 @@ public class DriveRobotWithAlign extends Command {
     public void initialize() {
         rotPid.reset();
         latPid.reset();
-        // visionSub.chooseBestTarget();
+        visionSub.chooseBestTarget();
     }
 
-
-
-
-
-
+    // add key for auto align button
 
     @Override
     public void execute() {
         // Since the coordinate systems differ from the controller (x is left right and
-        // y is fwd back) and the chassis (positive X is forward, Positive Y is left), we use the
-        // controller X input as the drive Y input and the controller Y input as the drive X input.
+        // y is fwd back) and the chassis (positive X is forward, Positive Y is left),
+        // we use the
+        // controller X input as the drive Y input and the controller Y input as the
+        // drive X input.
 
         double speedX;
         double speedY;
         double speedRot;
 
-        speedX = MathUtil.applyDeadband(yInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
-        speedY = MathUtil.applyDeadband(xInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
-        speedRot = MathUtil.applyDeadband(rotInput.get(), 2 * DeadBand) * DriveConstants.MaxDriveableVelocity;
-
-        // wpk put back after driver trials
-        //boolean autoAlignEnabled = runAutoAlign.get();
-        boolean autoAlignEnabled = false;
+        boolean autoAlignEnabled = runAutoAlign.get();
 
         var alignYawControl = 0.0;
         var alignLatControl = 0.0;
@@ -150,67 +102,41 @@ public class DriveRobotWithAlign extends Command {
         // Converts from old range (1 to -1) to desired range (1 to 0.5)
         maxVelocityMultiplier = (((multiplierInput.get() + 1) * 0.5) / 2) + 0.5;
 
-        // if the button transitions from not pressed to pressed
-        if ( autoAlignEnabled && !autoAlignActive ) {
-            // get the best target we might be interested in
-            rotPid.setSetpoint(9.0);  // wpk need to do better. this works close, but not as well far away
-            var bestTarget = visionSub.getBestTrackableTarget() ;
-            if ( bestTarget.isPresent()) {
-                currentTrackedTarget = OptionalInt.of(bestTarget.get().getFiducialId())  ;
-            } else {
-                currentTrackedTarget = OptionalInt.of(0 ) ;
-            }
-            Logger.recordOutput("Align/bestTarget", currentTrackedTarget.getAsInt());
-        }
-        
-        autoAlignActive = autoAlignEnabled ;
+        speedX = MathUtil.applyDeadband(yInput.get(), DeadBand)
+                * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
+        speedY = MathUtil.applyDeadband(xInput.get(), DeadBand)
+                * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
+        speedRot = MathUtil.applyDeadband(rotInput.get(), 2 * DeadBand) * DriveConstants.MaxDriveableVelocity;
 
-        if (autoAlignActive ) {
-            if (currentTrackedTarget.isPresent()) {
-                Optional<PhotonTrackedTarget> target = visionSub.getTarget(currentTrackedTarget.getAsInt());
-                if (target.isPresent()) {
-                    var rotOffset = target.get().getYaw();
-                    var latOffset = 0.0; // wpk temporary bring back later
-
-                    speedRot = rotPid.calculate(rotOffset);
-                    Logger.recordOutput("Align/targetYaw", target.get().getYaw());
-                    Logger.recordOutput("Align/proposed rot", speedRot);
-
-                    Pose2d targetPose = aprilTagFieldLayout.getTagPose(currentTrackedTarget.getAsInt()).get().toPose2d() ;
-
-                    var test = PhotonUtils.getYawToPose(driveSub.getPose(), targetPose) ;
-                    Logger.recordOutput("Align/yawToPose", test);
-                    // alignLatControl = latPid.calculate(-latOffset);
-                    //speedRot = 0.0 ;  // wpk remove after testing
-                } else {
-                    speedRot = 0.0;
-                    rotPid.reset();
-                    latPid.reset();
-                }
+        if (autoAlignEnabled) {
+            var rotOffset = visionSub.getTargetRotOffSet();
+            // var latOffset = visionSub.getTargetLateralOffSet();
+            if (rotOffset.isPresent()) {
+                Logger.recordOutput("Align/rotOffset", rotOffset.getAsDouble());
+                alignYawControl = rotPid.calculate(-rotOffset.getAsDouble());
+                //speedRot = alignYawControl ;
             }
 
-            // var heading = Math.toRadians(driveSub.getHeading());
+
+            // if (latOffset.isPresent()) {
+            //     alignLatControl = latPid.calculate(-latOffset.getAsDouble());
+
+            // }
+
+            var heading = Math.toRadians(driveSub.getHeading());
 
             // // TODO: check this math
             // // Heading of 0 means lateral offset is +y
             // speedY = (yInput.get() + Math.cos(-heading)) * alignLatControl;
             // // Heading of pi/2 means lateral offset is -x
             // speedX = (xInput.get() + Math.sin(-heading)) * alignLatControl;
-
-            // var rotOffset = visionSub.getTargetRotOffSet();
-            // var latOffset = visionSub.getTargetLateralOffSet();
-            // if (rotOffset.isPresent()){
-            // alignYawControl = rotPid.calculate(-rotOffset.getAsDouble());
-            // }
-
-            // if (latOffset.isPresent()){
-            // alignLatControl = latPid.calculate(-latOffset.getAsDouble());
-            // }
-
-        } else {
-            rotPid.reset();
-            latPid.reset();
         }
+
+        // speedX = MathUtil.applyDeadband(yInput.get(), DeadBand)
+        //         * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
+        // speedY = MathUtil.applyDeadband(xInput.get(), DeadBand)
+        //         * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
+        // speedRot = MathUtil.applyDeadband(rotInput.get(), 2 * DeadBand) * DriveConstants.MaxDriveableVelocity;
 
         driveSub.drive(speedX, speedY, speedRot, FieldRelative);
 

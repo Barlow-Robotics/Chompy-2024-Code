@@ -27,6 +27,7 @@ import frc.robot.Constants.ElectronicsIDs;
 import frc.robot.Constants.LogitechExtreme3DConstants;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.DriveRobot;
+import frc.robot.commands.DriveRobotWithAlign;
 // import frc.robot.commands.DriveRobotWithAlign;
 import frc.robot.commands.SetShooterMountPosition;
 import frc.robot.commands.StartShooterIntake;
@@ -91,7 +92,7 @@ public class RobotContainer {
     private Trigger LEDHumanFloorButton;
     private Trigger shootIntakeButtonDriver;
     private Trigger shootIntakeButtonOperator;
-    // private Trigger autoAlignButton;
+    private Trigger autoAlignButton;
 
     /* AUTO */
 
@@ -103,23 +104,23 @@ public class RobotContainer {
         driveSub.setDefaultCommand(
                 // The left stick controls translation of the robot.
                 // Turning is controlled by the X axis of the right stick.
-                new DriveRobot(
-                        driveSub,
-                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
-                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
-                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
-                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
-                        true));
+                // new DriveRobot(
+                //         driveSub,
+                //         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
+                //         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
+                //         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
+                //         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
+                //         true));
 
-        // DriveRobotWithAlign driveRobotWithAlignCmd = new DriveRobotWithAlign(
-        // driveSub,
-        // () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
-        // () -> driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
-        // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
-        // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
-        // true,
-        // visionSub,
-        // () -> autoAlignButton.getAsBoolean());
+                        new DriveRobotWithAlign(
+                                        driveSub,
+                                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
+                                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
+                                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
+                                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
+                                        true,
+                                        visionSub,
+                                        () -> autoAlignButton.getAsBoolean()));
     }
 
     private void configureButtonBindings() {
@@ -132,8 +133,8 @@ public class RobotContainer {
         // autoAlignButtonOperator = new JoystickButton(operatorController, XboxControllerConstants.LeftTrigger);
         // autoAlignButtonOperator.onTrue(autoAlignCmd).onFalse();
 
-        // autoAlignButtonDriver = new JoystickButton(driverController, LogitechExtreme3DConstants.ButtonStick);
-        // autoAlignButtonDriver.onTrue(autoAlignCmd).onFalse();
+        autoAlignButton = new JoystickButton(driverController, LogitechExtreme3DConstants.ButtonStick);
+        // autoAlignButton.onTrue(autoAlignCmd).onFalse();
 
         /******************** SET SHOOTER POSITION ********************/
 

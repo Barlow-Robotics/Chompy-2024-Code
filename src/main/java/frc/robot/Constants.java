@@ -137,12 +137,12 @@ public class Constants {
         public static final double DriveIZone = 0.15;
         public static final double DriveFF = 1.0 / PhysicalMaxMetersPerSecond;
 
-        public static final double AutoAlignRotKP = 0.01; //CHANGE
-        public static final double AutoAlignRotKI = 0.0015;
-        public static final double AutoAlignRotKD = 0;
+        public static final double AutoAlignRotKP = 0.08; //CHANGE
+        public static final double AutoAlignRotKI = 0.0;
+        public static final double AutoAlignRotKD = 0.0;
 
         public static final double AutoAlignLatKP = 0.5; //CHANGE
-        public static final double AutoAlignLatKI = 0.0015;
+        public static final double AutoAlignLatKI = 0.0;
         public static final double AutoAlignLatKD = 0;
 
         /* TURN ENCODER */
@@ -180,7 +180,7 @@ public class Constants {
     /***************************************************************************/
 
     public static final class ShooterConstants {
-        public static final double VelocityTolerance = 0.05; // CHANGE
+        public static final double VelocityTolerance = 5; 
        
         public static final double SupplyCurrentLimit = 30;
 
@@ -219,7 +219,8 @@ public class Constants {
         public static final double IndexKP = 0.25; 
         public static final double IndexKI = 0; 
         public static final double IndexKD = 0; 
-        public static final double IndexFF = 0.12;
+        public static final double IndexFF = 0.2;
+        public static final double IndexKS = 0.05;
     }
 
     /***************************************************************************/
@@ -323,7 +324,7 @@ public class Constants {
         public static final int SupplyCurrentLimit = 20;
 		
         public static final double MotorRPM = 2500;
-        public static final double VelocityTolerance = 0.05; // CHANGE
+        public static final double VelocityTolerance = 5;
     }
 
     /***************************************************************************/
@@ -341,11 +342,15 @@ public class Constants {
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         // wpk need to update these to be more exact.
         public static final Transform3d PoseCameraToRobot =
-                new Transform3d(new Translation3d(0.0, Units.inchesToMeters(DriveConstants.TrackWidth/2), Units.inchesToMeters(23)), new Rotation3d(0, 0, 0));
+                new Transform3d(
+                    new Translation3d(0.0, Units.inchesToMeters(DriveConstants.TrackWidth/2), Units.inchesToMeters(23)), 
+                    new Rotation3d(0, Units.degreesToRadians(5), 0));
         public static final Transform3d RobotToPoseCamera = PoseCameraToRobot.inverse();
 
         public static final Transform3d TargetCamToRobot =
-                new Transform3d(new Translation3d(0.0, -Units.inchesToMeters(DriveConstants.TrackWidth/2), Units.inchesToMeters(23)), new Rotation3d(0, 0, 0));
+                new Transform3d(
+                    new Translation3d(0.0, -Units.inchesToMeters(DriveConstants.TrackWidth/2), Units.inchesToMeters(23)), 
+                    new Rotation3d(0, Units.degreesToRadians(5), 0));
         public static final Transform3d RobotToTargetCam = TargetCamToRobot.inverse();
 
         // // The layout of the AprilTags on the field

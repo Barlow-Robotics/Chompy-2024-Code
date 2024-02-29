@@ -62,7 +62,7 @@ public class RobotContainer {
             ShooterMountState.FloorIntake, visionSub);
 
     private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.Climb, visionSub);
-
+    private final SetShooterMountPosition climbAbortCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.ClimbAbort, visionSub);
     private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub, shooterMountSub);
     private final StopShooterIntake stopShooterIntakeCmd = new StopShooterIntake(shooterSub, floorIntakeSub);
 
@@ -91,6 +91,7 @@ public class RobotContainer {
     private Trigger LEDHumanFloorButton;
     private Trigger shootIntakeButtonDriver;
     private Trigger shootIntakeButtonOperator;
+    private Trigger climbAbortButton;
     // private Trigger autoAlignButton;
 
     /* AUTO */
@@ -155,8 +156,8 @@ public class RobotContainer {
 
         /******************** SHOOTER ********************/
 
-        shootIntakeButtonOperator = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home
-        shootIntakeButtonOperator.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
+        // shootIntakeButtonOperator = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home
+        // shootIntakeButtonOperator.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
 
         shootIntakeButtonDriver = new JoystickButton(driverController, LogitechExtreme3DConstants.Trigger);
         shootIntakeButtonDriver.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
@@ -166,16 +167,19 @@ public class RobotContainer {
         climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX);
         climbButton.onTrue(climbCmd);
 
+        climbAbortButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA);
+        climbAbortButton.onTrue(climbAbortCmd);
+
         /********************* LED BINDINGS ************************************* */
 
-        LEDHumanSourceButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper);
+        LEDHumanSourceButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY);
         LEDHumanSourceButton.onTrue(new InstantCommand(() -> underglowSub.LEDHumanSource = true))
                 .onFalse(new InstantCommand(() -> underglowSub.LEDHumanSource = false));
 
-        LEDHumanFloorButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX);
+        LEDHumanFloorButton = new JoystickButton(operatorController, XboxControllerConstants.LeftTrigger);
         LEDHumanFloorButton.onTrue(new InstantCommand(() -> underglowSub.LEDHumanFloor = true))
                 .onFalse(new InstantCommand(() -> underglowSub.LEDHumanFloor = false));
-        shootIntakeButtonOperator = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home
+        // shootIntakeButtonOperator = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home
         shootIntakeButtonOperator = new JoystickButton(driverController, LogitechExtreme3DConstants.Trigger);
         shootIntakeButtonOperator.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
 

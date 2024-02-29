@@ -7,6 +7,7 @@ package frc.robot.commands;
 import frc.robot.Constants.DriveConstants;
 
 import java.util.OptionalDouble;
+import java.util.OptionalInt;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -18,6 +19,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Vision;
+import java.util.Optional;
+
 
 public class DriveRobotWithAlign extends Command {
     Drive driveSub;
@@ -39,7 +42,9 @@ public class DriveRobotWithAlign extends Command {
 
     // private double error;
 
-    Trigger autoAlignButton;
+    // Trigger autoAlignButton;
+
+    boolean autoAlignActive = false ;
 
     double DeadBand = 0.08;
     double RotDeadBand = 0.01;
@@ -48,6 +53,8 @@ public class DriveRobotWithAlign extends Command {
     public PIDController latPid;
 
     public String selectedTarget = "None";
+
+    OptionalInt currentTrackedTarget = OptionalInt.empty() ;
 
     public DriveRobotWithAlign(Drive driveSub, Supplier<Double> x, Supplier<Double> y, Supplier<Double> rot,
             Supplier<Double> multiplier, boolean FieldRelative, Vision visionSub, Supplier<Boolean> runAutoAlign) {
@@ -77,10 +84,14 @@ public class DriveRobotWithAlign extends Command {
     public void initialize() {
         rotPid.reset();
         latPid.reset();
-        visionSub.chooseBestTarget();
+        // visionSub.chooseBestTarget();
     }
 
-    // add key for auto align button
+
+
+
+
+
 
     @Override
     public void execute() {
@@ -92,44 +103,71 @@ public class DriveRobotWithAlign extends Command {
         double speedY;
         double speedRot;
 
+        speedX = MathUtil.applyDeadband(yInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
+        speedY = MathUtil.applyDeadband(xInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
+        speedRot = MathUtil.applyDeadband(rotInput.get(), 2 * DeadBand) * DriveConstants.MaxDriveableVelocity;
+
         boolean autoAlignEnabled = runAutoAlign.get();
 
         var alignYawControl = 0.0;
         var alignLatControl = 0.0;
 
-        
-    
-
         // Converts from old range (1 to -1) to desired range (1 to 0.5)
         maxVelocityMultiplier = (((multiplierInput.get() + 1) * 0.5) / 2) + 0.5;
 
-        if (autoAlignEnabled) {
-            var rotOffset = visionSub.getTargetRotOffSet();
-            var latOffset = visionSub.getTargetLateralOffSet();
-            if (rotOffset.isPresent()){
-                alignYawControl = rotPid.calculate(-rotOffset.getAsDouble());
+        // if the button transitions from not pressed to pressed
+        if ( autoAlignEnabled && !autoAlignActive ) {
+            // get the best target we might be interested in
+            // wpk need to fill this in with data from vision
+            var bestTarget = visionSub.getBestTrackableTarget() ;
+            if ( bestTarget.isPresent()) {
+                currentTrackedTarget = OptionalInt.of(bestTarget.get().getFiducialId())  ;
+            } else {
+                currentTrackedTarget = OptionalInt.of(0 ) ;
+            }
+        }
+        Logger.recordOutput("Align/bestTarget", currentTrackedTarget.getAsInt());
+        
+        autoAlignActive = autoAlignEnabled ;
+
+        if (autoAlignActive ) {
+            if (currentTrackedTarget.isPresent()) {
+                Optional<PhotonTrackedTarget> target = visionSub.getTarget(currentTrackedTarget.getAsInt());
+                if (target.isPresent()) {
+                    var rotOffset = target.get().getYaw();
+                    var latOffset = 0.0; // wpk temporary bring back later
+
+                    speedRot = rotPid.calculate(-rotOffset);
+                    // alignLatControl = latPid.calculate(-latOffset);
+                } else {
+                    speedRot = 0.0;
+                    rotPid.reset();
+                    latPid.reset();
+                }
             }
 
-            if (latOffset.isPresent()){
-                alignLatControl = latPid.calculate(-latOffset.getAsDouble());
-                
+            // var heading = Math.toRadians(driveSub.getHeading());
+
+            // // TODO: check this math
+            // // Heading of 0 means lateral offset is +y
+            // speedY = (yInput.get() + Math.cos(-heading)) * alignLatControl;
+            // // Heading of pi/2 means lateral offset is -x
+            // speedX = (xInput.get() + Math.sin(-heading)) * alignLatControl;
+
+            // var rotOffset = visionSub.getTargetRotOffSet();
+            // var latOffset = visionSub.getTargetLateralOffSet();
+            // if (rotOffset.isPresent()){
+            // alignYawControl = rotPid.calculate(-rotOffset.getAsDouble());
+            // }
+
+            // if (latOffset.isPresent()){
+            // alignLatControl = latPid.calculate(-latOffset.getAsDouble());
+            // }
+
+        } else {
+            rotPid.reset();
+            latPid.reset();
         }
-       
-
-            
-            var heading = Math.toRadians(driveSub.getHeading());
-
-            // TODO: check this math
-            // Heading of 0 means lateral offset is +y
-            speedY = (yInput.get() + Math.cos(-heading)) * alignLatControl;
-            // Heading of pi/2 means lateral offset is -x
-            speedX = (xInput.get() + Math.sin(-heading)) * alignLatControl;
-    }
-       
-
-        speedX = MathUtil.applyDeadband(yInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
-        speedY = MathUtil.applyDeadband(xInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
-        speedRot = MathUtil.applyDeadband(rotInput.get(), 2 * DeadBand) * DriveConstants.MaxDriveableVelocity;
 
         driveSub.drive(speedX, speedY, speedRot, FieldRelative);
 

@@ -15,14 +15,9 @@ import static frc.robot.Constants.VisionConstants.FieldTagLayout;
 import static frc.robot.Constants.VisionConstants.TargetCameraName;
 import static frc.robot.Constants.VisionConstants.PrimaryVisionStrategy;
 
-// import java.net.InetSocketAddress;
-// import java.nio.ByteBuffer;
-// import java.nio.channels.DatagramChannel;
-// import java.util.HashMap;
-//import java.io.IOException;
+import java.util.Hashtable;
 import java.util.HashSet;
 import java.util.List;
-// import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
@@ -37,8 +32,6 @@ import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-// import com.fasterxml.jackson.core.type.TypeReference;
-// import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -49,14 +42,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.networktables.NetworkTableInstance;
-//import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
-//import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 public class Vision extends SubsystemBase {
@@ -76,21 +65,16 @@ public class Vision extends SubsystemBase {
     public OptionalInt activeAlignTargetId;
     private Alliance alliance;
 
-    // boolean noteDetected;
-    // double noteDistanceFromCenter;
-    // double noteHeight;
-    // double noteWidth;
-
-    // String sourceIP = "Nothing Received";
-    // private DatagramChannel visionChannel = null;
-    // ByteBuffer buffer = ByteBuffer.allocate(1024);
 
     boolean aprilTagDetected = false;
-    //public static boolean aligningWithNote = false;
 
     public enum TargetToAlign {
-        Speaker, Amp, Source, Stage, /*Note*/
+        Speaker, Amp, Source, Stage, /* Note */
     }
+
+
+    Hashtable<Integer, Integer> blueTrackableIDs = new Hashtable<>() ;
+    Hashtable<Integer, Integer> redTrackableIDs = new Hashtable<>() ;
 
     public Vision() /* throws IOException */ {
         targetCamera = new PhotonCamera(TargetCameraName);
@@ -110,15 +94,6 @@ public class Vision extends SubsystemBase {
         targetAlignSet = new HashSet<Integer>();
         activeAlignTargetId = OptionalInt.empty();
 
-        // Setup Jetson COmmunication
-        // try {
-        //     visionChannel = DatagramChannel.open();
-        //     InetSocketAddress sAddr = new InetSocketAddress(5800);
-        //     visionChannel.bind(sAddr);
-        //     visionChannel.configureBlocking(false);
-        // } catch (Exception ex) {
-        //     int wpk = 1;
-        // }
 
         // ----- Simulation
         if (Robot.isSimulation()) {
@@ -156,14 +131,27 @@ public class Vision extends SubsystemBase {
         // Pose3d robotPose =
         // PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
         // fieldTags.getTagPose(target.getFiducialId()), robotToCamera);
+
+        blueTrackableIDs.put( 7, 7) ; // speaker
+        blueTrackableIDs.put( 6, 6) ; // amp
+        blueTrackableIDs.put( 1, 1) ; // source
+        blueTrackableIDs.put( 2, 2) ; // source
+
+        redTrackableIDs.put( 4, 4) ; // speaker
+        redTrackableIDs.put( 5, 5) ; // amp
+        redTrackableIDs.put( 10, 10) ; // source
+        redTrackableIDs.put( 9, 9) ; // source
+
     }
+
+
 
     public void alignTo(TargetToAlign target) {
         targetAlignSet.clear();
-        //aligningWithNote = false;
+        // aligningWithNote = false;
         // if (target == TargetToAlign.Note) { // Not sure that this works
-        //     aligningWithNote = true;
-        // } else 
+        // aligningWithNote = true;
+        // } else
         if (alliance == DriverStation.Alliance.Blue) {
             switch (target) {
                 case Speaker:
@@ -206,94 +194,10 @@ public class Vision extends SubsystemBase {
         }
     }
 
-    public void initSendable(SendableBuilder builder) {
-        // builder.addDoubleProperty("Estimated Global Pose",
-        // this::getEstimatedGlobalPose, null);
-    }
 
-    public PhotonPipelineResult getLatestPoseResult() {
-        return poseCamera.getLatestResult();
-    }
 
-    public Optional<PhotonPipelineResult> getLatestTrackingResult() {
-        if (targetCamera.isConnected()) {
-            return Optional.of(targetCamera.getLatestResult());
-        } else {
-            return Optional.empty();
-        }
-    }
 
     public void periodic() {
-
-        // Jetson Communication Stuff
-        // try {
-        //     boolean done = false;
-        //     String message = "";
-        //     while (!done) {
-        //         InetSocketAddress sender = (InetSocketAddress) visionChannel.receive(buffer);
-        //         buffer.flip();
-        //         int limits = buffer.limit();
-        //         if (limits > 0) {
-        //             byte bytes[] = new byte[limits];
-        //             buffer.get(bytes, 0, limits);
-        //             message = new String(bytes);
-        //             sourceIP = sender.getAddress().toString();
-        //         } else {
-        //             done = true;
-        //         }
-        //         buffer.clear();
-        //     }
-
-        //     if (message.length() > 0) {
-        //         Map<String, String> myMap = new HashMap<String, String>();
-
-        //         ObjectMapper objectMapper = new ObjectMapper();
-        //         myMap = objectMapper.readValue(message, new TypeReference<HashMap<String, String>>() {
-        //         });
-        //         this.noteDetected = Boolean.parseBoolean(myMap.get("detected"));
-        //         this.noteDistanceFromCenter = Double.parseDouble(myMap.get("distance_from_center"));
-        //         this.noteHeight = Double.parseDouble(myMap.get("bb_height"));
-        //         this.noteWidth = Double.parseDouble(myMap.get("bb_width"));
-        //     }
-
-        //     // var Vision_Info = new JSONObject(received);
-
-        //     // double aprilTagDistanceFromCenter =
-        //     // Vision_Info.get(april_tag_distance_from_center);
-        // } catch (Exception ex) {
-        //     System.out.println("Exception reading data");
-        // }
-
-        // TODO: This whole section is redundant with the photon pose estimator
-        /*
-         * var result = getLatestPoseResult();
-         * if ( result.hasTargets()) {
-         * var target = result.getBestTarget() ;
-         * var toTarget = target.getBestCameraToTarget() ;
-         * var tagPose = kFieldTagLayout.getTagPose(target.getFiducialId()).orElse(new
-         * Pose3d());
-         * var transform3d = new Transform3d();
-         * 
-         * Pose3d robotPose =
-         * PhotonUtils.estimateFieldToRobotAprilTag(
-         * toTarget, tagPose,
-         * transform3d);
-         * 
-         * double range =
-         * PhotonUtils.calculateDistanceToTargetMeters(
-         * 1,
-         * .1,
-         * Units.degreesToRadians( 20.0),
-         * Units.degreesToRadians(result.getBestTarget().getPitch()));
-         * 
-         * NetworkTableInstance.getDefault().getEntry("distanceFromX")
-         * .setDouble(robotPose.getX());
-         * NetworkTableInstance.getDefault().getEntry("distanceFromY")
-         * .setDouble(robotPose.getY());
-         * NetworkTableInstance.getDefault().getEntry("distanceFromZ")
-         * .setDouble(robotPose.getZ());
-         * }
-         */
 
         // TODO: feed this pose estimate back to the combined pose estimator in drive
         var poseEstimate = getEstimatedGlobalPose();
@@ -305,6 +209,7 @@ public class Vision extends SubsystemBase {
         currentBestAlignTarget = null;
 
         if (tracking_result.isPresent()) {
+
             if (tracking_result.get().hasTargets()) {
 
                 allDetectedTargets = tracking_result.get().getTargets();
@@ -323,7 +228,66 @@ public class Vision extends SubsystemBase {
 
         advantageKitLogging();
     }
-    // SmartDashboard.putData(getEstimatedGlobalPose());
+
+
+
+
+
+    ///////////////////////////////////
+    //   Pose stuff
+    ///////////////////////////////////
+
+
+    public PhotonPipelineResult getLatestPoseResult() {
+        return poseCamera.getLatestResult();
+    }
+
+    public Optional<PhotonPipelineResult> getLatestTrackingResult() {
+        if (targetCamera.isConnected()) {
+            return Optional.of(targetCamera.getLatestResult());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+
+
+    ///////////////////////////////////
+    //   Tracking stuff
+    ///////////////////////////////////
+
+    // return the first target in the list with an ID we are interested in given our alliance color
+    // This uses the simple approach and assumes that we won't be seeing multiple that we're interested in or that
+    // the first one in the list is the best one.
+    public Optional<PhotonTrackedTarget> getBestTrackableTarget() {
+        if (DriverStation.getAlliance().isPresent()) {
+            for (var tempTarget : allDetectedTargets) {
+                if (DriverStation.getAlliance().get() == Alliance.Red && redTrackableIDs.contains(tempTarget.getFiducialId())) {
+                    return Optional.of(tempTarget) ;
+                }
+                if (DriverStation.getAlliance().get() == Alliance.Blue && blueTrackableIDs.contains(tempTarget.getFiducialId())) {
+                    return Optional.of(tempTarget) ;
+                }
+            }
+        }
+        return Optional.empty() ;
+    }
+
+
+    public Optional<PhotonTrackedTarget> getTarget(int id) {
+        for (var tempTarget : allDetectedTargets) {
+            if ((tempTarget.getFiducialId() == id) ) {
+                return Optional.of(tempTarget) ;
+            }
+        }
+        return Optional.empty() ;
+    }
+
+
+
+
+
+
 
     /**
      * The latest estimated robot pose on the field from vision data. This may be
@@ -357,6 +321,8 @@ public class Vision extends SubsystemBase {
         }
     }
 
+
+    // wpk not used anywhere
     public Matrix<N3, N1> getEstimationStdDevs(Pose2d estimatedPose) {
         var estStdDevs = SingleTagStdDevs;
         var targets = getLatestPoseResult().getTargets();
@@ -403,98 +369,76 @@ public class Vision extends SubsystemBase {
         return visionSim.getDebugField();
     }
 
-    public double getAprilTagDistToCenter() {
-        return 0;
-    }
 
-    public boolean getAprilTagDetected() {
-        return getLatestPoseResult().hasTargets();
-    }
 
-    public boolean aprilTagIsVisible() {
-        return this.aprilTagDetected;
-    }
-
-    public void chooseBestTarget() {
-        activeAlignTargetId = OptionalInt.empty();
-        if (allDetectedTargets != null) {
-            for (PhotonTrackedTarget target : allDetectedTargets) {
-                if (targetAlignSet.contains(target.getFiducialId())) {
-                    activeAlignTargetId = OptionalInt.of(target.getFiducialId());
-                    return;
-                }
-            }
-        }
-    }
-
-    // public OptionalDouble getTargetOffSet() {
+    // public void chooseBestTarget() {
+    //     activeAlignTargetId = OptionalInt.empty();
     //     if (allDetectedTargets != null) {
-    //         if (activeAlignTargetId.isPresent()) {
-    //             for (PhotonTrackedTarget target : allDetectedTargets) {
-    //                 if (target.getFiducialId() == activeAlignTargetId.getAsInt()) {
-    //                     Logger.recordOutput("vision/targetY", target.getBestCameraToTarget().getY());
-    //                     Logger.recordOutput("vision/targetYaw", target.getYaw());
-    //                     return OptionalDouble.of(target.getBestCameraToTarget().getY());
-    //                 }
+    //         for (PhotonTrackedTarget target : allDetectedTargets) {
+    //             if (targetAlignSet.contains(target.getFiducialId())) {
+    //                 activeAlignTargetId = OptionalInt.of(target.getFiducialId());
+    //                 return;
     //             }
-    public OptionalDouble getTargetRotOffSet() {
-                    if (currentBestAlignTarget != null) {
-                        return OptionalDouble.of(currentBestAlignTarget.getYaw());
-                    }
-                    return OptionalDouble.empty();
-                }
+    //         }
+    //     }
+    // }
 
-    public OptionalDouble getTargetLateralOffSet() {
-                if (currentBestAlignTarget != null) {
-                    // The pose of the april tag in the camera reference frame
-                    var targetPose = currentBestAlignTarget.getBestCameraToTarget();
-        
-                    // targetYaw is the offset angle from camera-forward to the target
-                    var targetYaw = currentBestAlignTarget.getYaw();
-        
-                    // Now find the "pointing angle of the target" in the reference frame
-                    // of the robot.  If you drew a ray from the target in space this would be
-                    // the "center line" the robot wants to reach laterally.
-        
-                    // Note: this rotation value is a bit counter-intuitive. A Z-axis rotation of 0
-                    // actually means the April tag is pointed in the same direction as the camera
-                    var targetPointing = targetPose.getRotation().getZ();
-                    // We want an angle about 0 when the tag is facing us so shift by Pi
-                    // and then unroll.
-                    targetPointing += Math.PI;
-                    if (targetPointing > Math.PI) {
-                        targetPointing -= 2*Math.PI;
-                    } else if (targetPointing < -Math.PI) {
-                        targetPointing += 2*Math.PI;
-                    }
-                    // Now combine the 2 angles to get the total angle between the robot and
-            // this center-line.
-            var combinedAngle = Math.toRadians(targetYaw) - targetPointing;
 
-            var targetDist = targetPose.getTranslation().getNorm();
+    // public OptionalDouble getTargetRotOffSet() {
+    //     if (currentBestAlignTarget != null) {
+    //         return OptionalDouble.of(currentBestAlignTarget.getYaw());
+    //     }
+    //     return OptionalDouble.empty();
+    // }
 
-            // Finally, the lateral distance can be found by trig:
-            // Sin(angle) = Lateral / Hypotenuse
-            // Lateral = Hypotenuse * Sin(combined angle)
-            var lateralDist = Math.sin(combinedAngle) * targetDist;
+    // public OptionalDouble getTargetLateralOffSet() {
+    //     if (currentBestAlignTarget != null) {
+    //         // The pose of the april tag in the camera reference frame
+    //         var targetPose = currentBestAlignTarget.getBestCameraToTarget();
 
-            return OptionalDouble.of(lateralDist);
-                }
-                return OptionalDouble.empty();
-            }
-            
-    public OptionalDouble getTargetDistance() {
-        if (currentBestAlignTarget != null) {
-            var targetPose = currentBestAlignTarget.getBestCameraToTarget();
-            var targetDist = targetPose.getTranslation().getNorm();
+    //         // targetYaw is the offset angle from camera-forward to the target
+    //         var targetYaw = currentBestAlignTarget.getYaw();
 
-            return OptionalDouble.of(targetDist);
-        }
-        return OptionalDouble.empty();
-    }
+    //         // Now find the "pointing angle of the target" in the reference frame
+    //         // of the robot. If you drew a ray from the target in space this would be
+    //         // the "center line" the robot wants to reach laterally.
 
-    
-    
+    //         // Note: this rotation value is a bit counter-intuitive. A Z-axis rotation of 0
+    //         // actually means the April tag is pointed in the same direction as the camera
+    //         var targetPointing = targetPose.getRotation().getZ();
+    //         // We want an angle about 0 when the tag is facing us so shift by Pi
+    //         // and then unroll.
+    //         targetPointing += Math.PI;
+    //         if (targetPointing > Math.PI) {
+    //             targetPointing -= 2 * Math.PI;
+    //         } else if (targetPointing < -Math.PI) {
+    //             targetPointing += 2 * Math.PI;
+    //         }
+    //         // Now combine the 2 angles to get the total angle between the robot and
+    //         // this center-line.
+    //         var combinedAngle = Math.toRadians(targetYaw) - targetPointing;
+
+    //         var targetDist = targetPose.getTranslation().getNorm();
+
+    //         // Finally, the lateral distance can be found by trig:
+    //         // Sin(angle) = Lateral / Hypotenuse
+    //         // Lateral = Hypotenuse * Sin(combined angle)
+    //         var lateralDist = Math.sin(combinedAngle) * targetDist;
+
+    //         return OptionalDouble.of(lateralDist);
+    //     }
+    //     return OptionalDouble.empty();
+    // }
+
+    // public OptionalDouble getTargetDistance() {
+    //     if (currentBestAlignTarget != null) {
+    //         var targetPose = currentBestAlignTarget.getBestCameraToTarget();
+    //         var targetDist = targetPose.getTranslation().getNorm();
+
+    //         return OptionalDouble.of(targetDist);
+    //     }
+    //     return OptionalDouble.empty();
+    // }
 
     private void advantageKitLogging() {
         if (robotToCamera != null) {
@@ -507,12 +451,11 @@ public class Vision extends SubsystemBase {
             Logger.recordOutput("vision/currentBestFiducial", currentBestTarget.getFiducialId());
             Logger.recordOutput("vision/bestCameraToTarget", currentBestTarget.getBestCameraToTarget());
         }
-        if (currentBestAlignTarget != null) {
-            Logger.recordOutput("vision/target/RotOffset", getTargetRotOffSet().getAsDouble());
-            Logger.recordOutput("vision/target/LateralOffset", getTargetLateralOffSet().getAsDouble());
-            Logger.recordOutput("vision/target/Distance", getTargetDistance().getAsDouble());
-        }
-
+        // if (currentBestAlignTarget != null) {
+        //     Logger.recordOutput("vision/target/RotOffset", getTargetRotOffSet().getAsDouble());
+        //     Logger.recordOutput("vision/target/LateralOffset", getTargetLateralOffSet().getAsDouble());
+        //     Logger.recordOutput("vision/target/Distance", getTargetDistance().getAsDouble());
+        // }
 
         Logger.recordOutput("vision/targetAlignSet", targetAlignSet.toString());
         Logger.recordOutput("vision/activeAlignTargetStr", activeAlignTargetId.toString());
@@ -560,24 +503,27 @@ public class Vision extends SubsystemBase {
         return target.getPitch();
     }
 
+
+
+
     // public boolean noteIsVisible() {
-    //     return this.noteDetected;
+    // return this.noteDetected;
     // }
 
     // public boolean isAligningWithNote() {
-    //     return aligningWithNote;
+    // return aligningWithNote;
     // }
 
     // public double getNoteDistanceFromCenter() {
-    //     // tell how many pixels the note is from the center of the screen.
-    //     return this.noteDistanceFromCenter;
+    // // tell how many pixels the note is from the center of the screen.
+    // return this.noteDistanceFromCenter;
     // }
 
     // public double getNoteHeight() {
-    //     return this.noteHeight;
+    // return this.noteHeight;
     // }
 
     // public double getNoteWidth() {
-    //     return this.noteWidth;
+    // return this.noteWidth;
     // }
 }

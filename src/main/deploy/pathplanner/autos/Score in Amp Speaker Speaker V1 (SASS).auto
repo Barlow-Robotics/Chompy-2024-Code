@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.490784250087019,
-      "y": 7.039008480794739
+      "x": 0.514538001298225,
+      "y": 7.098630396334866
     },
-    "rotation": 90.05134382948182
+    "rotation": 90.43225195707642
   },
   "command": {
     "type": "sequential",
@@ -16,15 +16,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "SetShooterMountPositionAmp"
+                  "pathName": "Start to Amp"
                 }
               },
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Alliance Zone to Amp"
+                  "name": "SetShooterMountPositionAmp"
                 }
               }
             ]
@@ -54,9 +54,59 @@
           "data": {
             "commands": [
               {
+                "type": "named",
+                "data": {
+                  "name": "StopShooterIntake"
+                }
+              },
+              {
                 "type": "path",
                 "data": {
-                  "pathName": "Turn at Amp"
+                  "pathName": "Amp to Top Note to Speaker"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetShooterMountPositionSpeaker"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "StartShooterIntake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.75
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopShooterIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Speaker to Middle Note"
                 }
               },
               {
@@ -69,12 +119,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Amp to Center Left Up"
-          }
-        },
-        {
           "type": "race",
           "data": {
             "commands": [
@@ -94,9 +138,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Center Left to Speaker"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopShooterIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Stage to Speaker"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetShooterMountPositionSpeaker"
+                }
+              }
+            ]
           }
         },
         {
@@ -121,6 +184,6 @@
       ]
     }
   },
-  "folder": "Double Note",
+  "folder": "Triple Note",
   "choreoAuto": false
 }

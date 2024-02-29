@@ -214,7 +214,7 @@ public class Constants {
 
         public static final double IndexGearRatio = 1; // 1:1 ratio on Index per WK as of 2/15
 
-        public static final double IndexRPM = 500;
+        public static final double IndexRPM = 600;
 
         public static final double IndexKP = 0.25; 
         public static final double IndexKI = 0; 

@@ -18,7 +18,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Go to speaker from left"
+                  "pathName": "Left Start to Speaker"
                 }
               },
               {
@@ -74,7 +74,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Speaker to side-midpoint (SSM)"
+                  "pathName": "Speaker to Center Left"
                 }
               }
             ]
@@ -83,6 +83,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Single Note",
   "choreoAuto": false
 }

@@ -292,7 +292,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Speaker",
+  "folder": null,
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

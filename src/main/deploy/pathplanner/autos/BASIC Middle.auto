@@ -14,12 +14,12 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle Straight-Line Path"
+            "pathName": "Middle BASIC Path"
           }
         }
       ]
     }
   },
-  "folder": "Simple Autos",
+  "folder": "BASIC",
   "choreoAuto": false
 }

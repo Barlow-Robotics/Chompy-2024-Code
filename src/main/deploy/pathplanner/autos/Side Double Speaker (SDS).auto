@@ -24,7 +24,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Go to speaker from left"
+                  "pathName": "Left Start to Speaker"
                 }
               }
             ]
@@ -62,7 +62,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Turn in place"
+                  "pathName": "Turn at Speaker"
                 }
               }
             ]
@@ -81,7 +81,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Get First Speaker piece"
+                  "pathName": "Intake Left Note"
                 }
               }
             ]
@@ -100,7 +100,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Go to speaker from left"
+                  "pathName": "Left Start to Speaker"
                 }
               }
             ]
@@ -132,7 +132,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Speaker to side-midpoint (SSM)"
+                  "pathName": "Speaker to Center Left"
                 }
               },
               {
@@ -153,6 +153,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Double Note",
   "choreoAuto": false
 }

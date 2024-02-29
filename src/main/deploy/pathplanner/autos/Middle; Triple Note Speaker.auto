@@ -24,7 +24,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Mid-To-Speaker"
+                  "pathName": "Speaker to Alliance Area"
                 }
               }
             ]
@@ -62,7 +62,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Semi-Circle MidNote"
+                  "pathName": "Semi-Circle Middle Note"
                 }
               },
               {
@@ -81,7 +81,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Midnote-To-Score"
+                  "pathName": "Middle Note to Speaker"
                 }
               }
             ]
@@ -119,7 +119,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Move to note"
+                  "pathName": "Speaker to Center Mid Left"
                 }
               },
               {
@@ -140,6 +140,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Triple Note",
   "choreoAuto": false
 }

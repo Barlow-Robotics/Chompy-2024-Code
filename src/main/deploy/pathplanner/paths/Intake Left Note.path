@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.48,
-        "y": 6.916795430813084
+        "x": 2.37,
+        "y": 6.21
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.990435187537042,
-        "y": 6.823146266662905
+        "x": 2.7518129323220233,
+        "y": 6.733707042792432
       },
       "isLocked": false,
-      "linkedName": "amp to first note"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.84,
-        "y": 7.57
+        "x": 2.89698168889935,
+        "y": 7.035552752712025
       },
       "prevControl": {
-        "x": 1.7087605245580861,
-        "y": 6.9557279936782095
+        "x": 2.552412738702078,
+        "y": 6.448785151644809
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,12 +38,12 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 90.0,
+    "velocity": 0,
+    "rotation": 63.03428556712986,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Amp",
+  "folder": "Intake - Midnote",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

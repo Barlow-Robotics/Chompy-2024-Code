@@ -494,13 +494,69 @@ public class Vision extends SubsystemBase {
             // Walk the list of found AprilTags aside from the primary
             // to see if desired speaker center AprilTag is in the list
             List<PhotonTrackedTarget> targets = poseResult.getTargets();
+            target = null;
             for (var tempTarget : targets) {
                 if ((tempTarget.getFiducialId() == VisionConstants.RedSpeakerCenterAprilTagID) ||
                         tempTarget.getFiducialId() == VisionConstants.BlueSpeakerCenterAprilTagID)
+                {
                     target = tempTarget;
+                    break;
+                }
             }
         }
-        return target.getPitch();
+        if (target != null){
+            return target.getPitch();
+        }
+        else {
+            return(VisionConstants.InvalidAngle);
+        }
+    }
+
+    public double getSpeakerTargetDistance()
+    {
+        var poseResult = getLatestPoseResult();
+        if (!poseResult.hasTargets())
+            return (VisionConstants.NoTargetDistance);
+    
+        var target = poseResult.getBestTarget();
+        int targetAprilTagID = target.getFiducialId();
+    
+        // check that target is the Speaker's center AprilTag
+        // Does this just duplicate the poseResults.hasTargets() test above???
+        if (targetAprilTagID == VisionConstants.NullAprilTagID) {
+            // Vision has no target acquired
+            return (VisionConstants.NoTargetDistance);
+        }
+
+        // If the primary target is not a speaker center AprilTag...
+        target = null;
+        if (targetAprilTagID != VisionConstants.RedSpeakerCenterAprilTagID
+                && targetAprilTagID != VisionConstants.BlueSpeakerCenterAprilTagID) 
+        {
+            // Walk the list of found AprilTags aside from the primary
+            // to see if desired speaker center AprilTag is in the list
+            List<PhotonTrackedTarget> targets = poseResult.getTargets();
+            for (var tempTarget : targets) {
+                if ((tempTarget.getFiducialId() == VisionConstants.RedSpeakerCenterAprilTagID) ||
+                        tempTarget.getFiducialId() == VisionConstants.BlueSpeakerCenterAprilTagID)
+                {
+                    target = tempTarget;
+                    break;
+                }
+            }
+        }
+    
+        if (target != null)
+            // Is the X value is the distance to the AprilTag?
+            // Or do I need to compute it as the length of the hypotenuse
+            //	where X and Y are the sides of the right angle
+            // Or, maybe we can use getTargetDistance() to find this?
+            //	==> This method doesn't find the Speaker AprilTag we need.
+            //	==>  It just uses the target that is currently "best aligned"
+            return(target.getBestCameraToTarget().getX());
+        else
+            // What should we return when there is no target?
+            return(VisionConstants.NoTargetDistance);
     }
 
 

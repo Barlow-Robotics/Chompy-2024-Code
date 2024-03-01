@@ -367,6 +367,7 @@ public class Constants {
         public static final int BlueSpeakerCenterAprilTagID = 7;
         public static final int NullAprilTagID = -1;
         public static final double InvalidAngle = -361; 
+        public static final double NoTargetDistance = -1;
 
     }
 

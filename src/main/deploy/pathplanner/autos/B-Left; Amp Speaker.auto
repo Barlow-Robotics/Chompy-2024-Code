@@ -62,7 +62,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "StartShooterIntake"
+                  "name": "StopShooterIntake"
                 }
               }
             ]

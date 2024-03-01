@@ -37,21 +37,22 @@ public class SetShooterMountPosition extends Command {
         switch (desiredState) {
             case MovingToPosition: // LT added to remove a warning. assuming not doing anything here.
                 break;
+            // case Speaker:
+            // desiredAngle = getSpeakerShooterAngle();
+            // if (desiredAngle == VisionConstants.InvalidAngle) // couldn't find speaker AprilTag
+            //     desiredAngle = ShooterMountConstants.SpeakerAngle;
+            // desiredHeight = ShooterMountConstants.SpeakerHeight;
+            // desiredTarget = TargetToAlign.Speaker;
+
+            // break;
+
+            // old code - before setting a distance-based angle to speaker
             case Speaker:
-                desiredAngle = getSpeakerShooterAngle();
-                if (desiredAngle == VisionConstants.InvalidAngle) // couldn't find speaker AprilTag
-                    desiredAngle = ShooterMountConstants.SpeakerAngle;
+                desiredAngle = ShooterMountConstants.SpeakerAngle;
                 desiredHeight = ShooterMountConstants.SpeakerHeight;
                 desiredTarget = TargetToAlign.Speaker;
                 break;
-            /*
-             * old code - before setting a distance-based angle to speaker
-             * case Speaker:
-             * desiredAngle = ShooterMountConstants.SpeakerAngle;
-             * desiredHeight = ShooterMountConstants.SpeakerHeight;
-             * desiredTarget = TargetToAlign.Speaker;
-             * break;
-             */
+
             case Amp:
                 desiredAngle = ShooterMountConstants.AmpAngle;
                 desiredHeight = ShooterMountConstants.AmpHeight;
@@ -82,7 +83,7 @@ public class SetShooterMountPosition extends Command {
 
     @Override
     public void execute() {
-        if(shooterMountSub.getShooterMountStateAsString() != "ClimbAbort") {
+        if (shooterMountSub.getShooterMountStateAsString() != "ClimbAbort") {
             shooterMountSub.setAngle(desiredAngle);
             shooterMountSub.setHeightInches(desiredHeight);
             if (desiredTarget != null) {
@@ -97,7 +98,7 @@ public class SetShooterMountPosition extends Command {
 
     @Override
     public boolean isFinished() {
-        if(shooterMountSub.getShooterMountStateAsString() != "ClimbAbort") {
+        if (shooterMountSub.getShooterMountStateAsString() != "ClimbAbort") {
             if (shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
                 shooterMountSub.setShooterPosState(desiredState); // LMT CHANGE? See comment below
                 return true;
@@ -105,11 +106,11 @@ public class SetShooterMountPosition extends Command {
             return false;
         } else {
             return true;
-        }// LMT - CHANGE this to true, or based on another condition?
-        // As you drive toward the speaker, you want to keep calculating and setting new
-        // angles until they shoot
-        // or maybe until they let go of the (speaker or action) button. Desired
-        // behavior TBD
+        } // LMT - CHANGE this to true, or based on another condition?
+          // As you drive toward the speaker, you want to keep calculating and setting new
+          // angles until they shoot
+          // or maybe until they let go of the (speaker or action) button. Desired
+          // behavior TBD
     }
 
     public double getSpeakerShooterAngle() {
@@ -117,15 +118,18 @@ public class SetShooterMountPosition extends Command {
         double apriltagPitch = visionSub.getSpeakerAprilTagPitch();
         if (apriltagPitch == VisionConstants.InvalidAngle)
             return VisionConstants.InvalidAngle;
-        else if (apriltagPitch == 0){					// Camera at height of Speaker's AprilTag
-            double horizDistToTarget = visionSub.getSpeakerTargetDistance();  // What if this returns VisionConstants.NoTargetDistance???
-            if (horizDistToTarget != VisionConstants.NoTargetDistance){
-                return(Math.atan2(ShooterMountConstants.MidSpeakerHeight-ShooterMountConstants.ElevatorHeightUnextended, horizDistToTarget));  // Make sure X,Y units match
+        else if (apriltagPitch == 0) { // Camera at height of Speaker's AprilTag
+            double horizDistToTarget = visionSub.getSpeakerTargetDistance(); // What if this returns
+                                                                             // VisionConstants.NoTargetDistance???
+            if (horizDistToTarget != VisionConstants.NoTargetDistance) {
+                return (Math.atan2(
+                        ShooterMountConstants.MidSpeakerHeight - ShooterMountConstants.ElevatorHeightUnextended,
+                        horizDistToTarget)); // Make sure X,Y units match
             }
             // Need a return value if, for some reason, getSpeakerTargetDistance()
             // returns NoTargetDistance
             // Maybe return 0 to keep the shooter horizontal?
-            //  Or the initial speaker angle?
+            // Or the initial speaker angle?
         }
         // Angle to speaker = Arctan((SpkrHt - (ElevHtUnext)) / ((ATHt-CamHt) /
         // tan(ATpitch)) )

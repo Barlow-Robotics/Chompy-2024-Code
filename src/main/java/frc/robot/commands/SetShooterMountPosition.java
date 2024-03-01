@@ -117,14 +117,23 @@ public class SetShooterMountPosition extends Command {
         double apriltagPitch = visionSub.getSpeakerAprilTagPitch();
         if (apriltagPitch == VisionConstants.InvalidAngle)
             return VisionConstants.InvalidAngle;
-
+        else if (apriltagPitch == 0){					// Camera at height of Speaker's AprilTag
+            double horizDistToTarget = visionSub.getSpeakerTargetDistance();  // What if this returns VisionConstants.NoTargetDistance???
+            if (horizDistToTarget != VisionConstants.NoTargetDistance){
+                return(Math.atan2(ShooterMountConstants.MidSpeakerHeight-ShooterMountConstants.ElevatorHeightUnextended, horizDistToTarget));  // Make sure X,Y units match
+            }
+            // Need a return value if, for some reason, getSpeakerTargetDistance()
+            // returns NoTargetDistance
+            // Maybe return 0 to keep the shooter horizontal?
+            //  Or the initial speaker angle?
+        }
         // Angle to speaker = Arctan((SpkrHt - (ElevHtUnext)) / ((ATHt-CamHt) /
         // tan(ATpitch)) )
 
         // LMT - CHANGE? This should be properly considering 0 angle, but double check.
         // Also - change to atan2 or add math to check for div by 0 error
-        return (Math.atan((ShooterMountConstants.MidSpeakerHeight - ShooterMountConstants.ElevatorHeightUnextended)
-                / ((ShooterMountConstants.SpeakerAprilTagHeight - ShooterMountConstants.CameraMountHeight) /
+        return (Math.atan2((ShooterMountConstants.MidSpeakerHeight - ShooterMountConstants.ElevatorHeightUnextended),
+                ((ShooterMountConstants.SpeakerAprilTagHeight - ShooterMountConstants.CameraMountHeight) /
                         Math.tan(apriltagPitch))));
     }
 

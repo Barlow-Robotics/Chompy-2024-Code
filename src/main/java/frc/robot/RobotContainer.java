@@ -62,19 +62,13 @@ public class RobotContainer {
     public final SetShooterMountPosition setShooterPosFloorCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.FloorIntake, visionSub);
 
-    private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.Climb, visionSub);
-    private final SetShooterMountPosition climbAbortCmd = new SetShooterMountPosition(shooterMountSub, ShooterMountState.ClimbAbort, visionSub);
-    private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub, shooterMountSub);
+    private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterMountSub,
+            ShooterMountState.Climb, visionSub);
+    private final SetShooterMountPosition climbAbortCmd = new SetShooterMountPosition(shooterMountSub,
+            ShooterMountState.ClimbAbort, visionSub);
+    private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub,
+            shooterMountSub);
     private final StopShooterIntake stopShooterIntakeCmd = new StopShooterIntake(shooterSub, floorIntakeSub);
-
-    // private final Climb climbCmd = new Climb(shooterPositionSub);
-    // LT Climb
-    // private final SetShooterMountPosition prepareToClimbCmd = new
-    // SetShooterMountPosition(shooterMountSub,
-    // ShooterMountState.PreClimb);
-    // private final SetShooterMountPosition climbCmd = new
-    // SetShooterMountPosition(shooterMountSub,
-    // ShooterMountState.Climb);
 
     /* CONTROLLERS */
 
@@ -83,45 +77,45 @@ public class RobotContainer {
 
     /* BUTTONS */
 
-    private Trigger moveToSpeakerButton;
-    private Trigger moveToAmpButton;
-    private Trigger moveToSourceButton;
-    private Trigger moveToFloorButton;
-    private Trigger climbButton;
-    private Trigger climbAbortButton;
+    private Trigger moveToSpeakerButton; // button x
+    private Trigger moveToAmpButton; // button y
+    private Trigger moveToSourceButton; // left stick 
+    private Trigger moveToFloorButton; // left bumper 
+    private Trigger climbButton; // button a 
+    private Trigger climbAbortButton; // right stick 
+    private Trigger toggleLEDsButton; // hamburger  
     private Trigger LEDHumanSourceButton;
     private Trigger LEDHumanFloorButton;
-    private Trigger shootIntakeButtonDriver;
-    private Trigger shootIntakeButtonOperator;
-    private Trigger autoAlignButton;
+    private Trigger shootIntakeButtonDriver; // trigger
+    private Trigger autoAlignButton; // button on stick
 
     /* AUTO */
 
     private SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        configurePathPlanner();   
+        configurePathPlanner();
         configureButtonBindings();
         driveSub.setDefaultCommand(
                 // The left stick controls translation of the robot.
                 // Turning is controlled by the X axis of the right stick.
                 // new DriveRobot(
-                //         driveSub,
-                //         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
-                //         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
-                //         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
-                //         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
-                //         true));
+                // driveSub,
+                // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
+                // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
+                // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
+                // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
+                // true));
 
-                        new DriveRobotWithAlign(
-                                        driveSub,
-                                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
-                                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
-                                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
-                                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
-                                        true,
-                                        visionSub,
-                                        () -> autoAlignButton.getAsBoolean()));
+                new DriveRobotWithAlign(
+                        driveSub,
+                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
+                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
+                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
+                        () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
+                        true,
+                        visionSub,
+                        () -> autoAlignButton.getAsBoolean()));
     }
 
     private void configureButtonBindings() {
@@ -131,44 +125,33 @@ public class RobotContainer {
 
         /***************** AUTO ALIGN *****************/
 
-        // autoAlignButtonOperator = new JoystickButton(operatorController, XboxControllerConstants.LeftTrigger);
-        // autoAlignButtonOperator.onTrue(autoAlignCmd).onFalse();
-
         autoAlignButton = new JoystickButton(driverController, LogitechExtreme3DConstants.ButtonStick);
-        // autoAlignButton.onTrue(autoAlignCmd).onFalse();
 
-        /******************** SET SHOOTER POSITION ********************/
+        /******************** SET SHOOTER MOUNT POSITION ********************/
 
-        moveToSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.RightBumper); // middle
+        moveToSpeakerButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX); 
         moveToSpeakerButton.onTrue(setShooterPosSpeakerCmd);
 
-        moveToAmpButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper); // top
+        moveToAmpButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY); 
         moveToAmpButton.onTrue(setShooterPosAmpCmd);
 
-        moveToSourceButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY); // claw
+        moveToSourceButton = new JoystickButton(operatorController, XboxControllerConstants.LeftStick); 
         moveToSourceButton.onTrue(setShooterPosSourceIntakeCmd);
 
-        moveToFloorButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick); // station
+        moveToFloorButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper); 
         moveToFloorButton.onTrue(setShooterPosFloorCmd);
 
-        // moveToTrapButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonB); // no button on
-        //                                                                                             // mantis controller
-        // moveToTrapButton.onTrue(setShooterPosTrapCmd);
-
         /******************** SHOOTER ********************/
-
-        // shootIntakeButtonOperator = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home
-        // shootIntakeButtonOperator.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
 
         shootIntakeButtonDriver = new JoystickButton(driverController, LogitechExtreme3DConstants.Trigger);
         shootIntakeButtonDriver.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
 
         /******************** CLIMB ********************/
 
-        climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonX);
+        climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA);
         climbButton.onTrue(climbCmd);
 
-        climbAbortButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA);
+        climbAbortButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick);
         climbAbortButton.onTrue(climbAbortCmd);
 
         /********************* LED BINDINGS ************************************* */
@@ -180,27 +163,14 @@ public class RobotContainer {
         LEDHumanFloorButton = new JoystickButton(operatorController, XboxControllerConstants.LeftTrigger);
         LEDHumanFloorButton.onTrue(new InstantCommand(() -> underglowSub.LEDHumanFloor = true))
                 .onFalse(new InstantCommand(() -> underglowSub.LEDHumanFloor = false));
-        // shootIntakeButtonOperator = new JoystickButton(operatorController, XboxControllerConstants.ButtonA); // home
-        shootIntakeButtonOperator = new JoystickButton(driverController, LogitechExtreme3DConstants.Trigger);
-        shootIntakeButtonOperator.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
 
-        /******************** CLIMB ********************/
-
-        // prepareToClimbButton = new JoystickButton(operatorController,
-        // XboxControllerConstants.ButtonX); // no button on mantis controller. CHANGE
-        // button binding
-        // prepareToClimbButton.onTrue(prepareToClimbCmd);
-
-        // climbButton = new JoystickButton(operatorController,
-        // XboxControllerConstants.ButtonX); // no button on mantis controller. CHANGE
-        // button binding
-        // climbButton.onTrue(climbCmd);
+        toggleLEDsButton = new JoystickButton(operatorController, XboxControllerConstants.HamburgerButton);
     }
 
     private void configurePathPlanner() {
         /* PATHPLANNER INIT */
 
-         AutoBuilder.configureHolonomic(
+        AutoBuilder.configureHolonomic(
                 driveSub::getPoseWithoutVision, // Robot pose supplier
                 driveSub::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
                 driveSub::getSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
@@ -227,13 +197,12 @@ public class RobotContainer {
         NamedCommands.registerCommand("SetShooterMountPositionSpeaker", setShooterPosSpeakerCmd);
         NamedCommands.registerCommand("SetShooterMountPositionFloor", setShooterPosFloorCmd);
 
-
         /* SMARTDASHBOARD */
 
-        autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("Selected Auto", autoChooser);
-        autoChooser.setDefaultOption("BASIC Right", new PathPlannerAuto("BASIC Right"));
-        Shuffleboard.getTab("Match").add("Path Name", autoChooser);
+        // autoChooser = AutoBuilder.buildAutoChooser();
+        // SmartDashboard.putData("Selected Auto", autoChooser);
+        // autoChooser.setDefaultOption("D-BASIC Right", new PathPlannerAuto("D-BASIC Right"));
+        // Shuffleboard.getTab("Match").add("Path Name", autoChooser);
 
         /* LOGGING */
 
@@ -253,6 +222,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
+        // return autoChooser.getSelected();
+        return null;
     }
 }

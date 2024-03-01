@@ -159,25 +159,6 @@
                 "data": {
                   "pathName": "Amp to Center Left Down"
                 }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "SetShooterMountPositionFloor"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "StartShooterIntake"
-                      }
-                    }
-                  ]
-                }
               }
             ]
           }

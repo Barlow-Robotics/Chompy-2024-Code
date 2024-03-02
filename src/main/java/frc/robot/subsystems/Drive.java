@@ -80,24 +80,22 @@ public class Drive extends SubsystemBase {
 
     private SwerveModulePosition[] previousPositions = new SwerveModulePosition[4];
 
-    private final Vision visionSub ;
+    private final Vision visionSub;
 
-
-  private final AprilTagFieldLayout aprilTagFieldLayout;
-
+    private final AprilTagFieldLayout aprilTagFieldLayout;
 
     public Drive(Vision visionSub) {
 
         navX = new AHRS(Port.kMXP);
         // new Thread(() -> {
-        //     try {
-        //         Thread.sleep(1000);
-        //         zeroHeading();
-        //     } catch (Exception e) {
-        //     }
+        // try {
+        // Thread.sleep(1000);
+        // zeroHeading();
+        // } catch (Exception e) {
+        // }
         // }).start();
 
-        this.visionSub = visionSub ;
+        this.visionSub = visionSub;
 
         odometry = new SwerveDriveOdometry(
                 DriveConstants.kinematics,
@@ -109,7 +107,8 @@ public class Drive extends SubsystemBase {
                         backRight.getPosition()
                 });
 
-        // wpk The pose estimator functionality was addapted from the SwerveDrivePoseEstimator example provided
+        // wpk The pose estimator functionality was addapted from the
+        // SwerveDrivePoseEstimator example provided
         // with WPILib
         poseEstimator = new SwerveDrivePoseEstimator(
                 DriveConstants.kinematics,
@@ -134,7 +133,8 @@ public class Drive extends SubsystemBase {
             var alliance = DriverStation.getAlliance();
             if (alliance.isPresent()) {
                 layout.setOrigin(
-                        DriverStation.getAlliance().get() == Alliance.Blue ? OriginPosition.kBlueAllianceWallRightSide
+                        DriverStation.getAlliance().get() == Alliance.Blue
+                                ? OriginPosition.kBlueAllianceWallRightSide
                                 : OriginPosition.kRedAllianceWallRightSide);
             } else {
                 // default this for now
@@ -160,7 +160,6 @@ public class Drive extends SubsystemBase {
                         backRight.getPosition()
                 });
 
-
         poseEstimator.update(
                 navX.getRotation2d(),
                 new SwerveModulePosition[] {
@@ -170,13 +169,13 @@ public class Drive extends SubsystemBase {
                         backRight.getPosition()
                 });
 
-
-
-        // wpk adapted from code in https://github.com/STMARobotics/frc-7028-2023/blob/5916bb426b97f10e17d9dfd5ec6c3b6fda49a7ce/src/main/java/frc/robot/subsystems/DrivetrainSubsystem.java
-        // Not sure I like all the vision specifics here. Consider moving to visionSub later if we have time.
+        // wpk adapted from code in
+        // https://github.com/STMARobotics/frc-7028-2023/blob/5916bb426b97f10e17d9dfd5ec6c3b6fda49a7ce/src/main/java/frc/robot/subsystems/DrivetrainSubsystem.java
+        // Not sure I like all the vision specifics here. Consider moving to visionSub
+        // later if we have time.
         var poseResult = visionSub.getLatestPoseResult();
-        
         if (poseResult.hasTargets()) {
+
             var target = poseResult.getBestTarget();
             var imageCaptureTime = poseResult.getTimestampSeconds();
             var camToTargetTrans = poseResult.getBestTarget().getBestCameraToTarget();
@@ -186,15 +185,13 @@ public class Drive extends SubsystemBase {
             // it failed to load
             Optional<Pose3d> tagPose = aprilTagFieldLayout == null ? Optional.empty()
                     : aprilTagFieldLayout.getTagPose(fiducialId);
-            if (target.getPoseAmbiguity() <= .2 && fiducialId >= 0 && tagPose.isPresent()) {
-                var targetPose = tagPose.get();
-                Transform3d camToTarget = target.getBestCameraToTarget();
-                Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
 
-                var visionMeasurement = camPose.transformBy(Constants.VisionConstants.PoseCameraToRobot);
-                poseEstimator.addVisionMeasurement(visionMeasurement.toPose2d(), imageCaptureTime);
-                Logger.recordOutput("Drive/PhotonVisionPoseEstimate", visionMeasurement.toPose2d());
+            if (tagPose.isPresent()) {
+                var camPose = tagPose.get().transformBy(camToTargetTrans.inverse());
+                var robotPose = camPose.transformBy(Constants.VisionConstants.PoseCameraToRobot).toPose2d();
+                poseEstimator.addVisionMeasurement(robotPose, imageCaptureTime);
             }
+            
         }
 
         Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
@@ -226,12 +223,11 @@ public class Drive extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        return poseEstimator.getEstimatedPosition() ;
+        return poseEstimator.getEstimatedPosition();
     }
 
-
     // public Pose2d getPoseWithVision() {
-    //     return poseEstimator.getEstimatedPosition();
+    // return poseEstimator.getEstimatedPosition();
     // }
 
     public void resetOdometry(Pose2d pose) {
@@ -256,20 +252,22 @@ public class Drive extends SubsystemBase {
                 pose);
     }
 
-    // public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    //     var swerveModuleDesiredStates = DriveConstants.kinematics.toSwerveModuleStates(
-    //             fieldRelative
-    //                     ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
-    //                             navX.getRotation2d())
-    //                     : new ChassisSpeeds(xSpeed, ySpeed, rot));
-    //     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleDesiredStates,
-    //             DriveConstants.MaxDriveableVelocity);
-    //     frontLeft.setDesiredState(swerveModuleDesiredStates[0]);
-    //     frontRight.setDesiredState(swerveModuleDesiredStates[1]);
-    //     backLeft.setDesiredState(swerveModuleDesiredStates[2]);
-    //     backRight.setDesiredState(swerveModuleDesiredStates[3]);
+    // public void drive(double xSpeed, double ySpeed, double rot, boolean
+    // fieldRelative) {
+    // var swerveModuleDesiredStates =
+    // DriveConstants.kinematics.toSwerveModuleStates(
+    // fieldRelative
+    // ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
+    // navX.getRotation2d())
+    // : new ChassisSpeeds(xSpeed, ySpeed, rot));
+    // SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleDesiredStates,
+    // DriveConstants.MaxDriveableVelocity);
+    // frontLeft.setDesiredState(swerveModuleDesiredStates[0]);
+    // frontRight.setDesiredState(swerveModuleDesiredStates[1]);
+    // backLeft.setDesiredState(swerveModuleDesiredStates[2]);
+    // backRight.setDesiredState(swerveModuleDesiredStates[3]);
 
-    //     Logger.recordOutput("Drive/StatesDesired", swerveModuleDesiredStates);
+    // Logger.recordOutput("Drive/StatesDesired", swerveModuleDesiredStates);
 
     // }
 
@@ -295,7 +293,8 @@ public class Drive extends SubsystemBase {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds,
                 DriveConstants.TimestepDurationInSeconds);
         SwerveModuleState[] targetStates = DriveConstants.kinematics.toSwerveModuleStates(targetSpeeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, Constants.DriveConstants.MaxDriveableVelocity);
+        SwerveDriveKinematics.desaturateWheelSpeeds(targetStates,
+                Constants.DriveConstants.MaxDriveableVelocity);
         frontLeft.setDesiredState(targetStates[0]);
         frontRight.setDesiredState(targetStates[1]);
         backLeft.setDesiredState(targetStates[2]);
@@ -303,7 +302,8 @@ public class Drive extends SubsystemBase {
     }
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.DriveConstants.MaxDriveableVelocity);
+        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates,
+                Constants.DriveConstants.MaxDriveableVelocity);
         frontLeft.setDesiredState(desiredStates[0]);
         frontRight.setDesiredState(desiredStates[1]);
         backLeft.setDesiredState(desiredStates[2]);

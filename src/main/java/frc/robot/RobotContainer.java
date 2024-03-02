@@ -199,10 +199,10 @@ public class RobotContainer {
 
         /* SMARTDASHBOARD */
 
-        // autoChooser = AutoBuilder.buildAutoChooser();
-        // SmartDashboard.putData("Selected Auto", autoChooser);
-        // autoChooser.setDefaultOption("D-BASIC Right", new PathPlannerAuto("D-BASIC Right"));
-        // Shuffleboard.getTab("Match").add("Path Name", autoChooser);
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Selected Auto", autoChooser);
+        autoChooser.setDefaultOption("D-BASIC Right", new PathPlannerAuto("D-BASIC Right"));
+        Shuffleboard.getTab("Match").add("Path Name", autoChooser);
 
         /* LOGGING */
 
@@ -222,7 +222,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // return autoChooser.getSelected();
-        return null;
+        return autoChooser.getSelected();
+        // return null;
     }
 }

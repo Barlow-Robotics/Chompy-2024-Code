@@ -33,18 +33,21 @@ public class StartShooterIntake extends Command {
     public void initialize() {
         if (shooterMountSub.getShooterMountState() == ShooterMountState.SourceIntake ||
                 shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake || 
-                shooterMountSub.getAngleCANCoderDegrees() < (FloorIntakeAngleWithTolerance)) {
+                shooterMountSub.getAngleCANCoderDegrees() < (FloorIntakeAngleWithTolerance)) { // we're intaking
             desiredIndexRPM = -ShooterConstants.IndexRPM;
             desiredLeftFlywheelMotorRPM = ShooterConstants.LeftIntakeRPM;
             desiredRightFlywheelMotorRPM = ShooterConstants.RightIntakeRPM;
-        } else {
+        } else { // we're shooting 
             desiredIndexRPM = ShooterConstants.IndexRPM;
             if (shooterMountSub.getShooterMountState() == ShooterMountState.Amp) {
                 desiredLeftFlywheelMotorRPM = ShooterConstants.LeftAmpRPM;
                 desiredRightFlywheelMotorRPM = ShooterConstants.RightAmpRPM;
-            } else {
+            } else if (shooterMountSub.getShooterMountState() == ShooterMountState.Speaker) {
                 desiredLeftFlywheelMotorRPM = ShooterConstants.LeftSpeakerRPM;
                 desiredRightFlywheelMotorRPM = ShooterConstants.RightSpeakerRPM;
+            } else {
+                desiredLeftFlywheelMotorRPM = ShooterConstants.LeftFerryRPM;
+                desiredRightFlywheelMotorRPM = ShooterConstants.RightFerryRPM;
             }
         }
     }

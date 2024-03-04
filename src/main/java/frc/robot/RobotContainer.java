@@ -61,13 +61,16 @@ public class RobotContainer {
             ShooterMountState.Amp, visionSub);
     private final SetShooterMountPosition setShooterPosSourceIntakeCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.SourceIntake, visionSub);
-    public final SetShooterMountPosition setShooterPosFloorCmd = new SetShooterMountPosition(shooterMountSub,
+    private final SetShooterMountPosition setShooterPosFloorCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.FloorIntake, visionSub);
+    private final SetShooterMountPosition setShooterPosFerryCmd = new SetShooterMountPosition(shooterMountSub, 
+            ShooterMountState.Ferry, visionSub);
 
     private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.Climb, visionSub);
     private final SetShooterMountPosition climbAbortCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.ClimbAbort, visionSub);
+
     private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub,
             shooterMountSub);
     private final StopShooterIntake stopShooterIntakeCmd = new StopShooterIntake(shooterSub, floorIntakeSub);
@@ -84,18 +87,19 @@ public class RobotContainer {
     private Trigger moveToAmpButton; // button y
     private Trigger moveToSourceButton; // left stick
     private Trigger moveToFloorButton; // left bumper
+    private Trigger moveToFerryButton; // hamburger
 
     private Trigger climbButton; // button a
     private Trigger climbAbortButton; // right stick
 
-    private Trigger toggleLEDsButton; // hamburger
-    private Trigger LEDHumanSourceButton;
-    private Trigger LEDHumanFloorButton;
+    // private Trigger toggleLEDsButton; // hamburger
+    // private Trigger LEDHumanSourceButton;
+    // private Trigger LEDHumanFloorButton;
 
     private Trigger shootIntakeButton; // trigger
     private Trigger reverseFloorIntakeButton; // driver button 7
 
-    private Trigger autoAlignButton; // driver button on stick 
+    private Trigger autoAlignButton; // driver button on stick
     private Trigger restartGyroButton; // driver button 9
 
     /* AUTO */
@@ -125,9 +129,6 @@ public class RobotContainer {
                         true,
                         visionSub,
                         () -> autoAlignButton.getAsBoolean()));
-
-        // SmartDashboard.putData("Shooter Mount Position", shooterMountSub.getShooterMountStateAsString());
-
     }
 
     private void configureButtonBindings() {
@@ -156,6 +157,9 @@ public class RobotContainer {
         moveToFloorButton = new JoystickButton(operatorController, XboxControllerConstants.LeftBumper);
         moveToFloorButton.onTrue(setShooterPosFloorCmd);
 
+        moveToFerryButton = new JoystickButton(operatorController, XboxControllerConstants.HamburgerButton);
+        moveToFerryButton.onTrue(setShooterPosFerryCmd);
+
         /******************** SHOOTER & INTAKE ********************/
 
         shootIntakeButton = new JoystickButton(driverController, LogitechExtreme3DConstants.Trigger);
@@ -174,15 +178,19 @@ public class RobotContainer {
 
         /********************* LED BINDINGS ************************************* */
 
-        // LEDHumanSourceButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonY);
-        // LEDHumanSourceButton.onTrue(new InstantCommand(() -> underglowSub.LEDHumanSource = true))
-        //         .onFalse(new InstantCommand(() -> underglowSub.LEDHumanSource = false));
+        // LEDHumanSourceButton = new JoystickButton(operatorController,
+        // XboxControllerConstants.ButtonY);
+        // LEDHumanSourceButton.onTrue(new InstantCommand(() ->
+        // underglowSub.LEDHumanSource = true))
+        // .onFalse(new InstantCommand(() -> underglowSub.LEDHumanSource = false));
 
-        // LEDHumanFloorButton = new JoystickButton(operatorController, XboxControllerConstants.LeftTrigger);
-        // LEDHumanFloorButton.onTrue(new InstantCommand(() -> underglowSub.LEDHumanFloor = true))
-        //         .onFalse(new InstantCommand(() -> underglowSub.LEDHumanFloor = false));
+        // LEDHumanFloorButton = new JoystickButton(operatorController,
+        // XboxControllerConstants.LeftTrigger);
+        // LEDHumanFloorButton.onTrue(new InstantCommand(() ->
+        // underglowSub.LEDHumanFloor = true))
+        // .onFalse(new InstantCommand(() -> underglowSub.LEDHumanFloor = false));
 
-        toggleLEDsButton = new JoystickButton(operatorController, XboxControllerConstants.HamburgerButton);
+        // toggleLEDsButton = new JoystickButton(operatorController, XboxControllerConstants.HamburgerButton);
     }
 
     private void configurePathPlanner() {

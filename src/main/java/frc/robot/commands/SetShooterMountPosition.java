@@ -26,6 +26,7 @@ public class SetShooterMountPosition extends Command {
     private double desiredAngle;
     private double desiredHeight;
     private TargetToAlign desiredTarget;
+    private String climbState = "PreClimb";
 
     public SetShooterMountPosition(ShooterMount shooterMountSub, ShooterMountState desiredState, Vision visionSub) {
         this.shooterMountSub = shooterMountSub;
@@ -72,14 +73,34 @@ public class SetShooterMountPosition extends Command {
                 desiredHeight = ShooterMountConstants.FloorIntakeHeight;
                 break;
             case Climb:
-                desiredAngle = ShooterMountConstants.TrapAngle;
-                desiredHeight = ShooterMountConstants.MaxHeightInches;
-                if (shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
+                if (climbState.equals("PreClimb")) {
+                    desiredHeight = ShooterMountConstants.ClimbHeight;
+                    if (shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
+                        climbState = "Climb";
+                        break;
+                    }
+                } else if (climbState.equals("Climb")) {
                     desiredHeight = ShooterMountConstants.StartingHeight;
+                    if (shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
+                        climbState = "Trap";
+                        break;
+                    }
+                } else if (climbState.equals("Trap")) {
+                    desiredAngle = ShooterMountConstants.TrapAngle;
+                    desiredHeight = ShooterMountConstants.TrapHeight;
+                    if (shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
+                        break;
+                    }
                 }
+                break;
             case ClimbAbort:
                 shooterMountSub.stopElevatorMotor();
                 shooterMountSub.stopAngleMotor();
+                break;
+            case Ferry:
+                desiredAngle = ShooterMountConstants.FerryAngle;
+                desiredHeight = ShooterMountConstants.FerryHeight;
+                break;
         }
         Logger.recordOutput("ShooterMount/Angle/DesiredAngle", desiredAngle);
         Logger.recordOutput("ShooterMount/Height/DesiredHeightInches", desiredHeight);
@@ -109,15 +130,11 @@ public class SetShooterMountPosition extends Command {
                 shooterMountSub.setShooterPosState(desiredState); // LMT CHANGE? See comment below
                 return true;
             }else{
-                return false ;
+                return false;
             }
         } else {
             return true;
-        } // LMT - CHANGE this to true, or based on another condition?
-          // As you drive toward the speaker, you want to keep calculating and setting new
-          // angles until they shoot
-          // or maybe until they let go of the (speaker or action) button. Desired
-          // behavior TBD
+        } 
     }
     
 

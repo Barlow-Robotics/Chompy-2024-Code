@@ -201,6 +201,9 @@ public class Constants {
         public static final double LeftTrapRPM = 250;
         public static final double RightTrapRPM = 250;
 
+        public static final double LeftFerryRPM = 1000;
+        public static final double RightFerryRPM = 1000;
+
         public static final double FlywheelLeftKP = 0.25; 
         public static final double FlywheelLeftKI = 0; 
         public static final double FlywheelLeftKD = 0; 
@@ -256,8 +259,12 @@ public class Constants {
         public static final double FloorIntakeAngle = MinAngleDegrees; 
         public static final double FloorIntakeHeight = StartingHeight; 
 
+        public static final double ClimbHeight = 46;
         public static final double TrapAngle = 0; // CHANGE
-        public static final double TrapHeight = 10; // CHANGE
+        public static final double TrapHeight = 46; // CHANGE
+
+        public static final double FerryAngle = -10;
+        public static final double FerryHeight = StartingHeight;
 
         /* ANGLE */
 
@@ -346,13 +353,13 @@ public class Constants {
         // wpk need to update these to be more exact.
         public static final Transform3d PoseCameraToRobot =
                 new Transform3d(
-                    new Translation3d(0.0, -Units.inchesToMeters(DriveConstants.TrackWidth/2), Units.inchesToMeters(23)), 
+                    new Translation3d(0.0, Units.inchesToMeters(DriveConstants.TrackWidth/2), Units.inchesToMeters(23)), 
                     new Rotation3d(0, Units.degreesToRadians(5), 0));
         public static final Transform3d RobotToPoseCamera = PoseCameraToRobot.inverse();
 
         public static final Transform3d TargetCamToRobot =
                 new Transform3d(
-                    new Translation3d(0.0, Units.inchesToMeters(DriveConstants.TrackWidth/2), Units.inchesToMeters(23)), 
+                    new Translation3d(0.0, -Units.inchesToMeters(DriveConstants.TrackWidth/2), Units.inchesToMeters(23)), 
                     new Rotation3d(0, Units.degreesToRadians(5), 0));
         public static final Transform3d RobotToTargetCam = TargetCamToRobot.inverse();
 

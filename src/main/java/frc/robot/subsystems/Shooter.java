@@ -84,6 +84,7 @@ public class Shooter extends SubsystemBase {
         double shooterLeftRPS = shooterLeftRPM / Constants.SecondsPerMinute;
         double shooterRightRPS = shooterRightRPM / Constants.SecondsPerMinute;
 
+        // we separate the two in the event that we wish to control them separately to modify the trajectory of the note 
         leftFlywheelMotor.setControl(voltageVelocity.withVelocity(shooterLeftRPS));
         rightFlywheelMotor.setControl(voltageVelocity.withVelocity(shooterRightRPS));
 

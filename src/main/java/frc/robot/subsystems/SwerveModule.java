@@ -104,13 +104,17 @@ public class SwerveModule {
             turnEncoder.setPosition(0.0, 0.1);
         }
 
-        turnPIDController = new ProfiledPIDController(1, 0, 0, new TrapezoidProfile.Constraints(
+        // turnPIDController = new ProfiledPIDController(1, 0, 0, new TrapezoidProfile.Constraints(
+        //         DriveConstants.ModuleMaxAngularVelocity, DriveConstants.ModuleMaxAngularAcceleration));
+
+        turnPIDController = new ProfiledPIDController(3, 0, 0, new TrapezoidProfile.Constraints(
                 DriveConstants.ModuleMaxAngularVelocity, DriveConstants.ModuleMaxAngularAcceleration));
-        turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
+
+                turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
         // wpk test - current limits result in slow module rotation. need to investigate further
-        // driveMotor.setSmartCurrentLimit(DriveConstants.StallLimit, DriveConstants.FreeLimit);
-        // turnMotor.setSmartCurrentLimit(DriveConstants.StallLimit, DriveConstants.FreeLimit);
+        driveMotor.setSmartCurrentLimit(DriveConstants.StallLimit, DriveConstants.FreeLimit);
+        turnMotor.setSmartCurrentLimit(DriveConstants.StallLimit, DriveConstants.FreeLimit);
 
     }
 

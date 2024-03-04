@@ -51,7 +51,7 @@ import frc.robot.Robot;
 public class Vision extends SubsystemBase {
     private PhotonCamera targetCamera;
     private PhotonCamera poseCamera;
-    private /* final */ PhotonPoseEstimator photonEstimator;
+    public final PhotonPoseEstimator photonEstimator;
     private double lastEstTimestamp = 0;
 
     private PhotonCameraSim poseCameraSim;
@@ -314,28 +314,28 @@ public class Vision extends SubsystemBase {
      *         timestamp, and targets
      *         used for estimation.
      */
-    // public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-    //     if (poseCamera.isConnected()) {
-    //         var visionEst = photonEstimator.update();
-    //         double latestTimestamp = poseCamera.getLatestResult().getTimestampSeconds();
-    //         boolean newResult = Math.abs(latestTimestamp - lastEstTimestamp) > 1e-5;
-    //         if (Robot.isSimulation()) {
-    //             visionEst.ifPresentOrElse(
-    //                     est -> getSimDebugField()
-    //                             .getObject("VisionEstimation")
-    //                             .setPose(est.estimatedPose.toPose2d()),
-    //                     () -> {
-    //                         if (newResult)
-    //                             getSimDebugField().getObject("VisionEstimation").setPoses();
-    //                     });
-    //         }
-    //         if (newResult)
-    //             lastEstTimestamp = latestTimestamp;
-    //         return visionEst;
-    //     } else {
-    //         return Optional.empty();
-    //     }
-    // }
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+        if (poseCamera.isConnected()) {
+            var visionEst = photonEstimator.update();
+            double latestTimestamp = poseCamera.getLatestResult().getTimestampSeconds();
+            boolean newResult = Math.abs(latestTimestamp - lastEstTimestamp) > 1e-5;
+            if (Robot.isSimulation()) {
+                visionEst.ifPresentOrElse(
+                        est -> getSimDebugField()
+                                .getObject("VisionEstimation")
+                                .setPose(est.estimatedPose.toPose2d()),
+                        () -> {
+                            if (newResult)
+                                getSimDebugField().getObject("VisionEstimation").setPoses();
+                        });
+            }
+            if (newResult)
+                lastEstTimestamp = latestTimestamp;
+            return visionEst;
+        } else {
+            return Optional.empty();
+        }
+    }
 
 
     // // wpk not used anywhere

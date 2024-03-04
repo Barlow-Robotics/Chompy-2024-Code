@@ -346,13 +346,13 @@ public class Constants {
         // wpk need to update these to be more exact.
         public static final Transform3d PoseCameraToRobot =
                 new Transform3d(
-                    new Translation3d(0.0, Units.inchesToMeters(DriveConstants.TrackWidth/2), Units.inchesToMeters(23)), 
+                    new Translation3d(0.0, -Units.inchesToMeters(DriveConstants.TrackWidth/2), Units.inchesToMeters(23)), 
                     new Rotation3d(0, Units.degreesToRadians(5), 0));
         public static final Transform3d RobotToPoseCamera = PoseCameraToRobot.inverse();
 
         public static final Transform3d TargetCamToRobot =
                 new Transform3d(
-                    new Translation3d(0.0, -Units.inchesToMeters(DriveConstants.TrackWidth/2), Units.inchesToMeters(23)), 
+                    new Translation3d(0.0, Units.inchesToMeters(DriveConstants.TrackWidth/2), Units.inchesToMeters(23)), 
                     new Rotation3d(0, Units.degreesToRadians(5), 0));
         public static final Transform3d RobotToTargetCam = TargetCamToRobot.inverse();
 

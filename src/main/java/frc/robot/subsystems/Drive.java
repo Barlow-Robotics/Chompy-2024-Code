@@ -82,7 +82,7 @@ public class Drive extends SubsystemBase {
 
     private final Vision visionSub;
 
-    private final AprilTagFieldLayout aprilTagFieldLayout;
+    // private final AprilTagFieldLayout aprilTagFieldLayout;
 
     public Drive(Vision visionSub) {
 
@@ -118,34 +118,32 @@ public class Drive extends SubsystemBase {
                         frontRight.getPosition(),
                         backLeft.getPosition(),
                         backRight.getPosition() },
-                getPoseWithoutVision(),
+                new Pose2d() ,
                 VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+                // VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5)),
                 VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
 
-        // visionSub.getEstimationStdDevs(getPoseWithoutVision()), // not sure if these
-        // last two arguments are
-        // // correct, might need to CHANGE! -Ang
-        // VisionConstants.MultiTagStdDevs);
+        visionSub.photonEstimator.setReferencePose(this.getPose());
 
-        AprilTagFieldLayout layout;
-        try {
-            layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-                layout.setOrigin(
-                        DriverStation.getAlliance().get() == Alliance.Blue
-                                ? OriginPosition.kBlueAllianceWallRightSide
-                                : OriginPosition.kRedAllianceWallRightSide);
-            } else {
-                // default this for now
-                layout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
-            }
+        // AprilTagFieldLayout layout;
+        // try {
+        //     layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+        //     var alliance = DriverStation.getAlliance();
+        //     if (alliance.isPresent()) {
+        //         layout.setOrigin(
+        //                 DriverStation.getAlliance().get() == Alliance.Blue
+        //                         ? OriginPosition.kBlueAllianceWallRightSide
+        //                         : OriginPosition.kRedAllianceWallRightSide);
+        //     } else {
+        //         // default this for now
+        //         layout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
+        //     }
 
-        } catch (IOException e) {
-            DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
-            layout = null;
-        }
-        this.aprilTagFieldLayout = layout;
+        // } catch (IOException e) {
+        //     DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
+        //     layout = null;
+        // }
+        // this.aprilTagFieldLayout = layout;
 
     }
 
@@ -169,33 +167,16 @@ public class Drive extends SubsystemBase {
                         backRight.getPosition()
                 });
 
-        // wpk adapted from code in
-        // https://github.com/STMARobotics/frc-7028-2023/blob/5916bb426b97f10e17d9dfd5ec6c3b6fda49a7ce/src/main/java/frc/robot/subsystems/DrivetrainSubsystem.java
-        // Not sure I like all the vision specifics here. Consider moving to visionSub
-        // later if we have time.
-        // var poseResult = visionSub.getLatestPoseResult();
-        // if (poseResult.hasTargets()) {
+        var photonEstimate = visionSub.getEstimatedGlobalPose();
+        if (photonEstimate.isPresent()) {
+            poseEstimator.addVisionMeasurement(photonEstimate.get().estimatedPose.toPose2d(),
+                    photonEstimate.get().timestampSeconds);
+        }
 
-        //     var target = poseResult.getBestTarget();
-        //     var imageCaptureTime = poseResult.getTimestampSeconds();
-        //     var camToTargetTrans = poseResult.getBestTarget().getBestCameraToTarget();
-        //     var fiducialId = target.getFiducialId();
-
-        //     // Get the tag pose from field layout - consider that the layout will be null if
-        //     // it failed to load
-        //     Optional<Pose3d> tagPose = aprilTagFieldLayout == null ? Optional.empty()
-        //             : aprilTagFieldLayout.getTagPose(fiducialId);
-
-        //     if (tagPose.isPresent()) {
-        //         var camPose = tagPose.get().transformBy(camToTargetTrans.inverse());
-        //         var robotPose = camPose.transformBy(Constants.VisionConstants.PoseCameraToRobot).toPose2d();
-        //         poseEstimator.addVisionMeasurement(robotPose, imageCaptureTime);
-        //     }
-            
-        // }
-
-        // Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
-        // Logger.recordOutput("Drive/PoseEstimate", poseEstimator.getEstimatedPosition());
+        Logger.recordOutput("Drive/PoseEstimate", poseEstimator.getEstimatedPosition());
+        if (photonEstimate.isPresent()) {
+            Logger.recordOutput("Drive/PhotonPoseEstimate", photonEstimate.get().estimatedPose.toPose2d());
+        }
 
         SwerveModuleState[] swerveModuleActualStates = new SwerveModuleState[] { frontLeft.getState(),
                 frontRight.getState(), backLeft.getState(), backRight.getState() };
@@ -204,7 +185,7 @@ public class Drive extends SubsystemBase {
 
     private void logData(SwerveModuleState[] swerveModuleActualStates) {
         Logger.recordOutput("Drive/StatesActual", swerveModuleActualStates);
-        Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
+        Logger.recordOutput("Drive/Pose", getPose());
         Logger.recordOutput("Drive/Heading", getHeading());
         Logger.recordOutput("Drive/Odometry/X", odometry.getPoseMeters().getX());
         Logger.recordOutput("Drive/Odometry/Y", odometry.getPoseMeters().getY());
@@ -218,10 +199,10 @@ public class Drive extends SubsystemBase {
         Logger.recordOutput("Drive/CurrentSupply/BackRightTurn", backRight.getTurnCurrent());
     }
 
-    // wpk consider deleting after pose estimation is tested.
-    public Pose2d getPoseWithoutVision() {
-        return odometry.getPoseMeters();
-    }
+    // // wpk consider deleting after pose estimation is tested.
+    // public Pose2d getPoseWithoutVision() {
+    //     return odometry.getPoseMeters();
+    // }
 
     public Pose2d getPose() {
         return poseEstimator.getEstimatedPosition();

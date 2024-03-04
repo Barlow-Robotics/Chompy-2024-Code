@@ -156,7 +156,7 @@ public class Robot extends LoggedRobot {
     public void simulationPeriodic() {
         REVPhysicsSim.getInstance().run();
 
-        var simPose = robotContainer.driveSub.getPoseWithoutVision();
+        var simPose = robotContainer.driveSub.getPose();
 
         // robotContainer.visionSub.simulationPeriodic(simPose);
 

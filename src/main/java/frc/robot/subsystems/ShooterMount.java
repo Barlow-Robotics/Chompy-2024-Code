@@ -123,16 +123,17 @@ public class ShooterMount extends SubsystemBase {
         // wpk remove return statement to enable this code
         //return ;
         double trackedAngle = 0.0 ;
+            trackedAngle = getSpeakerShooterAngle() ;  //wpk temp. remove this line later
+        Logger.recordOutput("ShooterMount/Angle/TrackedAngle", trackedAngle);
         if ( this.shooterPosState == ShooterMountState.Speaker) {
+            trackedAngle = getSpeakerShooterAngle() ;
             trackedAngle = this.desiredDegrees ;
-//            trackedAngle = getSpeakerShooterAngle() ;
         } else {
             trackedAngle = this.desiredDegrees ;
         }
 
         // setAngle(trackedAngle);
 
-        Logger.recordOutput("ShooterMount/Angle/TrackedAngle", trackedAngle);
         Logger.recordOutput("ShooterMount/Angle/NewIsWithinAngleTolerance", isWithinAngleTolerance2());
 
 

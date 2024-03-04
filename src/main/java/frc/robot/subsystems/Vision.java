@@ -239,7 +239,8 @@ public class Vision extends SubsystemBase {
 
 
     public PhotonPipelineResult getLatestPoseResult() {
-        return poseCamera.getLatestResult();
+
+            return poseCamera.getLatestResult();
     }
 
     public Optional<PhotonPipelineResult> getLatestTrackingResult() {

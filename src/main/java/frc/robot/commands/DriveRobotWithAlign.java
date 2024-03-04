@@ -140,7 +140,7 @@ public class DriveRobotWithAlign extends Command {
 
         speedX = MathUtil.applyDeadband(yInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
         speedY = MathUtil.applyDeadband(xInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
-        speedRot = MathUtil.applyDeadband(rotInput.get(), 2 * DeadBand) * DriveConstants.MaxDriveableVelocity;
+        speedRot = MathUtil.applyDeadband(rotInput.get(), 2 * DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
 
         // wpk put back after driver trials
         boolean autoAlignEnabled = runAutoAlign.get();
@@ -149,8 +149,8 @@ public class DriveRobotWithAlign extends Command {
         var alignYawControl = 0.0;
         var alignLatControl = 0.0;
 
-        // Converts from old range (1 to -1) to desired range (1 to 0.5)
-        maxVelocityMultiplier = (((multiplierInput.get() + 1) * 0.5) / 2) + 0.5;
+        // Converts from old range (1 to -1) to desired range (1 to 0.4,  4.5 m/s to 1.8 m/s)
+        maxVelocityMultiplier = (((multiplierInput.get() + 1) * (1 - 0.4)) / 2) + 0.4;
 
         // if the button transitions from not pressed to pressed
         if ( autoAlignEnabled && !autoAlignActive ) {

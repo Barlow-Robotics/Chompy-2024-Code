@@ -51,12 +51,8 @@ public class SetShooterMountPosition extends Command {
 
             // old code - before setting a distance-based angle to speaker
             case Speaker:
-                var speakerAngle = getSpeakerShooterAngle();
-                if (speakerAngle.isEmpty()) {
-                    desiredAngle = ShooterMountConstants.SpeakerAngle;
-                } else {
-                    desiredAngle = speakerAngle.getAsDouble() ;
-                }
+                desiredAngle = ShooterMountConstants.SpeakerAngle ;
+//                desiredAngle = shooterMountSub.getSpeakerShooterAngle() ;
                 desiredHeight = ShooterMountConstants.SpeakerHeight;
                 desiredTarget = TargetToAlign.Speaker;
                 break;
@@ -94,9 +90,9 @@ public class SetShooterMountPosition extends Command {
         if (shooterMountSub.getShooterMountStateAsString() != "ClimbAbort") {
             shooterMountSub.setAngle(desiredAngle);
             shooterMountSub.setHeightInches(desiredHeight);
-            if (desiredTarget != null) {
-                visionSub.alignTo(desiredTarget);
-            }
+            // if (desiredTarget != null) {
+            //     visionSub.alignTo(desiredTarget);
+            // }
         }
     }
 
@@ -104,15 +100,17 @@ public class SetShooterMountPosition extends Command {
     public void end(boolean interrupted) {
     }
 
-    @Override
+    @Override                                                                                                                                                                
     public boolean isFinished() {
         
-        if(shooterMountSub.getShooterMountStateAsString() != "ClimbAbort") {
+        if(shooterMountSub.getShooterMountState() != ShooterMountState.ClimbAbort) {
+
             if (shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
                 shooterMountSub.setShooterPosState(desiredState); // LMT CHANGE? See comment below
                 return true;
+            }else{
+                return false ;
             }
-            return false;
         } else {
             return true;
         } // LMT - CHANGE this to true, or based on another condition?
@@ -121,61 +119,62 @@ public class SetShooterMountPosition extends Command {
           // or maybe until they let go of the (speaker or action) button. Desired
           // behavior TBD
     }
+    
 
     
-    public OptionalDouble getSpeakerShooterAngle() {
+    // public OptionalDouble getSpeakerShooterAngle() {
 
-        double result = 0.0 ;
+    //     double result = 0.0;
 
-        var target = visionSub.getSpeakerTarget() ;
-        if ( target.isEmpty()) {
-            return OptionalDouble.empty();
-        }
+    //     var target = visionSub.getSpeakerTarget();
+    //     if ( target.isEmpty()) {
+    //         return OptionalDouble.empty();
+    //     }
 
-        // deltaY is the difference in height of target (a little over the bottom of speaker opening) and the current
-        // elevator position.
-        double height = ShooterMountConstants.MidSpeakerHeight - shooterMountSub.getHeightInches() ;
+    //     // deltaY is the difference in height of target (a little over the bottom of speaker opening) and the current
+    //     // elevator position.
+    //     double height = ShooterMountConstants.MidSpeakerHeight - shooterMountSub.getHeightInches() ;
 
-        //deltaX is the horizontal distance to the april tag (and the speaker)
-        double x = target.get().getBestCameraToTarget().getX() ;
-        double y = target.get().getBestCameraToTarget().getY() ;
-        double distance = Math.sqrt(x*x + y*y) ;
+    //     //deltaX is the horizontal distance to the april tag (and the speaker)
+    //     double x = target.get().getBestCameraToTarget().getX() ;
+    //     double y = target.get().getBestCameraToTarget().getY() ;
+    //     double distance = Math.sqrt(x*x + y*y) ;
         
-        // Compute the angle and return it.
-        result = Math.atan2(height, distance); // Make sure X,Y units match
-        return OptionalDouble.of(result);
+    //     // Compute the angle and return it.
+    //     result = Math.atan2(height, distance); // Make sure X,Y units match
+    //     return OptionalDouble.of(result);
 
 
 
-        // double apriltagPitch = visionSub.getSpeakerAprilTagPitch();
-        // if (apriltagPitch == VisionConstants.InvalidAngle) {
-        //     return returnValue;
-        // }
+    //     // double apriltagPitch = visionSub.getSpeakerAprilTagPitch();
+    //     // if (apriltagPitch == VisionConstants.InvalidAngle) {
+    //     //     return returnValue;
+    //     // }
 
-        // else if (apriltagPitch == 0) { // Camera at height of Speaker's AprilTag
-        //     double horizDistToTarget = visionSub.getSpeakerTargetDistance(); // What if this returns
-        //                                                                      // VisionConstants.NoTargetDistance???
-        //     if (horizDistToTarget != VisionConstants.NoTargetDistance) {
-        //         result =  (Math.atan2(
-        //                 ShooterMountConstants.MidSpeakerHeight - ShooterMountConstants.ElevatorHeightUnextended,
-        //                 horizDistToTarget)); // Make sure X,Y units match
-        //         return OptionalDouble.of( result ) ;
-        //     }
-        //     // Need a return value if, for some reason, getSpeakerTargetDistance()
-        //     // returns NoTargetDistance
-        //     // Maybe return 0 to keep the shooter horizontal?
-        //     // Or the initial speaker angle?
-        // }
-        // // Angle to speaker = Arctan((SpkrHt - (ElevHtUnext)) / ((ATHt-CamHt) /
-        // // tan(ATpitch)) )
+    //     // else if (apriltagPitch == 0) { // Camera at height of Speaker's AprilTag
+    //     //     double horizDistToTarget = visionSub.getSpeakerTargetDistance(); // What if this returns
+    //     //                                                                      // VisionConstants.NoTargetDistance???
+    //     //     if (horizDistToTarget != VisionConstants.NoTargetDistance) {
+    //     //         result =  (Math.atan2(
+    //     //                 ShooterMountConstants.MidSpeakerHeight - ShooterMountConstants.ElevatorHeightUnextended,
+    //     //                 horizDistToTarget)); // Make sure X,Y units match
+    //     //         return OptionalDouble.of( result ) ;
+    //     //     }
+    //     //     // Need a return value if, for some reason, getSpeakerTargetDistance()
+    //     //     // returns NoTargetDistance
+    //     //     // Maybe return 0 to keep the shooter horizontal?
+    //     //     // Or the initial speaker angle?
+    //     // }
+    //     // // Angle to speaker = Arctan((SpkrHt - (ElevHtUnext)) / ((ATHt-CamHt) /
+    //     // // tan(ATpitch)) )
 
-        // // LMT - CHANGE? This should be properly considering 0 angle, but double check.
-        // // Also - change to atan2 or add math to check for div by 0 error
-        // result = (Math.atan2((ShooterMountConstants.MidSpeakerHeight - ShooterMountConstants.ElevatorHeightUnextended),
-        //         ((ShooterMountConstants.SpeakerAprilTagHeight - ShooterMountConstants.CameraMountHeight) /
-        //                 Math.tan(apriltagPitch))));
-        // return OptionalDouble.of( result ) ;
+    //     // // LMT - CHANGE? This should be properly considering 0 angle, but double check.
+    //     // // Also - change to atan2 or add math to check for div by 0 error
+    //     // result = (Math.atan2((ShooterMountConstants.MidSpeakerHeight - ShooterMountConstants.ElevatorHeightUnextended),
+    //     //         ((ShooterMountConstants.SpeakerAprilTagHeight - ShooterMountConstants.CameraMountHeight) /
+    //     //                 Math.tan(apriltagPitch))));
+    //     // return OptionalDouble.of( result ) ;
 
-    }
+    // }
 
 }

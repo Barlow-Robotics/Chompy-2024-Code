@@ -116,7 +116,7 @@ public class Constants {
         public static final double PhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI; // CHANGE
 
         public static final double MaxAcceleration = Units.feetToMeters(36.24); // m/sec^2 from Mr. K's spreadsheet
-        public static final double MaxDriveableVelocity = 3.6; // m/s
+        public static final double MaxDriveableVelocity = 4.5; // m/s
         public static final double PhysicalMaxMetersPerSecond =  NeoMaxRPM * VelocityConversionFactor;
  
         public static final double FrontLeftMagnetOffsetInRadians = 1.5171039327979088;
@@ -180,19 +180,20 @@ public class Constants {
     /***************************************************************************/
 
     public static final class ShooterConstants {
-        public static final double VelocityTolerance = 5; 
        
         public static final double SupplyCurrentLimit = 30;
 
         /* FLYWHEELS */
 
+        public static final double FlywheelVelocityTolerance = 25;
+
         public static final double FlywheelGearRatio = 1.5; // 36 gears on motor, 24 on rollers --> 1.5:1 (as of 2/15)
 
-        public static final double LeftSpeakerRPM = 3000;
-        public static final double RightSpeakerRPM = 3000;
+        public static final double LeftSpeakerRPM = 2500;
+        public static final double RightSpeakerRPM = 2500;
 
-        public static final double LeftAmpRPM = 750; 
-        public static final double RightAmpRPM = 750; 
+        public static final double LeftAmpRPM = 500; 
+        public static final double RightAmpRPM = 500; 
 
         public static final double LeftIntakeRPM = -1000;
         public static final double RightIntakeRPM = -1000;
@@ -212,14 +213,16 @@ public class Constants {
 
         /* INDEX */
 
+        public static final double IndexVelocityTolerance = 5;
+
         public static final double IndexGearRatio = 1; // 1:1 ratio on Index per WK as of 2/15
 
-        public static final double IndexRPM = 750;
+        public static final double IndexRPM = 500; //750
 
-        public static final double IndexKP = 0.25; 
+        public static final double IndexKP = 0.15; //0.25
         public static final double IndexKI = 0; 
         public static final double IndexKD = 0; 
-        public static final double IndexFF = 0.2;
+        public static final double IndexFF = 0.5; //0.2
         public static final double IndexKS = 0.05;
     }
 
@@ -237,15 +240,15 @@ public class Constants {
         public static final double HeightTolerance = 0.25;
 
         public static final double MaxAngleDegrees = 45;
-        public static final double MinAngleDegrees = -58;
+        public static final double MinAngleDegrees = -63.5;
         public static final double MaxHeightInches = 47.5;
         public static final double StartingHeight = 19.75;  
 
-        public static final double SpeakerAngle = 37; 
+        public static final double SpeakerAngle = 44; 
         public static final double SpeakerHeight = StartingHeight; 
 
-        public static final double AmpAngle = -45;
-        public static final double AmpHeight = 43;
+        public static final double AmpAngle = -30;
+        public static final double AmpHeight = 40;
 
         public static final double SourceIntakeAngle = 32; 
         public static final double SourceIntakeHeight = 27; 

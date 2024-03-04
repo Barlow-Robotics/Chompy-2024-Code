@@ -113,12 +113,18 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isWithinFlywheelVelocityTolerance(double desiredLeftRPM, double desiredRightRPM) {
-        return (getRPM(leftFlywheelMotor) >= desiredLeftRPM - ShooterConstants.VelocityTolerance) && // is this the intended 
-                (getRPM(rightFlywheelMotor) >= desiredRightRPM - ShooterConstants.VelocityTolerance);// function?
+        return (getRPM(leftFlywheelMotor) >= desiredLeftRPM - ShooterConstants.FlywheelVelocityTolerance) && // is this the intended 
+                (getRPM(rightFlywheelMotor) >= desiredRightRPM - ShooterConstants.FlywheelVelocityTolerance);// function?
     }
 
+    public boolean isWithinIndexVelocityTolerance() {
+        return getRPM(indexMotor) >= ShooterConstants.IndexRPM - ShooterConstants.IndexVelocityTolerance;
+    }
+
+
     public boolean isNoteLoaded() {
-        return !breakBeam.get();
+        // return !breakBeam.get();
+        return false;
     }
 
     /* LOGGING */

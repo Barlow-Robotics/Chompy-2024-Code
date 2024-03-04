@@ -55,8 +55,8 @@ public class DriveRobot extends Command {
         // and the chassis (positive X is forward, Positive Y is left), we use the controller X input as the drive Y input
         // and the controller Y input as the drive X input. 
 
-        // Converts from old range (1 to -1) to desired range (1 to 0.5)
-        maxVelocityMultiplier = (((multiplierInput.get() + 1) * 0.5) / 2) + 0.5;
+        // Converts from old range (1 to -1) to desired range (1 to 0.4, 4.5 m/s to 1.8 m/s)
+        maxVelocityMultiplier = (((multiplierInput.get() + 1) * (1 - 0.4)) / 2) + 0.4;
 
         double speedX = MathUtil.applyDeadband(yInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
         double speedY = MathUtil.applyDeadband(xInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);

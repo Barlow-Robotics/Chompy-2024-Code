@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.ShooterMountConstants;
 import frc.robot.subsystems.FloorIntake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterMount;
@@ -19,6 +20,7 @@ public class StartShooterIntake extends Command {
     double desiredLeftFlywheelMotorRPM = ShooterConstants.LeftIntakeRPM;
     double desiredRightFlywheelMotorRPM = ShooterConstants.RightIntakeRPM;
     double desiredIndexRPM = ShooterConstants.IndexRPM;
+    double FloorIntakeAngleWithTolerance = ShooterMountConstants.FloorIntakeAngle + 3;
 
     public StartShooterIntake(Shooter shooterSub, FloorIntake floorIntakeSub, ShooterMount shooterMountSub) {
         this.shooterSub = shooterSub;
@@ -30,7 +32,8 @@ public class StartShooterIntake extends Command {
     @Override
     public void initialize() {
         if (shooterMountSub.getShooterMountState() == ShooterMountState.SourceIntake ||
-                shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake) {
+                shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake || 
+                shooterMountSub.getAngleCANCoderDegrees() < (FloorIntakeAngleWithTolerance)) {
             desiredIndexRPM = -ShooterConstants.IndexRPM;
             desiredLeftFlywheelMotorRPM = ShooterConstants.LeftIntakeRPM;
             desiredRightFlywheelMotorRPM = ShooterConstants.RightIntakeRPM;
@@ -55,7 +58,8 @@ public class StartShooterIntake extends Command {
         // intake
 
         if ((shooterMountSub.getShooterMountState() == ShooterMountState.SourceIntake ||
-                shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake)
+                shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake || 
+                shooterMountSub.getAngleCANCoderDegrees() < (FloorIntakeAngleWithTolerance))
                 && shooterSub.isNoteLoaded()) {
             shooterSub.stop();
             floorIntakeSub.stop();
@@ -67,7 +71,8 @@ public class StartShooterIntake extends Command {
             shooterSub.startIndex(desiredIndexRPM);
         }
 
-        if (shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake) {
+        if (shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake ||
+            shooterMountSub.getAngleCANCoderDegrees() < (FloorIntakeAngleWithTolerance)) {
             floorIntakeSub.start();
             // if (shooterSub.isNoteLoaded()) { // did we get the note we wanted
             // shooterSub.stop(); // don't need these 3 lines b/c the above will catch it

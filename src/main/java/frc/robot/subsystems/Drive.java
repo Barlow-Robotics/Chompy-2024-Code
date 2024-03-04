@@ -173,29 +173,29 @@ public class Drive extends SubsystemBase {
         // https://github.com/STMARobotics/frc-7028-2023/blob/5916bb426b97f10e17d9dfd5ec6c3b6fda49a7ce/src/main/java/frc/robot/subsystems/DrivetrainSubsystem.java
         // Not sure I like all the vision specifics here. Consider moving to visionSub
         // later if we have time.
-        var poseResult = visionSub.getLatestPoseResult();
-        if (poseResult.hasTargets()) {
+        // var poseResult = visionSub.getLatestPoseResult();
+        // if (poseResult.hasTargets()) {
 
-            var target = poseResult.getBestTarget();
-            var imageCaptureTime = poseResult.getTimestampSeconds();
-            var camToTargetTrans = poseResult.getBestTarget().getBestCameraToTarget();
-            var fiducialId = target.getFiducialId();
+        //     var target = poseResult.getBestTarget();
+        //     var imageCaptureTime = poseResult.getTimestampSeconds();
+        //     var camToTargetTrans = poseResult.getBestTarget().getBestCameraToTarget();
+        //     var fiducialId = target.getFiducialId();
 
-            // Get the tag pose from field layout - consider that the layout will be null if
-            // it failed to load
-            Optional<Pose3d> tagPose = aprilTagFieldLayout == null ? Optional.empty()
-                    : aprilTagFieldLayout.getTagPose(fiducialId);
+        //     // Get the tag pose from field layout - consider that the layout will be null if
+        //     // it failed to load
+        //     Optional<Pose3d> tagPose = aprilTagFieldLayout == null ? Optional.empty()
+        //             : aprilTagFieldLayout.getTagPose(fiducialId);
 
-            if (tagPose.isPresent()) {
-                var camPose = tagPose.get().transformBy(camToTargetTrans.inverse());
-                var robotPose = camPose.transformBy(Constants.VisionConstants.PoseCameraToRobot).toPose2d();
-                poseEstimator.addVisionMeasurement(robotPose, imageCaptureTime);
-            }
+        //     if (tagPose.isPresent()) {
+        //         var camPose = tagPose.get().transformBy(camToTargetTrans.inverse());
+        //         var robotPose = camPose.transformBy(Constants.VisionConstants.PoseCameraToRobot).toPose2d();
+        //         poseEstimator.addVisionMeasurement(robotPose, imageCaptureTime);
+        //     }
             
-        }
+        // }
 
-        Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
-        Logger.recordOutput("Drive/PoseEstimate", poseEstimator.getEstimatedPosition());
+        // Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
+        // Logger.recordOutput("Drive/PoseEstimate", poseEstimator.getEstimatedPosition());
 
         SwerveModuleState[] swerveModuleActualStates = new SwerveModuleState[] { frontLeft.getState(),
                 frontRight.getState(), backLeft.getState(), backRight.getState() };
@@ -205,6 +205,7 @@ public class Drive extends SubsystemBase {
     private void logData(SwerveModuleState[] swerveModuleActualStates) {
         Logger.recordOutput("Drive/StatesActual", swerveModuleActualStates);
         Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
+        Logger.recordOutput("Drive/Heading", getHeading());
         Logger.recordOutput("Drive/Odometry/X", odometry.getPoseMeters().getX());
         Logger.recordOutput("Drive/Odometry/Y", odometry.getPoseMeters().getY());
         Logger.recordOutput("Drive/CurrentSupply/FrontLeftDrive", frontLeft.getDriveCurrent());

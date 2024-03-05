@@ -15,8 +15,8 @@ import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
-import edu.wpi.first.apriltag.AprilTagFields;
+// import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
+// import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -67,7 +67,7 @@ public class DriveRobotWithAlign extends Command {
 
     OptionalInt currentTrackedTarget = OptionalInt.of(0) ;
 
-    AprilTagFieldLayout aprilTagFieldLayout ;
+    // AprilTagFieldLayout aprilTagFieldLayout ;
 
     public DriveRobotWithAlign(Drive driveSub, Supplier<Double> x, Supplier<Double> y, Supplier<Double> rot,
             Supplier<Double> multiplier, boolean FieldRelative, Vision visionSub, Supplier<Boolean> runAutoAlign) {
@@ -92,24 +92,24 @@ public class DriveRobotWithAlign extends Command {
             DriveConstants.AutoAlignLatKD);
 
 
-        AprilTagFieldLayout layout;
-        try {
-            layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-                layout.setOrigin(
-                        DriverStation.getAlliance().get() == Alliance.Blue ? OriginPosition.kBlueAllianceWallRightSide
-                                : OriginPosition.kRedAllianceWallRightSide);
-            } else {
-                // default this for now
-                layout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
-            }
+        // AprilTagFieldLayout layout;
+        // try {
+        //     layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+        //     var alliance = DriverStation.getAlliance();
+        //     if (alliance.isPresent()) {
+        //         layout.setOrigin(
+        //                 DriverStation.getAlliance().get() == Alliance.Blue ? OriginPosition.kBlueAllianceWallRightSide
+        //                         : OriginPosition.kRedAllianceWallRightSide);
+        //     } else {
+        //         // default this for now
+        //         layout.setOrigin(OriginPosition.kRedAllianceWallRightSide);
+        //     }
 
-        } catch (IOException e) {
-            DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
-            layout = null;
-        }
-        this.aprilTagFieldLayout = layout;
+        // } catch (IOException e) {
+        //     DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
+        //     layout = null;
+        // }
+        // this.aprilTagFieldLayout = layout;
 
 
         addRequirements(driveSub);
@@ -178,7 +178,7 @@ public class DriveRobotWithAlign extends Command {
                     Logger.recordOutput("Align/targetYaw", target.get().getYaw());
                     Logger.recordOutput("Align/proposed rot", speedRot);
 
-                    Pose2d targetPose = aprilTagFieldLayout.getTagPose(currentTrackedTarget.getAsInt()).get().toPose2d() ;
+                    Pose2d targetPose = visionSub.getLayout().getTagPose(currentTrackedTarget.getAsInt()).get().toPose2d() ;
 
                     var test = PhotonUtils.getYawToPose(driveSub.getPose(), targetPose) ;
                     Logger.recordOutput("Align/yawToPose", test);

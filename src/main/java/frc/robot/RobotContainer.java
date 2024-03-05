@@ -49,7 +49,7 @@ public class RobotContainer {
     public final Vision visionSub = new Vision();
     public final Drive driveSub = new Drive(visionSub);
     public final Shooter shooterSub = new Shooter();
-    public final ShooterMount shooterMountSub = new ShooterMount(visionSub);
+    public final ShooterMount shooterMountSub = new ShooterMount(visionSub, driveSub);
     public final FloorIntake floorIntakeSub = new FloorIntake();
     public final Underglow underglowSub = new Underglow();
 
@@ -63,8 +63,8 @@ public class RobotContainer {
             ShooterMountState.SourceIntake, visionSub);
     private final SetShooterMountPosition setShooterPosFloorCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.FloorIntake, visionSub);
-    private final SetShooterMountPosition setShooterPosFerryCmd = new SetShooterMountPosition(shooterMountSub, 
-            ShooterMountState.Ferry, visionSub);
+    private final SetShooterMountPosition setShooterPosFerryCmd = new SetShooterMountPosition(shooterMountSub,
+                    ShooterMountState.Ferry, visionSub);
 
     private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.Climb, visionSub);
@@ -99,7 +99,7 @@ public class RobotContainer {
     private Trigger shootIntakeButton; // trigger
     private Trigger reverseFloorIntakeButton; // driver button 7
 
-    private Trigger autoAlignButton; // driver button on stick
+    private Trigger autoAlignButton; // driver button on stick 
     private Trigger restartGyroButton; // driver button 9
 
     /* AUTO */

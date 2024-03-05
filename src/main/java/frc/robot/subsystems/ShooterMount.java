@@ -73,10 +73,11 @@ public class ShooterMount extends SubsystemBase {
 
     private boolean simulationInitialized = false;
 
+    private final Drive driveSub ;
     private final Vision visionSub ;
     private double desiredDegrees = Constants.ShooterMountConstants.FloorIntakeAngle ;
 
-    public ShooterMount( Vision visionSub ) {
+    public ShooterMount( Vision visionSub, Drive driveSub ) {
         bottomHallEffect = new DigitalInput(ElectronicsIDs.BottomHallEffectID);
 
         angleMotor = new TalonFX(ElectronicsIDs.AngleMotorID);
@@ -100,6 +101,7 @@ public class ShooterMount extends SubsystemBase {
 
         rightElevatorMotor.setControl(new Follower(leftElevatorMotor.getDeviceID(), true));
 
+        this.driveSub = driveSub ;
         this.visionSub = visionSub ;
     }
 
@@ -123,16 +125,17 @@ public class ShooterMount extends SubsystemBase {
         // wpk remove return statement to enable this code
         //return ;
         double trackedAngle = 0.0 ;
-            trackedAngle = getSpeakerShooterAngle() ;  //wpk temp. remove this line later
-        Logger.recordOutput("ShooterMount/Angle/TrackedAngle", trackedAngle);
+            // trackedAngle = getSpeakerShooterAngle() ;  //wpk temp. remove this line later
+        // Logger.recordOutput("ShooterMount/Angle/TrackedAngle", trackedAngle);
         if ( this.shooterPosState == ShooterMountState.Speaker) {
             trackedAngle = getSpeakerShooterAngle() ;
-            trackedAngle = this.desiredDegrees ;
+            //trackedAngle = this.desiredDegrees ;
         } else {
             trackedAngle = this.desiredDegrees ;
         }
+        Logger.recordOutput("ShooterMount/Angle/TrackedAngle", trackedAngle);
 
-        // setAngle(trackedAngle);
+        setAngle(trackedAngle);
 
         Logger.recordOutput("ShooterMount/Angle/NewIsWithinAngleTolerance", isWithinAngleTolerance2());
 
@@ -143,9 +146,21 @@ public class ShooterMount extends SubsystemBase {
     /* ANGLE */
 
     public void setAngle(double desiredDegrees) {
+
         final MotionMagicVoltage request = new MotionMagicVoltage(Units.degreesToRotations(desiredDegrees));
         angleMotor.setControl(request);
         this.desiredDegrees = desiredDegrees ;
+
+        // wpk test code
+        // double newAngle = 0.0 ;
+        // if (this.shooterPosState == ShooterMountState.Speaker) {
+        //     newAngle = getSpeakerShooterAngle() ;
+        // } else {
+        //     newAngle = desiredDegrees ;
+        // }       
+        // final MotionMagicVoltage request = new MotionMagicVoltage(Units.degreesToRotations(newAngle));
+        // angleMotor.setControl(request);
+        // this.desiredDegrees = newAngle ;
     }
 
     public void stopAngleMotor() {
@@ -219,56 +234,32 @@ public class ShooterMount extends SubsystemBase {
 
         double result = 0.0;
 
-        var target = visionSub.getSpeakerTarget();
-        if ( target.isEmpty()) {
-            return Constants.ShooterMountConstants.SpeakerAngle;
-        }
-
         // deltaY is the difference in height of target (a little over the bottom of speaker opening) and the current
         // elevator position.
         double height = ShooterMountConstants.MidSpeakerHeight - Constants.ShooterMountConstants.SpeakerHeight ;
-        height = Units.metersToInches(height ) ;
+        height = Units.inchesToMeters(height ) ;
 
-        //deltaX is the horizontal distance to the april tag (and the speaker)
-        double x = target.get().getBestCameraToTarget().getX() ;
-        double y = target.get().getBestCameraToTarget().getY() ;
-        double distance = Math.sqrt(x*x + y*y) ;
-        
+        var target = visionSub.getSpeakerTarget();
+
+        double distance = 0.0 ;
+        if (target.isPresent()) {
+            // deltaX is the horizontal distance to the april tag (and the speaker)
+            double x = target.get().getBestCameraToTarget().getX();
+            double y = target.get().getBestCameraToTarget().getY();
+            distance = Math.sqrt(x * x + y * y);
+        } else {
+            var speakerPose = visionSub.getSpeakerPose() ;
+            if (speakerPose.isPresent()) {
+                var speakerTranslation = speakerPose.get().toPose2d().getTranslation() ;
+                distance = driveSub.getPose().getTranslation().getDistance(speakerTranslation) ;
+            } else {
+                return Constants.ShooterMountConstants.SpeakerAngle ;
+            }
+        }
+
         // Compute the angle and return it.
         result = Math.toDegrees(Math.atan2(height, distance)) ; // Make sure X,Y units match
         return (result);
-
-
-
-        // double apriltagPitch = visionSub.getSpeakerAprilTagPitch();
-        // if (apriltagPitch == VisionConstants.InvalidAngle) {
-        //     return returnValue;
-        // }
-
-        // else if (apriltagPitch == 0) { // Camera at height of Speaker's AprilTag
-        //     double horizDistToTarget = visionSub.getSpeakerTargetDistance(); // What if this returns
-        //                                                                      // VisionConstants.NoTargetDistance???
-        //     if (horizDistToTarget != VisionConstants.NoTargetDistance) {
-        //         result =  (Math.atan2(
-        //                 ShooterMountConstants.MidSpeakerHeight - ShooterMountConstants.ElevatorHeightUnextended,
-        //                 horizDistToTarget)); // Make sure X,Y units match
-        //         return OptionalDouble.of( result ) ;
-        //     }
-        //     // Need a return value if, for some reason, getSpeakerTargetDistance()
-        //     // returns NoTargetDistance
-        //     // Maybe return 0 to keep the shooter horizontal?
-        //     // Or the initial speaker angle?
-        // }
-        // // Angle to speaker = Arctan((SpkrHt - (ElevHtUnext)) / ((ATHt-CamHt) /
-        // // tan(ATpitch)) )
-
-        // // LMT - CHANGE? This should be properly considering 0 angle, but double check.
-        // // Also - change to atan2 or add math to check for div by 0 error
-        // result = (Math.atan2((ShooterMountConstants.MidSpeakerHeight - ShooterMountConstants.ElevatorHeightUnextended),
-        //         ((ShooterMountConstants.SpeakerAprilTagHeight - ShooterMountConstants.CameraMountHeight) /
-        //                 Math.tan(apriltagPitch))));
-        // return OptionalDouble.of( result ) ;
-
     }
 
 

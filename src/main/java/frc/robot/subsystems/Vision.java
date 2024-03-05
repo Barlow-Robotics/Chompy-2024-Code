@@ -16,6 +16,7 @@ import static frc.robot.Constants.VisionConstants.TargetCameraName;
 import static frc.robot.Constants.VisionConstants.PrimaryVisionStrategy;
 
 import java.util.Hashtable;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -32,12 +33,15 @@ import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
@@ -76,6 +80,10 @@ public class Vision extends SubsystemBase {
     Hashtable<Integer, Integer> blueTrackableIDs = new Hashtable<>() ;
     Hashtable<Integer, Integer> redTrackableIDs = new Hashtable<>() ;
 
+    private final AprilTagFieldLayout aprilTagFieldLayout;
+    private boolean layoutOriginSet = false ;
+
+
     public Vision() /* throws IOException */ {
         targetCamera = new PhotonCamera(TargetCameraName);
         poseCamera = new PhotonCamera(PoseCameraName);
@@ -93,6 +101,18 @@ public class Vision extends SubsystemBase {
 
         targetAlignSet = new HashSet<Integer>();
         activeAlignTargetId = OptionalInt.empty();
+
+        AprilTagFieldLayout layout;
+        try {
+            layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+
+
+        } catch (IOException e) {
+            DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
+            layout = null;
+        }
+        this.aprilTagFieldLayout = layout;
+
 
 
         // ----- Simulation
@@ -144,6 +164,23 @@ public class Vision extends SubsystemBase {
 
     }
 
+
+    public AprilTagFieldLayout getLayout() {
+        return this.aprilTagFieldLayout ;
+    }
+
+    private void setLayoutOrigin() {
+        if ( !layoutOriginSet) {
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+                aprilTagFieldLayout.setOrigin(
+                        DriverStation.getAlliance().get() == Alliance.Blue
+                                ? OriginPosition.kBlueAllianceWallRightSide
+                                : OriginPosition.kRedAllianceWallRightSide);
+                this.layoutOriginSet = true ;
+            }
+        }
+    }
 
 
     public void alignTo(TargetToAlign target) {
@@ -202,6 +239,8 @@ public class Vision extends SubsystemBase {
         // TODO: feed this pose estimate back to the combined pose estimator in drive
         // var poseEstimate = getEstimatedGlobalPose();
 
+        setLayoutOrigin();
+
         // Find all the results from the tracking camera
         var tracking_result = getLatestTrackingResult();
 
@@ -209,10 +248,11 @@ public class Vision extends SubsystemBase {
         currentBestAlignTarget = null;
 
         if (tracking_result.isPresent()) {
+                allDetectedTargets = tracking_result.get().getTargets();
 
             if (tracking_result.get().hasTargets()) {
 
-                allDetectedTargets = tracking_result.get().getTargets();
+                // allDetectedTargets = tracking_result.get().getTargets();
                 currentBestTarget = tracking_result.get().getBestTarget();
             }
             if (activeAlignTargetId.isPresent()) {
@@ -286,26 +326,43 @@ public class Vision extends SubsystemBase {
     }
 
 
+
+    public int getSpeakerTagID() {
+        if (DriverStation.getAlliance().isPresent()) {
+            if (DriverStation.getAlliance().get() == Alliance.Red ) {
+                return VisionConstants.RedSpeakerCenterAprilTagID ;
+            }
+            if (DriverStation.getAlliance().get() == Alliance.Blue) {
+                return VisionConstants.BlueSpeakerCenterAprilTagID;
+            }
+        }
+        return VisionConstants.BlueSpeakerCenterAprilTagID;  // no alliance info so pick one.
+    }
+
+
+
+    public Optional<Pose3d> getSpeakerPose() {
+        return aprilTagFieldLayout.getTagPose(getSpeakerTagID()) ;
+    }
+
+
     public Optional<PhotonTrackedTarget> getSpeakerTarget() {
-    if (DriverStation.getAlliance().isPresent()) {
-        if (allDetectedTargets != null) {
-            for (var tempTarget : allDetectedTargets) {
-                if (DriverStation.getAlliance().get() == Alliance.Red
-                        && tempTarget.getFiducialId() == VisionConstants.RedSpeakerCenterAprilTagID) {
-                    return Optional.of(tempTarget);
-                }
-                if (DriverStation.getAlliance().get() == Alliance.Blue
-                        && tempTarget.getFiducialId() == VisionConstants.BlueSpeakerCenterAprilTagID) {
-                    return Optional.of(tempTarget);
+        if (DriverStation.getAlliance().isPresent()) {
+            if (allDetectedTargets != null) {
+                for (var tempTarget : allDetectedTargets) {
+                    if (DriverStation.getAlliance().get() == Alliance.Red
+                            && tempTarget.getFiducialId() == VisionConstants.RedSpeakerCenterAprilTagID) {
+                        return Optional.of(tempTarget);
+                    }
+                    if (DriverStation.getAlliance().get() == Alliance.Blue
+                            && tempTarget.getFiducialId() == VisionConstants.BlueSpeakerCenterAprilTagID) {
+                        return Optional.of(tempTarget);
+                    }
                 }
             }
         }
+        return Optional.empty();
     }
-    return Optional.empty() ;
-}
-
-
-
 
 
 

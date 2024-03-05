@@ -85,13 +85,15 @@ public class SetShooterMountPosition extends Command {
                         climbState = "Trap";
                         break;
                     }
-                } else if (climbState.equals("Trap")) {
-                    desiredAngle = ShooterMountConstants.TrapAngle;
-                    desiredHeight = ShooterMountConstants.TrapHeight;
-                    if (shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
-                        break;
-                    }
                 }
+                climbState = "PreClimb";
+                // } else if (climbState.equals("Trap")) {
+                //     desiredAngle = ShooterMountConstants.TrapAngle;
+                //     desiredHeight = ShooterMountConstants.TrapHeight;
+                //     if (shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
+                //         break;
+                //     }
+                // }
                 break;
             case ClimbAbort:
                 shooterMountSub.stopElevatorMotor();

@@ -1,0 +1,118 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.69,
+        "y": 5.6212015419751244
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.6770555652380903,
+        "y": 6.05450249416904
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.9698264788785844,
+        "y": 6.2887192250846695
+      },
+      "prevControl": {
+        "x": 1.7577978228343458,
+        "y": 6.288719225078359
+      },
+      "nextControl": {
+        "x": 2.147210844702376,
+        "y": 6.288719225089949
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.007512037848611,
+        "y": 6.2887192250846695
+      },
+      "prevControl": {
+        "x": 3.667091092181779,
+        "y": 6.419650358033451
+      },
+      "nextControl": {
+        "x": 4.31199378803893,
+        "y": 6.171610859626854
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.007512037848611,
+        "y": 5.6212015419751244
+      },
+      "prevControl": {
+        "x": 4.429102153496745,
+        "y": 5.831996599799192
+      },
+      "nextControl": {
+        "x": 3.6130810490968113,
+        "y": 5.423986047599225
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.813006710178897,
+        "y": 5.492382339971527
+      },
+      "prevControl": {
+        "x": 3.4453918836510984,
+        "y": 5.527514849608872
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Start Intake",
+      "waypointRelativePos": 2.5,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartShooterIntake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": -178.95837332398992,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

@@ -227,6 +227,7 @@ public class ShooterMount extends SubsystemBase {
         // deltaY is the difference in height of target (a little over the bottom of speaker opening) and the current
         // elevator position.
         double height = ShooterMountConstants.MidSpeakerHeight - Constants.ShooterMountConstants.SpeakerHeight ;
+        height = Units.metersToInches(height ) ;
 
         //deltaX is the horizontal distance to the april tag (and the speaker)
         double x = target.get().getBestCameraToTarget().getX() ;

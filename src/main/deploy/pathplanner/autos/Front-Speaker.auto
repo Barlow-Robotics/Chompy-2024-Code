@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7167669684840067,
-      "y": 4.391563704668065
+      "x": 1.69,
+      "y": 5.6212015419751244
     },
-    "rotation": 119.47588900324571
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -62,9 +62,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Speaker"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Front-Speaker to Front-Note"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopShooterIntake"
           }
         }
       ]

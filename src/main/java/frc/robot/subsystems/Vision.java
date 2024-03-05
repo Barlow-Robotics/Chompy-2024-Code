@@ -288,12 +288,16 @@ public class Vision extends SubsystemBase {
 
     public Optional<PhotonTrackedTarget> getSpeakerTarget() {
     if (DriverStation.getAlliance().isPresent()) {
-        for (var tempTarget : allDetectedTargets) {
-            if (DriverStation.getAlliance().get() == Alliance.Red && tempTarget.getFiducialId() == VisionConstants.RedSpeakerCenterAprilTagID) {
-                return Optional.of(tempTarget) ;
-            }
-            if (DriverStation.getAlliance().get() == Alliance.Blue && tempTarget.getFiducialId() == VisionConstants.BlueSpeakerCenterAprilTagID) {
-                return Optional.of(tempTarget) ;
+        if (allDetectedTargets != null) {
+            for (var tempTarget : allDetectedTargets) {
+                if (DriverStation.getAlliance().get() == Alliance.Red
+                        && tempTarget.getFiducialId() == VisionConstants.RedSpeakerCenterAprilTagID) {
+                    return Optional.of(tempTarget);
+                }
+                if (DriverStation.getAlliance().get() == Alliance.Blue
+                        && tempTarget.getFiducialId() == VisionConstants.BlueSpeakerCenterAprilTagID) {
+                    return Optional.of(tempTarget);
+                }
             }
         }
     }

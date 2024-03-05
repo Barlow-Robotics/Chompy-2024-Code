@@ -247,7 +247,7 @@ public class Constants {
         public static final double MaxHeightInches = 47.5;
         public static final double StartingHeight = 19.75;  
 
-        public static final double SpeakerAngle = 44; 
+        public static final double SpeakerAngle = 45; 
         public static final double SpeakerHeight = StartingHeight; 
 
         public static final double AmpAngle = -30;

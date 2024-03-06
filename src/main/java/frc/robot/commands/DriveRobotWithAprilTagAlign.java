@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 
-public class DriveRobotWithAlign extends Command {
+public class DriveRobotWithAprilTagAlign extends Command {
     Drive driveSub;
     Vision visionSub;
 
@@ -69,7 +69,7 @@ public class DriveRobotWithAlign extends Command {
 
     // AprilTagFieldLayout aprilTagFieldLayout ;
 
-    public DriveRobotWithAlign(Drive driveSub, Supplier<Double> x, Supplier<Double> y, Supplier<Double> rot,
+    public DriveRobotWithAprilTagAlign(Drive driveSub, Supplier<Double> x, Supplier<Double> y, Supplier<Double> rot,
             Supplier<Double> multiplier, boolean FieldRelative, Vision visionSub, Supplier<Boolean> runAutoAlign) {
 
         this.driveSub = driveSub;
@@ -167,7 +167,7 @@ public class DriveRobotWithAlign extends Command {
         
         autoAlignActive = autoAlignEnabled ;
 
-        if (autoAlignActive ) {
+        if (autoAlignActive) {
             if (currentTrackedTarget.isPresent()) {
                 Optional<PhotonTrackedTarget> target = visionSub.getTarget(currentTrackedTarget.getAsInt());
                 if (target.isPresent()) {

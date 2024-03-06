@@ -256,6 +256,9 @@ public class ShooterMount extends SubsystemBase {
 
         // Compute the angle and return it.
         result = Math.toDegrees(Math.atan2(height, distance)) ; // Make sure X,Y units match
+
+        if (result > ShooterMountConstants.MaxAngleDegrees) result = ShooterMountConstants.MaxAngleDegrees;
+         
         return (result);
     }
 

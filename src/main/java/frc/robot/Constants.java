@@ -169,10 +169,11 @@ public class Constants {
 
     public static final class AutoConstants {
         public static final double MaxSpeedMetersPerSecond = DriveConstants.MaxModuleMetersPerSecond / 4; // CHANGE
-        public static final double MaxAngularSpeedRadiansPerSecond = DriveConstants.PhysicalMaxAngularSpeedRadiansPerSecond
-                / 10; // Default is 540 degress
+        public static final double MaxAngularSpeedRadiansPerSecond = DriveConstants.PhysicalMaxAngularSpeedRadiansPerSecond / 10; // Default is 540 degress
         // public static final double MaxAccelerationMetersPerSecondSquared = 3;
         public static final double MaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4; // default: 720 deg
+
+        public static final double NoteAlignTolerance = 10; // CHANGE (pixels from the center of the screen)
     }
 
     /***************************************************************************/

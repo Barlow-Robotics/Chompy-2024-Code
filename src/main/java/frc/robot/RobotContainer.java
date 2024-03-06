@@ -28,7 +28,7 @@ import frc.robot.Constants.ElectronicsIDs;
 import frc.robot.Constants.LogitechExtreme3DConstants;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.DriveRobot;
-import frc.robot.commands.DriveRobotWithAlign;
+import frc.robot.commands.DriveRobotWithAprilTagAlign;
 import frc.robot.commands.ReverseFloorIntake;
 // import frc.robot.commands.DriveRobotWithAlign;
 import frc.robot.commands.SetShooterMountPosition;
@@ -120,7 +120,7 @@ public class RobotContainer {
                 // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
                 // true));
 
-                new DriveRobotWithAlign(
+                new DriveRobotWithAprilTagAlign(
                         driveSub,
                         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
                         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),

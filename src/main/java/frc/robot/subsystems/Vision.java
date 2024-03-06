@@ -6,11 +6,9 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.VisionConstants.FallbackVisionStrategy;
-import static frc.robot.Constants.VisionConstants.MultiTagStdDevs;
 import static frc.robot.Constants.VisionConstants.PoseCameraName;
 import static frc.robot.Constants.VisionConstants.PoseCameraToRobot;
 import static frc.robot.Constants.VisionConstants.RobotToTargetCam;
-import static frc.robot.Constants.VisionConstants.SingleTagStdDevs;
 import static frc.robot.Constants.VisionConstants.FieldTagLayout;
 import static frc.robot.Constants.VisionConstants.TargetCameraName;
 import static frc.robot.Constants.VisionConstants.PrimaryVisionStrategy;
@@ -18,10 +16,14 @@ import static frc.robot.Constants.VisionConstants.PrimaryVisionStrategy;
 import java.util.Hashtable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.OptionalDouble;
 import java.util.OptionalInt;
 
 import org.littletonrobotics.junction.Logger;
@@ -33,6 +35,9 @@ import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -54,6 +59,9 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.Robot;
 
 public class Vision extends SubsystemBase {
+
+    ////// ------ PHOTON VISION AND APRIL TAG VARIABLES ------ //////
+
     private PhotonCamera targetCamera;
     private PhotonCamera poseCamera;
     public final PhotonPoseEstimator photonEstimator;
@@ -70,20 +78,28 @@ public class Vision extends SubsystemBase {
     public OptionalInt activeAlignTargetId;
     private Alliance alliance;
 
-
     boolean aprilTagDetected = false;
 
     public enum TargetToAlign {
         Speaker, Amp, Source, Stage, /* Note */
     }
 
-
-    Hashtable<Integer, Integer> blueTrackableIDs = new Hashtable<>() ;
-    Hashtable<Integer, Integer> redTrackableIDs = new Hashtable<>() ;
+    Hashtable<Integer, Integer> blueTrackableIDs = new Hashtable<>();
+    Hashtable<Integer, Integer> redTrackableIDs = new Hashtable<>();
 
     private final AprilTagFieldLayout aprilTagFieldLayout;
-    private boolean layoutOriginSet = false ;
+    private boolean layoutOriginSet = false;
 
+    ////// ------ NOTE VARIABLES ------ //////
+
+    boolean noteDetected;
+    double noteDistanceFromCenter;
+    double noteHeight;
+    double noteWidth;
+    String sourceIP = "Nothing Received" ;
+
+    private DatagramChannel visionChannel = null;
+    ByteBuffer buffer = ByteBuffer.allocate(1024);
 
     public Vision() /* throws IOException */ {
         targetCamera = new PhotonCamera(TargetCameraName);
@@ -108,14 +124,11 @@ public class Vision extends SubsystemBase {
         try {
             layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
 
-
         } catch (IOException e) {
             DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
             layout = null;
         }
         this.aprilTagFieldLayout = layout;
-
-
 
         // ----- Simulation
         if (Robot.isSimulation()) {
@@ -154,36 +167,45 @@ public class Vision extends SubsystemBase {
         // PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(),
         // fieldTags.getTagPose(target.getFiducialId()), robotToCamera);
 
-        blueTrackableIDs.put( 7, 7) ; // speaker
-        blueTrackableIDs.put( 6, 6) ; // amp
-        blueTrackableIDs.put( 1, 1) ; // source
-        blueTrackableIDs.put( 2, 2) ; // source
+        blueTrackableIDs.put(7, 7); // speaker
+        blueTrackableIDs.put(6, 6); // amp
+        blueTrackableIDs.put(1, 1); // source
+        blueTrackableIDs.put(2, 2); // source
 
-        redTrackableIDs.put( 4, 4) ; // speaker
-        redTrackableIDs.put( 5, 5) ; // amp
-        redTrackableIDs.put( 10, 10) ; // source
-        redTrackableIDs.put( 9, 9) ; // source
+        redTrackableIDs.put(4, 4); // speaker
+        redTrackableIDs.put(5, 5); // amp
+        redTrackableIDs.put(10, 10); // source
+        redTrackableIDs.put(9, 9); // source
+
+        ////// ------ JETSON NANO COMMUNICATION ------ //////
+
+        try {
+            visionChannel = DatagramChannel.open();
+            InetSocketAddress sAddr = new InetSocketAddress(5800);
+            visionChannel.bind(sAddr);
+            visionChannel.configureBlocking(false);
+        } catch (Exception ex) {
+            int wpk = 1;
+        }
 
     }
 
-
     public AprilTagFieldLayout getLayout() {
-        return this.aprilTagFieldLayout ;
+        return this.aprilTagFieldLayout;
     }
 
     private void setLayoutOrigin() {
-        if ( !layoutOriginSet) {
+        if (!layoutOriginSet) {
             var alliance = DriverStation.getAlliance();
             if (alliance.isPresent()) {
                 aprilTagFieldLayout.setOrigin(
                         DriverStation.getAlliance().get() == Alliance.Blue
                                 ? OriginPosition.kBlueAllianceWallRightSide
                                 : OriginPosition.kRedAllianceWallRightSide);
-                this.layoutOriginSet = true ;
+                this.layoutOriginSet = true;
             }
         }
     }
-
 
     public void alignTo(TargetToAlign target) {
         targetAlignSet.clear();
@@ -233,9 +255,6 @@ public class Vision extends SubsystemBase {
         }
     }
 
-
-
-
     public void periodic() {
 
         // TODO: feed this pose estimate back to the combined pose estimator in drive
@@ -250,7 +269,7 @@ public class Vision extends SubsystemBase {
         currentBestAlignTarget = null;
 
         if (tracking_result.isPresent()) {
-                allDetectedTargets = tracking_result.get().getTargets();
+            allDetectedTargets = tracking_result.get().getTargets();
 
             if (tracking_result.get().hasTargets()) {
 
@@ -268,21 +287,55 @@ public class Vision extends SubsystemBase {
 
         }
 
+        ////// ------ JETSON NANO COMMUNICATION ------ //////
+        try {
+            boolean done = false;
+            String message = "";
+            while (!done) {
+                InetSocketAddress sender = (InetSocketAddress) visionChannel.receive(buffer);
+                buffer.flip();
+                int limits = buffer.limit();
+                if (limits > 0) {
+                    byte bytes[] = new byte[limits];
+                    buffer.get(bytes, 0, limits);
+                    message = new String(bytes);
+                    sourceIP = sender.getAddress().toString();
+                } else {
+                    done = true;
+                }
+                buffer.clear();
+            }
+
+            if (message.length() > 0) {
+                Map<String, String> myMap = new HashMap<String, String>();
+
+                ObjectMapper objectMapper = new ObjectMapper();
+                myMap = objectMapper.readValue(message, new TypeReference<HashMap<String, String>>() {
+                });
+                this.noteDetected = Boolean.parseBoolean(myMap.get("detected"));
+                this.noteDistanceFromCenter = Double.parseDouble(myMap.get("distance_from_center"));
+                this.noteHeight = Double.parseDouble(myMap.get("bb_height"));
+                this.noteWidth = Double.parseDouble(myMap.get("bb_width"));
+            }
+
+            // var Vision_Info = new JSONObject(received);
+
+            // double aprilTagDistanceFromCenter =
+            // Vision_Info.get(april_tag_distance_from_center);
+        } catch (Exception ex) {
+            System.out.println("Exception reading data");
+        }
+
         advantageKitLogging();
     }
 
-
-
-
-
     ///////////////////////////////////
-    //   Pose stuff
+    // Pose stuff
     ///////////////////////////////////
-
 
     public PhotonPipelineResult getLatestPoseResult() {
 
-            return poseCamera.getLatestResult();
+        return poseCamera.getLatestResult();
     }
 
     public Optional<PhotonPipelineResult> getLatestTrackingResult() {
@@ -293,60 +346,55 @@ public class Vision extends SubsystemBase {
         }
     }
 
-
-
-
     ///////////////////////////////////
-    //   Tracking stuff
+    // Tracking stuff
     ///////////////////////////////////
 
-    // return the first target in the list with an ID we are interested in given our alliance color
-    // This uses the simple approach and assumes that we won't be seeing multiple that we're interested in or that
+    // return the first target in the list with an ID we are interested in given our
+    // alliance color
+    // This uses the simple approach and assumes that we won't be seeing multiple
+    // that we're interested in or that
     // the first one in the list is the best one.
     public Optional<PhotonTrackedTarget> getBestTrackableTarget() {
         if (DriverStation.getAlliance().isPresent()) {
             for (var tempTarget : allDetectedTargets) {
-                if (DriverStation.getAlliance().get() == Alliance.Red && redTrackableIDs.contains(tempTarget.getFiducialId())) {
-                    return Optional.of(tempTarget) ;
+                if (DriverStation.getAlliance().get() == Alliance.Red
+                        && redTrackableIDs.contains(tempTarget.getFiducialId())) {
+                    return Optional.of(tempTarget);
                 }
-                if (DriverStation.getAlliance().get() == Alliance.Blue && blueTrackableIDs.contains(tempTarget.getFiducialId())) {
-                    return Optional.of(tempTarget) ;
+                if (DriverStation.getAlliance().get() == Alliance.Blue
+                        && blueTrackableIDs.contains(tempTarget.getFiducialId())) {
+                    return Optional.of(tempTarget);
                 }
             }
         }
-        return Optional.empty() ;
+        return Optional.empty();
     }
-
 
     public Optional<PhotonTrackedTarget> getTarget(int id) {
         for (var tempTarget : allDetectedTargets) {
-            if ((tempTarget.getFiducialId() == id) ) {
-                return Optional.of(tempTarget) ;
+            if ((tempTarget.getFiducialId() == id)) {
+                return Optional.of(tempTarget);
             }
         }
-        return Optional.empty() ;
+        return Optional.empty();
     }
-
-
 
     public int getSpeakerTagID() {
         if (DriverStation.getAlliance().isPresent()) {
-            if (DriverStation.getAlliance().get() == Alliance.Red ) {
-                return VisionConstants.RedSpeakerCenterAprilTagID ;
+            if (DriverStation.getAlliance().get() == Alliance.Red) {
+                return VisionConstants.RedSpeakerCenterAprilTagID;
             }
             if (DriverStation.getAlliance().get() == Alliance.Blue) {
                 return VisionConstants.BlueSpeakerCenterAprilTagID;
             }
         }
-        return VisionConstants.BlueSpeakerCenterAprilTagID;  // no alliance info so pick one.
+        return VisionConstants.BlueSpeakerCenterAprilTagID; // no alliance info so pick one.
     }
-
-
 
     public Optional<Pose3d> getSpeakerPose() {
-        return aprilTagFieldLayout.getTagPose(getSpeakerTagID()) ;
+        return aprilTagFieldLayout.getTagPose(getSpeakerTagID());
     }
-
 
     public Optional<PhotonTrackedTarget> getSpeakerTarget() {
         if (DriverStation.getAlliance().isPresent()) {
@@ -365,8 +413,6 @@ public class Vision extends SubsystemBase {
         }
         return Optional.empty();
     }
-
-
 
     /**
      * The latest estimated robot pose on the field from vision data. This may be
@@ -400,33 +446,34 @@ public class Vision extends SubsystemBase {
         }
     }
 
-
     // // wpk not used anywhere
     // public Matrix<N3, N1> getEstimationStdDevs(Pose2d estimatedPose) {
-    //     var estStdDevs = SingleTagStdDevs;
-    //     var targets = getLatestPoseResult().getTargets();
-    //     int numTags = 0;
-    //     double avgDist = 0;
-    //     for (var tgt : targets) {
-    //         var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
-    //         if (tagPose.isEmpty())
-    //             continue;
-    //         numTags++;
-    //         avgDist += tagPose.get().toPose2d().getTranslation().getDistance(estimatedPose.getTranslation());
-    //     }
-    //     if (numTags == 0)
-    //         return estStdDevs;
-    //     avgDist /= numTags;
-    //     // Decrease stnd devs if multiple targets are visible
-    //     if (numTags > 1)
-    //         estStdDevs = MultiTagStdDevs;
-    //     // Increase stnd devs based on (average) distance
-    //     if (numTags == 1 && avgDist > 4)
-    //         estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-    //     else
-    //         estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+    // var estStdDevs = SingleTagStdDevs;
+    // var targets = getLatestPoseResult().getTargets();
+    // int numTags = 0;
+    // double avgDist = 0;
+    // for (var tgt : targets) {
+    // var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+    // if (tagPose.isEmpty())
+    // continue;
+    // numTags++;
+    // avgDist +=
+    // tagPose.get().toPose2d().getTranslation().getDistance(estimatedPose.getTranslation());
+    // }
+    // if (numTags == 0)
+    // return estStdDevs;
+    // avgDist /= numTags;
+    // // Decrease stnd devs if multiple targets are visible
+    // if (numTags > 1)
+    // estStdDevs = MultiTagStdDevs;
+    // // Increase stnd devs based on (average) distance
+    // if (numTags == 1 && avgDist > 4)
+    // estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE,
+    // Double.MAX_VALUE);
+    // else
+    // estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
 
-    //     return estStdDevs;
+    // return estStdDevs;
     // }
 
     // ----- Simulation
@@ -448,75 +495,74 @@ public class Vision extends SubsystemBase {
         return visionSim.getDebugField();
     }
 
-
-
     // public void chooseBestTarget() {
-    //     activeAlignTargetId = OptionalInt.empty();
-    //     if (allDetectedTargets != null) {
-    //         for (PhotonTrackedTarget target : allDetectedTargets) {
-    //             if (targetAlignSet.contains(target.getFiducialId())) {
-    //                 activeAlignTargetId = OptionalInt.of(target.getFiducialId());
-    //                 return;
-    //             }
-    //         }
-    //     }
+    // activeAlignTargetId = OptionalInt.empty();
+    // if (allDetectedTargets != null) {
+    // for (PhotonTrackedTarget target : allDetectedTargets) {
+    // if (targetAlignSet.contains(target.getFiducialId())) {
+    // activeAlignTargetId = OptionalInt.of(target.getFiducialId());
+    // return;
+    // }
+    // }
+    // }
     // }
 
-
     // public OptionalDouble getTargetRotOffSet() {
-    //     if (currentBestAlignTarget != null) {
-    //         return OptionalDouble.of(currentBestAlignTarget.getYaw());
-    //     }
-    //     return OptionalDouble.empty();
+    // if (currentBestAlignTarget != null) {
+    // return OptionalDouble.of(currentBestAlignTarget.getYaw());
+    // }
+    // return OptionalDouble.empty();
     // }
 
     // public OptionalDouble getTargetLateralOffSet() {
-    //     if (currentBestAlignTarget != null) {
-    //         // The pose of the april tag in the camera reference frame
-    //         var targetPose = currentBestAlignTarget.getBestCameraToTarget();
+    // if (currentBestAlignTarget != null) {
+    // // The pose of the april tag in the camera reference frame
+    // var targetPose = currentBestAlignTarget.getBestCameraToTarget();
 
-    //         // targetYaw is the offset angle from camera-forward to the target
-    //         var targetYaw = currentBestAlignTarget.getYaw();
+    // // targetYaw is the offset angle from camera-forward to the target
+    // var targetYaw = currentBestAlignTarget.getYaw();
 
-    //         // Now find the "pointing angle of the target" in the reference frame
-    //         // of the robot. If you drew a ray from the target in space this would be
-    //         // the "center line" the robot wants to reach laterally.
+    // // Now find the "pointing angle of the target" in the reference frame
+    // // of the robot. If you drew a ray from the target in space this would be
+    // // the "center line" the robot wants to reach laterally.
 
-    //         // Note: this rotation value is a bit counter-intuitive. A Z-axis rotation of 0
-    //         // actually means the April tag is pointed in the same direction as the camera
-    //         var targetPointing = targetPose.getRotation().getZ();
-    //         // We want an angle about 0 when the tag is facing us so shift by Pi
-    //         // and then unroll.
-    //         targetPointing += Math.PI;
-    //         if (targetPointing > Math.PI) {
-    //             targetPointing -= 2 * Math.PI;
-    //         } else if (targetPointing < -Math.PI) {
-    //             targetPointing += 2 * Math.PI;
-    //         }
-    //         // Now combine the 2 angles to get the total angle between the robot and
-    //         // this center-line.
-    //         var combinedAngle = Math.toRadians(targetYaw) - targetPointing;
+    // // Note: this rotation value is a bit counter-intuitive. A Z-axis rotation of
+    // 0
+    // // actually means the April tag is pointed in the same direction as the
+    // camera
+    // var targetPointing = targetPose.getRotation().getZ();
+    // // We want an angle about 0 when the tag is facing us so shift by Pi
+    // // and then unroll.
+    // targetPointing += Math.PI;
+    // if (targetPointing > Math.PI) {
+    // targetPointing -= 2 * Math.PI;
+    // } else if (targetPointing < -Math.PI) {
+    // targetPointing += 2 * Math.PI;
+    // }
+    // // Now combine the 2 angles to get the total angle between the robot and
+    // // this center-line.
+    // var combinedAngle = Math.toRadians(targetYaw) - targetPointing;
 
-    //         var targetDist = targetPose.getTranslation().getNorm();
+    // var targetDist = targetPose.getTranslation().getNorm();
 
-    //         // Finally, the lateral distance can be found by trig:
-    //         // Sin(angle) = Lateral / Hypotenuse
-    //         // Lateral = Hypotenuse * Sin(combined angle)
-    //         var lateralDist = Math.sin(combinedAngle) * targetDist;
+    // // Finally, the lateral distance can be found by trig:
+    // // Sin(angle) = Lateral / Hypotenuse
+    // // Lateral = Hypotenuse * Sin(combined angle)
+    // var lateralDist = Math.sin(combinedAngle) * targetDist;
 
-    //         return OptionalDouble.of(lateralDist);
-    //     }
-    //     return OptionalDouble.empty();
+    // return OptionalDouble.of(lateralDist);
+    // }
+    // return OptionalDouble.empty();
     // }
 
     // public OptionalDouble getTargetDistance() {
-    //     if (currentBestAlignTarget != null) {
-    //         var targetPose = currentBestAlignTarget.getBestCameraToTarget();
-    //         var targetDist = targetPose.getTranslation().getNorm();
+    // if (currentBestAlignTarget != null) {
+    // var targetPose = currentBestAlignTarget.getBestCameraToTarget();
+    // var targetDist = targetPose.getTranslation().getNorm();
 
-    //         return OptionalDouble.of(targetDist);
-    //     }
-    //     return OptionalDouble.empty();
+    // return OptionalDouble.of(targetDist);
+    // }
+    // return OptionalDouble.empty();
     // }
 
     private void advantageKitLogging() {
@@ -531,9 +577,12 @@ public class Vision extends SubsystemBase {
             Logger.recordOutput("vision/bestCameraToTarget", currentBestTarget.getBestCameraToTarget());
         }
         // if (currentBestAlignTarget != null) {
-        //     Logger.recordOutput("vision/target/RotOffset", getTargetRotOffSet().getAsDouble());
-        //     Logger.recordOutput("vision/target/LateralOffset", getTargetLateralOffSet().getAsDouble());
-        //     Logger.recordOutput("vision/target/Distance", getTargetDistance().getAsDouble());
+        // Logger.recordOutput("vision/target/RotOffset",
+        // getTargetRotOffSet().getAsDouble());
+        // Logger.recordOutput("vision/target/LateralOffset",
+        // getTargetLateralOffSet().getAsDouble());
+        // Logger.recordOutput("vision/target/Distance",
+        // getTargetDistance().getAsDouble());
         // }
 
         Logger.recordOutput("vision/targetAlignSet", targetAlignSet.toString());
@@ -553,112 +602,111 @@ public class Vision extends SubsystemBase {
     // }
 
     // public double getSpeakerAprilTagPitch() {
-    //     // returns InvalidAngle constant if not facing speaker
+    // // returns InvalidAngle constant if not facing speaker
 
-    //     var poseResult = getLatestPoseResult();
-    //     if (!poseResult.hasTargets())
-    //         return (VisionConstants.InvalidAngle);
+    // var poseResult = getLatestPoseResult();
+    // if (!poseResult.hasTargets())
+    // return (VisionConstants.InvalidAngle);
 
-    //     var target = poseResult.getBestTarget();
-    //     int targetAprilTagID = target.getFiducialId();
+    // var target = poseResult.getBestTarget();
+    // int targetAprilTagID = target.getFiducialId();
 
-    //     // check that target is the Speaker's center AprilTag
-    //     if (targetAprilTagID == VisionConstants.NullAprilTagID) {
-    //         // Vision has no target acquired
-    //         return (VisionConstants.InvalidAngle);
-    //     }
-    //     // If the primary target is not a speaker center AprilTag...
-    //     else if (targetAprilTagID != VisionConstants.RedSpeakerCenterAprilTagID
-    //             && targetAprilTagID != VisionConstants.BlueSpeakerCenterAprilTagID) {
-    //         // Walk the list of found AprilTags aside from the primary
-    //         // to see if desired speaker center AprilTag is in the list
-    //         List<PhotonTrackedTarget> targets = poseResult.getTargets();
-    //         target = null;
-    //         for (var tempTarget : targets) {
-    //             if ((tempTarget.getFiducialId() == VisionConstants.RedSpeakerCenterAprilTagID) ||
-    //                     tempTarget.getFiducialId() == VisionConstants.BlueSpeakerCenterAprilTagID)
-    //             {
-    //                 target = tempTarget;
-    //                 break;
-    //             }
-    //         }
-    //     }
-    //     if (target != null){
-    //         return target.getPitch();
-    //     }
-    //     else {
-    //         return(VisionConstants.InvalidAngle);
-    //     }
+    // // check that target is the Speaker's center AprilTag
+    // if (targetAprilTagID == VisionConstants.NullAprilTagID) {
+    // // Vision has no target acquired
+    // return (VisionConstants.InvalidAngle);
+    // }
+    // // If the primary target is not a speaker center AprilTag...
+    // else if (targetAprilTagID != VisionConstants.RedSpeakerCenterAprilTagID
+    // && targetAprilTagID != VisionConstants.BlueSpeakerCenterAprilTagID) {
+    // // Walk the list of found AprilTags aside from the primary
+    // // to see if desired speaker center AprilTag is in the list
+    // List<PhotonTrackedTarget> targets = poseResult.getTargets();
+    // target = null;
+    // for (var tempTarget : targets) {
+    // if ((tempTarget.getFiducialId() ==
+    // VisionConstants.RedSpeakerCenterAprilTagID) ||
+    // tempTarget.getFiducialId() == VisionConstants.BlueSpeakerCenterAprilTagID)
+    // {
+    // target = tempTarget;
+    // break;
+    // }
+    // }
+    // }
+    // if (target != null){
+    // return target.getPitch();
+    // }
+    // else {
+    // return(VisionConstants.InvalidAngle);
+    // }
     // }
 
     // public double getSpeakerTargetDistance()
     // {
-    //     var poseResult = getLatestPoseResult();
-    //     if (!poseResult.hasTargets())
-    //         return (VisionConstants.NoTargetDistance);
-    
-    //     var target = poseResult.getBestTarget();
-    //     int targetAprilTagID = target.getFiducialId();
-    
-    //     // check that target is the Speaker's center AprilTag
-    //     // Does this just duplicate the poseResults.hasTargets() test above???
-    //     if (targetAprilTagID == VisionConstants.NullAprilTagID) {
-    //         // Vision has no target acquired
-    //         return (VisionConstants.NoTargetDistance);
-    //     }
+    // var poseResult = getLatestPoseResult();
+    // if (!poseResult.hasTargets())
+    // return (VisionConstants.NoTargetDistance);
 
-    //     // If the primary target is not a speaker center AprilTag...
-    //     target = null;
-    //     if (targetAprilTagID != VisionConstants.RedSpeakerCenterAprilTagID
-    //             && targetAprilTagID != VisionConstants.BlueSpeakerCenterAprilTagID) 
-    //     {
-    //         // Walk the list of found AprilTags aside from the primary
-    //         // to see if desired speaker center AprilTag is in the list
-    //         List<PhotonTrackedTarget> targets = poseResult.getTargets();
-    //         for (var tempTarget : targets) {
-    //             if ((tempTarget.getFiducialId() == VisionConstants.RedSpeakerCenterAprilTagID) ||
-    //                     tempTarget.getFiducialId() == VisionConstants.BlueSpeakerCenterAprilTagID)
-    //             {
-    //                 target = tempTarget;
-    //                 break;
-    //             }
-    //         }
-    //     }
-    
-    //     if (target != null)
-    //         // Is the X value is the distance to the AprilTag?
-    //         // Or do I need to compute it as the length of the hypotenuse
-    //         //	where X and Y are the sides of the right angle
-    //         // Or, maybe we can use getTargetDistance() to find this?
-    //         //	==> This method doesn't find the Speaker AprilTag we need.
-    //         //	==>  It just uses the target that is currently "best aligned"
-    //         return(target.getBestCameraToTarget().getX());
-    //     else
-    //         // What should we return when there is no target?
-    //         return(VisionConstants.NoTargetDistance);
+    // var target = poseResult.getBestTarget();
+    // int targetAprilTagID = target.getFiducialId();
+
+    // // check that target is the Speaker's center AprilTag
+    // // Does this just duplicate the poseResults.hasTargets() test above???
+    // if (targetAprilTagID == VisionConstants.NullAprilTagID) {
+    // // Vision has no target acquired
+    // return (VisionConstants.NoTargetDistance);
     // }
 
-
-
-
-    // public boolean noteIsVisible() {
-    // return this.noteDetected;
+    // // If the primary target is not a speaker center AprilTag...
+    // target = null;
+    // if (targetAprilTagID != VisionConstants.RedSpeakerCenterAprilTagID
+    // && targetAprilTagID != VisionConstants.BlueSpeakerCenterAprilTagID)
+    // {
+    // // Walk the list of found AprilTags aside from the primary
+    // // to see if desired speaker center AprilTag is in the list
+    // List<PhotonTrackedTarget> targets = poseResult.getTargets();
+    // for (var tempTarget : targets) {
+    // if ((tempTarget.getFiducialId() ==
+    // VisionConstants.RedSpeakerCenterAprilTagID) ||
+    // tempTarget.getFiducialId() == VisionConstants.BlueSpeakerCenterAprilTagID)
+    // {
+    // target = tempTarget;
+    // break;
     // }
+    // }
+    // }
+
+    // if (target != null)
+    // // Is the X value is the distance to the AprilTag?
+    // // Or do I need to compute it as the length of the hypotenuse
+    // // where X and Y are the sides of the right angle
+    // // Or, maybe we can use getTargetDistance() to find this?
+    // // ==> This method doesn't find the Speaker AprilTag we need.
+    // // ==> It just uses the target that is currently "best aligned"
+    // return(target.getBestCameraToTarget().getX());
+    // else
+    // // What should we return when there is no target?
+    // return(VisionConstants.NoTargetDistance);
+    // }
+
+    public boolean noteIsVisible() {
+        return this.noteDetected;
+    }
 
     // public boolean isAligningWithNote() {
-    // return aligningWithNote;
+    //     return aligningWithNote;
     // }
 
-    // public double getNoteDistanceFromCenter() {
-    // // tell how many pixels the note is from the center of the screen.
-    // return this.noteDistanceFromCenter;
-    // }
+    public double getNoteDistanceFromCenter() {
+        // tell how many pixels the note is from the center of the screen.
+        return this.noteDistanceFromCenter;
+    }
 
-    // public double getNoteHeight() {
-    // return this.noteHeight;
-    // }
+    public double getNoteHeight() {
+        return this.noteHeight;
+    }
 
-    // public double getNoteWidth() {
-    // return this.noteWidth;
-    // }
+    public double getNoteWidth() {
+        return this.noteWidth;
+    }
 }

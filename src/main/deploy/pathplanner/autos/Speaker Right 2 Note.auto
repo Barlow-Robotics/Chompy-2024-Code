@@ -68,7 +68,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Speaker Right Intake"
+                  "pathName": "Speaker Right Intake Right"
                 }
               }
             ]
@@ -87,7 +87,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Speaker Right Shoot"
+                  "pathName": "Speaker Right Shoot Right"
                 }
               },
               {

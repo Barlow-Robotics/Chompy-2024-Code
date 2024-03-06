@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7397235627804591,
-      "y": 6.630265806827911
+      "x": 1.37,
+      "y": 5.632912378520905
     },
-    "rotation": -120.5048404441992
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -43,32 +43,63 @@
           }
         },
         {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetShooterMountPositionFloor"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Speaker Front Intake Mid"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "race",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "SetShooterMountPositionFloor"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    }
-                  ]
+                  "pathName": "Speaker Front Shoot Mid"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetShooterMountPositionSpeaker"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "StartShooterIntake"
                 }
               },
               {
-                "type": "path",
+                "type": "wait",
                 "data": {
-                  "pathName": "Speaker Left Intake Left"
+                  "waitTime": 0.75
                 }
               }
             ]
@@ -81,19 +112,50 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Speaker Left Shoot Left"
+                  "name": "SetShooterMountPositionFloor"
                 }
               },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Speaker Front Intake Left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Speaker Left Shoot Left"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
               {
                 "type": "named",
                 "data": {
                   "name": "SetShooterMountPositionSpeaker"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
                 }
               }
             ]
@@ -119,22 +181,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopShooterIntake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SetShooterMountPositionFloor"
-                }
-              }
-            ]
+            "name": "StopShooterIntake"
           }
         }
       ]

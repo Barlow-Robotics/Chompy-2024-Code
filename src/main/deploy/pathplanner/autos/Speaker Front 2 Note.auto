@@ -64,7 +64,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Speaker Front Intake"
+            "pathName": "Speaker Front Intake Mid"
           }
         },
         {
@@ -74,7 +74,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Speaker Front Shoot"
+                  "pathName": "Speaker Front Shoot Mid"
                 }
               }
             ]

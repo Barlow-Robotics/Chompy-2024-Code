@@ -17,6 +17,7 @@ import static frc.robot.Constants.VisionConstants.PrimaryVisionStrategy;
 
 import java.util.Hashtable;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -101,6 +102,7 @@ public class Vision extends SubsystemBase {
 
         targetAlignSet = new HashSet<Integer>();
         activeAlignTargetId = OptionalInt.empty();
+        allDetectedTargets = new ArrayList<PhotonTrackedTarget>();
 
         AprilTagFieldLayout layout;
         try {

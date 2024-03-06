@@ -45,7 +45,7 @@ public class StartShooterIntake extends Command {
             } else if (shooterMountSub.getShooterMountState() == ShooterMountState.Speaker) {
                 desiredLeftFlywheelMotorRPM = ShooterConstants.LeftSpeakerRPM;
                 desiredRightFlywheelMotorRPM = ShooterConstants.RightSpeakerRPM;
-            } else {
+            } else if (shooterMountSub.getShooterMountState() == ShooterMountState.Ferry) {
                 desiredLeftFlywheelMotorRPM = ShooterConstants.LeftFerryRPM;
                 desiredRightFlywheelMotorRPM = ShooterConstants.RightFerryRPM;
             }
@@ -54,21 +54,6 @@ public class StartShooterIntake extends Command {
 
     @Override
     public void execute() {
-
-        // First time through, this checks to make sure you don't accidentally try to
-        // intake a second note
-        // In subsequent passes, this checks to see if you got the note you intended to
-        // intake
-
-        if ((shooterMountSub.getShooterMountState() == ShooterMountState.SourceIntake ||
-                shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake || 
-                shooterMountSub.getAngleCANCoderDegrees() < (FloorIntakeAngleWithTolerance))
-                && shooterSub.isNoteLoaded()) {
-            shooterSub.stop();
-            floorIntakeSub.stop();
-            return;
-        }
-
         shooterSub.startFlywheels(desiredLeftFlywheelMotorRPM, desiredRightFlywheelMotorRPM);
         if (shooterSub.isWithinFlywheelVelocityTolerance(desiredLeftFlywheelMotorRPM, desiredRightFlywheelMotorRPM)) {
             shooterSub.startIndex(desiredIndexRPM);
@@ -77,9 +62,6 @@ public class StartShooterIntake extends Command {
         if (shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake ||
             shooterMountSub.getAngleCANCoderDegrees() < (FloorIntakeAngleWithTolerance)) {
             floorIntakeSub.start();
-            // if (shooterSub.isNoteLoaded()) { // did we get the note we wanted
-            // shooterSub.stop(); // don't need these 3 lines b/c the above will catch it
-            // floorIntakeSub.stop();
         }
     }
 

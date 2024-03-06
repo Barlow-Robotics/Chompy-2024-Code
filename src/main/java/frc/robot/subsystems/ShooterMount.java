@@ -122,22 +122,22 @@ public class ShooterMount extends SubsystemBase {
             stopAngleMotor();
         }
 
-        // wpk remove return statement to enable this code
-        //return ;
-        double trackedAngle = 0.0 ;
-            // trackedAngle = getSpeakerShooterAngle() ;  //wpk temp. remove this line later
+        // // wpk remove return statement to enable this code
+        // //return ;
+        // double trackedAngle = 0.0 ;
+        //     // trackedAngle = getSpeakerShooterAngle() ;  //wpk temp. remove this line later
+        // // Logger.recordOutput("ShooterMount/Angle/TrackedAngle", trackedAngle);
+        // if ( this.shooterPosState == ShooterMountState.Speaker) {
+        //     trackedAngle = getSpeakerShooterAngle() ;
+        //     //trackedAngle = this.desiredDegrees ;
+        // } else {
+        //     trackedAngle = this.desiredDegrees ;
+        // }
         // Logger.recordOutput("ShooterMount/Angle/TrackedAngle", trackedAngle);
-        if ( this.shooterPosState == ShooterMountState.Speaker) {
-            trackedAngle = getSpeakerShooterAngle() ;
-            //trackedAngle = this.desiredDegrees ;
-        } else {
-            trackedAngle = this.desiredDegrees ;
-        }
-        Logger.recordOutput("ShooterMount/Angle/TrackedAngle", trackedAngle);
 
-        setAngle(trackedAngle);
+        // setAngle(trackedAngle);
 
-        Logger.recordOutput("ShooterMount/Angle/NewIsWithinAngleTolerance", isWithinAngleTolerance2());
+        // Logger.recordOutput("ShooterMount/Angle/NewIsWithinAngleTolerance", isWithinAngleTolerance2());
 
 
 
@@ -225,9 +225,6 @@ public class ShooterMount extends SubsystemBase {
     public String getShooterMountStateAsString() {
         return shooterPosState.toString();
     }
-
-
-
 
     // wpk move this to an appropriate area in the file.
     public double getSpeakerShooterAngle() {

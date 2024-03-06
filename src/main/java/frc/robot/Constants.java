@@ -242,12 +242,12 @@ public class Constants {
         public static final double AngleTolerance = 1.5; 
         public static final double HeightTolerance = 0.25;
 
-        public static final double MaxAngleDegrees = 45;
+        public static final double MaxAngleDegrees = 55;
         public static final double MinAngleDegrees = -63.5;
         public static final double MaxHeightInches = 47.5;
         public static final double StartingHeight = 19.75;  
 
-        public static final double SpeakerAngle = 45; 
+        public static final double SpeakerAngle = 50; 
         public static final double SpeakerHeight = StartingHeight; 
 
         public static final double AmpAngle = -30;

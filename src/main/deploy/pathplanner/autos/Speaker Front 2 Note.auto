@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.69,
-      "y": 5.6212015419751244
+      "x": 1.2671762861357376,
+      "y": 5.632912378520905
     },
     "rotation": 180.0
   },
@@ -62,13 +62,44 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Speaker Front Intake"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Front-Speaker to Front-Note"
+                  "pathName": "Speaker Front Shoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetShooterMountPositionSpeaker"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "StartShooterIntake"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.75
                 }
               }
             ]
@@ -78,6 +109,25 @@
           "type": "named",
           "data": {
             "name": "StopShooterIntake"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetShooterMountPositionFloor"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              }
+            ]
           }
         }
       ]

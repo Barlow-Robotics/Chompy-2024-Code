@@ -3,61 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.69,
-        "y": 5.6212015419751244
+        "x": 1.37,
+        "y": 5.632912378520905
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6770555652380903,
-        "y": 6.05450249416904
+        "x": 1.6264048057910656,
+        "y": 6.312140898176232
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "speak-pos"
     },
     {
       "anchor": {
-        "x": 1.9698264788785844,
-        "y": 6.2887192250846695
+        "x": 3.433681047105317,
+        "y": 6.265297551993107
       },
       "prevControl": {
-        "x": 1.7577978228343458,
-        "y": 6.288719225078359
+        "x": 2.4499707772596695,
+        "y": 6.5697793021834245
       },
       "nextControl": {
-        "x": 2.147210844702376,
-        "y": 6.288719225089949
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 4.007512037848611,
-        "y": 6.2887192250846695
-      },
-      "prevControl": {
-        "x": 3.667091092181779,
-        "y": 6.419650358033451
-      },
-      "nextControl": {
-        "x": 4.31199378803893,
-        "y": 6.171610859626854
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 4.007512037848611,
-        "y": 5.6212015419751244
-      },
-      "prevControl": {
-        "x": 4.429102153496745,
-        "y": 5.831996599799192
-      },
-      "nextControl": {
-        "x": 3.6130810490968113,
-        "y": 5.423986047599225
+        "x": 3.745320291985995,
+        "y": 6.168837785720517
       },
       "isLocked": false,
       "linkedName": null
@@ -68,12 +36,12 @@
         "y": 5.492382339971527
       },
       "prevControl": {
-        "x": 3.4453918836510984,
-        "y": 5.527514849608872
+        "x": 4.054355384031737,
+        "y": 5.351852301422149
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Front-Note"
     }
   ],
   "rotationTargets": [],
@@ -81,7 +49,7 @@
   "eventMarkers": [
     {
       "name": "Start Intake",
-      "waypointRelativePos": 2.5,
+      "waypointRelativePos": 1.25,
       "command": {
         "type": "parallel",
         "data": {
@@ -98,8 +66,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 1.5,
+    "maxAcceleration": 1.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

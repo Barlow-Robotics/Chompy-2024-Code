@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.OptionalDouble;
-
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.util.Units;
@@ -17,7 +15,6 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.MusicTone;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
@@ -276,16 +273,11 @@ public class ShooterMount extends SubsystemBase {
         return withinTolerence ;
     }
 
-
     private boolean isWithinAngleTolerance2() {
         boolean withinTolerence = (getAngleCANCoderDegrees() >= desiredDegrees - ShooterMountConstants.AngleTolerance) &&
                     (getAngleCANCoderDegrees() <= desiredDegrees + ShooterMountConstants.AngleTolerance) ;
         return withinTolerence ;
     }
-
-
-
-
 
     private boolean isWithinHeightTolerance(double desiredHeight) {
         return (getHeightInches() >= desiredHeight - ShooterMountConstants.HeightTolerance) &&

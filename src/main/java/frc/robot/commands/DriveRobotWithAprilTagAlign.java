@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import frc.robot.Constants.DriveConstants;
 
-import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.function.Supplier;
 
@@ -14,24 +13,13 @@ import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-// import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
-// import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Vision;
 import java.util.Optional;
-
-
-import java.io.IOException;
-import java.util.Optional;
-
 
 public class DriveRobotWithAprilTagAlign extends Command {
     Drive driveSub;

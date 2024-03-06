@@ -4,15 +4,10 @@
 
 package frc.robot.commands;
 
-import java.util.OptionalDouble;
-
 import org.littletonrobotics.junction.Logger;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.wpilibj2.command.Command;
-//import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterMountConstants;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.ShooterMount;
 import frc.robot.subsystems.ShooterMount.ShooterMountState;
 import frc.robot.subsystems.Vision;

@@ -36,7 +36,7 @@ import frc.robot.Constants.ElectronicsIDs;
 import frc.robot.Constants.ShooterMountConstants;
 import frc.robot.Robot;
 import frc.robot.sim.PhysicsSim;
-
+import frc.robot.subsystems.Vision.TargetToAlign;
 import frc.robot.Constants;
 
 public class ShooterMount extends SubsystemBase {
@@ -63,15 +63,20 @@ public class ShooterMount extends SubsystemBase {
     private final CANcoderSimState absoluteAngleEncoderSim; // CHANGE needed? never used
 
     public enum ShooterMountState {
-        Speaker, Amp, SourceIntake, FloorIntake, Climb, MovingToPosition, ClimbAbort, Ferry
+        Speaker, Amp, SourceIntake, FloorIntake, Preclimb, Climb, MovingToPosition, ClimbAbort, Ferry
     }
 
-    private ShooterMountState shooterPosState = ShooterMountState.FloorIntake;
+    private ShooterMountState actualState = ShooterMountState.FloorIntake;
+    private ShooterMountState desiredState = ShooterMountState.FloorIntake;
+
+    private double desiredAngle = Constants.ShooterMountConstants.FloorIntakeAngle ;
+    private double desiredHeight = Constants.ShooterMountConstants.FloorIntakeHeight ;
 
     private boolean simulationInitialized = false;
 
     private final Drive driveSub ;
     private final Vision visionSub ;
+
     private double desiredDegrees = Constants.ShooterMountConstants.FloorIntakeAngle ;
 
     public ShooterMount( Vision visionSub, Drive driveSub ) {
@@ -102,9 +107,107 @@ public class ShooterMount extends SubsystemBase {
         this.visionSub = visionSub ;
     }
 
+
+
+
+    private void setDesiredAngleAndHeight() {
+
+        switch (desiredState) {
+            case MovingToPosition: // LT added to remove a warning. assuming not doing anything here.
+                break;
+            case Speaker:
+                // desiredAngle = ShooterMountConstants.SpeakerAngle;
+                desiredAngle = getSpeakerShooterAngle() ;
+                desiredHeight = ShooterMountConstants.SpeakerHeight;
+                break;
+
+            case Amp:
+                desiredAngle = ShooterMountConstants.AmpAngle;
+                desiredHeight = ShooterMountConstants.AmpHeight;
+                break;
+            case SourceIntake:
+                desiredAngle = ShooterMountConstants.SourceIntakeAngle;
+                desiredHeight = ShooterMountConstants.SourceIntakeHeight;
+                break;
+            case FloorIntake:
+                desiredAngle = ShooterMountConstants.FloorIntakeAngle;
+                desiredHeight = ShooterMountConstants.FloorIntakeHeight;
+                break;
+            case Preclimb:
+                desiredAngle = ShooterMountConstants.TrapAngle;  // wpk, do we need a better name for this constant?
+                desiredHeight = ShooterMountConstants.ClimbHeight;
+                break;
+            case Climb:
+
+                //wpk - need to change to PID slot 1
+                desiredAngle = ShooterMountConstants.TrapAngle;  // wpk, do we need a better name for this constant?
+                desiredHeight = ShooterMountConstants.StartingHeight;
+
+
+                // wpk - need to come back to this...
+
+                // if (climbState.equals("PreClimb")) {
+                //     desiredHeight = ShooterMountConstants.ClimbHeight;
+                //     if (shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
+                //         climbState = "Climb";
+                //         break;
+                //     }
+                // } else if (climbState.equals("Climb")) {
+                //     desiredHeight = ShooterMountConstants.StartingHeight;
+                //     if (shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
+                //         climbState = "Trap";
+                //         break;
+                //     }
+                // }
+                // climbState = "PreClimb";
+
+
+                // } else if (climbState.equals("Trap")) {
+                // desiredAngle = ShooterMountConstants.TrapAngle;
+                // desiredHeight = ShooterMountConstants.TrapHeight;
+                // if (shooterMountSub.isWithinPositionTolerance(desiredAngle, desiredHeight)) {
+                // break;
+                // }
+                // }
+                break;
+            case ClimbAbort:
+                // wpk - is there something better we can do here?
+                stopElevatorMotor();
+                stopAngleMotor();
+                break;
+            case Ferry:
+                desiredAngle = ShooterMountConstants.FerryAngle;
+                desiredHeight = ShooterMountConstants.FerryHeight;
+                break;
+        }
+        setAngle( desiredAngle) ;
+        setHeightInches(desiredHeight);
+
+    }
+
+
+    private boolean isAtDesiredState() {
+        if ( isWithinAngleTolerance() && isWithinHeightTolerance()) {
+            return true ;
+        } else {
+            return false ;
+        }
+    }
+
+    public boolean hasCompletedMovement() {
+        return desiredState == actualState ;
+    }
+
+
+
+
     @Override
     public void periodic() {
-        logData();
+
+        setDesiredAngleAndHeight();
+        if ( isAtDesiredState()) {
+            actualState = desiredState ;
+        }
 
         if ((isAtBottom() && leftElevatorMotor.getVelocity().getValue() < 0) ||
                 (getHeightInches() == ShooterMountConstants.MaxHeightInches
@@ -119,53 +222,20 @@ public class ShooterMount extends SubsystemBase {
             stopAngleMotor();
         }
 
-        // // wpk remove return statement to enable this code
-        // //return ;
-        // double trackedAngle = 0.0 ;
-        //     // trackedAngle = getSpeakerShooterAngle() ;  //wpk temp. remove this line later
-        // // Logger.recordOutput("ShooterMount/Angle/TrackedAngle", trackedAngle);
-        // if ( this.shooterPosState == ShooterMountState.Speaker) {
-        //     trackedAngle = getSpeakerShooterAngle() ;
-        //     //trackedAngle = this.desiredDegrees ;
-        // } else {
-        //     trackedAngle = this.desiredDegrees ;
-        // }
-        // Logger.recordOutput("ShooterMount/Angle/TrackedAngle", trackedAngle);
-
-        // setAngle(trackedAngle);
-
-        // Logger.recordOutput("ShooterMount/Angle/NewIsWithinAngleTolerance", isWithinAngleTolerance2());
-
-
+        logData();
 
     }
 
     /* ANGLE */
 
     public void setAngle(double desiredDegrees) {
-
         final MotionMagicVoltage request = new MotionMagicVoltage(Units.degreesToRotations(desiredDegrees));
         angleMotor.setControl(request);
         this.desiredDegrees = desiredDegrees ;
-
-        // wpk test code
-        // double newAngle = 0.0 ;
-        // if (this.shooterPosState == ShooterMountState.Speaker) {
-        //     newAngle = getSpeakerShooterAngle() ;
-        // } else {
-        //     newAngle = desiredDegrees ;
-        // }       
-        // final MotionMagicVoltage request = new MotionMagicVoltage(Units.degreesToRotations(newAngle));
-        // angleMotor.setControl(request);
-        // this.desiredDegrees = newAngle ;
     }
 
     public void stopAngleMotor() {
         angleMotor.set(0);
-    }
-
-    public void setAngleWithVision() {
-        // Need to make this
     }
 
     public double getAngleCANCoderDegrees() {
@@ -182,7 +252,11 @@ public class ShooterMount extends SubsystemBase {
         double rotations = ((desiredInches - ShooterMountConstants.StartingHeight) / 2)
                 * ShooterMountConstants.RotationsPerElevatorInch;
         MotionMagicVoltage request = new MotionMagicVoltage(rotations);
-        leftElevatorMotor.setControl(request);
+        if ( this.desiredState == ShooterMountState.Climb) {
+            leftElevatorMotor.setControl(request.withSlot(1));
+        } else {
+            leftElevatorMotor.setControl(request.withSlot(0));
+        }
     }
 
     public double getHeightInches() {
@@ -211,19 +285,26 @@ public class ShooterMount extends SubsystemBase {
 
     /* SHOOTER MOUNT STATES */
 
-    public void setShooterPosState(ShooterMountState newState) {
-        shooterPosState = newState;
+    public ShooterMountState getDesiredState() {
+        return desiredState;
+    }
+
+    public void setDesiredState(ShooterMountState newState) {
+        if ( newState == ShooterMountState.MovingToPosition) {
+            // this desired state is invalid and will be ignored
+            return ;
+        }
+        if ( newState != desiredState) {
+            actualState = ShooterMountState.MovingToPosition ;
+        }
+        desiredState = newState;
     }
 
     public ShooterMountState getShooterMountState() {
-        return shooterPosState;
+        return actualState;
     }
 
-    public String getShooterMountStateAsString() {
-        return shooterPosState.toString();
-    }
 
-    // wpk move this to an appropriate area in the file.
     public double getSpeakerShooterAngle() {
 
         double result = 0.0;
@@ -242,19 +323,20 @@ public class ShooterMount extends SubsystemBase {
             double y = target.get().getBestCameraToTarget().getY();
             distance = Math.sqrt(x * x + y * y);
         } else {
-            var speakerPose = visionSub.getSpeakerPose() ;
-            if (speakerPose.isPresent()) {
-                var speakerTranslation = speakerPose.get().toPose2d().getTranslation() ;
-                distance = driveSub.getPose().getTranslation().getDistance(speakerTranslation) ;
-            } else {
+            // var speakerPose = visionSub.getSpeakerPose() ;
+            // if (speakerPose.isPresent()) {
+            //     var speakerTranslation = speakerPose.get().toPose2d().getTranslation() ;
+            //     distance = driveSub.getPose().getTranslation().getDistance(speakerTranslation) ;
+            // } else {
                 return Constants.ShooterMountConstants.SpeakerAngle ;
-            }
+            // }
         }
 
         // Compute the angle and return it.
-        result = Math.toDegrees(Math.atan2(height, distance)) ; // Make sure X,Y units match
+        result = Math.toDegrees(Math.atan2(height, distance)) ; 
 
-        if (result > ShooterMountConstants.MaxAngleDegrees) result = ShooterMountConstants.MaxAngleDegrees;
+        if (result > ShooterMountConstants.MaxAngleDegrees) 
+            result = ShooterMountConstants.MaxAngleDegrees;
          
         return (result);
     }
@@ -265,31 +347,25 @@ public class ShooterMount extends SubsystemBase {
 
     /* TOLERANCES */
 
-    private boolean isWithinAngleTolerance(double desiredAngle) {
-
-        boolean withinTolerence = (getAngleCANCoderDegrees() >= desiredAngle - ShooterMountConstants.AngleTolerance) &&
-                    (getAngleCANCoderDegrees() <= desiredAngle + ShooterMountConstants.AngleTolerance) ;
-
+    private boolean isWithinAngleTolerance() {
+        boolean withinTolerence 
+            = (getAngleCANCoderDegrees() >= desiredDegrees - ShooterMountConstants.AngleTolerance) 
+                && (getAngleCANCoderDegrees() <= desiredDegrees + ShooterMountConstants.AngleTolerance) ;
         return withinTolerence ;
     }
 
-    private boolean isWithinAngleTolerance2() {
-        boolean withinTolerence = (getAngleCANCoderDegrees() >= desiredDegrees - ShooterMountConstants.AngleTolerance) &&
-                    (getAngleCANCoderDegrees() <= desiredDegrees + ShooterMountConstants.AngleTolerance) ;
-        return withinTolerence ;
-    }
-
-    private boolean isWithinHeightTolerance(double desiredHeight) {
-        return (getHeightInches() >= desiredHeight - ShooterMountConstants.HeightTolerance) &&
+    private boolean isWithinHeightTolerance() {
+        boolean withinTolerence =  (getHeightInches() >= desiredHeight - ShooterMountConstants.HeightTolerance) &&
                 (getHeightInches() <= desiredHeight + ShooterMountConstants.HeightTolerance);
+        return withinTolerence ;
     }
 
-    public boolean isWithinPositionTolerance(double desiredAngle, double desiredHeight) {
-        return isWithinAngleTolerance(desiredAngle) && isWithinHeightTolerance(desiredHeight);
-    }
 
     private void logData() {
-        Logger.recordOutput("ShooterMount/ShooterMountState", getShooterMountStateAsString());
+        Logger.recordOutput("ShooterMount/Angle/DesiredAngle", desiredAngle);
+        Logger.recordOutput("ShooterMount/Height/DesiredHeightInches", desiredHeight);
+        Logger.recordOutput("ShooterMount/ActualState", actualState);
+        Logger.recordOutput("ShooterMount/DesiredState", desiredState);
         Logger.recordOutput("ShooterMount/Angle/CANCoderDegrees", getAngleCANCoderDegrees());
         Logger.recordOutput("ShooterMount/Angle/CANCoderRotations", angleCANCoder.getAbsolutePosition().getValue());
         Logger.recordOutput("ShooterMount/Angle/Talon", getTalonEncoderDegrees());
@@ -353,6 +429,14 @@ public class ShooterMount extends SubsystemBase {
         talonConfigs.Slot0.kV = ShooterMountConstants.ElevatorFF;
         talonConfigs.Slot0.kG = ShooterMountConstants.ElevatorKG;
         talonConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
+
+        // wpk - need to setup slot 1 for elevator climb
+        // talonConfigs.Slot1.kP = ShooterMountConstants.ElevatorClimbKP;
+        // talonConfigs.Slot1.kI = ShooterMountConstants.ElevatorClimbKI;
+        // talonConfigs.Slot1.kD = ShooterMountConstants.ElevatorClimbKD;
+        // talonConfigs.Slot1.kV = ShooterMountConstants.ElevatorClimbFF;
+        // talonConfigs.Slot1.kG = ShooterMountConstants.ElevatorClimbKG;
+        // talonConfigs.Slot1.GravityType = GravityTypeValue.Elevator_Static;
 
         var motionMagicConfigs = talonConfigs.MotionMagic;
 
@@ -453,6 +537,11 @@ public class ShooterMount extends SubsystemBase {
             System.out.println(
                     "Could not apply magnet configs to angle encoder, error code: " + status.toString());
         }
+
+        if ( Robot.isSimulation()) {
+            angleCANCoder.setPosition(Units.degreesToRotations(desiredDegrees)) ;
+        }
+        
     }
 
     private void setNeutralMode(NeutralModeValue angleMotorMode, NeutralModeValue elevatorMotorMode) {
@@ -467,6 +556,9 @@ public class ShooterMount extends SubsystemBase {
         PhysicsSim.getInstance().addTalonFX(angleMotor, 0.001);
         PhysicsSim.getInstance().addTalonFX(leftElevatorMotor, 0.001);
         PhysicsSim.getInstance().addTalonFX(rightElevatorMotor, 0.001);
+
+        double encoderAngle = Units.degreesToRotations(this.desiredAngle);
+        absoluteAngleEncoderSim.setRawPosition(encoderAngle) ;
         bottomHallEffectSim = new DIOSim(bottomHallEffect);
     }
 
@@ -498,6 +590,11 @@ public class ShooterMount extends SubsystemBase {
         rightElevatorMotorSim.setRotorVelocity(rightElevatorMotorModel.getAngularVelocityRPM() / 60.0);
         rightElevatorMotorSim.setRawRotorPosition(rightElevatorMotorModel.getAngularPositionRotations());
 
-        bottomHallEffectSim.setValue(isWithinHeightTolerance(0));
+        double currentAngle = getAngleCANCoderDegrees() ;
+        double delta = desiredAngle-currentAngle ;
+        delta = Math.min( Math.abs(delta), 5.0) * Math.signum(delta) ;
+        angleCANCoder.setPosition( Units.degreesToRotations(currentAngle+delta)) ;
+
+        bottomHallEffectSim.setValue(isWithinHeightTolerance());
     }
 }

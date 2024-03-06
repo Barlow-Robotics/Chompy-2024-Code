@@ -244,7 +244,7 @@ public class Constants {
         public static final double HeightTolerance = 0.25;
 
         public static final double MaxAngleDegrees = 55;
-        public static final double MinAngleDegrees = -63.5;
+        public static final double MinAngleDegrees = -61.5;
         public static final double MaxHeightInches = 47.5;
         public static final double StartingHeight = 19.75;  
 
@@ -314,7 +314,8 @@ public class Constants {
                                                             * AT? Might need to change to midpoint for the calc to
                                                             * work, originally did that from bottoms of speaker and
                                                             * AT */
-        public static final double MidSpeakerHeight = 80.4; // inches to middle of speaker hole - possibly CHANGE
+        // public static final double MidSpeakerHeight = 80.4; // inches to middle of speaker hole - possibly CHANGE
+        public static final double MidSpeakerHeight = 85; // bottom of speaker opening is at 78", so aim above it.
         public static final double ElevatorHeightUnextended = 26; // inches - possibly CHANGE - height of elevator at rest
 
     }

@@ -54,20 +54,20 @@ public class RobotContainer {
     /* COMMANDS */
 
     private final SetShooterMountPosition setShooterPosSpeakerCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.Speaker, visionSub);
+            ShooterMountState.Speaker);
     private final SetShooterMountPosition setShooterPosAmpCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.Amp, visionSub);
+            ShooterMountState.Amp);
     private final SetShooterMountPosition setShooterPosSourceIntakeCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.SourceIntake, visionSub);
+            ShooterMountState.SourceIntake);
     private final SetShooterMountPosition setShooterPosFloorCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.FloorIntake, visionSub);
+            ShooterMountState.FloorIntake);
     private final SetShooterMountPosition setShooterPosFerryCmd = new SetShooterMountPosition(shooterMountSub,
-                    ShooterMountState.Ferry, visionSub);
+                    ShooterMountState.Ferry);
 
     private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.Climb, visionSub);
+            ShooterMountState.Climb);
     private final SetShooterMountPosition climbAbortCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.ClimbAbort, visionSub);
+            ShooterMountState.ClimbAbort);
 
     private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub,
             shooterMountSub);
@@ -232,6 +232,8 @@ public class RobotContainer {
 
         /* LOGGING */
 
+       var startingPoseTest = PathPlannerAuto.getStaringPoseFromAutoFile(autoChooser.getSelected().toString()) ;
+       
         PathPlannerLogging.setLogCurrentPoseCallback(
                 (currentPose) -> {
                     Logger.recordOutput("Odometry/CurrentPose", currentPose);

@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterMountConstants;
 import frc.robot.subsystems.FloorIntake;
@@ -22,6 +23,8 @@ public class StartShooterIntake extends Command {
     double desiredIndexRPM = ShooterConstants.IndexRPM;
     double FloorIntakeAngleWithTolerance = ShooterMountConstants.FloorIntakeAngle + 3;
 
+    boolean indexHasSpunUp = false ;
+
     public StartShooterIntake(Shooter shooterSub, FloorIntake floorIntakeSub, ShooterMount shooterMountSub) {
         this.shooterSub = shooterSub;
         this.floorIntakeSub = floorIntakeSub;
@@ -31,6 +34,7 @@ public class StartShooterIntake extends Command {
 
     @Override
     public void initialize() {
+        indexHasSpunUp = false ;
         if (shooterMountSub.getShooterMountState() == ShooterMountState.SourceIntake ||
                 shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake || 
                 shooterMountSub.getAngleCANCoderDegrees() < (FloorIntakeAngleWithTolerance)) { // we're intaking
@@ -65,19 +69,29 @@ public class StartShooterIntake extends Command {
                     shooterMountSub.getAngleCANCoderDegrees() < (FloorIntakeAngleWithTolerance)) {
                 floorIntakeSub.start();
             }
+
+            if ( !indexHasSpunUp ) {
+                if ( Math.abs( shooterSub.getIndexRPM() ) > Math.abs(Constants.ShooterConstants.IndexRPM) / 2.0 ) {
+                    indexHasSpunUp = true ;
+                }
+            }
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        if (interrupted) {
+        // if (interrupted) {
             shooterSub.stop();
             floorIntakeSub.stop();
-        }
+        // }
     }
 
     @Override
     public boolean isFinished() {
+        // wpk magic number needs to be fixed
+        if ( indexHasSpunUp && Math.abs( shooterSub.getIndexRPM()) < 20.0) {
+            return true ;
+        }
         return false;
     }
 }

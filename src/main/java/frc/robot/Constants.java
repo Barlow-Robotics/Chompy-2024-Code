@@ -272,7 +272,7 @@ public class Constants {
         /* ANGLE */
 
         public static final double AngleKP = 26;
-        public static final double AngleKI = 0;
+        public static final double AngleKI = 0.005;
         public static final double AngleKD = 0.0;
         // public static final double AngleIZone = 0; // motor already does this
         public static final double AngleFF = 0.0;
@@ -282,8 +282,9 @@ public class Constants {
 
         public static final double AngleGearRatio = 46.67; // From K's spreadsheet
         public static final double ShooterAngleMaxDegreesPerSecond = (Falcon500MaxRPM / SecondsPerMinute * 360) / AngleGearRatio;
-        public static final double AngleMMCruiseDegPerSec = 1.5; 
-        public static final double AngleMMAcceleration = 3;
+        public static final double AngleMMCruiseDegPerSec = 2.0; 
+//        public static final double AngleMMCruiseDegPerSec = 1.5; 
+        public static final double AngleMMAcceleration = 5;
         public static final double AngleMMJerk = 20; //30; 
 
         /* ELEVATOR */

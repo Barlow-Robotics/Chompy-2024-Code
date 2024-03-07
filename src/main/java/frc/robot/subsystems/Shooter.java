@@ -128,6 +128,10 @@ public class Shooter extends SubsystemBase {
         return false;
     }
 
+    public double getIndexRPM() {
+        return getRPM(indexMotor) ;
+    }
+
     /* LOGGING */
 
     private void logData() {

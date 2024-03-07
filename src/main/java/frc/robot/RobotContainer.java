@@ -105,7 +105,7 @@ public class RobotContainer {
     private SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        configurePathPlanner();
+        // configurePathPlanner();  // wpk moved this call to robot.disabledPeriodic()
         configureButtonBindings();
         driveSub.setDefaultCommand(
                 // The left stick controls translation of the robot.
@@ -191,7 +191,7 @@ public class RobotContainer {
         // toggleLEDsButton = new JoystickButton(operatorController, XboxControllerConstants.HamburgerButton);
     }
 
-    private void configurePathPlanner() {
+    public void configurePathPlanner() {
         /* PATHPLANNER INIT */
 
         AutoBuilder.configureHolonomic(
@@ -232,7 +232,8 @@ public class RobotContainer {
 
         /* LOGGING */
 
-//       var startingPoseTest = PathPlannerAuto.getStaringPoseFromAutoFile(autoChooser.getSelected().toString()) ;
+        var selectedAuto = autoChooser.getSelected() ;
+//      var startingPoseTest = PathPlannerAuto.getStaringPoseFromAutoFile(autoChooser.getSelected()) ;
 
         PathPlannerLogging.setLogCurrentPoseCallback(
                 (currentPose) -> {
@@ -248,6 +249,9 @@ public class RobotContainer {
                     Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
                 });
     }
+
+
+
 
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();

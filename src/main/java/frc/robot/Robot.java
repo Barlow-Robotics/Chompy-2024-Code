@@ -36,6 +36,8 @@ public class Robot extends LoggedRobot {
     MechanismLigament2d elevator;
     MechanismLigament2d wrist;
 
+    boolean pathPlannerConfigured = false ;
+
     @Override
     public void robotInit() {
         robotContainer = new RobotContainer();
@@ -112,6 +114,15 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledPeriodic() {
+        // This code is here to ensure that we don't configure path planner before the driver station is connected
+        // because we wouldn't be able to determine the alliance if that was the case.
+        if (!pathPlannerConfigured) {
+            var alliance = DriverStation.getAlliance() ;
+            if (alliance.isPresent()) {
+                robotContainer.configurePathPlanner();
+                pathPlannerConfigured = true ;
+            }
+        }
     }
 
     @Override

@@ -54,14 +54,17 @@ public class StartShooterIntake extends Command {
 
     @Override
     public void execute() {
-        shooterSub.startFlywheels(desiredLeftFlywheelMotorRPM, desiredRightFlywheelMotorRPM);
-        if (shooterSub.isWithinFlywheelVelocityTolerance(desiredLeftFlywheelMotorRPM, desiredRightFlywheelMotorRPM)) {
-            shooterSub.startIndex(desiredIndexRPM);
-        }
+        if (shooterMountSub.hasCompletedMovement()) {
+            shooterSub.startFlywheels(desiredLeftFlywheelMotorRPM, desiredRightFlywheelMotorRPM);
+            if (shooterSub.isWithinFlywheelVelocityTolerance(desiredLeftFlywheelMotorRPM,
+                    desiredRightFlywheelMotorRPM)) {
+                shooterSub.startIndex(desiredIndexRPM);
+            }
 
-        if (shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake ||
-            shooterMountSub.getAngleCANCoderDegrees() < (FloorIntakeAngleWithTolerance)) {
-            floorIntakeSub.start();
+            if (shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake ||
+                    shooterMountSub.getAngleCANCoderDegrees() < (FloorIntakeAngleWithTolerance)) {
+                floorIntakeSub.start();
+            }
         }
     }
 

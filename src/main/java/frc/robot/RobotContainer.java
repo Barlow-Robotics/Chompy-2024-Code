@@ -30,6 +30,7 @@ import frc.robot.commands.DriveRobotWithAprilTagAlign;
 import frc.robot.commands.ReverseFloorIntake;
 // import frc.robot.commands.DriveRobotWithAlign;
 import frc.robot.commands.SetShooterMountPosition;
+import frc.robot.commands.StartClimbing;
 import frc.robot.commands.StartShooterIntake;
 import frc.robot.commands.StopShooterIntake;
 import frc.robot.subsystems.Drive;
@@ -64,8 +65,7 @@ public class RobotContainer {
     private final SetShooterMountPosition setShooterPosFerryCmd = new SetShooterMountPosition(shooterMountSub,
                     ShooterMountState.Ferry);
 
-    private final SetShooterMountPosition climbCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.Climb);
+    private final StartClimbing climbCmd = new StartClimbing(shooterMountSub);
     private final SetShooterMountPosition climbAbortCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.ClimbAbort);
 
@@ -97,7 +97,7 @@ public class RobotContainer {
     private Trigger shootIntakeButton; // trigger
     private Trigger reverseFloorIntakeButton; // driver button 7
 
-    private Trigger autoAlignButton; // driver button on stick 
+    private Trigger autoAlignButton; // driver button 11
     private Trigger restartGyroButton; // driver button 9
 
     /* AUTO */
@@ -136,7 +136,7 @@ public class RobotContainer {
 
         /***************** DRIVE *****************/
 
-        autoAlignButton = new JoystickButton(driverController, LogitechExtreme3DConstants.ButtonStick);
+        autoAlignButton = new JoystickButton(driverController, LogitechExtreme3DConstants.Button11);
 
         restartGyroButton = new JoystickButton(driverController, LogitechExtreme3DConstants.Button9);
         restartGyroButton.onTrue(new InstantCommand(() -> driveSub.zeroHeading()));
@@ -232,8 +232,8 @@ public class RobotContainer {
 
         /* LOGGING */
 
-       var startingPoseTest = PathPlannerAuto.getStaringPoseFromAutoFile(autoChooser.getSelected().toString()) ;
-       
+//       var startingPoseTest = PathPlannerAuto.getStaringPoseFromAutoFile(autoChooser.getSelected().toString()) ;
+
         PathPlannerLogging.setLogCurrentPoseCallback(
                 (currentPose) -> {
                     Logger.recordOutput("Odometry/CurrentPose", currentPose);

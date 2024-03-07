@@ -10,8 +10,8 @@ import frc.robot.subsystems.ShooterMount.ShooterMountState;
 
 public class SetShooterMountPosition extends Command {
 
-    private ShooterMount shooterMountSub;
-    private ShooterMountState desiredState;
+    protected ShooterMount shooterMountSub;
+    protected ShooterMountState desiredState;
 
     public SetShooterMountPosition(ShooterMount shooterMountSub, ShooterMountState desiredState) {
         this.shooterMountSub = shooterMountSub;

@@ -143,7 +143,7 @@ public class DriveRobotWithAprilTagAlign extends Command {
         // if the button transitions from not pressed to pressed
         if ( autoAlignEnabled && !autoAlignActive ) {
             // get the best target we might be interested in
-            rotPid.setSetpoint(9.0);  // wpk need to do better. this works close, but not as well far away
+            rotPid.setSetpoint(6.0);  // wpk need to do better. this works close, but not as well far away
             var bestTarget = visionSub.getBestTrackableTarget() ;
             if ( bestTarget.isPresent()) {
                 currentTrackedTarget = OptionalInt.of(bestTarget.get().getFiducialId())  ;

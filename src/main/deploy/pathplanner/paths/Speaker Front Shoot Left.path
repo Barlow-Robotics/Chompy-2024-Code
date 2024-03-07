@@ -3,54 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.813006710178897,
-        "y": 5.492382339971527
+        "x": 2.894982565999367,
+        "y": 6.780574360007493
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9464048057910655,
-        "y": 5.515804013063089
+        "x": 2.0791005962724647,
+        "y": 6.672138485728336
       },
       "isLocked": false,
-      "linkedName": "Front-Note"
+      "linkedName": "Left-Note"
     },
     {
       "anchor": {
-        "x": 1.3842846515935527,
-        "y": 5.492382339971527
+        "x": 1.9932481519741916,
+        "y": 5.562647359246215
       },
       "prevControl": {
-        "x": 2.3211515752560734,
-        "y": 5.5040931765173085
+        "x": 3.048627318288079,
+        "y": 5.872099353150202
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "start in front of speaker "
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Stop Intake",
-      "waypointRelativePos": 0.3,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "StopShooterIntake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
       "name": "Move to speaker",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.7,
       "command": {
         "type": "parallel",
         "data": {
@@ -68,9 +51,9 @@
   ],
   "globalConstraints": {
     "maxVelocity": 1.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 360.0
   },
   "goalEndState": {
     "velocity": 0,
@@ -80,7 +63,7 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 90.0,
     "velocity": 0
   },
   "useDefaultConstraints": false

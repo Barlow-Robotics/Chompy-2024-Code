@@ -196,8 +196,10 @@ public class Constants {
         public static final double LeftAmpRPM = 500; 
         public static final double RightAmpRPM = 500; 
 
-        public static final double LeftIntakeRPM = -1000;
-        public static final double RightIntakeRPM = -1000;
+        // public static final double LeftIntakeRPM = -1000;
+        // public static final double RightIntakeRPM = -1000;
+        public static final double LeftIntakeRPM = -1250;
+        public static final double RightIntakeRPM = -1250;
 
         public static final double LeftTrapRPM = 250;
         public static final double RightTrapRPM = 250;
@@ -260,7 +262,7 @@ public class Constants {
         public static final double FloorIntakeAngle = MinAngleDegrees; 
         public static final double FloorIntakeHeight = StartingHeight; 
 
-        public static final double ClimbHeight = 46;
+        public static final double ClimbHeight = 44;
         public static final double TrapAngle = 0; // CHANGE
         public static final double TrapHeight = 46; // CHANGE
 
@@ -294,6 +296,15 @@ public class Constants {
         public static final double ElevatorKG = 2.7;
         public static final double ElevatorKS = 0; // use error sign instead of velocity sign? as part of initial config 
 
+
+        public static final double ClimbKP = 32;
+        public static final double ClimbKI = 0.001;
+        public static final double ClimbKD = 0.0;
+        public static final double ClimbFF = 0.0;
+        public static final double ClimbKG = 4.0;
+        public static final double ClimbKS = 0; // use error sign instead of velocity sign? as part of initial config 
+
+
         public static final double ElevatorGearRatio = 15;
         public static final double ElevatorSprocketDiameter = 2.36;  // inches
         public static final double ElevatorSprocketCircumference = ElevatorSprocketDiameter * Math.PI;
@@ -315,7 +326,7 @@ public class Constants {
                                                             * work, originally did that from bottoms of speaker and
                                                             * AT */
         // public static final double MidSpeakerHeight = 80.4; // inches to middle of speaker hole - possibly CHANGE
-        public static final double MidSpeakerHeight = 85; // bottom of speaker opening is at 78", so aim above it.
+        public static final double MidSpeakerHeight = 84; // bottom of speaker opening is at 78", so aim above it.
         public static final double ElevatorHeightUnextended = 26; // inches - possibly CHANGE - height of elevator at rest
 
     }
@@ -335,7 +346,8 @@ public class Constants {
 
         public static final int SupplyCurrentLimit = 20;
 		
-        public static final double MotorRPM = 2500;
+        // public static final double MotorRPM = 2500;
+        public static final double MotorRPM = 1750;
         public static final double VelocityTolerance = 5;
     }
 

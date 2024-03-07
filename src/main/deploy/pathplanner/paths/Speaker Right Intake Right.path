@@ -53,6 +53,29 @@
           ]
         }
       }
+    },
+    {
+      "name": "Move to floor intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "race",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SetShooterMountPositionFloor"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.5
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {

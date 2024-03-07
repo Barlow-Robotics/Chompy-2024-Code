@@ -253,7 +253,8 @@ public class ShooterMount extends SubsystemBase {
                 * ShooterMountConstants.RotationsPerElevatorInch;
         MotionMagicVoltage request = new MotionMagicVoltage(rotations);
         if ( this.desiredState == ShooterMountState.Climb) {
-            leftElevatorMotor.setControl(request.withSlot(1));
+            // leftElevatorMotor.setControl(request.withSlot(1));
+            leftElevatorMotor.setControl(request.withSlot(0));
         } else {
             leftElevatorMotor.setControl(request.withSlot(0));
         }
@@ -431,12 +432,12 @@ public class ShooterMount extends SubsystemBase {
         talonConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
         // wpk - need to setup slot 1 for elevator climb
-        // talonConfigs.Slot1.kP = ShooterMountConstants.ElevatorClimbKP;
-        // talonConfigs.Slot1.kI = ShooterMountConstants.ElevatorClimbKI;
-        // talonConfigs.Slot1.kD = ShooterMountConstants.ElevatorClimbKD;
-        // talonConfigs.Slot1.kV = ShooterMountConstants.ElevatorClimbFF;
-        // talonConfigs.Slot1.kG = ShooterMountConstants.ElevatorClimbKG;
-        // talonConfigs.Slot1.GravityType = GravityTypeValue.Elevator_Static;
+        talonConfigs.Slot1.kP = ShooterMountConstants.ClimbKP;
+        talonConfigs.Slot1.kI = ShooterMountConstants.ClimbKI;
+        talonConfigs.Slot1.kD = ShooterMountConstants.ClimbKD;
+        talonConfigs.Slot1.kV = ShooterMountConstants.ClimbFF;
+        talonConfigs.Slot1.kG = ShooterMountConstants.ClimbKG;
+        talonConfigs.Slot1.GravityType = GravityTypeValue.Elevator_Static;
 
         var motionMagicConfigs = talonConfigs.MotionMagic;
 

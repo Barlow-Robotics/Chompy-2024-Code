@@ -34,7 +34,11 @@ public class StartShooterIntake extends Command {
 
     @Override
     public void initialize() {
+        desiredLeftFlywheelMotorRPM = ShooterConstants.LeftSpeakerRPM;
+        desiredRightFlywheelMotorRPM = ShooterConstants.RightSpeakerRPM;
+        
         indexHasSpunUp = false ;
+        
         if (shooterMountSub.getShooterMountState() == ShooterMountState.SourceIntake ||
                 shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake || 
                 shooterMountSub.getAngleCANCoderDegrees() < (FloorIntakeAngleWithTolerance)) { // we're intaking

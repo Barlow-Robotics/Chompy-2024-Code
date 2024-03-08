@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5365424165142167,
-        "y": 3.981719145312648
+        "x": 1.1032245744947966,
+        "y": 3.9582627524741496
       },
       "isLocked": false,
       "linkedName": "speaker right shoot"
@@ -20,8 +20,8 @@
         "y": 4.098792791023527
       },
       "prevControl": {
-        "x": 1.6302122190549644,
-        "y": 4.215901156481343
+        "x": 2.286019065618729,
+        "y": 4.098792791023527
       },
       "nextControl": null,
       "isLocked": false,
@@ -36,7 +36,48 @@
     }
   ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Move to floor intake",
+      "waypointRelativePos": 0.0,
+      "command": {
+        "type": "race",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SetShooterMountPositionFloor"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.5
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Start floor intake",
+      "waypointRelativePos": 0.7,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartShooterIntake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 1.0,
     "maxAcceleration": 2.0,

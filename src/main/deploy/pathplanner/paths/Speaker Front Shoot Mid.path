@@ -33,7 +33,7 @@
   "eventMarkers": [
     {
       "name": "Stop Intake & Move to Speaker",
-      "waypointRelativePos": 0.3,
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "parallel",
         "data": {

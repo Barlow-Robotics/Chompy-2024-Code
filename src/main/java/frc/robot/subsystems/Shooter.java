@@ -71,8 +71,6 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         logData();
-
-        if (isNoteLoaded() && getRPM(indexMotor) < 0) stop();
     }
 
     public void startFlywheels(double shooterLeftRPM, double shooterRightRPM) {

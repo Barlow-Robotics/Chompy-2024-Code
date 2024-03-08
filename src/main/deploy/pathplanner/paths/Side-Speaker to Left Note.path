@@ -1,0 +1,63 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.8350948738934517,
+        "y": 6.620289231319203
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.1978740392665974,
+        "y": 7.710586411913565
+      },
+      "isLocked": false,
+      "linkedName": "Side-Speaker Waypoint"
+    },
+    {
+      "anchor": {
+        "x": 2.906421979510626,
+        "y": 6.9934606628472515
+      },
+      "prevControl": {
+        "x": 2.0229605875878423,
+        "y": 7.021668242410559
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Left-Note Position"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.85,
+      "rotationDegrees": 0.0,
+      "rotateFast": true
+    },
+    {
+      "waypointRelativePos": 0.1,
+      "rotationDegrees": -121.47,
+      "rotateFast": true
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.59,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": -121.47,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

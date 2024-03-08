@@ -26,4 +26,12 @@ public class StartClimbing extends SetShooterMountPosition {
         shooterMountSub.setDesiredState(desiredState);
     }
 
+
+    @Override
+    public void end(boolean interrupted) {
+        super.end( interrupted) ;
+        shooterMountSub.stopElevatorMotor(); ;
+    }
+
+
 }

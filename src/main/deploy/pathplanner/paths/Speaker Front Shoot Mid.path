@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 1.3842846515935527,
+        "x": 1.3,
         "y": 5.492382339971527
       },
       "prevControl": {
-        "x": 2.3211515752560734,
+        "x": 2.2368669236625207,
         "y": 5.5040931765173085
       },
       "nextControl": null,
@@ -32,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Stop Intake",
+      "name": "Stop Intake & Move to Speaker",
       "waypointRelativePos": 0.3,
       "command": {
         "type": "parallel",
@@ -43,18 +43,7 @@
               "data": {
                 "name": "StopShooterIntake"
               }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "Move to speaker",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
+            },
             {
               "type": "named",
               "data": {

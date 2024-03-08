@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.894982565999367,
-        "y": 6.780574360007493
+        "x": 2.8598500563620233,
+        "y": 6.991369417831561
       },
       "prevControl": {
-        "x": 1.9672282217378372,
-        "y": 6.83925874785627
+        "x": 1.9320957121004934,
+        "y": 7.050053805680339
       },
       "nextControl": null,
       "isLocked": false,
@@ -53,6 +53,29 @@
               "type": "named",
               "data": {
                 "name": "StartShooterIntake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Move to floor intake",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "race",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SetShooterMountPositionFloor"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.5
               }
             }
           ]

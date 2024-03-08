@@ -233,6 +233,7 @@ public class RobotContainer {
         /* LOGGING */
 
         var selectedAuto = autoChooser.getSelected() ;
+        var selectedName = autoChooser.getSelected().getName() ;
 //      var startingPoseTest = PathPlannerAuto.getStaringPoseFromAutoFile(autoChooser.getSelected()) ;
 
         PathPlannerLogging.setLogCurrentPoseCallback(

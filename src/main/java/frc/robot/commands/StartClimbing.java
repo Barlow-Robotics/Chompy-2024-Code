@@ -30,7 +30,9 @@ public class StartClimbing extends SetShooterMountPosition {
     @Override
     public void end(boolean interrupted) {
         super.end( interrupted) ;
-        shooterMountSub.stopElevatorMotor(); ;
+        if ( shooterMountSub.getShooterMountState() == ShooterMountState.Climb) {
+            shooterMountSub.stopElevatorMotor();
+        }
     }
 
 

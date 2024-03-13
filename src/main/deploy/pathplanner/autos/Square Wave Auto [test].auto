@@ -1,0 +1,25 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3073194479722294,
+      "y": 5.593652103970875
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Square Wave [test]"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

@@ -1,0 +1,25 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.2549424265515199,
+      "y": 5.575480484294302
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Curve Wave [test]"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

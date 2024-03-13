@@ -63,11 +63,14 @@ public class RobotContainer {
     private final SetShooterMountPosition setShooterPosFloorCmd = new SetShooterMountPosition(shooterMountSub,
             ShooterMountState.FloorIntake);
     private final SetShooterMountPosition setShooterPosFerryCmd = new SetShooterMountPosition(shooterMountSub,
-                    ShooterMountState.Ferry);
+            ShooterMountState.Ferry);
 
     private final StartClimbing climbCmd = new StartClimbing(shooterMountSub);
-    private final SetShooterMountPosition climbAbortCmd = new SetShooterMountPosition(shooterMountSub,
-            ShooterMountState.ClimbAbort);
+    // private final SetShooterMountPosition retryClimbCmd = new SetShooterMountPosition(shooterMountSub,
+    //         ShooterMountState.Preclimb);
+    // private final SetShooterMountPosition climbAbortCmd = new
+    // SetShooterMountPosition(shooterMountSub,
+    // ShooterMountState.ClimbAbort);
 
     private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub,
             shooterMountSub);
@@ -105,7 +108,7 @@ public class RobotContainer {
     private SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        // configurePathPlanner();  // wpk moved this call to robot.disabledPeriodic()
+        // configurePathPlanner(); // wpk moved this call to robot.disabledPeriodic()
         configureButtonBindings();
         driveSub.setDefaultCommand(
                 // The left stick controls translation of the robot.
@@ -171,8 +174,8 @@ public class RobotContainer {
         climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA);
         climbButton.onTrue(climbCmd);
 
-        climbAbortButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick);
-        climbAbortButton.onTrue(climbAbortCmd);
+        // climbAbortButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick);
+        // climbAbortButton.onTrue(retryClimbCmd);
 
         /********************* LED BINDINGS ************************************* */
 
@@ -188,7 +191,8 @@ public class RobotContainer {
         // underglowSub.LEDHumanFloor = true))
         // .onFalse(new InstantCommand(() -> underglowSub.LEDHumanFloor = false));
 
-        // toggleLEDsButton = new JoystickButton(operatorController, XboxControllerConstants.HamburgerButton);
+        // toggleLEDsButton = new JoystickButton(operatorController,
+        // XboxControllerConstants.HamburgerButton);
     }
 
     public void configurePathPlanner() {
@@ -232,8 +236,9 @@ public class RobotContainer {
 
         /* LOGGING */
 
-        var selectedAuto = autoChooser.getSelected() ;
-//      var startingPoseTest = PathPlannerAuto.getStaringPoseFromAutoFile(autoChooser.getSelected()) ;
+        var selectedAuto = autoChooser.getSelected();
+        // var startingPoseTest =
+        // PathPlannerAuto.getStaringPoseFromAutoFile(autoChooser.getSelected()) ;
 
         PathPlannerLogging.setLogCurrentPoseCallback(
                 (currentPose) -> {
@@ -249,9 +254,6 @@ public class RobotContainer {
                     Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
                 });
     }
-
-
-
 
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();

@@ -29,6 +29,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.DIOSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -79,6 +80,8 @@ public class ShooterMount extends SubsystemBase {
 
     private double desiredDegrees = Constants.ShooterMountConstants.FloorIntakeAngle ;
 
+    public boolean targetIsVisible = false; 
+
     public ShooterMount( Vision visionSub, Drive driveSub ) {
         bottomHallEffect = new DigitalInput(ElectronicsIDs.BottomHallEffectID);
 
@@ -120,7 +123,6 @@ public class ShooterMount extends SubsystemBase {
                 desiredAngle = getSpeakerShooterAngle() ;
                 desiredHeight = ShooterMountConstants.SpeakerHeight;
                 break;
-
             case Amp:
                 desiredAngle = ShooterMountConstants.AmpAngle;
                 desiredHeight = ShooterMountConstants.AmpHeight;
@@ -224,6 +226,10 @@ public class ShooterMount extends SubsystemBase {
 
         logData();
 
+        // Shuffleboard.getTab("Match").add("Can See Tag", targetIsVisible);
+        // Shuffleboard.getTab("Match").add("Desired Shooter Angle", desiredAngle);
+
+
     }
 
     /* ANGLE */
@@ -323,15 +329,20 @@ public class ShooterMount extends SubsystemBase {
             double x = target.get().getBestCameraToTarget().getX();
             double y = target.get().getBestCameraToTarget().getY();
             distance = Math.sqrt(x * x + y * y);
+            targetIsVisible = true;
+
         } else {
             // var speakerPose = visionSub.getSpeakerPose() ;
             // if (speakerPose.isPresent()) {
             //     var speakerTranslation = speakerPose.get().toPose2d().getTranslation() ;
             //     distance = driveSub.getPose().getTranslation().getDistance(speakerTranslation) ;
             // } else {
+                targetIsVisible = false;
                 return Constants.ShooterMountConstants.SpeakerAngle ;
             // }
-        }
+        } 
+
+        Logger.recordOutput("ShooterMount/CanSeeTag", target.isPresent());
 
         // Compute the angle and return it.
         result = Math.toDegrees(Math.atan2(height, distance)) ; 
@@ -341,10 +352,6 @@ public class ShooterMount extends SubsystemBase {
          
         return (result);
     }
-
-
-
-
 
     /* TOLERANCES */
 

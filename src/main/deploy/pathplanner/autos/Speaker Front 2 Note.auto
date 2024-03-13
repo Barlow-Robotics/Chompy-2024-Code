@@ -12,9 +12,22 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "SetShooterMountPositionSpeaker"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetShooterMountPositionSpeaker"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.7
+                }
+              }
+            ]
           }
         },
         {

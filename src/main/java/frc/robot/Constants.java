@@ -263,7 +263,7 @@ public class Constants {
         public static final double FloorIntakeHeight = StartingHeight; 
 
         public static final double ClimbHeight = 44;
-        public static final double TrapAngle = 0; // CHANGE
+        public static final double TrapAngle = -5; // CHANGE
         public static final double TrapHeight = 46; // CHANGE
 
         public static final double FerryAngle = -10;
@@ -327,7 +327,7 @@ public class Constants {
                                                             * work, originally did that from bottoms of speaker and
                                                             * AT */
         // public static final double MidSpeakerHeight = 80.4; // inches to middle of speaker hole - possibly CHANGE
-        public static final double MidSpeakerHeight = 84; // bottom of speaker opening is at 78", so aim above it.
+        public static final double MidSpeakerHeight = 88; // bottom of speaker opening is at 78", so aim above it.
         public static final double ElevatorHeightUnextended = 26; // inches - possibly CHANGE - height of elevator at rest
 
     }

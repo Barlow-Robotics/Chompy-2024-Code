@@ -181,7 +181,7 @@ public class Vision extends SubsystemBase {
 
         try {
             visionChannel = DatagramChannel.open();
-            InetSocketAddress sAddr = new InetSocketAddress(5800);
+            InetSocketAddress sAddr = new InetSocketAddress(5808);
             visionChannel.bind(sAddr);
             visionChannel.configureBlocking(false);
         } catch (Exception ex) {

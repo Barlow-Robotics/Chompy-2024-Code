@@ -28,12 +28,12 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.sim.PhysicsSim;
 
 public class Shooter extends SubsystemBase {
-    private final TalonFX leftFlywheelMotor;
+    private final TalonFX topFlywheelMotor;
     private final TalonFXSimState leftFlywheelMotorSim;
     private final DCMotorSim lowerMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1),
             1, Constants.jKgMetersSquared);
 
-    private final TalonFX rightFlywheelMotor;
+    private final TalonFX bottomFlywheelMotor;
     private final TalonFXSimState rightFlywheelMotorSim;
     private final DCMotorSim upperMotorModel = new DCMotorSim(edu.wpi.first.math.system.plant.DCMotor.getKrakenX60(1),
             1, Constants.jKgMetersSquared);
@@ -53,16 +53,16 @@ public class Shooter extends SubsystemBase {
     private boolean simulationInitialized = false;
 
     public Shooter() {
-        leftFlywheelMotor = new TalonFX(ElectronicsIDs.LeftShooterMotorID);
-        rightFlywheelMotor = new TalonFX(ElectronicsIDs.RightShooterMotorID);
+        topFlywheelMotor = new TalonFX(ElectronicsIDs.LeftShooterMotorID);
+        bottomFlywheelMotor = new TalonFX(ElectronicsIDs.RightShooterMotorID);
         indexMotor = new TalonFX(ElectronicsIDs.IndexMotorID);
 
         applyLeftFlywheelMotorConfig(InvertedValue.Clockwise_Positive);
         applyRightFlywheelMotorConfig(InvertedValue.Clockwise_Positive);
         applyIndexMotorConfig(InvertedValue.Clockwise_Positive);
 
-        leftFlywheelMotorSim = leftFlywheelMotor.getSimState();
-        rightFlywheelMotorSim = rightFlywheelMotor.getSimState();
+        leftFlywheelMotorSim = topFlywheelMotor.getSimState();
+        rightFlywheelMotorSim = bottomFlywheelMotor.getSimState();
         indexMotorSim = indexMotor.getSimState();
 
         breakBeam = new DigitalInput(ElectronicsIDs.BreakBeamID);
@@ -73,24 +73,24 @@ public class Shooter extends SubsystemBase {
         logData();
     }
 
-    public void startFlywheels(double shooterLeftRPM, double shooterRightRPM) {
-        Logger.recordOutput("Shooter/DesiredMotorLeftRPM", shooterLeftRPM);
-        Logger.recordOutput("Shooter/DesiredFlywheelLeftRPM", shooterLeftRPM * ShooterConstants.FlywheelGearRatio);
-        Logger.recordOutput("Shooter/DesiredMotorRightRPM", shooterRightRPM);
-        Logger.recordOutput("Shooter/DesiredFlywheelRightRPM", shooterRightRPM * ShooterConstants.FlywheelGearRatio);
+    public void startFlywheels(double topRPM, double bottomRPM) {
+        Logger.recordOutput("Shooter/Top/MotorDesiredRPM", topRPM);
+        Logger.recordOutput("Shooter/Top/FlywheelDesiredRPM", topRPM * ShooterConstants.FlywheelGearRatio);
+        Logger.recordOutput("Shooter/Bottom/MotorDesiredRPM", bottomRPM);
+        Logger.recordOutput("Shooter/Bottom/FlywheelDesiredRPM", bottomRPM * ShooterConstants.FlywheelGearRatio);
 
-        double shooterLeftRPS = shooterLeftRPM / Constants.SecondsPerMinute;
-        double shooterRightRPS = shooterRightRPM / Constants.SecondsPerMinute;
+        double topRPS = topRPM / Constants.SecondsPerMinute;
+        double bottomRPS = bottomRPM / Constants.SecondsPerMinute;
 
         // we separate the two in the event that we wish to control them separately to modify the trajectory of the note 
-        leftFlywheelMotor.setControl(voltageVelocity.withVelocity(shooterLeftRPS));
-        rightFlywheelMotor.setControl(voltageVelocity.withVelocity(shooterRightRPS));
+        topFlywheelMotor.setControl(voltageVelocity.withVelocity(topRPS));
+        bottomFlywheelMotor.setControl(voltageVelocity.withVelocity(bottomRPS));
 
-        Logger.recordOutput("Shooter/WithinToleranceFlywheels", isWithinFlywheelVelocityTolerance(shooterLeftRPM, shooterRightRPM));
+        Logger.recordOutput("Shooter/WithinToleranceFlywheels", isWithinFlywheelVelocityTolerance(topRPM, bottomRPM));
     }
 
     public void startIndex(double indexRPM) {
-        Logger.recordOutput("Shooter/DesiredIndexRPM", indexRPM);
+        Logger.recordOutput("Shooter/Index/DesiredRPM", indexRPM);
 
         double indexRPS = indexRPM / Constants.SecondsPerMinute;
 
@@ -98,8 +98,8 @@ public class Shooter extends SubsystemBase {
     }
 
     public void stop() {
-        leftFlywheelMotor.setControl(voltageVelocity.withVelocity(0));
-        rightFlywheelMotor.setControl(voltageVelocity.withVelocity(0));
+        topFlywheelMotor.setControl(voltageVelocity.withVelocity(0));
+        bottomFlywheelMotor.setControl(voltageVelocity.withVelocity(0));
         indexMotor.setControl(voltageVelocity.withVelocity(0));
     }
 
@@ -108,18 +108,17 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isShooting() {
-        return leftFlywheelMotor.getVelocity().getValue() > 0;
+        return topFlywheelMotor.getVelocity().getValue() > 0;
     }
 
     public boolean isWithinFlywheelVelocityTolerance(double desiredLeftRPM, double desiredRightRPM) {
-        return (getRPM(leftFlywheelMotor) >= desiredLeftRPM - ShooterConstants.FlywheelVelocityTolerance) && // is this the intended 
-                (getRPM(rightFlywheelMotor) >= desiredRightRPM - ShooterConstants.FlywheelVelocityTolerance);// function?
+        return (getRPM(topFlywheelMotor) >= desiredLeftRPM - ShooterConstants.FlywheelVelocityTolerance) && // is this the intended 
+                (getRPM(bottomFlywheelMotor) >= desiredRightRPM - ShooterConstants.FlywheelVelocityTolerance);// function?
     }
 
     public boolean isWithinIndexVelocityTolerance() {
         return getRPM(indexMotor) >= ShooterConstants.IndexRPM - ShooterConstants.IndexVelocityTolerance;
     }
-
 
     public boolean isNoteLoaded() {
         // return !breakBeam.get();
@@ -133,20 +132,21 @@ public class Shooter extends SubsystemBase {
     /* LOGGING */
 
     private void logData() {
-        Logger.recordOutput("Shooter/ActualRPMMotorLeft", getRPM(leftFlywheelMotor));
-        Logger.recordOutput("Shooter/ActualRPMMotorRight", getRPM(rightFlywheelMotor));
-        Logger.recordOutput("Shooter/ActualRPMFlywheelRight", getRPM(leftFlywheelMotor)
+        Logger.recordOutput("Shooter/Top/MotorActualRPM", getRPM(topFlywheelMotor));
+        Logger.recordOutput("Shooter/Top/FlywheelActualRPM", getRPM(topFlywheelMotor)
                 * ShooterConstants.FlywheelGearRatio);
-        Logger.recordOutput("Shooter/ActualRPMFlywheelRight", getRPM(rightFlywheelMotor)
+        Logger.recordOutput("Shooter/Top/ClosedLoopError", topFlywheelMotor.getClosedLoopError().getValue());
+        Logger.recordOutput("Shooter/Top/SupplyCurrent", topFlywheelMotor.getSupplyCurrent().getValue());
+
+        Logger.recordOutput("Shooter/Bottom/MotorActualRPM", getRPM(bottomFlywheelMotor));
+        Logger.recordOutput("Shooter/Bottom/FlywheelActualRPM", getRPM(bottomFlywheelMotor)
                 * ShooterConstants.FlywheelGearRatio);
-        Logger.recordOutput("Shooter/ActualRPMIndex", getRPM(indexMotor));
-        Logger.recordOutput("Shooter/ClosedLoopError/Lower", leftFlywheelMotor.getClosedLoopError().getValue());
-        Logger.recordOutput("Shooter/ClosedLoopError/Upper", rightFlywheelMotor.getClosedLoopError().getValue());
-        Logger.recordOutput("Shooter/ClosedLoopError/Index", indexMotor.getClosedLoopError().getValue());
-        Logger.recordOutput("Shooter/IsNoteLoaded", isNoteLoaded());
-        Logger.recordOutput("Shooter/SupplyCurrent/FlywheelLower", leftFlywheelMotor.getSupplyCurrent().getValue());
-        Logger.recordOutput("Shooter/SupplyCurrent/FlywheelUpper", rightFlywheelMotor.getSupplyCurrent().getValue());
-        Logger.recordOutput("Shooter/SupplyCurrent/Index", indexMotor.getSupplyCurrent().getValue());
+        Logger.recordOutput("Shooter/Bottom/ClosedLoopError", bottomFlywheelMotor.getClosedLoopError().getValue());
+        Logger.recordOutput("Shooter/Bottom/SupplyCurrent", bottomFlywheelMotor.getSupplyCurrent().getValue());
+
+        Logger.recordOutput("Shooter/Index/ActualRPM", getRPM(indexMotor));
+        Logger.recordOutput("Shooter/Index/ClosedLoopError", indexMotor.getClosedLoopError().getValue());
+        Logger.recordOutput("Shooter/Index/SupplyCurrent", indexMotor.getSupplyCurrent().getValue());
     }
 
     /* CONFIG */
@@ -169,7 +169,7 @@ public class Shooter extends SubsystemBase {
         PIDConfigs.Slot0.kD = ShooterConstants.FlywheelLeftKD;
         PIDConfigs.Slot0.kV = ShooterConstants.FlywheelLeftFF;
 
-        applyMotorConfig(leftFlywheelMotor, "leftFlywheelMotor", PIDConfigs, inversion);
+        applyMotorConfig(topFlywheelMotor, "leftFlywheelMotor", PIDConfigs, inversion);
     }
 
     private void applyRightFlywheelMotorConfig(InvertedValue inversion) {
@@ -179,7 +179,7 @@ public class Shooter extends SubsystemBase {
         PIDConfigs.Slot0.kD = ShooterConstants.FlywheelRightKD;
         PIDConfigs.Slot0.kV = ShooterConstants.FlywheelRightFF;
 
-        applyMotorConfig(rightFlywheelMotor, "rightFlywheelMotor", PIDConfigs, inversion);
+        applyMotorConfig(bottomFlywheelMotor, "rightFlywheelMotor", PIDConfigs, inversion);
     }
 
     private void applyMotorConfig(TalonFX motor, String motorName, TalonFXConfiguration PIDConfigs, InvertedValue inversion) {
@@ -236,8 +236,8 @@ public class Shooter extends SubsystemBase {
     /* SIMULATION */
 
     public void simulationInit() {
-        PhysicsSim.getInstance().addTalonFX(leftFlywheelMotor, 0.001);
-        PhysicsSim.getInstance().addTalonFX(rightFlywheelMotor, 0.001);
+        PhysicsSim.getInstance().addTalonFX(topFlywheelMotor, 0.001);
+        PhysicsSim.getInstance().addTalonFX(bottomFlywheelMotor, 0.001);
         PhysicsSim.getInstance().addTalonFX(indexMotor, 0.001);
 
         leftFlywheelMotorSim.Orientation = ChassisReference.CounterClockwise_Positive; // CHANGE

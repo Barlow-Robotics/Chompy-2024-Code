@@ -66,8 +66,9 @@ public class RobotContainer {
             ShooterMountState.Ferry);
 
     private final StartClimbing climbCmd = new StartClimbing(shooterMountSub);
-    // private final SetShooterMountPosition retryClimbCmd = new SetShooterMountPosition(shooterMountSub,
-    //         ShooterMountState.Preclimb);
+    // private final SetShooterMountPosition retryClimbCmd = new
+    // SetShooterMountPosition(shooterMountSub,
+    // ShooterMountState.Preclimb);
     // private final SetShooterMountPosition climbAbortCmd = new
     // SetShooterMountPosition(shooterMountSub,
     // ShooterMountState.ClimbAbort);
@@ -129,6 +130,7 @@ public class RobotContainer {
                         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
                         true,
                         visionSub,
+                        // shooterMountSub,
                         () -> autoAlignButton.getAsBoolean()));
     }
 
@@ -174,7 +176,8 @@ public class RobotContainer {
         climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA);
         climbButton.onTrue(climbCmd);
 
-        // climbAbortButton = new JoystickButton(operatorController, XboxControllerConstants.RightStick);
+        // climbAbortButton = new JoystickButton(operatorController,
+        // XboxControllerConstants.RightStick);
         // climbAbortButton.onTrue(retryClimbCmd);
 
         /********************* LED BINDINGS ************************************* */
@@ -236,9 +239,10 @@ public class RobotContainer {
 
         /* LOGGING */
 
-        var selectedAuto = autoChooser.getSelected() ;
-        var selectedName = autoChooser.getSelected().getName() ;
-//      var startingPoseTest = PathPlannerAuto.getStaringPoseFromAutoFile(autoChooser.getSelected()) ;
+        var selectedAuto = autoChooser.getSelected();
+        var selectedName = autoChooser.getSelected().getName();
+        // var startingPoseTest =
+        // PathPlannerAuto.getStaringPoseFromAutoFile(autoChooser.getSelected()) ;
 
         PathPlannerLogging.setLogCurrentPoseCallback(
                 (currentPose) -> {
@@ -256,7 +260,9 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
-        // return null;
+        if (autoChooser != null) {
+            return autoChooser.getSelected();
+        }
+        return null;
     }
 }

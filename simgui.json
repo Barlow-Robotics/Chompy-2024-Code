@@ -91,6 +91,9 @@
     "transitory": {
       "AdvantageKit": {
         "RealOutputs": {
+          "Drive": {
+            "open": true
+          },
           "FloorIntake": {
             "open": true
           },

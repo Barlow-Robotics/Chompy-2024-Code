@@ -68,7 +68,7 @@ public class ShooterMount extends SubsystemBase {
     }
 
     private ShooterMountState actualState = ShooterMountState.FloorIntake;
-    private ShooterMountState desiredState = ShooterMountState.FloorIntake;
+    public ShooterMountState desiredState = ShooterMountState.FloorIntake;
 
     private double desiredAngle = Constants.ShooterMountConstants.FloorIntakeAngle;
     private double desiredHeight = Constants.ShooterMountConstants.FloorIntakeHeight;
@@ -383,41 +383,34 @@ public class ShooterMount extends SubsystemBase {
     }
 
     private void logData() {
-        Logger.recordOutput("ShooterMount/Angle/DesiredAngle", desiredAngle);
-        Logger.recordOutput("ShooterMount/Height/DesiredHeightInches", desiredHeight);
-        Logger.recordOutput("ShooterMount/ActualState", actualState);
-        Logger.recordOutput("ShooterMount/DesiredState", desiredState);
-        Logger.recordOutput("ShooterMount/Angle/CANCoderDegrees", getAngleCANCoderDegrees());
-        Logger.recordOutput("ShooterMount/Angle/CANCoderRotations", angleCANCoder.getAbsolutePosition().getValue());
-        Logger.recordOutput("ShooterMount/Angle/Talon", getTalonEncoderDegrees());
-        Logger.recordOutput("ShooterMount/VoltageActual/AngleMotor", angleMotor.getMotorVoltage().getValue());
-        Logger.recordOutput("ShooterMount/VoltageActual/ElevatorLeftMotor",
-                leftElevatorMotor.getMotorVoltage().getValue());
-        Logger.recordOutput("ShooterMount/VoltageActual/ElevatorRightMotor",
-                rightElevatorMotor.getMotorVoltage().getValue());
-        Logger.recordOutput("ShooterMount/ClosedLoopError/AngleMotor", angleMotor.getClosedLoopError().getValue());
-        Logger.recordOutput("ShooterMount/ClosedLoopError/ElevatorLeftMotor",
-                leftElevatorMotor.getClosedLoopError().getValue());
-        Logger.recordOutput("ShooterMount/ClosedLoopError/ElevatorRightMotor",
-                rightElevatorMotor.getClosedLoopError().getValue());
-        Logger.recordOutput("ShooterMount/TempC/LeftElevatorMotor", leftElevatorMotor.getDeviceTemp().getValue());
-        Logger.recordOutput("ShooterMount/TempC/RightElevatorMotor", rightElevatorMotor.getDeviceTemp().getValue());
-        Logger.recordOutput("ShooterMount/ActualHeight", getHeightInches());
-        Logger.recordOutput("ShooterMount/IsAtBottom", isAtBottom());
-        Logger.recordOutput("ShooterMount/CurrentSupply/ElevatorLeft", leftElevatorMotor.getSupplyCurrent().getValue());
-        Logger.recordOutput("ShooterMount/CurrentSupply/ElevatorRight",
-                rightElevatorMotor.getSupplyCurrent().getValue());
-        Logger.recordOutput("ShooterMount/CurrentSupply/Angle", angleMotor.getSupplyCurrent().getValue());
-        Logger.recordOutput("ShooterMount/ControlMode/ElevatorLeft",
-                leftElevatorMotor.getControlMode().getValue());
-        Logger.recordOutput("ShooterMount/Height/RawElevatorLeftMotorRotations",
-                leftElevatorMotor.getPosition().getValueAsDouble());
-        Logger.recordOutput("ShooterMount/Height/RawElevatorRightMotorRotations",
-                rightElevatorMotor.getPosition().getValueAsDouble());
-        Logger.recordOutput("ShooterMount/Height/SetpointElevatorLeftRotations",
-                leftElevatorMotor.getClosedLoopReference().getValue());
-        Logger.recordOutput("ShooterMount/Height/SetpointElevatorRightRotations",
-                rightElevatorMotor.getClosedLoopReference().getValue());
+        Logger.recordOutput("ShooterMount/StateActual", actualState);
+        Logger.recordOutput("ShooterMount/StateDesired", desiredState);
+
+        Logger.recordOutput("ShooterMount/Angle/AngleDesired", desiredAngle);
+        Logger.recordOutput("ShooterMount/Angle/DegreesCANCoder", getAngleCANCoderDegrees());
+        Logger.recordOutput("ShooterMount/Angle/RotationsCANCoder", angleCANCoder.getAbsolutePosition().getValue());
+        Logger.recordOutput("ShooterMount/Angle/DegreesTalon", getTalonEncoderDegrees());
+        Logger.recordOutput("ShooterMount/Angle/VoltageActual", angleMotor.getMotorVoltage().getValue());
+        Logger.recordOutput("ShooterMount/Angle/ClosedLoopError", angleMotor.getClosedLoopError().getValue());
+        Logger.recordOutput("ShooterMount/Angle/SupplyCurrent", angleMotor.getSupplyCurrent().getValue());
+
+        Logger.recordOutput("ShooterMount/Height/InchesDesired", desiredHeight);
+        Logger.recordOutput("ShooterMount/Height/InchesActual", getHeightInches());
+       
+        Logger.recordOutput("ShooterMount/Height/Left/VoltageActual", leftElevatorMotor.getMotorVoltage().getValue());
+        Logger.recordOutput("ShooterMount/Height/Left/ClosedLoopError", leftElevatorMotor.getClosedLoopError().getValue());
+        Logger.recordOutput("ShooterMount/Height/Left/SupplyCurrent", leftElevatorMotor.getSupplyCurrent().getValue());
+        Logger.recordOutput("ShooterMount/Height/Left/TempC", leftElevatorMotor.getDeviceTemp().getValue());
+        Logger.recordOutput("ShooterMount/Height/Left/ControlMode", leftElevatorMotor.getControlMode().getValue());
+        Logger.recordOutput("ShooterMount/Height/Left/RotationsActual", leftElevatorMotor.getPosition().getValueAsDouble());
+        Logger.recordOutput("ShooterMount/Height/Left/RotationsDesired", leftElevatorMotor.getClosedLoopReference().getValue());
+
+        Logger.recordOutput("ShooterMount/Height/Right/VoltageActual", rightElevatorMotor.getMotorVoltage().getValue());
+        Logger.recordOutput("ShooterMount/Height/Right/ClosedLoopError", rightElevatorMotor.getClosedLoopError().getValue());
+        Logger.recordOutput("ShooterMount/Height/Right/SupplyCurrent", rightElevatorMotor.getSupplyCurrent().getValue());
+        Logger.recordOutput("ShooterMount/Height/Right/TempC", rightElevatorMotor.getDeviceTemp().getValue());
+        Logger.recordOutput("ShooterMount/Height/Right/RotationsActual", rightElevatorMotor.getPosition().getValueAsDouble());
+        Logger.recordOutput("ShooterMount/Height/Right/RotationsDesired", rightElevatorMotor.getClosedLoopReference().getValue());
     }
 
     /* CONFIG */

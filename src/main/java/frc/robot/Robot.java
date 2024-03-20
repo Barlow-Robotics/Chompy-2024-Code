@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 //import org.xml.sax.ErrorHandler;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.revrobotics.REVPhysicsSim;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -123,6 +124,17 @@ public class Robot extends LoggedRobot {
             if (alliance.isPresent()) {
                 robotContainer.configurePathPlanner();
                 pathPlannerConfigured = true ;
+            }
+        } else {
+            var selectedAutoCommand = robotContainer.getAutonomousCommand();
+            if (selectedAutoCommand != autonomousCommand) {
+                var fileName = selectedAutoCommand.getName();
+                try {
+                    var startingPose = PathPlannerAuto.getStaringPoseFromAutoFile(fileName);
+                    robotContainer.driveSub.resetOdometry(startingPose);
+                    autonomousCommand = selectedAutoCommand;
+                } catch (Exception ex) {
+                }
             }
         }
     }

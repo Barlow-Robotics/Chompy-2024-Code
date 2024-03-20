@@ -160,12 +160,12 @@ public class Drive extends SubsystemBase {
         // Vision estimate is not stable. Just use pure odometry for now
         // Don't re-enable until we have done more thorough testing of the
         // vision calibration and initialization.
-        /*
+        
         if (photonEstimate.isPresent()) {
             poseEstimator.addVisionMeasurement(photonEstimate.get().estimatedPose.toPose2d(),
                     photonEstimate.get().timestampSeconds);
         }
-        */
+        
 
         Logger.recordOutput("Drive/PoseEstimate", poseEstimator.getEstimatedPosition());
         if (photonEstimate.isPresent()) {

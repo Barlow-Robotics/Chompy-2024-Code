@@ -53,8 +53,8 @@ public class Shooter extends SubsystemBase {
     private boolean simulationInitialized = false;
 
     public Shooter() {
-        topFlywheelMotor = new TalonFX(ElectronicsIDs.LeftShooterMotorID);
-        bottomFlywheelMotor = new TalonFX(ElectronicsIDs.RightShooterMotorID);
+        topFlywheelMotor = new TalonFX(ElectronicsIDs.TopShooterMotorID);
+        bottomFlywheelMotor = new TalonFX(ElectronicsIDs.BottomShooterMotorID);
         indexMotor = new TalonFX(ElectronicsIDs.IndexMotorID);
 
         applyLeftFlywheelMotorConfig(InvertedValue.Clockwise_Positive);

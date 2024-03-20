@@ -68,8 +68,8 @@ public class Constants {
         /***************************** SHOOTER *****************************/
 
         // ShooterMotorID = 4{locationOnBot}
-        public static final int LeftShooterMotorID = 41;
-        public static final int RightShooterMotorID = 42;
+        public static final int TopShooterMotorID = 41;
+        public static final int BottomShooterMotorID = 42;
         public static final int IndexMotorID = 43;
         public static final int BreakBeamID = 4;
 
@@ -330,7 +330,7 @@ public class Constants {
         public static final double MidSpeakerHeight = 88; // bottom of speaker opening is at 78", so aim above it.
         public static final double ElevatorHeightUnextended = 26; // inches - possibly CHANGE - height of elevator at rest
         
-        public static final int missedSpeakerTargetFrameTolerance = 5;
+        public static final int missedSpeakerTargetFrameTolerance = 1;
     }
 
     /***************************************************************************/

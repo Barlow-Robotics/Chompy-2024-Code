@@ -590,6 +590,11 @@ public class Vision extends SubsystemBase {
         if (activeAlignTargetId.isPresent()) {
             Logger.recordOutput("vision/activeAlignTarget", activeAlignTargetId.getAsInt());
         }
+
+        Logger.recordOutput("vision/note_detection/note_is_visible", this.noteIsVisible());
+        Logger.recordOutput("vision/note_detection/distance_from_center", this.getNoteDistanceFromCenter());
+        Logger.recordOutput("vision/note_detection/width", this.getNoteWidth());
+        Logger.recordOutput("vision/note_detection/height", this.getNoteHeight());
     }
 
     // private void addNetworkTableEntries() {

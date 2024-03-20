@@ -77,7 +77,7 @@ public class ShooterMount extends SubsystemBase {
 
     private final Drive driveSub;
     private final Vision visionSub;
-    private int missedSpeakerTargetFrameCount = 0;
+    private int missedSpeakerTargetFrameCount = Constants.ShooterMountConstants.missedSpeakerTargetFrameTolerance;
 
     private double desiredDegrees = Constants.ShooterMountConstants.FloorIntakeAngle;
 
@@ -338,7 +338,6 @@ public class ShooterMount extends SubsystemBase {
             targetIsVisible = true;
 
         } else {
-            missedSpeakerTargetFrameCount++;
 
             if (missedSpeakerTargetFrameCount >= Constants.ShooterMountConstants.missedSpeakerTargetFrameTolerance) {
                 // var speakerPose = visionSub.getSpeakerPose() ;
@@ -348,11 +347,11 @@ public class ShooterMount extends SubsystemBase {
                 // driveSub.getPose().getTranslation().getDistance(speakerTranslation) ;
                 // } else {
                 targetIsVisible = false;
-                missedSpeakerTargetFrameCount = 0;
                 return Constants.ShooterMountConstants.SpeakerAngle;
                 // }
             }
             else {
+                missedSpeakerTargetFrameCount++;
                 return desiredAngle;
             }
         }
@@ -411,6 +410,8 @@ public class ShooterMount extends SubsystemBase {
         Logger.recordOutput("ShooterMount/Height/Right/TempC", rightElevatorMotor.getDeviceTemp().getValue());
         Logger.recordOutput("ShooterMount/Height/Right/RotationsActual", rightElevatorMotor.getPosition().getValueAsDouble());
         Logger.recordOutput("ShooterMount/Height/Right/RotationsDesired", rightElevatorMotor.getClosedLoopReference().getValue());
+    
+        Logger.recordOutput("ShooterMount/MissedSpeakerTargetFrameCount", missedSpeakerTargetFrameCount);
     }
 
     /* CONFIG */

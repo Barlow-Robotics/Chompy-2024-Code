@@ -330,7 +330,7 @@ public class Constants {
         public static final double MidSpeakerHeight = 88; // bottom of speaker opening is at 78", so aim above it.
         public static final double ElevatorHeightUnextended = 26; // inches - possibly CHANGE - height of elevator at rest
         
-        public static final int missedSpeakerTargetFrameTolerance = 1;
+        public static final int missedSpeakerTargetFrameTolerance = 13;  // rougly .25 seconds
     }
 
     /***************************************************************************/

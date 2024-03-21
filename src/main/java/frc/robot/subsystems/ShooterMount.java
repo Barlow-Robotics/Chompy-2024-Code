@@ -77,7 +77,7 @@ public class ShooterMount extends SubsystemBase {
 
     private final Drive driveSub;
     private final Vision visionSub;
-    private int missedSpeakerTargetFrameCount = Constants.ShooterMountConstants.missedSpeakerTargetFrameTolerance;
+    private int missedSpeakerTargetFrameCount = Constants.ShooterMountConstants.missedSpeakerTargetFrameTolerance + 1;
 
     private double desiredDegrees = Constants.ShooterMountConstants.FloorIntakeAngle;
 

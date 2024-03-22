@@ -279,7 +279,8 @@ public class Constants {
         public static final double AngleKG = 0.29;
 
         // public static final double AngleCANCoderMagnetOffset = 0.312744140625;
-        public static final double AngleCANCoderMagnetOffset = 0.49072265625;
+        // public static final double AngleCANCoderMagnetOffset = 0.49072265625;
+        public static final double AngleCANCoderMagnetOffset = 0.499755859375;
 
         public static final double AngleGearRatio = 46.67; // From K's spreadsheet
         public static final double ShooterAngleMaxDegreesPerSecond = (Falcon500MaxRPM / SecondsPerMinute * 360) / AngleGearRatio;

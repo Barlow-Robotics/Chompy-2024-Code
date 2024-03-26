@@ -130,9 +130,7 @@ public class DriveRobotWithAprilTagAlign extends Command {
         speedY = MathUtil.applyDeadband(xInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
         speedRot = MathUtil.applyDeadband(rotInput.get(), 2 * DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
 
-        // wpk put back after driver trials
         boolean autoAlignEnabled = runAutoAlign.get();
-        // boolean autoAlignEnabled = false;
 
         var alignYawControl = 0.0;
         var alignLatControl = 0.0;

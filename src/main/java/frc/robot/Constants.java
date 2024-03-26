@@ -145,6 +145,10 @@ public class Constants {
         public static final double AutoAlignLatKI = 0.0;
         public static final double AutoAlignLatKD = 0;
 
+        public static final double AutoAlignNoteKP = 0.002; //CHANGE
+        public static final double AutoAlignNoteKI = 0.0;
+        public static final double AutoAlignNoteKD = 0;
+
         /* TURN ENCODER */
         public static final int CANCoderResolution = 4096;
         public static final double PositionConversionFactor = WheelCircumference / GearRatio;

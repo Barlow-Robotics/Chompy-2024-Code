@@ -4,18 +4,25 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,8 +30,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElectronicsIDs;
 import frc.robot.Constants.LogitechExtreme3DConstants;
+// import frc.robot.Constants.ShooterMountConstants;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.DriveRobotWithAprilTagAlign;
 import frc.robot.commands.ReverseFloorIntake;
@@ -92,7 +101,7 @@ public class RobotContainer {
     private Trigger moveToFerryButton; // hamburger
 
     private Trigger climbButton; // button a
-    private Trigger climbAbortButton; // right stick
+    // private Trigger climbAbortButton; // right stick
 
     // private Trigger toggleLEDsButton; // hamburger
     // private Trigger LEDHumanSourceButton;
@@ -104,11 +113,16 @@ public class RobotContainer {
     private Trigger autoAlignButton; // driver button 11
     private Trigger restartGyroButton; // driver button 9
 
+    public PIDController autoAlignRotPid;
     /* AUTO */
 
     private SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
+        autoAlignRotPid = new PIDController(
+                DriveConstants.AutoAlignRotKP,
+                DriveConstants.AutoAlignRotKI,
+                DriveConstants.AutoAlignRotKD);
         // configurePathPlanner(); // wpk moved this call to robot.disabledPeriodic()
         configureButtonBindings();
         driveSub.setDefaultCommand(
@@ -135,7 +149,6 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-
         driverController = new Joystick(ElectronicsIDs.DriverControllerPort);
         operatorController = new Joystick(ElectronicsIDs.OperatorControllerPort);
 
@@ -199,8 +212,8 @@ public class RobotContainer {
     }
 
     public void configurePathPlanner() {
+        
         /* PATHPLANNER INIT */
-
         AutoBuilder.configureHolonomic(
                 // driveSub::getPoseWithoutVision, // Robot pose supplier
                 driveSub::getPose, // Robot pose supplier
@@ -238,6 +251,7 @@ public class RobotContainer {
         Shuffleboard.getTab("Match").add("Path Name", autoChooser);
 
         /* LOGGING */
+        PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
 
         var selectedAuto = autoChooser.getSelected();
         var selectedName = autoChooser.getSelected().getName();
@@ -257,6 +271,25 @@ public class RobotContainer {
                 (targetPose) -> {
                     Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
                 });
+    }
+
+    public Optional<Rotation2d> getRotationTargetOverride(){
+
+        if (RobotState.isAutonomous()) {
+            double yaw = visionSub.getNoteDistanceFromCenter();
+            double speedRot = autoAlignRotPid.calculate(yaw);
+
+            if (visionSub.getNoteDistanceFromCenter() > Constants.VisionConstants.NoteAlignPixelTolerance) {
+                return Optional.empty();
+            } else if (shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake && visionSub.noteIsVisible() && !(visionSub.getNoteDistanceFromCenter() > Constants.VisionConstants.NoteAlignPixelTolerance)) {
+                return Optional.of(driveSub.getPose().getRotation().plus(new Rotation2d(speedRot)));
+            } else if (shooterMountSub.getShooterMountState() == ShooterMountState.Speaker && !visionSub.allDetectedTargets.isEmpty()) {
+                return Optional.of((driveSub.getPose().getRotation().plus(new Rotation2d (visionSub.getBestTrackableTarget().get().getYaw()))));
+            } else {
+                return Optional.empty();
+            }
+        }
+        return Optional.empty();
     }
 
     public Command getAutonomousCommand() {

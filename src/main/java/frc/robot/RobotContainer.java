@@ -5,8 +5,10 @@
 package frc.robot;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.PhotonUtils;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -114,17 +116,20 @@ public class RobotContainer {
     private Trigger autoAlignButton; // driver button 11
     private Trigger restartGyroButton; // driver button 9
 
-    public PIDController autoAlignRotPid;
+    private PIDController noteYawPID;
+
+
     /* AUTO */
 
     private SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        autoAlignRotPid = new PIDController(
-                DriveConstants.AutoAlignRotKP,
-                DriveConstants.AutoAlignRotKI,
-                DriveConstants.AutoAlignRotKD);
-        // configurePathPlanner(); // wpk moved this call to robot.disabledPeriodic()
+        noteYawPID = new PIDController(
+                DriveConstants.AutoAlignNoteKP,
+                DriveConstants.AutoAlignNoteKI,
+                DriveConstants.AutoAlignNoteKD);
+        noteYawPID.setSetpoint(0.0);
+
         configureButtonBindings();
         driveSub.setDefaultCommand(
                 // The left stick controls translation of the robot.
@@ -285,21 +290,35 @@ public class RobotContainer {
 
     public Optional<Rotation2d> getRotationTargetOverride(){
 
-        if (RobotState.isAutonomous()) {
-            double yaw = visionSub.getNoteDistanceFromCenter();
-            double speedRot = autoAlignRotPid.calculate(yaw);
+        Optional<Rotation2d> result = Optional.empty() ;
 
-            if (visionSub.getNoteDistanceFromCenter() > Constants.VisionConstants.NoteAlignPixelTolerance) {
-                return Optional.empty();
-            } else if (shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake && visionSub.noteIsVisible() && !(visionSub.getNoteDistanceFromCenter() > Constants.VisionConstants.NoteAlignPixelTolerance)) {
-                return Optional.of(driveSub.getPose().getRotation().plus(new Rotation2d(speedRot)));
+        if (RobotState.isAutonomous()) {
+
+            if ( shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake ) {
+                if (visionSub.noteIsVisible() && visionSub.getNoteDistanceFromCenter() < Constants.VisionConstants.NoteAlignPixelTolerance) {
+                    double yaw = -visionSub.getNoteDistanceFromCenter();
+                    double rotDelta = noteYawPID.calculate(yaw);
+                    result =  Optional.of( driveSub.getPose().getRotation().plus(new Rotation2d(rotDelta)) ) ;
+                } else {
+                    noteYawPID.reset();
+                }
             } else if (shooterMountSub.getShooterMountState() == ShooterMountState.Speaker && !visionSub.allDetectedTargets.isEmpty()) {
-                return Optional.of((driveSub.getPose().getRotation().plus(new Rotation2d (visionSub.getBestTrackableTarget().get().getYaw()))));
-            } else {
-                return Optional.empty();
+                var bestTarget = visionSub.getBestTrackableTarget() ;
+                if (bestTarget.isPresent()) {
+                    var rotOffset = bestTarget.get().getYaw();
+                    result =  Optional.of( driveSub.getPose().getRotation().plus(new Rotation2d(rotOffset)) ) ;
+
+                    Logger.recordOutput("YawOverrideAlign/targetYaw", bestTarget.get().getYaw());
+                    Logger.recordOutput("YawOverrideAlign/proposed rot", result.get());
+                } else {
+
+                }
+                noteYawPID.reset();
+
             }
         }
-        return Optional.empty();
+
+        return result;
     }
 
     public Command getAutonomousCommand() {

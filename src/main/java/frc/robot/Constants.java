@@ -141,6 +141,10 @@ public class Constants {
         public static final double AutoAlignRotKI = 0.0;
         public static final double AutoAlignRotKD = 0.0;
 
+        public static final double AutoAlignNoteKP = 0.08; //CHANGE
+        public static final double AutoAlignNoteKI = 0.0;
+        public static final double AutoAlignNoteKD = 0.0;
+
         public static final double AutoAlignLatKP = 0.5; //CHANGE
         public static final double AutoAlignLatKI = 0.0;
         public static final double AutoAlignLatKD = 0;

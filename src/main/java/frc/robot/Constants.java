@@ -404,6 +404,8 @@ public class Constants {
         public static final double InvalidAngle = -361; 
         public static final double NoTargetDistance = -1;
 
+        public static final double NoteAlignPixelTolerance = 250; // NEED TO CHANGE
+
     }
 
     /***************************************************************************/

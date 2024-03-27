@@ -27,6 +27,7 @@ import frc.robot.Constants.ElectronicsIDs;
 import frc.robot.Constants.LogitechExtreme3DConstants;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.DriveRobotWithAprilTagAlign;
+import frc.robot.commands.DriveRobotWithNoteAlign;
 import frc.robot.commands.ReverseFloorIntake;
 // import frc.robot.commands.DriveRobotWithAlign;
 import frc.robot.commands.SetShooterMountPosition;
@@ -122,16 +123,27 @@ public class RobotContainer {
                 // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
                 // true));
 
-                new DriveRobotWithAprilTagAlign(
+                // new DriveRobotWithAprilTagAlign(
+                // driveSub,
+                // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
+                // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
+                // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
+                // () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
+                // true,
+                // visionSub,
+                // // shooterMountSub,
+                // () -> autoAlignButton.getAsBoolean()));
+
+                new DriveRobotWithNoteAlign(
                         driveSub,
                         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisX),
                         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisY),
                         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.AxisZRotate),
                         () -> -driverController.getRawAxis(LogitechExtreme3DConstants.Slider),
-                        true,
                         visionSub,
-                        // shooterMountSub,
+                        floorIntakeSub,
                         () -> autoAlignButton.getAsBoolean()));
+
     }
 
     private void configureButtonBindings() {
@@ -239,8 +251,6 @@ public class RobotContainer {
 
         /* LOGGING */
 
-        var selectedAuto = autoChooser.getSelected();
-        var selectedName = autoChooser.getSelected().getName();
         // var startingPoseTest =
         // PathPlannerAuto.getStaringPoseFromAutoFile(autoChooser.getSelected()) ;
 

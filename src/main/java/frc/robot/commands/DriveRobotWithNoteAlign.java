@@ -126,9 +126,9 @@ public class DriveRobotWithNoteAlign extends Command {
                 if (visionSub.noteIsVisible()) {
 
                     // compute magnitude of the speed vector
-                    speedX = Math.sqrt(speedX * speedX + speedY + speedY);
+                    speedX = Math.sqrt(speedX * speedX + speedY * speedY);
                     // negate value to match robot coordinate system
-                    var noteOffset = -visionSub.getNoteDistanceFromCenter();
+                    var noteOffset = visionSub.getNoteDistanceFromCenter();
                     speedY = notePID.calculate(noteOffset);
                     fieldRelative = false;
                 } else {

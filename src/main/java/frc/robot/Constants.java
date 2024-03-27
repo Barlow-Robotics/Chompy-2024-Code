@@ -145,7 +145,7 @@ public class Constants {
         public static final double AutoAlignLatKI = 0.0;
         public static final double AutoAlignLatKD = 0;
 
-        public static final double AutoAlignNoteKP = 0.002; //CHANGE
+        public static final double AutoAlignNoteKP = 0.005; //CHANGE
         public static final double AutoAlignNoteKI = 0.0;
         public static final double AutoAlignNoteKD = 0;
 
@@ -170,6 +170,7 @@ public class Constants {
             flModuleOffset.getNorm(), // Drive base radius (distance from center to furthest module)
             new ReplanningConfig());
     }
+
 
     public static final class AutoConstants {
         public static final double MaxSpeedMetersPerSecond = DriveConstants.MaxModuleMetersPerSecond / 4; // CHANGE
@@ -270,28 +271,29 @@ public class Constants {
         public static final double TrapAngle = -5; // CHANGE
         public static final double TrapHeight = 46; // CHANGE
 
-        public static final double FerryAngle = -10;
+        // public static final double FerryAngle = -10;
+        public static final double FerryAngle = 20;
         public static final double FerryHeight = StartingHeight;
 
         /* ANGLE */
 
-        public static final double AngleKP = 26;
-        public static final double AngleKI = 0.005;
-        public static final double AngleKD = 0.0;
+        public static final double AngleKP = 36;
+        public static final double AngleKI = 0.000;
+        public static final double AngleKD = 1.5;
         // public static final double AngleIZone = 0; // motor already does this
         public static final double AngleFF = 0.0;
         public static final double AngleKG = 0.29;
 
-        // public static final double AngleCANCoderMagnetOffset = 0.312744140625;
-        // public static final double AngleCANCoderMagnetOffset = 0.49072265625;
-        public static final double AngleCANCoderMagnetOffset = 0.499755859375;
+       // public static final double AngleCANCoderMagnetOffset = 0.499755859375;
+       // public static final double AngleCANCoderMagnetOffset = 0.513611111;
+        public static final double AngleCANCoderMagnetOffset = 0.48583;
+
 
         public static final double AngleGearRatio = 46.67; // From K's spreadsheet
         public static final double ShooterAngleMaxDegreesPerSecond = (Falcon500MaxRPM / SecondsPerMinute * 360) / AngleGearRatio;
-        public static final double AngleMMCruiseDegPerSec = 2.0; 
-//        public static final double AngleMMCruiseDegPerSec = 1.5; 
-        public static final double AngleMMAcceleration = 5;
-        public static final double AngleMMJerk = 20; //30; 
+        public static final double AngleCruiseRotationsPerSec = 3; 
+        public static final double AngleAcceleration = 12;
+        public static final double AngleJerk = 40; //30; 
 
         /* ELEVATOR */
 
@@ -321,9 +323,9 @@ public class Constants {
 
         public static final double ElevatorMaxInchesPerSec = 
                 Falcon500MaxRPM / SecondsPerMinute / ElevatorGearRatio * ElevatorSprocketCircumference;
-        public static final double ElevatorMMCruiseInchesPerSec = 10; 
-        public static final double ElevatorMMInchesPerSecPerSec = 10; 
-        public static final double ElevatorMMJerk = 800; // CHANGE - Target jerk of 1600 rps/s/s (0.1 seconds)
+        public static final double ElevatorCruiseInchesPerSec = 10; 
+        public static final double ElevatorInchesPerSecPerSec = 10; 
+        public static final double ElevatorJerk = 800; // CHANGE - Target jerk of 1600 rps/s/s (0.1 seconds)
     
         // LMT added constants to enable changing shooter angle while driving to speaker
         public static final double CameraMountHeight = 24; // inches - possibly CHANGE
@@ -333,10 +335,11 @@ public class Constants {
                                                             * work, originally did that from bottoms of speaker and
                                                             * AT */
         // public static final double MidSpeakerHeight = 80.4; // inches to middle of speaker hole - possibly CHANGE
-        public static final double MidSpeakerHeight = 88; // bottom of speaker opening is at 78", so aim above it.
+        // public static final double MidSpeakerHeight = 88; // bottom of speaker opening is at 78", so aim above it.
+        public static final double MidSpeakerHeight = 96; // bottom of speaker opening is at 78", so aim above it.
         public static final double ElevatorHeightUnextended = 26; // inches - possibly CHANGE - height of elevator at rest
         
-        public static final int missedSpeakerTargetFrameTolerance = 13;  // rougly .25 seconds
+        public static final int MissedSpeakerTargetFrameTolerance = 13;  // rougly .25 seconds
     }
 
     /***************************************************************************/

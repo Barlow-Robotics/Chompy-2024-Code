@@ -77,7 +77,7 @@ public class ShooterMount extends SubsystemBase {
 
     private final Drive driveSub;
     private final Vision visionSub;
-    private int missedSpeakerTargetFrameCount = Constants.ShooterMountConstants.missedSpeakerTargetFrameTolerance + 1;
+    private int missedSpeakerTargetFrameCount = Constants.ShooterMountConstants.MissedSpeakerTargetFrameTolerance + 1;
 
     private double desiredDegrees = Constants.ShooterMountConstants.FloorIntakeAngle;
 
@@ -308,6 +308,9 @@ public class ShooterMount extends SubsystemBase {
         if (newState != desiredState) {
             actualState = ShooterMountState.MovingToPosition;
         }
+        if ( newState == ShooterMountState.Speaker) {
+            desiredAngle = Constants.ShooterMountConstants.SpeakerAngle ;
+        }
         desiredState = newState;
     }
 
@@ -339,7 +342,7 @@ public class ShooterMount extends SubsystemBase {
 
         } else {
 
-            if (missedSpeakerTargetFrameCount >= Constants.ShooterMountConstants.missedSpeakerTargetFrameTolerance) {
+            if (missedSpeakerTargetFrameCount >= Constants.ShooterMountConstants.MissedSpeakerTargetFrameTolerance) {
                 // var speakerPose = visionSub.getSpeakerPose() ;
                 // if (speakerPose.isPresent()) {
                 // var speakerTranslation = speakerPose.get().toPose2d().getTranslation() ;
@@ -385,13 +388,16 @@ public class ShooterMount extends SubsystemBase {
         Logger.recordOutput("ShooterMount/StateActual", actualState);
         Logger.recordOutput("ShooterMount/StateDesired", desiredState);
 
-        Logger.recordOutput("ShooterMount/Angle/AngleDesired", desiredAngle);
+        Logger.recordOutput("ShooterMount/Angle/DegreesDesired", desiredAngle);
         Logger.recordOutput("ShooterMount/Angle/DegreesCANCoder", getAngleCANCoderDegrees());
         Logger.recordOutput("ShooterMount/Angle/RotationsCANCoder", angleCANCoder.getAbsolutePosition().getValue());
         Logger.recordOutput("ShooterMount/Angle/DegreesTalon", getTalonEncoderDegrees());
+        Logger.recordOutput("ShooterMount/Angle/MissedSpeakerTargetFrameCount", missedSpeakerTargetFrameCount);
         Logger.recordOutput("ShooterMount/Angle/VoltageActual", angleMotor.getMotorVoltage().getValue());
         Logger.recordOutput("ShooterMount/Angle/ClosedLoopError", angleMotor.getClosedLoopError().getValue());
         Logger.recordOutput("ShooterMount/Angle/SupplyCurrent", angleMotor.getSupplyCurrent().getValue());
+        Logger.recordOutput("ShooterMount/Angle/RPSActual", angleMotor.getVelocity().getValue());
+        Logger.recordOutput("ShooterMount/Angle/AccelerationActual", angleMotor.getAcceleration().getValue());
 
         Logger.recordOutput("ShooterMount/Height/InchesDesired", desiredHeight);
         Logger.recordOutput("ShooterMount/Height/InchesActual", getHeightInches());
@@ -403,6 +409,8 @@ public class ShooterMount extends SubsystemBase {
         Logger.recordOutput("ShooterMount/Height/Left/ControlMode", leftElevatorMotor.getControlMode().getValue());
         Logger.recordOutput("ShooterMount/Height/Left/RotationsActual", leftElevatorMotor.getPosition().getValueAsDouble());
         Logger.recordOutput("ShooterMount/Height/Left/RotationsDesired", leftElevatorMotor.getClosedLoopReference().getValue());
+        Logger.recordOutput("ShooterMount/Height/Left/RPSActual", leftElevatorMotor.getVelocity().getValue());
+        Logger.recordOutput("ShooterMount/Height/Left/AccelerationActual", leftElevatorMotor.getAcceleration().getValue());
 
         Logger.recordOutput("ShooterMount/Height/Right/VoltageActual", rightElevatorMotor.getMotorVoltage().getValue());
         Logger.recordOutput("ShooterMount/Height/Right/ClosedLoopError", rightElevatorMotor.getClosedLoopError().getValue());
@@ -410,8 +418,8 @@ public class ShooterMount extends SubsystemBase {
         Logger.recordOutput("ShooterMount/Height/Right/TempC", rightElevatorMotor.getDeviceTemp().getValue());
         Logger.recordOutput("ShooterMount/Height/Right/RotationsActual", rightElevatorMotor.getPosition().getValueAsDouble());
         Logger.recordOutput("ShooterMount/Height/Right/RotationsDesired", rightElevatorMotor.getClosedLoopReference().getValue());
-    
-        Logger.recordOutput("ShooterMount/MissedSpeakerTargetFrameCount", missedSpeakerTargetFrameCount);
+        Logger.recordOutput("ShooterMount/Height/Right/RPSActual", rightElevatorMotor.getVelocity().getValue());
+        Logger.recordOutput("ShooterMount/Height/Right/AccelerationActual", rightElevatorMotor.getAcceleration().getValue());
     }
 
     /* CONFIG */
@@ -426,9 +434,9 @@ public class ShooterMount extends SubsystemBase {
         talonConfigs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
         var motionMagicConfigs = talonConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = ShooterMountConstants.AngleMMCruiseDegPerSec;
-        motionMagicConfigs.MotionMagicAcceleration = ShooterMountConstants.AngleMMAcceleration;
-        motionMagicConfigs.MotionMagicJerk = ShooterMountConstants.AngleMMJerk;
+        motionMagicConfigs.MotionMagicCruiseVelocity = ShooterMountConstants.AngleCruiseRotationsPerSec;
+        motionMagicConfigs.MotionMagicAcceleration = ShooterMountConstants.AngleAcceleration;
+        motionMagicConfigs.MotionMagicJerk = ShooterMountConstants.AngleJerk;
 
         talonConfigs.Feedback.FeedbackRemoteSensorID = angleCANCoder.getDeviceID();
         talonConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
@@ -455,11 +463,11 @@ public class ShooterMount extends SubsystemBase {
 
         var motionMagicConfigs = talonConfigs.MotionMagic;
 
-        double rotationsPerSecond = ShooterMountConstants.ElevatorMMCruiseInchesPerSec
+        double rotationsPerSecond = ShooterMountConstants.ElevatorCruiseInchesPerSec
                 * ShooterMountConstants.RotationsPerElevatorInch;
         motionMagicConfigs.MotionMagicCruiseVelocity = rotationsPerSecond;
 
-        double rotationsPerSecondPerSecond = (ShooterMountConstants.ElevatorMMInchesPerSecPerSec
+        double rotationsPerSecondPerSecond = (ShooterMountConstants.ElevatorInchesPerSecPerSec
                 * ShooterMountConstants.RotationsPerElevatorInch) / 0.25;
         motionMagicConfigs.MotionMagicAcceleration = rotationsPerSecondPerSecond;
 

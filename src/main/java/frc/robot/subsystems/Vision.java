@@ -313,9 +313,10 @@ public class Vision extends SubsystemBase {
                 myMap = objectMapper.readValue(message, new TypeReference<HashMap<String, String>>() {
                 });
                 this.noteDetected = Boolean.parseBoolean(myMap.get("detected"));
-                this.noteDistanceFromCenter = Double.parseDouble(myMap.get("distance_from_center"));
                 this.noteHeight = Double.parseDouble(myMap.get("bb_height"));
                 this.noteWidth = Double.parseDouble(myMap.get("bb_width"));
+                // wpk temp fix until nano is updated.
+                this.noteDistanceFromCenter = Double.parseDouble(myMap.get("distance_from_center")) ;
             }
 
             // var Vision_Info = new JSONObject(received);

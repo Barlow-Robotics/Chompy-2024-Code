@@ -130,9 +130,7 @@ public class DriveRobotWithAprilTagAlign extends Command {
         speedY = MathUtil.applyDeadband(xInput.get(), DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
         speedRot = MathUtil.applyDeadband(rotInput.get(), 2 * DeadBand) * (DriveConstants.MaxDriveableVelocity * maxVelocityMultiplier);
 
-        // wpk put back after driver trials
         boolean autoAlignEnabled = runAutoAlign.get();
-        // boolean autoAlignEnabled = false;
 
         var alignYawControl = 0.0;
         var alignLatControl = 0.0;
@@ -143,7 +141,7 @@ public class DriveRobotWithAprilTagAlign extends Command {
         // if the button transitions from not pressed to pressed
         if ( autoAlignEnabled && !autoAlignActive ) {
             // get the best target we might be interested in
-            rotPid.setSetpoint(6.0);  // wpk need to do better. this works close, but not as well far away
+            rotPid.setSetpoint(3.0);  // wpk need to do better. this works close, but not as well far away
             var bestTarget = visionSub.getBestTrackableTarget() ;
             if ( bestTarget.isPresent()) {
                 currentTrackedTarget = OptionalInt.of(bestTarget.get().getFiducialId())  ;

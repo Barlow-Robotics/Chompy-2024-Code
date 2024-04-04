@@ -141,17 +141,18 @@ public class Constants {
         public static final double AutoAlignRotKI = 0.0;
         public static final double AutoAlignRotKD = 0.0;
 
-        public static final double AutoAlignNoteKP = 0.08; //CHANGE
-        public static final double AutoAlignNoteKI = 0.0;
-        public static final double AutoAlignNoteKD = 0.0;
-
-        public static final double AutoAlignLatKP = 0.5; //CHANGE
-        public static final double AutoAlignLatKI = 0.0;
-        public static final double AutoAlignLatKD = 0;
-
         public static final double AutoAlignNoteKP = 0.005; //CHANGE
         public static final double AutoAlignNoteKI = 0.0;
         public static final double AutoAlignNoteKD = 0;
+
+        public static final double YawOverrideAlignNoteKP = 0.0005; //CHANGE
+        public static final double YawOverrideAlignNoteKI = 0.0;
+        public static final double YawOverrideAlignNoteKD = 0;
+
+        public static final double TargetYawOverrideAlignNoteKP = 0.004; //CHANGE
+        public static final double TargetYawOverrideAlignNoteKI = 0.0;
+        public static final double TargetYawOverrideAlignNoteKD = 0;
+
 
         /* TURN ENCODER */
         public static final int CANCoderResolution = 4096;
@@ -281,7 +282,7 @@ public class Constants {
 
         /* ANGLE */
 
-        public static final double AngleKP = 36;
+        public static final double AngleKP = 30;
         public static final double AngleKI = 0.000;
         public static final double AngleKD = 1.5;
         // public static final double AngleIZone = 0; // motor already does this
@@ -340,7 +341,7 @@ public class Constants {
                                                             * AT */
         // public static final double MidSpeakerHeight = 80.4; // inches to middle of speaker hole - possibly CHANGE
         // public static final double MidSpeakerHeight = 88; // bottom of speaker opening is at 78", so aim above it.
-        public static final double MidSpeakerHeight = 96; // bottom of speaker opening is at 78", so aim above it.
+        public static final double MidSpeakerHeight = 100; // bottom of speaker opening is at 78", so aim above it.
         public static final double ElevatorHeightUnextended = 26; // inches - possibly CHANGE - height of elevator at rest
         
         public static final int MissedSpeakerTargetFrameTolerance = 13;  // rougly .25 seconds

@@ -74,11 +74,6 @@ public class DriveRobotWithAprilTagAlign extends Command {
                 DriveConstants.AutoAlignRotKI,
                 DriveConstants.AutoAlignRotKD);
 
-        latPid = new PIDController(
-            DriveConstants.AutoAlignLatKP,
-            DriveConstants.AutoAlignLatKI,
-            DriveConstants.AutoAlignLatKD);
-
 
         // AprilTagFieldLayout layout;
         // try {

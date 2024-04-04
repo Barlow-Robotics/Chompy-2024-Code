@@ -117,6 +117,8 @@ public class RobotContainer {
     private Trigger restartGyroButton; // driver button 9
 
     private PIDController noteYawPID;
+    private PIDController targetYawPID;
+
 
 
     /* AUTO */
@@ -125,10 +127,16 @@ public class RobotContainer {
 
     public RobotContainer() {
         noteYawPID = new PIDController(
-                DriveConstants.AutoAlignNoteKP,
-                DriveConstants.AutoAlignNoteKI,
-                DriveConstants.AutoAlignNoteKD);
+                DriveConstants.YawOverrideAlignNoteKP,
+                DriveConstants.YawOverrideAlignNoteKI,
+                DriveConstants.YawOverrideAlignNoteKD);
         noteYawPID.setSetpoint(0.0);
+
+        targetYawPID = new PIDController(
+                DriveConstants.TargetYawOverrideAlignNoteKP,
+                DriveConstants.TargetYawOverrideAlignNoteKI,
+                DriveConstants.TargetYawOverrideAlignNoteKD);
+        targetYawPID.setSetpoint(0.0);
 
         configureButtonBindings();
         driveSub.setDefaultCommand(
@@ -295,8 +303,8 @@ public class RobotContainer {
         if (RobotState.isAutonomous()) {
 
             if ( shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake ) {
-                if (visionSub.noteIsVisible() && visionSub.getNoteDistanceFromCenter() < Constants.VisionConstants.NoteAlignPixelTolerance) {
-                    double yaw = -visionSub.getNoteDistanceFromCenter();
+                if (visionSub.noteIsVisible() && Math.abs(visionSub.getNoteDistanceFromCenter()) < Constants.VisionConstants.NoteAlignPixelTolerance) {
+                    double yaw = visionSub.getNoteDistanceFromCenter();
                     double rotDelta = noteYawPID.calculate(yaw);
                     result =  Optional.of( driveSub.getPose().getRotation().plus(new Rotation2d(rotDelta)) ) ;
                 } else {
@@ -306,10 +314,13 @@ public class RobotContainer {
                 var bestTarget = visionSub.getBestTrackableTarget() ;
                 if (bestTarget.isPresent()) {
                     var rotOffset = bestTarget.get().getYaw();
-                    result =  Optional.of( driveSub.getPose().getRotation().plus(new Rotation2d(rotOffset)) ) ;
+                    rotOffset = targetYawPID.calculate(rotOffset);
+                    result = Optional.of( driveSub.getPose().getRotation().plus(new Rotation2d(rotOffset)) ) ;
+                    result = Optional.empty() ;
 
-                    Logger.recordOutput("YawOverrideAlign/targetYaw", bestTarget.get().getYaw());
-                    Logger.recordOutput("YawOverrideAlign/proposed rot", result.get());
+                    // Logger.recordOutput("YawOverrideAlign/targetYaw", bestTarget.get().getYaw());
+                    // Logger.recordOutput("YawOverrideAlign/proposed rot", result.get());
+                    // Logger.recordOutput("YawOverrideAlign/rot offset", result.get());
                 } else {
 
                 }

@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -180,6 +181,7 @@ public class Drive extends SubsystemBase {
     private void logData(SwerveModuleState[] swerveModuleActualStates) {
         Logger.recordOutput("Drive/StatesActual", swerveModuleActualStates);
         Logger.recordOutput("Drive/Pose", getPose());
+        Logger.recordOutput("Drive/PoseEstimate", poseEstimator.getEstimatedPosition());
         Logger.recordOutput("Drive/Heading", getHeading());
         Logger.recordOutput("Drive/Odometry/X", odometry.getPoseMeters().getX());
         Logger.recordOutput("Drive/Odometry/Y", odometry.getPoseMeters().getY());
@@ -199,7 +201,8 @@ public class Drive extends SubsystemBase {
     // }
 
     public Pose2d getPose() {
-        return poseEstimator.getEstimatedPosition();
+        return odometry.getPoseMeters();
+        // return poseEstimator.getEstimatedPosition();
     }
 
     // public Pose2d getPoseWithVision() {
@@ -207,6 +210,7 @@ public class Drive extends SubsystemBase {
     // }
 
     public void resetOdometry(Pose2d pose) {
+
         odometry.resetPosition(
                 navX.getRotation2d(),
                 new SwerveModulePosition[] {

@@ -52,7 +52,7 @@ public class Underglow extends SubsystemBase {
         //     desiredMode += Constants.UnderGlowConstants.RedAlliance;
         
         
-        // Alliance alliance = DriverStation.getAlliance().get();
+        // Alliance alliance = gDriverStation.etAlliance().get();
 
         // if (alliance == Alliance.Blue) {
         //     desiredMode += Constants.UnderGlowConstants.BlueAlliance;

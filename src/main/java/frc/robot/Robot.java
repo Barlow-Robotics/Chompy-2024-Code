@@ -72,10 +72,15 @@ public class Robot extends LoggedRobot {
         elevator = root.append(new MechanismLigament2d("elevator", 2, 90, 6, new Color8Bit(Color.kWhite)));
         wrist = elevator.append(
             new MechanismLigament2d("wrist", 6, 0, 6, new Color8Bit(Color.kPurple)));
+        SmartDashboard.putNumber("ShooterMount/AmpAngle", Constants.ShooterMountConstants.AmpAngle);
+        SmartDashboard.putNumber("ShooterMount/AmpHeight", Constants.ShooterMountConstants.AmpHeight);
+        SmartDashboard.putNumber("Shooter/LeftAmpRPM", Constants.ShooterConstants.LeftAmpRPM);
+        SmartDashboard.putNumber("Shooter/RightAmpRPM", Constants.ShooterConstants.RightAmpRPM);
     }
 
     @Override
     public void robotPeriodic() {
+        
         String currentDriverController = DriverStation.getJoystickName(ElectronicsIDs.DriverControllerPort);
         String currentOperatorController = DriverStation.getJoystickName(ElectronicsIDs.OperatorControllerPort);
         Logger.recordOutput("Controllers/Driver", currentDriverController);

@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.DIOSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElectronicsIDs;
 import frc.robot.Constants.ShooterMountConstants;
@@ -135,8 +136,18 @@ public class ShooterMount extends SubsystemBase {
                 desiredHeight = ShooterMountConstants.SpeakerHeight;
                 break;
             case Amp:
-                desiredAngle = ShooterMountConstants.AmpAngle;
-                desiredHeight = ShooterMountConstants.AmpHeight;
+                desiredAngle = SmartDashboard.getNumber("ShooterMount/AmpAngle", Constants.ShooterMountConstants.AmpAngle);
+                if(desiredAngle > Constants.ShooterMountConstants.MaxAngleDegrees) {
+                    desiredAngle = Constants.ShooterMountConstants.MaxAngleDegrees;
+                } else if (desiredAngle < Constants.ShooterMountConstants.MinAngleDegrees) {
+                    desiredAngle = Constants.ShooterMountConstants.MinAngleDegrees;
+                }
+                desiredHeight = SmartDashboard.getNumber("ShooterMount/AmpHeight", Constants.ShooterMountConstants.AmpHeight);
+                if(desiredAngle > Constants.ShooterMountConstants.MaxHeightInches) {
+                    desiredAngle = Constants.ShooterMountConstants.MaxHeightInches;
+                } else if (desiredAngle < Constants.ShooterMountConstants.StartingHeight) {
+                    desiredAngle = Constants.ShooterMountConstants.StartingHeight;
+                }
                 break;
             case SourceIntake:
                 desiredAngle = ShooterMountConstants.SourceIntakeAngle;

@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
@@ -48,8 +49,18 @@ public class StartShooterIntake extends Command {
         } else { // we're shooting 
             desiredIndexRPM = ShooterConstants.IndexRPM;
             if (shooterMountSub.getShooterMountState() == ShooterMountState.Amp) {
-                desiredLeftFlywheelMotorRPM = ShooterConstants.LeftAmpRPM;
-                desiredRightFlywheelMotorRPM = ShooterConstants.RightAmpRPM;
+                desiredLeftFlywheelMotorRPM = SmartDashboard.getNumber("Shooter/LeftAmpRPM", ShooterConstants.LeftAmpRPM);
+                if(desiredLeftFlywheelMotorRPM > ShooterConstants.LeftSpeakerRPM) {
+                    desiredLeftFlywheelMotorRPM = ShooterConstants.LeftSpeakerRPM;
+                } else if (desiredLeftFlywheelMotorRPM < 0) {
+                    desiredLeftFlywheelMotorRPM = 0;
+                }
+                desiredRightFlywheelMotorRPM = SmartDashboard.getNumber("Shooter/RightAmpRPM", ShooterConstants.RightAmpRPM);
+                if(desiredRightFlywheelMotorRPM > ShooterConstants.LeftSpeakerRPM) {
+                    desiredRightFlywheelMotorRPM = ShooterConstants.LeftSpeakerRPM;
+                } else if (desiredRightFlywheelMotorRPM < 0) {
+                    desiredRightFlywheelMotorRPM = 0;
+                }
             } else if (shooterMountSub.getShooterMountState() == ShooterMountState.Speaker) {
                 desiredLeftFlywheelMotorRPM = ShooterConstants.LeftSpeakerRPM;
                 desiredRightFlywheelMotorRPM = ShooterConstants.RightSpeakerRPM;

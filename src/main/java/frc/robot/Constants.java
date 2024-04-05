@@ -264,8 +264,9 @@ public class Constants {
         public static final double SpeakerHeight = StartingHeight; 
 
         public static final double AmpAngle = -30;
+        public final TuneableParameter AmpHeight2 = new TuneableParameter(40, MaxHeightInches, StartingHeight, true, "ShooterMount/AmpHeight");
         public static final double AmpHeight = 40;
-
+        
         public static final double SourceIntakeAngle = 32; 
         public static final double SourceIntakeHeight = 27; 
 

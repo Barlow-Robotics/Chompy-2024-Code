@@ -3,6 +3,10 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import org.littletonrobotics.junction.Logger;
+
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.math.VecBuilder;
@@ -17,15 +21,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElectronicsIDs;
-import org.littletonrobotics.junction.Logger;
-
-import java.lang.Math;
-
-import frc.robot.Constants;
-
-import com.kauailabs.navx.frc.AHRS;
 
 public class Drive extends SubsystemBase {
 
@@ -217,13 +215,18 @@ public class Drive extends SubsystemBase {
         //     navX.setAngleAdjustment(0);
         // }
         
-        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
                 allienceOffset = 180;
         }            
 
         navX.setAngleAdjustment(0);
         double currentHeading = navX.getAngle();
         double targetHeading = pose.getRotation().getDegrees() + allienceOffset;
+        Logger.recordOutput("Drive/Auto/CurrentHeading", currentHeading);
+        Logger.recordOutput("Drive/Auto/TargetHeading", targetHeading);
+        Logger.recordOutput("Drive/Auto/AngleAdjustment", targetHeading - currentHeading);
+        Logger.recordOutput("Drive/Auto/AngleAdjustmentV2", currentHeading - (targetHeading - currentHeading));
+
         navX.setAngleAdjustment(targetHeading - currentHeading);
 
         odometry.resetPosition(

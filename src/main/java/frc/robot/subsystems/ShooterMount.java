@@ -136,18 +136,8 @@ public class ShooterMount extends SubsystemBase {
                 desiredHeight = ShooterMountConstants.SpeakerHeight;
                 break;
             case Amp:
-                desiredAngle = SmartDashboard.getNumber("ShooterMount/AmpAngle", Constants.ShooterMountConstants.AmpAngle);
-                if(desiredAngle > Constants.ShooterMountConstants.MaxAngleDegrees) {
-                    desiredAngle = Constants.ShooterMountConstants.MaxAngleDegrees;
-                } else if (desiredAngle < Constants.ShooterMountConstants.MinAngleDegrees) {
-                    desiredAngle = Constants.ShooterMountConstants.MinAngleDegrees;
-                }
-                desiredHeight = SmartDashboard.getNumber("ShooterMount/AmpHeight", Constants.ShooterMountConstants.AmpHeight);
-                if(desiredAngle > Constants.ShooterMountConstants.MaxHeightInches) {
-                    desiredAngle = Constants.ShooterMountConstants.MaxHeightInches;
-                } else if (desiredAngle < Constants.ShooterMountConstants.StartingHeight) {
-                    desiredAngle = Constants.ShooterMountConstants.StartingHeight;
-                }
+                desiredAngle = ShooterMountConstants.AmpAngle2.get();
+                desiredHeight = ShooterMountConstants.AmpHeight2.get();
                 break;
             case SourceIntake:
                 desiredAngle = ShooterMountConstants.SourceIntakeAngle;

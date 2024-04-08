@@ -115,8 +115,7 @@
             "open": true
           },
           "open": true
-        },
-        "open": true
+        }
       },
       "Shuffleboard": {
         ".metadata": {
@@ -127,9 +126,16 @@
         "Shooter": {
           "open": true
         },
+        "ShooterMount": {
+          "open": true
+        },
+        "ShooterMountMech": {
+          "open": true
+        },
         "ShooterPosition": {
           "open": true
-        }
+        },
+        "open": true
       },
       "floorIntake": {
         "open": true
@@ -150,5 +156,8 @@
       "open": true
     },
     "visible": true
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }

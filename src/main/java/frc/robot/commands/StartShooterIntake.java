@@ -38,7 +38,7 @@ public class StartShooterIntake extends Command {
         desiredLeftFlywheelMotorRPM = ShooterConstants.LeftSpeakerRPM;
         desiredRightFlywheelMotorRPM = ShooterConstants.RightSpeakerRPM;
         
-        indexHasSpunUp = false ;
+        indexHasSpunUp = false;
         
         if (shooterMountSub.getShooterMountState() == ShooterMountState.SourceIntake ||
                 shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake || 
@@ -49,8 +49,13 @@ public class StartShooterIntake extends Command {
         } else { // we're shooting 
             desiredIndexRPM = ShooterConstants.IndexRPM;
             if (shooterMountSub.getShooterMountState() == ShooterMountState.Amp) {
-                desiredLeftFlywheelMotorRPM = ShooterConstants.LeftAmpRPM2.get();
-                desiredRightFlywheelMotorRPM = ShooterConstants.RightAmpRPM2.get();
+                if(ShooterConstants.isAdjusting.get() == 1) {
+                    desiredLeftFlywheelMotorRPM = ShooterConstants.LeftAmpRPM2.get();
+                    desiredRightFlywheelMotorRPM = ShooterConstants.RightAmpRPM2.get();
+                } else {
+                    desiredLeftFlywheelMotorRPM = ShooterConstants.LeftAmpRPM;
+                    desiredRightFlywheelMotorRPM = ShooterConstants.RightAmpRPM;
+                }
             } else if (shooterMountSub.getShooterMountState() == ShooterMountState.Speaker) {
                 desiredLeftFlywheelMotorRPM = ShooterConstants.LeftSpeakerRPM;
                 desiredRightFlywheelMotorRPM = ShooterConstants.RightSpeakerRPM;

@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.simulation.DIOSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElectronicsIDs;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterMountConstants;
 import frc.robot.Robot;
 import frc.robot.sim.PhysicsSim;
@@ -136,8 +137,13 @@ public class ShooterMount extends SubsystemBase {
                 desiredHeight = ShooterMountConstants.SpeakerHeight;
                 break;
             case Amp:
-                desiredAngle = ShooterMountConstants.AmpAngle2.get();
-                desiredHeight = ShooterMountConstants.AmpHeight2.get();
+                if(ShooterConstants.isAdjusting.get() == 1){
+                    desiredAngle = ShooterMountConstants.AmpAngle2.get();
+                    desiredHeight = ShooterMountConstants.AmpHeight2.get();
+                } else {
+                    desiredAngle = ShooterMountConstants.AmpAngle;
+                    desiredHeight = ShooterMountConstants.AmpHeight;
+                }
                 break;
             case SourceIntake:
                 desiredAngle = ShooterMountConstants.SourceIntakeAngle;

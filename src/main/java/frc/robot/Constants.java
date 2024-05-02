@@ -191,7 +191,7 @@ public class Constants {
     /***************************************************************************/
 
     public static final class ShooterConstants {
-       
+        public static TuneableParameter isAdjusting = new TuneableParameter(0, 1, 0, true, "ShooterMount/isAdjusting");
         public static final double SupplyCurrentLimit = 30;
 
         /* FLYWHEELS */

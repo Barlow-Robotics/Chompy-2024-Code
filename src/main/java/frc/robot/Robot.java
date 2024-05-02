@@ -76,6 +76,7 @@ public class Robot extends LoggedRobot {
         SmartDashboard.putNumber("ShooterMount/AmpHeight", Constants.ShooterMountConstants.AmpHeight);
         SmartDashboard.putNumber("Shooter/LeftAmpRPM", Constants.ShooterConstants.LeftAmpRPM);
         SmartDashboard.putNumber("Shooter/RightAmpRPM", Constants.ShooterConstants.RightAmpRPM);
+        SmartDashboard.putNumber("isAdjusting", 0);
     }
 
     @Override

@@ -204,9 +204,9 @@ public class Constants {
         public static final double RightSpeakerRPM = 2500;
 
         public static final double LeftAmpRPM = 500;
-        public static TuneableParameter LeftAmpRPM2 = new TuneableParameter(500, LeftSpeakerRPM, 0, true, "ShooterMount/LeftAmpRPM");
+        public static TuneableParameter LeftAmpRPM2 = new TuneableParameter(500, LeftSpeakerRPM, 0, true, "Shooter/LeftAmpRPM");
         public static final double RightAmpRPM = 500;
-        public static TuneableParameter RightAmpRPM2 = new TuneableParameter(500, LeftSpeakerRPM, 0, true, "ShooterMount/RightAmpRPM");
+        public static TuneableParameter RightAmpRPM2 = new TuneableParameter(500, LeftSpeakerRPM, 0, true, "Shooter/RightAmpRPM");
 
         // public static final double LeftIntakeRPM = -1000;
         // public static final double RightIntakeRPM = -1000;
@@ -259,14 +259,14 @@ public class Constants {
 
         public static final double MaxAngleDegrees = 55;
         public static final double MinAngleDegrees = -61.5;
-        public static final double MaxHeightInches = 47.5;
+        public static final double MaxHeightInches = 45;
         public static final double StartingHeight = 19.75;  
 
         public static final double SpeakerAngle = 50; 
         public static final double SpeakerHeight = StartingHeight; 
 
         public static final double AmpAngle = -30;
-        public static TuneableParameter AmpAngle2 = new TuneableParameter(-30, MaxAngleDegrees, MinAngleDegrees, true, "ShooterMount/AmpAngle");
+        public static TuneableParameter AmpAngle2 = new TuneableParameter(30, MaxAngleDegrees, MinAngleDegrees, true, "ShooterMount/AmpAngle");
         public static TuneableParameter AmpHeight2 = new TuneableParameter(40, MaxHeightInches, StartingHeight, true, "ShooterMount/AmpHeight");
         public static final double AmpHeight = 40;
         

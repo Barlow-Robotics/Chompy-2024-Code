@@ -625,6 +625,12 @@ public class ShooterMount extends SubsystemBase {
         delta = Math.min(Math.abs(delta), 5.0) * Math.signum(delta);
         angleCANCoder.setPosition(Units.degreesToRotations(currentAngle + delta));
 
-        bottomHallEffectSim.setValue(isWithinHeightTolerance());
+        // Only set the hall effect if we are moving down
+        if (desiredHeight == ShooterMountConstants.FloorIntakeHeight && isWithinHeightTolerance()) {
+            // The bottom hall effect returns false when at bottom and true otherwise
+            bottomHallEffectSim.setValue(false);
+        } else {
+            bottomHallEffectSim.setValue(true);
+        }
     }
 }

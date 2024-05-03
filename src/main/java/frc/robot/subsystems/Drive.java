@@ -377,7 +377,7 @@ public class Drive extends SubsystemBase {
 
         int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
         SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
-        angle.set(navX.getAngle() - Units.radiansToDegrees(twist.dtheta));
+        angle.set(navX.getAngle() - navX.getAngleAdjustment() - Units.radiansToDegrees(twist.dtheta));
     }
 
 }

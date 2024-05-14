@@ -228,6 +228,7 @@ public class Drive extends SubsystemBase {
         Logger.recordOutput("Drive/Auto/AngleAdjustmentV2", currentHeading - (targetHeading - currentHeading));
 
         navX.setAngleAdjustment(-(targetHeading - currentHeading));
+        // navX.setAngleAdjustment(targetHeading - currentHeading);
 
         odometry.resetPosition(
                 navX.getRotation2d(),

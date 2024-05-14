@@ -3,9 +3,12 @@
   "robotLength": 0.93,
   "holonomicMode": true,
   "pathFolders": [
-    "Four Note"
+    "Four Note",
+    "3 Note Test Piviot"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Piviot"
+  ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,

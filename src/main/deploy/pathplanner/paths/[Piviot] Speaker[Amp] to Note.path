@@ -1,0 +1,93 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7260057714559877,
+        "y": 6.716076233078392
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.597293365883029,
+        "y": 6.728903258732443
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.4432832152701343,
+        "y": 7.039127249550796
+      },
+      "prevControl": {
+        "x": 1.8821008429053894,
+        "y": 7.043343540390785
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "[piviot] Amp Note"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Start Shoot",
+      "waypointRelativePos": 0.25,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartShooterIntake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "FloorPosition",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "SetShooterMountPositionFloor"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "3 Note Test Piviot",
+  "previewStartingState": {
+    "rotation": -121.65882750142558,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

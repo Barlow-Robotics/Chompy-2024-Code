@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7260057714559877,
+      "y": 6.716076233078392
+    },
+    "rotation": -119.41283211323923
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "[Piviot] Speaker[Amp] to Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetRotationToSpeaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "[piviot] Amp Note to Speaker Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SetShooterMountPositionSpeaker"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Piviot",
+  "choreoAuto": false
+}

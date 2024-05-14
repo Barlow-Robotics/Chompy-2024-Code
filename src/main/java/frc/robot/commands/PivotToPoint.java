@@ -20,7 +20,7 @@ public class PivotToPoint extends Command {
     Pose2d targetPose;
     Pose2d robotPose;
     double desiredHeading;
-    double deltaHeading;
+    // double deltaHeading;
     ProfiledPIDController headingPID;
     double PivotHeadingkP = 5;
     double PivotHeadingkI = 0.0;
@@ -33,25 +33,25 @@ public class PivotToPoint extends Command {
                 DriveConstants.ModuleMaxAngularVelocity, DriveConstants.ModuleMaxAngularAcceleration));
         headingPID.enableContinuousInput(-Math.PI, Math.PI);
         addRequirements(driveSub);
+        // headingPID.setGoal(0.0);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
         robotPose = driveSub.getPose();
-        double robotAngle = robotPose.getRotation().getRadians();
         double deltaX = robotPose.getX() - targetPose.getX();
         double deltaY = robotPose.getY() - targetPose.getY();
 
         desiredHeading = Math.atan2(deltaY, deltaX);
-        double deltaHeading = desiredHeading - robotAngle;
+        // double deltaHeading = desiredHeading - robotAngle;
 
         // if (deltaHeading > Math.PI) {
         //     deltaHeading -= 2 * Math.PI;
         // } else if (deltaHeading < -Math.PI) {
         //     deltaHeading += 2 * Math.PI;
         // }
-        // System.out.println("Delta X: " + deltaX + ", Delta Y: " + deltaY + ", Desired Heading: " + desiredHeading);
+        // System.out.println("Init = True");
 
         headingPID.setGoal(desiredHeading-Math.PI);
         // System.out.println("PivotToPoint: Desired Heading: " + deltaHeading + " Robot Heading: " + robotAngle + " Delta Heading: " + deltaHeading);
@@ -64,10 +64,15 @@ public class PivotToPoint extends Command {
         double headingDeterminedAngle = headingPID.calculate(currentHeading);
         driveSub.drive(0, 0, headingDeterminedAngle, false);
         Logger.recordOutput("Drive/PivotToPoint/DesiredHeading", desiredHeading);
-        Logger.recordOutput("Drive/PivotToPoint/DeltaHeading", deltaHeading);
+        // System.out.println("Running = True");
+        // System.out.println("Desired Heading:  " + desiredHeading);
+        // System.out.println("Current Heading:  " + currentHeading);
+
+
+        // Logger.recordOutput("Drive/PivotToPoint/DeltaHeading", deltaHeading);
         Logger.recordOutput("Drive/PivotToPoint/CurrentHeading", currentHeading);
         Logger.recordOutput("Drive/PivotToPoint/HeadingDeterminedAngle", headingDeterminedAngle);
-        // System.out.println("PivotToPoint: Current Radian: " + currentHeading + " Heading Determined Radian: " + headingDeterminedAngle);
+        Logger.recordOutput("Drive/PivotToPoint/HeadingPositionError", headingPID.getPositionError());
     }
 
     // Called once the command ends or is interrupted.
@@ -78,7 +83,8 @@ public class PivotToPoint extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        double error = headingPID.getPositionError(); 
-        return Math.abs(error) < 0.01;
+        return headingPID.atGoal(); 
+        // System.out.println("Error:  " + error);
+        // return Math.abs(error) < 0.01;
     }
 }

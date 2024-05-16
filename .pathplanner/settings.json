@@ -3,8 +3,9 @@
   "robotLength": 0.93,
   "holonomicMode": true,
   "pathFolders": [
+    "3 Note Test Piviot",
     "Four Note",
-    "3 Note Test Piviot"
+    "2 Note Front-Speaker"
   ],
   "autoFolders": [
     "Piviot"

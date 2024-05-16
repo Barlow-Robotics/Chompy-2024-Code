@@ -33,7 +33,6 @@ public class PivotToPoint extends Command {
                 DriveConstants.ModuleMaxAngularVelocity, DriveConstants.ModuleMaxAngularAcceleration));
         headingPID.enableContinuousInput(-Math.PI, Math.PI);
         addRequirements(driveSub);
-        // headingPID.setGoal(0.0);
     }
 
     // Called when the command is initially scheduled.
@@ -44,17 +43,8 @@ public class PivotToPoint extends Command {
         double deltaY = robotPose.getY() - targetPose.getY();
 
         desiredHeading = Math.atan2(deltaY, deltaX);
-        // double deltaHeading = desiredHeading - robotAngle;
-
-        // if (deltaHeading > Math.PI) {
-        //     deltaHeading -= 2 * Math.PI;
-        // } else if (deltaHeading < -Math.PI) {
-        //     deltaHeading += 2 * Math.PI;
-        // }
-        // System.out.println("Init = True");
 
         headingPID.setGoal(desiredHeading-Math.PI);
-        // System.out.println("PivotToPoint: Desired Heading: " + deltaHeading + " Robot Heading: " + robotAngle + " Delta Heading: " + deltaHeading);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -64,12 +54,8 @@ public class PivotToPoint extends Command {
         double headingDeterminedAngle = headingPID.calculate(currentHeading);
         driveSub.drive(0, 0, headingDeterminedAngle, false);
         Logger.recordOutput("Drive/PivotToPoint/DesiredHeading", desiredHeading);
-        // System.out.println("Running = True");
-        // System.out.println("Desired Heading:  " + desiredHeading);
-        // System.out.println("Current Heading:  " + currentHeading);
 
 
-        // Logger.recordOutput("Drive/PivotToPoint/DeltaHeading", deltaHeading);
         Logger.recordOutput("Drive/PivotToPoint/CurrentHeading", currentHeading);
         Logger.recordOutput("Drive/PivotToPoint/HeadingDeterminedAngle", headingDeterminedAngle);
         Logger.recordOutput("Drive/PivotToPoint/HeadingPositionError", headingPID.getPositionError());
@@ -84,9 +70,6 @@ public class PivotToPoint extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-
         return headingPID.atGoal(); 
-        // System.out.println("Error:  " + error);
-        // return Math.abs(error) < 0.01;
     }
 }

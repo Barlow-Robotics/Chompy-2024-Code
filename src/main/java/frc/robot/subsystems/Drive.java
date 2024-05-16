@@ -209,12 +209,7 @@ public class Drive extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose) {
         double allienceOffset = 0;
-        // if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-        //     navX.setAngleAdjustment(180);
-        // } else {
-        //     navX.setAngleAdjustment(0);
-        // }
-        
+
         if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
                 allienceOffset = 180;
         }            

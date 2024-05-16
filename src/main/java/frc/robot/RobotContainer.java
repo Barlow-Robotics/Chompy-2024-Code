@@ -94,6 +94,10 @@ public class RobotContainer {
 
 
     private final PivotToPoint piviotToSpeakerCommand = new PivotToPoint(new Pose2d(0.5, 5.59, new Rotation2d(0)), driveSub);
+    private final PivotToPoint piviotToCenterNoteCommand = new PivotToPoint(new Pose2d(2.90, 5.55, new Rotation2d(0)), driveSub);
+    private final PivotToPoint piviotToAmpNoteCommand = new PivotToPoint(new Pose2d(2.90, 7, new Rotation2d(0)), driveSub);
+    private final PivotToPoint piviotToStageNoteCommand = new PivotToPoint(new Pose2d(2.90, 4.10, new Rotation2d(0)), driveSub);
+
 
     /* CONTROLLERS */
 
@@ -220,8 +224,8 @@ public class RobotContainer {
         climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA);
         climbButton.onTrue(climbCmd);
 
-        piviotToPoint = new JoystickButton(driverController, LogitechExtreme3DConstants.Button8);
-        piviotToPoint.onTrue(piviotToSpeakerCommand);
+        // piviotToPoint = new JoystickButton(driverController, LogitechExtreme3DConstants.Button8);
+        // piviotToPoint.onTrue(piviotToSpeakerCommand);
 
 
         // climbAbortButton = new JoystickButton(operatorController,
@@ -277,6 +281,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("SetShooterMountPositionSpeaker", setShooterPosSpeakerCmd);
         NamedCommands.registerCommand("SetShooterMountPositionFloor", setShooterPosFloorCmd);
         NamedCommands.registerCommand("SetRotationToSpeaker", piviotToSpeakerCommand);
+        NamedCommands.registerCommand("SetRotationToCenterNote", piviotToCenterNoteCommand);
+
 
         /* SMARTDASHBOARD */
 

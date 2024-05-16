@@ -22,7 +22,7 @@ public class PivotToPoint extends Command {
     double desiredHeading;
     // double deltaHeading;
     ProfiledPIDController headingPID;
-    double PivotHeadingkP = 5;
+    double PivotHeadingkP = 3;
     double PivotHeadingkI = 0.0;
     double PivotHeadingkD = 0.0;
 
@@ -78,11 +78,13 @@ public class PivotToPoint extends Command {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+        driveSub.drive(0, 0, 0, true);
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
+
         return headingPID.atGoal(); 
         // System.out.println("Error:  " + error);
         // return Math.abs(error) < 0.01;

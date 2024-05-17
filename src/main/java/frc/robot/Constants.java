@@ -260,23 +260,23 @@ public class Constants {
         public static final double MaxAngleDegrees = 55;
         public static final double MinAngleDegrees = -61.5;
         public static final double MaxHeightInches = 45;
-        public static final double StartingHeight = 19.75;  
+        public static final double StartingHeight = 24.75; //19.75;
 
         public static final double SpeakerAngle = 50; 
         public static final double SpeakerHeight = StartingHeight; 
 
-        public static final double AmpAngle = -30;
+        public static final double AmpAngle = -45;
         public static TuneableParameter AmpAngle2 = new TuneableParameter(30, MaxAngleDegrees, MinAngleDegrees, true, "ShooterMount/AmpAngle");
         public static TuneableParameter AmpHeight2 = new TuneableParameter(40, MaxHeightInches, StartingHeight, true, "ShooterMount/AmpHeight");
-        public static final double AmpHeight = 40;
+        public static final double AmpHeight = 46.5; // 43.25; // 40;
         
         public static final double SourceIntakeAngle = 32; 
-        public static final double SourceIntakeHeight = 27; 
+        public static final double SourceIntakeHeight = 31.6; // 27;
 
         public static final double FloorIntakeAngle = MinAngleDegrees; 
         public static final double FloorIntakeHeight = StartingHeight; 
 
-        public static final double ClimbHeight = 44;
+        public static final double ClimbHeight = 47; // 44;
         public static final double TrapAngle = -5; // CHANGE
         public static final double TrapHeight = 46; // CHANGE
 
@@ -324,7 +324,8 @@ public class Constants {
 
 
         public static final double ElevatorGearRatio = 15;
-        public static final double ElevatorSprocketDiameter = 2.36;  // inches
+//        public static final double ElevatorSprocketDiameter = 2.36;  // inches
+        public static final double ElevatorSprocketDiameter = 2.16;  // inches
         public static final double ElevatorSprocketCircumference = ElevatorSprocketDiameter * Math.PI;
         public static final double RotationsPerElevatorInch = 1 / ElevatorSprocketCircumference * ElevatorGearRatio;
         // public static final double RotationsPerElevatorInch = 
@@ -387,13 +388,13 @@ public class Constants {
         // wpk need to update these to be more exact.
         public static final Transform3d PoseCameraToRobot =
                 new Transform3d(
-                    new Translation3d(0.0, Units.inchesToMeters(DriveConstants.TrackWidth/2), Units.inchesToMeters(23)), 
+                    new Translation3d(0.0, -Units.inchesToMeters(DriveConstants.TrackWidth/2), Units.inchesToMeters(23)), 
                     new Rotation3d(0, Units.degreesToRadians(5), 0));
         public static final Transform3d RobotToPoseCamera = PoseCameraToRobot.inverse();
 
         public static final Transform3d TargetCamToRobot =
                 new Transform3d(
-                    new Translation3d(0.0, -Units.inchesToMeters(DriveConstants.TrackWidth/2), Units.inchesToMeters(23)), 
+                    new Translation3d(0.0, Units.inchesToMeters(DriveConstants.TrackWidth/2), Units.inchesToMeters(23)), 
                     new Rotation3d(0, Units.degreesToRadians(5), 0));
         public static final Transform3d RobotToTargetCam = TargetCamToRobot.inverse();
 

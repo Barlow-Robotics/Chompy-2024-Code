@@ -38,24 +38,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Start Shoot",
-      "waypointRelativePos": 0.25,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "StartShooterIntake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "FloorPosition",
+      "name": "start intake",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
@@ -64,7 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "SetShooterMountPositionFloor"
+                "name": "StartShooterIntake"
               }
             }
           ]

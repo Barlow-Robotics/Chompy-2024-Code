@@ -632,5 +632,7 @@ public class ShooterMount extends SubsystemBase {
         } else {
             bottomHallEffectSim.setValue(true);
         }
+        // bottomHallEffectSim.setValue(isWithinHeightTolerance());
+
     }
 }

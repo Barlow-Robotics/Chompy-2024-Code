@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3,
-      "y": 5.492382339971527
+      "x": 1.3395057808634137,
+      "y": 5.57
     },
     "rotation": 180.0
   },
@@ -58,13 +58,51 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Speaker Front Intake Mid"
+            "pathName": "(pivot) Front-Speaker to Note"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Speaker Front Shoot Mid"
+            "name": "StopShooterIntake"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetRotationToSpeaker"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "SetShooterMountPositionSpeaker"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.7
+                }
+              }
+            ]
           }
         },
         {
@@ -105,7 +143,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.5
+                  "waitTime": 1.0
                 }
               }
             ]
@@ -114,6 +152,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Piviot",
   "choreoAuto": false
 }

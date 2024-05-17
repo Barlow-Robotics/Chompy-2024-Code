@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -39,6 +40,7 @@ import frc.robot.Constants.LogitechExtreme3DConstants;
 import frc.robot.Constants.XboxControllerConstants;
 import frc.robot.commands.DriveRobotWithAprilTagAlign;
 import frc.robot.commands.DriveRobotWithNoteAlign;
+import frc.robot.commands.PivotToPoint;
 import frc.robot.commands.ReverseFloorIntake;
 // import frc.robot.commands.DriveRobotWithAlign;
 import frc.robot.commands.SetShooterMountPosition;
@@ -82,13 +84,20 @@ public class RobotContainer {
     // SetShooterMountPosition(shooterMountSub,
     // ShooterMountState.Preclimb);
     // private final SetShooterMountPosition climbAbortCmd = new
-    // SetShooterMountPosition(shooterMountSub,
+    // 2SetShooterMountPosition(shooterMountSub,
     // ShooterMountState.ClimbAbort);
 
     private final StartShooterIntake startShooterIntakeCmd = new StartShooterIntake(shooterSub, floorIntakeSub,
             shooterMountSub);
     private final StopShooterIntake stopShooterIntakeCmd = new StopShooterIntake(shooterSub, floorIntakeSub);
     private final ReverseFloorIntake reverseFloorIntakeCmd = new ReverseFloorIntake(floorIntakeSub);
+
+
+    private final PivotToPoint piviotToSpeakerCommand = new PivotToPoint(new Pose2d(0.5, 5.59, new Rotation2d(0)), driveSub);
+    private final PivotToPoint piviotToCenterNoteCommand = new PivotToPoint(new Pose2d(2.90, 5.55, new Rotation2d(0)), driveSub);
+    private final PivotToPoint piviotToAmpNoteCommand = new PivotToPoint(new Pose2d(2.90, 7, new Rotation2d(0)), driveSub);
+    private final PivotToPoint piviotToStageNoteCommand = new PivotToPoint(new Pose2d(2.90, 4.10, new Rotation2d(0)), driveSub);
+
 
     /* CONTROLLERS */
 
@@ -104,6 +113,7 @@ public class RobotContainer {
     private Trigger moveToFerryButton; // hamburger
 
     private Trigger climbButton; // button a
+    private Trigger piviotToPoint;
     // private Trigger climbAbortButton; // right stick
 
     // private Trigger toggleLEDsButton; // hamburger
@@ -214,6 +224,10 @@ public class RobotContainer {
         climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA);
         climbButton.onTrue(climbCmd);
 
+        // piviotToPoint = new JoystickButton(driverController, LogitechExtreme3DConstants.Button8);
+        // piviotToPoint.onTrue(piviotToSpeakerCommand);
+
+
         // climbAbortButton = new JoystickButton(operatorController,
         // XboxControllerConstants.RightStick);
         // climbAbortButton.onTrue(retryClimbCmd);
@@ -266,6 +280,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("SetShooterMountPositionAmp", setShooterPosAmpCmd);
         NamedCommands.registerCommand("SetShooterMountPositionSpeaker", setShooterPosSpeakerCmd);
         NamedCommands.registerCommand("SetShooterMountPositionFloor", setShooterPosFloorCmd);
+        NamedCommands.registerCommand("SetRotationToSpeaker", piviotToSpeakerCommand);
+        NamedCommands.registerCommand("SetRotationToCenterNote", piviotToCenterNoteCommand);
+
 
         /* SMARTDASHBOARD */
 

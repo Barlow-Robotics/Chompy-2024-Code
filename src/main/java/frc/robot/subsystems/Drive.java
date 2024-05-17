@@ -208,22 +208,32 @@ public class Drive extends SubsystemBase {
     // }
 
     public void resetOdometry(Pose2d pose) {
-        double allienceOffset = 0;
+        // Reset the angle adjustment to 0 so it doesn't influence the returned values
+        navX.setAngleAdjustment(0);
 
+        // Use the incoming pose to find the blueTargetHeading. This is the angle the robot should be at
+        // relatice to a blue-origin.
+        double targetHeading = pose.getRotation().getDegrees();
+
+        // If we are the red alliance, we want field-relative drive to be rotated 180 degrees, so
+        // adgjust the target heading accordingly
         if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-                allienceOffset = 180;
+                targetHeading += 180;
         }            
 
-        navX.setAngleAdjustment(0);
-        double currentHeading = navX.getAngle();
-        double targetHeading = pose.getRotation().getDegrees() + allienceOffset;
+        // Find the real currentHeading based on navX.
+        double currentHeading = navX.getRotation2d().getDegrees();
+
+        // Set an angle adustment so that navX will report that we currently have
+        // the target heading.
+        //
+        // NOTE: This is the negative of what you would expect because navX ANGLES
+        // are inverted relatice to pose rotatoin angles.
+        navX.setAngleAdjustment(currentHeading - targetHeading);
+
         Logger.recordOutput("Drive/Auto/CurrentHeading", currentHeading);
         Logger.recordOutput("Drive/Auto/TargetHeading", targetHeading);
-        Logger.recordOutput("Drive/Auto/AngleAdjustment", targetHeading - currentHeading);
-        Logger.recordOutput("Drive/Auto/AngleAdjustmentV2", currentHeading - (targetHeading - currentHeading));
-
-        navX.setAngleAdjustment(-(targetHeading - currentHeading));
-        // navX.setAngleAdjustment(targetHeading - currentHeading);
+        Logger.recordOutput("Drive/Auto/AngleAdjustment", currentHeading - targetHeading);
 
         odometry.resetPosition(
                 navX.getRotation2d(),

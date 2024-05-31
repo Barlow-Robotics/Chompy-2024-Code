@@ -211,8 +211,13 @@ public class RobotContainer {
 
         /******************** CLIMB ********************/
 
+        // climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA);
+        // climbButton.onTrue(climbCmd);
+
+        // EHP TEMP DO NOT PUSH TO GITHUB
         climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA);
-        climbButton.onTrue(climbCmd);
+        climbButton.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
+        //
 
         // climbAbortButton = new JoystickButton(operatorController,
         // XboxControllerConstants.RightStick);

@@ -19,12 +19,12 @@ public class StartShooterIntake extends Command {
     Shooter shooterSub;
     FloorIntake floorIntakeSub;
     ShooterMount shooterMountSub;
-    double desiredLeftFlywheelMotorRPM = ShooterConstants.LeftIntakeRPM;
-    double desiredRightFlywheelMotorRPM = ShooterConstants.RightIntakeRPM;
+    double desiredTopFlywheelMotorRPM = ShooterConstants.BottomIntakeRPM;
+    double desiredBottomFlywheelMotorRPM = ShooterConstants.BottomIntakeRPM;
     double desiredIndexRPM = ShooterConstants.IndexRPM;
     double FloorIntakeAngleWithTolerance = ShooterMountConstants.FloorIntakeAngle + 3;
 
-    boolean indexHasSpunUp = false ;
+    boolean indexHasSpunUp = false;
 
     public StartShooterIntake(Shooter shooterSub, FloorIntake floorIntakeSub, ShooterMount shooterMountSub) {
         this.shooterSub = shooterSub;
@@ -35,33 +35,28 @@ public class StartShooterIntake extends Command {
 
     @Override
     public void initialize() {
-        desiredLeftFlywheelMotorRPM = ShooterConstants.LeftSpeakerRPM;
-        desiredRightFlywheelMotorRPM = ShooterConstants.RightSpeakerRPM;
-        
+        desiredTopFlywheelMotorRPM = ShooterConstants.TopSpeakerRPM;
+        desiredBottomFlywheelMotorRPM = ShooterConstants.BottomSpeakerRPM;
+
         indexHasSpunUp = false;
-        
+
         if (shooterMountSub.getShooterMountState() == ShooterMountState.SourceIntake ||
-                shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake || 
+                shooterMountSub.getShooterMountState() == ShooterMountState.FloorIntake ||
                 shooterMountSub.getAngleCANCoderDegrees() < (FloorIntakeAngleWithTolerance)) { // we're intaking
             desiredIndexRPM = -ShooterConstants.IndexRPM;
-            desiredLeftFlywheelMotorRPM = ShooterConstants.LeftIntakeRPM;
-            desiredRightFlywheelMotorRPM = ShooterConstants.RightIntakeRPM;
-        } else { // we're shooting 
+            desiredTopFlywheelMotorRPM = ShooterConstants.BottomIntakeRPM;
+            desiredBottomFlywheelMotorRPM = ShooterConstants.BottomIntakeRPM;
+        } else { // we're shooting
             desiredIndexRPM = ShooterConstants.IndexRPM;
             if (shooterMountSub.getShooterMountState() == ShooterMountState.Amp) {
-                if(ShooterConstants.isAdjusting.get() == 1) {
-                    desiredLeftFlywheelMotorRPM = ShooterConstants.LeftAmpRPM2.get();
-                    desiredRightFlywheelMotorRPM = ShooterConstants.RightAmpRPM2.get();
-                } else {
-                    desiredLeftFlywheelMotorRPM = ShooterConstants.LeftAmpRPM;
-                    desiredRightFlywheelMotorRPM = ShooterConstants.RightAmpRPM;
-                }
+                desiredTopFlywheelMotorRPM = ShooterConstants.TopAmpRPM;
+                desiredBottomFlywheelMotorRPM = ShooterConstants.BottomAmpRPM;
             } else if (shooterMountSub.getShooterMountState() == ShooterMountState.Speaker) {
-                desiredLeftFlywheelMotorRPM = ShooterConstants.LeftSpeakerRPM;
-                desiredRightFlywheelMotorRPM = ShooterConstants.RightSpeakerRPM;
+                desiredTopFlywheelMotorRPM = ShooterConstants.TopSpeakerRPM;
+                desiredBottomFlywheelMotorRPM = ShooterConstants.BottomSpeakerRPM;
             } else if (shooterMountSub.getShooterMountState() == ShooterMountState.Ferry) {
-                desiredLeftFlywheelMotorRPM = ShooterConstants.LeftFerryRPM;
-                desiredRightFlywheelMotorRPM = ShooterConstants.RightFerryRPM;
+                desiredTopFlywheelMotorRPM = ShooterConstants.TopFerryRPM2.get();
+                desiredBottomFlywheelMotorRPM = ShooterConstants.BottomFerryRPM2.get();
             }
         }
     }
@@ -69,9 +64,9 @@ public class StartShooterIntake extends Command {
     @Override
     public void execute() {
         if (shooterMountSub.hasCompletedMovement()) {
-            shooterSub.startFlywheels(desiredLeftFlywheelMotorRPM, desiredRightFlywheelMotorRPM);
-            if (shooterSub.isWithinFlywheelVelocityTolerance(desiredLeftFlywheelMotorRPM,
-                    desiredRightFlywheelMotorRPM)) {
+            shooterSub.startFlywheels(desiredTopFlywheelMotorRPM, desiredBottomFlywheelMotorRPM);
+            if (shooterSub.isWithinFlywheelVelocityTolerance(desiredTopFlywheelMotorRPM,
+                    desiredBottomFlywheelMotorRPM)) {
                 shooterSub.startIndex(desiredIndexRPM);
             }
 
@@ -80,9 +75,9 @@ public class StartShooterIntake extends Command {
                 floorIntakeSub.start();
             }
 
-            if ( !indexHasSpunUp ) {
-                if ( Math.abs( shooterSub.getIndexRPM() ) > Math.abs(Constants.ShooterConstants.IndexRPM) / 2.0 ) {
-                    indexHasSpunUp = true ;
+            if (!indexHasSpunUp) {
+                if (Math.abs(shooterSub.getIndexRPM()) > Math.abs(Constants.ShooterConstants.IndexRPM) / 2.0) {
+                    indexHasSpunUp = true;
                 }
             }
         }
@@ -91,16 +86,16 @@ public class StartShooterIntake extends Command {
     @Override
     public void end(boolean interrupted) {
         // if (interrupted) {
-            shooterSub.stop();
-            floorIntakeSub.stop();
+        shooterSub.stop();
+        floorIntakeSub.stop();
         // }
     }
 
     @Override
     public boolean isFinished() {
         // wpk magic number needs to be fixed
-        if ( indexHasSpunUp && Math.abs( shooterSub.getIndexRPM()) < 20.0) {
-            return true ;
+        if (indexHasSpunUp && Math.abs(shooterSub.getIndexRPM()) < 20.0) {
+            return true;
         }
         return false;
     }

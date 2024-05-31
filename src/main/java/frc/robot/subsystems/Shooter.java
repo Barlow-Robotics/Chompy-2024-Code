@@ -57,8 +57,8 @@ public class Shooter extends SubsystemBase {
         bottomFlywheelMotor = new TalonFX(ElectronicsIDs.BottomShooterMotorID);
         indexMotor = new TalonFX(ElectronicsIDs.IndexMotorID);
 
-        applyLeftFlywheelMotorConfig(InvertedValue.Clockwise_Positive);
-        applyRightFlywheelMotorConfig(InvertedValue.Clockwise_Positive);
+        applyTopFlywheelMotorConfig(InvertedValue.Clockwise_Positive);
+        applyBottomFlywheelMotorConfig(InvertedValue.Clockwise_Positive);
         applyIndexMotorConfig(InvertedValue.Clockwise_Positive);
 
         leftFlywheelMotorSim = topFlywheelMotor.getSimState();
@@ -162,24 +162,24 @@ public class Shooter extends SubsystemBase {
         applyMotorConfig(indexMotor, "indexMotor", PIDConfigs, inversion);
     }
 
-    private void applyLeftFlywheelMotorConfig(InvertedValue inversion) {
+    private void applyTopFlywheelMotorConfig(InvertedValue inversion) {
         TalonFXConfiguration PIDConfigs = new TalonFXConfiguration();
-        PIDConfigs.Slot0.kP = ShooterConstants.FlywheelLeftKP;
-        PIDConfigs.Slot0.kI = ShooterConstants.FlywheelLeftKI;
-        PIDConfigs.Slot0.kD = ShooterConstants.FlywheelLeftKD;
-        PIDConfigs.Slot0.kV = ShooterConstants.FlywheelLeftFF;
+        PIDConfigs.Slot0.kP = ShooterConstants.FlywheelTopKP;
+        PIDConfigs.Slot0.kI = ShooterConstants.FlywheelTopKI;
+        PIDConfigs.Slot0.kD = ShooterConstants.FlywheelTopKD;
+        PIDConfigs.Slot0.kV = ShooterConstants.FlywheelTopFF;
 
-        applyMotorConfig(topFlywheelMotor, "leftFlywheelMotor", PIDConfigs, inversion);
+        applyMotorConfig(topFlywheelMotor, "TopFlywheelMotor", PIDConfigs, inversion);
     }
 
-    private void applyRightFlywheelMotorConfig(InvertedValue inversion) {
+    private void applyBottomFlywheelMotorConfig(InvertedValue inversion) {
         TalonFXConfiguration PIDConfigs = new TalonFXConfiguration();
-        PIDConfigs.Slot0.kP = ShooterConstants.FlywheelRightKP;
-        PIDConfigs.Slot0.kI = ShooterConstants.FlywheelRightKI;
-        PIDConfigs.Slot0.kD = ShooterConstants.FlywheelRightKD;
-        PIDConfigs.Slot0.kV = ShooterConstants.FlywheelRightFF;
+        PIDConfigs.Slot0.kP = ShooterConstants.FlywheelBottomKP;
+        PIDConfigs.Slot0.kI = ShooterConstants.FlywheelBottomKI;
+        PIDConfigs.Slot0.kD = ShooterConstants.FlywheelBottomKD;
+        PIDConfigs.Slot0.kV = ShooterConstants.FlywheelBottomFF;
 
-        applyMotorConfig(bottomFlywheelMotor, "rightFlywheelMotor", PIDConfigs, inversion);
+        applyMotorConfig(bottomFlywheelMotor, "BottomFlywheelMotor", PIDConfigs, inversion);
     }
 
     private void applyMotorConfig(TalonFX motor, String motorName, TalonFXConfiguration PIDConfigs, InvertedValue inversion) {

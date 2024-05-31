@@ -71,7 +71,8 @@ public class DriveRobotWithNoteAlign extends Command {
                 DriveConstants.AutoAlignRotKP,
                 DriveConstants.AutoAlignRotKI,
                 DriveConstants.AutoAlignRotKD);
-        tagPID.setSetpoint(6.0);  
+//        tagPID.setSetpoint(6.0);  
+        tagPID.setSetpoint(11);  
 
 
         // wpk may need to tweak the values in constants

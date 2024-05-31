@@ -200,34 +200,36 @@ public class Constants {
 
         public static final double FlywheelGearRatio = 1.5; // 36 gears on motor, 24 on rollers --> 1.5:1 (as of 2/15)
 
-        public static final double LeftSpeakerRPM = 2500;
-        public static final double RightSpeakerRPM = 2500;
+        public static final double TopSpeakerRPM = 2500;
+        public static final double BottomSpeakerRPM = 2500;
 
-        public static final double LeftAmpRPM = 500;
-        public static TuneableParameter LeftAmpRPM2 = new TuneableParameter(500, LeftSpeakerRPM, 0, true, "Shooter/LeftAmpRPM");
-        public static final double RightAmpRPM = 500;
-        public static TuneableParameter RightAmpRPM2 = new TuneableParameter(500, LeftSpeakerRPM, 0, true, "Shooter/RightAmpRPM");
+        public static final double TopAmpRPM = 500;
+        public static TuneableParameter LeftAmpRPM2 = new TuneableParameter(500, TopSpeakerRPM, 0, true, "Shooter/LeftAmpRPM");
+        public static final double BottomAmpRPM = 500;
+        public static TuneableParameter RightAmpRPM2 = new TuneableParameter(500, TopSpeakerRPM, 0, true, "Shooter/RightAmpRPM");
 
         // public static final double LeftIntakeRPM = -1000;
         // public static final double RightIntakeRPM = -1000;
-        public static final double LeftIntakeRPM = -1250;
-        public static final double RightIntakeRPM = -1250;
+        public static final double BottomIntakeRPM = -1250;
+        public static final double TopIntakeRPM = -1250;
 
-        public static final double LeftTrapRPM = 250;
+        public static final double LeftTrapRPM = 0;
         public static final double RightTrapRPM = 250;
 
-        public static final double LeftFerryRPM = 1000;
-        public static final double RightFerryRPM = 1000;
+        public static final double TopFerryRPM = 250;
+        public static final double BottomFerryRPM = 250;
+        public static TuneableParameter TopFerryRPM2 = new TuneableParameter(250, 4500, 0, true, "Shooter/FerryUpper");
+        public static TuneableParameter BottomFerryRPM2 = new TuneableParameter(250, 4500, 0, true, "Shooter/FerryLower");
 
-        public static final double FlywheelLeftKP = 0.25; 
-        public static final double FlywheelLeftKI = 0; 
-        public static final double FlywheelLeftKD = 0; 
-        public static final double FlywheelLeftFF = 0.13; 
+        public static final double FlywheelTopKP = 0.25; 
+        public static final double FlywheelTopKI = 0; 
+        public static final double FlywheelTopKD = 0; 
+        public static final double FlywheelTopFF = 0.13; 
 
-        public static final double FlywheelRightKP = 0.25; 
-        public static final double FlywheelRightKI = 0; 
-        public static final double FlywheelRightKD = 0; 
-        public static final double FlywheelRightFF = 0.13; 
+        public static final double FlywheelBottomKP = 0.25; 
+        public static final double FlywheelBottomKI = 0; 
+        public static final double FlywheelBottomKD = 0; 
+        public static final double FlywheelBottomFF = 0.13; 
 
         /* INDEX */
 
@@ -235,7 +237,7 @@ public class Constants {
 
         public static final double IndexGearRatio = 1; // 1:1 ratio on Index per WK as of 2/15
 
-        public static final double IndexRPM = 500; //750
+        public static final double IndexRPM = 400; //750
 
         public static final double IndexKP = 0.15; //0.25
         public static final double IndexKI = 0; 
@@ -346,7 +348,7 @@ public class Constants {
                                                             * AT */
         // public static final double MidSpeakerHeight = 80.4; // inches to middle of speaker hole - possibly CHANGE
         // public static final double MidSpeakerHeight = 88; // bottom of speaker opening is at 78", so aim above it.
-        public static final double MidSpeakerHeight = 100; // bottom of speaker opening is at 78", so aim above it.
+        public static final double MidSpeakerHeight = 105; // bottom of speaker opening is at 78", so aim above it.
         public static final double ElevatorHeightUnextended = 26; // inches - possibly CHANGE - height of elevator at rest
         
         public static final int MissedSpeakerTargetFrameTolerance = 13;  // rougly .25 seconds

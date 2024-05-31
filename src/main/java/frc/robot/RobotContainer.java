@@ -221,8 +221,13 @@ public class RobotContainer {
 
         /******************** CLIMB ********************/
 
+        // climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA);
+        // climbButton.onTrue(climbCmd);
+
+        // EHP TEMP DO NOT PUSH TO GITHUB
         climbButton = new JoystickButton(operatorController, XboxControllerConstants.ButtonA);
-        climbButton.onTrue(climbCmd);
+        climbButton.onTrue(startShooterIntakeCmd).onFalse(stopShooterIntakeCmd);
+        //
 
         // piviotToPoint = new JoystickButton(driverController, LogitechExtreme3DConstants.Button8);
         // piviotToPoint.onTrue(piviotToSpeakerCommand);

@@ -55,8 +55,8 @@ public class StartShooterIntake extends Command {
                 desiredTopFlywheelMotorRPM = ShooterConstants.TopSpeakerRPM;
                 desiredBottomFlywheelMotorRPM = ShooterConstants.BottomSpeakerRPM;
             } else if (shooterMountSub.getShooterMountState() == ShooterMountState.Ferry) {
-                desiredTopFlywheelMotorRPM = ShooterConstants.TopFerryRPM2.get();
-                desiredBottomFlywheelMotorRPM = ShooterConstants.BottomFerryRPM2.get();
+                desiredTopFlywheelMotorRPM = ShooterConstants.TopFerryRPM;
+                desiredBottomFlywheelMotorRPM = ShooterConstants.BottomFerryRPM;
             }
         }
     }

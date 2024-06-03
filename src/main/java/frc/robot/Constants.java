@@ -216,10 +216,10 @@ public class Constants {
         public static final double LeftTrapRPM = 0;
         public static final double RightTrapRPM = 250;
 
-        public static final double TopFerryRPM = 250;
-        public static final double BottomFerryRPM = 250;
-        public static TuneableParameter TopFerryRPM2 = new TuneableParameter(250, 4500, 0, true, "Shooter/FerryUpper");
-        public static TuneableParameter BottomFerryRPM2 = new TuneableParameter(250, 4500, 0, true, "Shooter/FerryLower");
+        public static final double TopFerryRPM = 750;
+        public static final double BottomFerryRPM = 750;
+        public static TuneableParameter TopFerryRPM2 = new TuneableParameter(750, 4500, 0, true, "Shooter/FerryUpper");
+        public static TuneableParameter BottomFerryRPM2 = new TuneableParameter(750, 4500, 0, true, "Shooter/FerryLower");
 
         public static final double FlywheelTopKP = 0.25; 
         public static final double FlywheelTopKI = 0; 

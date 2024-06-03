@@ -74,6 +74,7 @@ public class Robot extends LoggedRobot {
             new MechanismLigament2d("wrist", 6, 0, 6, new Color8Bit(Color.kPurple)));
         SmartDashboard.putNumber("ShooterMount/AmpAngle", Constants.ShooterMountConstants.AmpAngle);
         SmartDashboard.putNumber("ShooterMount/AmpHeight", Constants.ShooterMountConstants.AmpHeight);
+        SmartDashboard.putNumber("Shooter/SpeakerHeightMiddle", Constants.ShooterMountConstants.MidSpeakerHeight);
         SmartDashboard.putNumber("Shooter/FerryUpper", Constants.ShooterConstants.TopFerryRPM);
         SmartDashboard.putNumber("Shooter/FerryLower", Constants.ShooterConstants.BottomFerryRPM);
         SmartDashboard.putNumber("isAdjusting", 0);

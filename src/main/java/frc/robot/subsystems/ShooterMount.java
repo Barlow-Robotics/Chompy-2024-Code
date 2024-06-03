@@ -328,11 +328,16 @@ public class ShooterMount extends SubsystemBase {
     public double getSpeakerShooterAngle() {
 
         double result = 0.0;
-
+        double desiredHeight = 105;
         // deltaY is the difference in height of target (a little over the bottom of
         // speaker opening) and the current
         // elevator position.
-        double height = ShooterMountConstants.MidSpeakerHeight - Constants.ShooterMountConstants.SpeakerHeight;
+        if(ShooterConstants.isAdjusting.get() == 1){
+            desiredHeight = ShooterMountConstants.MidSpeakerHeight2.get();
+        } else {
+            desiredHeight = ShooterMountConstants.MidSpeakerHeight;
+        }
+        double height = desiredHeight - Constants.ShooterMountConstants.SpeakerHeight;
         height = Units.inchesToMeters(height);
 
         var target = visionSub.getSpeakerTarget();

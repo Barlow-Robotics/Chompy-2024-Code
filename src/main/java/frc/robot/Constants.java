@@ -348,7 +348,9 @@ public class Constants {
                                                             * AT */
         // public static final double MidSpeakerHeight = 80.4; // inches to middle of speaker hole - possibly CHANGE
         // public static final double MidSpeakerHeight = 88; // bottom of speaker opening is at 78", so aim above it.
-        public static final double MidSpeakerHeight = 105; // bottom of speaker opening is at 78", so aim above it.
+        public static final double MidSpeakerHeight = 112; // bottom of speaker opening is at 78", so aim above it.
+        public static TuneableParameter MidSpeakerHeight2 = new TuneableParameter(112, 130, 80, true, "Shooter/SpeakerHeightMiddle");
+        //  public static final double MidSpeakerHeight = 105; // bottom of speaker opening is at 78", so aim above it.
         public static final double ElevatorHeightUnextended = 26; // inches - possibly CHANGE - height of elevator at rest
         
         public static final int MissedSpeakerTargetFrameTolerance = 13;  // rougly .25 seconds
